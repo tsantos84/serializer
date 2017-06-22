@@ -5,6 +5,7 @@ namespace Serializer\Metadata\Driver;
 use Metadata\ClassMetadata;
 use Metadata\Driver\DriverInterface;
 use Serializer\Metadata\PropertyMetadata;
+use Serializer\Metadata\VirtualPropertyMetadata;
 
 class ArrayDriver implements DriverInterface
 {
@@ -32,7 +33,7 @@ class ArrayDriver implements DriverInterface
 
         $metadata = new ClassMetadata($class->getName());
 
-        foreach ($mapping['properties'] as $name => $map) {
+        foreach ($mapping['properties'] ?? [] as $name => $map) {
 
             $property = new PropertyMetadata($class->getName(), $name);
 
@@ -41,6 +42,15 @@ class ArrayDriver implements DriverInterface
             $property->exposeAs = $map['exposeAs'] ?? $name;
 
             $metadata->addPropertyMetadata($property);
+        }
+
+        foreach ($mapping['virtual_properties'] ?? [] as $name => $map) {
+
+            $method = $map['method'] ?? 'get' . ucfirst($name);
+
+            $property = new VirtualPropertyMetadata($class->name, $method);
+            $property->exposeAs = $map['exposeAs'] ?? $name;
+            $metadata->addMethodMetadata($property);
         }
 
         return $metadata;

@@ -142,6 +142,39 @@ EOF;
 
 
 EOF;
+        $code .=
+            $this->properties($metadata) .
+            $this->virtualProperties($metadata);
+
+        $code .= <<<EOF
+        return \$data;
+
+EOF;
+
+        return $code;
+    }
+
+    private function endMethod(): string
+    {
+        return <<<EOF
+    }
+
+EOF;
+
+    }
+
+    private function endClass(): string
+    {
+        return <<<EOF
+}
+
+EOF;
+    }
+
+    private function properties(ClassMetadata $metadata): string
+    {
+        $code = '';
+
         foreach ($metadata->propertyMetadata as $property) {
 
             $getter = "\$object->{$property->getter}()";
@@ -170,31 +203,37 @@ EOF;
         }
 
 EOF;
-
         }
-
-        $code .= <<<EOF
-        return \$data;
-
-EOF;
 
         return $code;
     }
 
-    private function endMethod(): string
+    private function virtualProperties(ClassMetadata $metadata): string
     {
-        return <<<EOF
-    }
+        $code = '';
+
+        foreach ($metadata->methodMetadata as $property) {
+
+            $getter = "\$object->{$property->name}()";
+            $value = '$value';
+
+            $code .= <<<EOF
+        #virtual field '$property->name'
+        if (null !== \$value = $getter) {
+
+EOF;
+            $code .= <<<EOF
+            \$data['$property->exposeAs'] = $value;
+EOF;
+
+            $code .= <<<EOF
+
+        }
 
 EOF;
 
-    }
+        }
 
-    private function endClass(): string
-    {
-        return <<<EOF
-}
-
-EOF;
+        return $code;
     }
 }

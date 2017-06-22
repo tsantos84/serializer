@@ -28,6 +28,11 @@ return [
             'address' => [
                 'type' => Address::class
             ]
+        ],
+        'virtual_properties' => [
+            'fullName' => [
+                'exposeAs' => 'full_name'
+            ]
         ]
     ],
     Address::class => [

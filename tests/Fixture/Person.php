@@ -89,6 +89,14 @@ class Person
     }
 
     /**
+     * @return string
+     */
+    public function getFullName(): string
+    {
+        return $this->name . ' ' . $this->lastName;
+    }
+
+    /**
      * @return bool
      */
     public function isMarried(): bool
