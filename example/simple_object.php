@@ -10,12 +10,11 @@ use Tests\Serializer\Fixture\Person;
 
 $builder = new SerializerBuilder();
 
-$builder
+$serializer = $builder
     ->setMetadataDriver(new ArrayDriver(require __DIR__ . '/../tests/Resources/mapping.php'))
     ->setCacheDir(__DIR__ . '/../tests/cache')
-    ->setDebug(true);
-
-$serializer = $builder->build();
+    ->setDebug(true)
+    ->build();
 
 $person = new Person();
 $person->setId(10);

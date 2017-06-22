@@ -2,8 +2,6 @@
 
 namespace Serializer;
 
-use Metadata\ClassMetadata;
-
 /**
  * Interface ObjectSerializertInterface
  *
@@ -13,10 +11,8 @@ use Metadata\ClassMetadata;
 interface SerializerClassInterface
 {
     /**
-     * @param ClassMetadata $metadata
      * @param $object
-     * @param Serializer $serializer
      * @return array
      */
-    public function serialize(ClassMetadata $metadata, $object, Serializer $serializer): array;
+    public function serialize($object): array;
 }

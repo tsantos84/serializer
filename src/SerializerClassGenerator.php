@@ -42,16 +42,17 @@ class SerializerClassGenerator
 
     /**
      * @param ClassMetadata $classMetadata
+     * @param Serializer $serializer
      * @return SerializerClassInterface
      */
-    public function getGeneratorFor(ClassMetadata $classMetadata)
+    public function getGeneratorFor(ClassMetadata $classMetadata, Serializer $serializer): SerializerClassInterface
     {
         $filename = $this->getFilename($classMetadata);
         $fqn = $this->getClassName($classMetadata);
 
         if (!$this->debug && file_exists($filename)) {
             require_once $filename;
-            return new $fqn();
+            return new $fqn($serializer, $classMetadata);
         }
 
         $code =
@@ -67,7 +68,7 @@ class SerializerClassGenerator
 
         require $filename;
 
-        return new $fqn();
+        return new $fqn($serializer, $classMetadata);
     }
 
     private function getClassName(ClassMetadata $metadata): string
@@ -94,6 +95,15 @@ use Serializer\SerializerClassInterface;
  */
 class $className implements SerializerClassInterface
 {
+    private \$classMetadata;
+    private \$serializer;
+    
+    public function __construct(Serializer \$serializer, ClassMetadata \$metadata)
+    {
+        \$this->serializer = \$serializer;
+        \$this->classMetadata = \$metadata;
+    }
+
 
 EOF;
     }
@@ -102,12 +112,10 @@ EOF;
     {
         return <<<EOF
     /**
-     * @param ClassMetadata \$metadata
      * @param {$metadata->name} \$object
-     * @param Serializer \$serializer
      * @return array
      */
-    public function serialize(ClassMetadata \$metadata, \$object, Serializer \$serializer): array
+    public function serialize(\$object): array
     {
 
 EOF;
@@ -116,6 +124,10 @@ EOF;
     private function methodBody(ClassMetadata $metadata): string
     {
         $code = <<<EOF
+        if (!\$object instanceof {$metadata->name}) {
+            throw new \InvalidArgumentException(sprintf('%s can serialize instances of "%s" only. "%s" given', get_class(\$this), '{$metadata->name}', is_object(\$object) ? get_class(\$object) : gettype(\$object)));
+        }
+        
         \$data = [];
 
 
@@ -139,7 +151,7 @@ EOF;
             } else {
                 // custom type
                 $code .= <<<EOF
-            \$data['$property->exposeAs'] = \$serializer->toArray($value);
+            \$data['$property->exposeAs'] = \$this->serializer->toArray($value);
 EOF;
             }
 
