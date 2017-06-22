@@ -114,7 +114,7 @@ class Person
     /**
      * @return Address
      */
-    public function getAddress(): Address
+    public function getAddress(): ?Address
     {
         return $this->address;
     }
