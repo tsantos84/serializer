@@ -3,7 +3,7 @@
 namespace Tests\Serializer;
 
 use PHPUnit\Framework\TestCase;
-use Serializer\Builder;
+use Serializer\SerializerBuilder;
 use Serializer\Metadata\Driver\ArrayDriver;
 use Serializer\Serializer;
 use Tests\Serializer\Fixture\Person;
@@ -17,7 +17,7 @@ class SerializerTest extends TestCase
 
     protected function setUp()
     {
-        $builder = new Builder();
+        $builder = new SerializerBuilder();
 
         $builder
             ->setMetadataDriver(new ArrayDriver(require __DIR__ . '/Resources/mapping.php'))

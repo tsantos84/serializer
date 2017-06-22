@@ -2,13 +2,13 @@
 
 require __DIR__ . '/../vendor/autoload.php';
 
-use Serializer\Builder;
+use Serializer\SerializerBuilder;
 use Serializer\Metadata\Driver\ArrayDriver;
 use Tests\Serializer\Fixture\Address;
 use Tests\Serializer\Fixture\Coordinates;
 use Tests\Serializer\Fixture\Person;
 
-$builder = new Builder();
+$builder = new SerializerBuilder();
 
 $builder
     ->setMetadataDriver(new ArrayDriver(require __DIR__ . '/../tests/Resources/mapping.php'))

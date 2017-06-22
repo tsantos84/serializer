@@ -17,7 +17,7 @@ use Serializer\Type\StringType;
  * @package Serializer
  * @author Tales Santos <tales.maxmilhas@gmail.com>
  */
-class Builder
+class SerializerBuilder
 {
     private $typeRegistry;
     private $encoderRegistry;
@@ -38,27 +38,27 @@ class Builder
 
     /**
      * @param DriverInterface $driver
-     * @return Builder
+     * @return SerializerBuilder
      */
-    public function setMetadataDriver(DriverInterface $driver): Builder
+    public function setMetadataDriver(DriverInterface $driver): SerializerBuilder
     {
         $this->driver = $driver;
         return $this;
     }
 
-    public function setSerializerClassGenerator(SerializerClassGenerator $generator): Builder
+    public function setSerializerClassGenerator(SerializerClassGenerator $generator): SerializerBuilder
     {
         $this->serializerClassGenerator = $generator;
         return $this;
     }
 
-    public function setCacheDir(string $dir): Builder
+    public function setCacheDir(string $dir): SerializerBuilder
     {
         $this->cache = $dir;
         return $this;
     }
 
-    public function setDebug(bool $debug): Builder
+    public function setDebug(bool $debug): SerializerBuilder
     {
         $this->debug = $debug;
         return $this;
