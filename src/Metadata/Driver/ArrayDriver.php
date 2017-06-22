@@ -38,7 +38,6 @@ class ArrayDriver implements DriverInterface
 
             $property->type = $map['type'] ?? 'string';
             $property->getter = $map['getter'] ?? 'get' . ucfirst($name);
-            $property->setter = $map['setter'] ?? 'set' . ucfirst($name);
             $property->exposeAs = $map['exposeAs'] ?? $name;
 
             $metadata->addPropertyMetadata($property);
