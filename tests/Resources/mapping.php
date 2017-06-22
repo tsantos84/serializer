@@ -1,5 +1,7 @@
 <?php
 
+use Tests\Serializer\Fixture\Address;
+use Tests\Serializer\Fixture\Coordinates;
 use Tests\Serializer\Fixture\Person;
 
 return [
@@ -22,6 +24,28 @@ return [
             ],
             'colors' => [
                 'type' => 'array'
+            ],
+            'address' => [
+                'type' => Address::class
+            ]
+        ]
+    ],
+    Address::class => [
+        'properties' => [
+            'street' => [],
+            'city' => [],
+            'coordinates' => [
+                'type' => Coordinates::class
+            ]
+        ]
+    ],
+    Coordinates::class => [
+        'properties' => [
+            'x' => [
+                'type' => 'float'
+            ],
+            'y' => [
+                'type' => 'float'
             ]
         ]
     ]

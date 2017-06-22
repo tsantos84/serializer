@@ -125,18 +125,30 @@ EOF;
             $getter = "\$object->{$property->getter}()";
             $value = '$value';
 
-            if ($this->typeRegistry->has($property->type)) {
-                $value = $this->typeRegistry->get($property->type)->modify($value, $property);
-            }
-
             $code .= <<<EOF
         #field '$property->name'
         if (null !== \$value = $getter) {
-            \$data['$property->exposeAs'] = $value;
-        }
-
 
 EOF;
+            // native type?
+            if ($this->typeRegistry->has($property->type)) {
+                $value = $this->typeRegistry->get($property->type)->modify($value, $property);
+                $code .= <<<EOF
+            \$data['$property->exposeAs'] = $value;
+EOF;
+            } else {
+                // custom type
+                $code .= <<<EOF
+            \$data['$property->exposeAs'] = \$serializer->toArray($value);
+EOF;
+            }
+
+            $code .= <<<EOF
+
+        }
+
+EOF;
+
         }
 
         $code .= <<<EOF

@@ -30,6 +30,11 @@ class Person
     private $colors = ['red', 'blue', 'white'];
 
     /**
+     * @var Address
+     */
+    private $address;
+
+    /**
      * @return int
      */
     public function getId(): int
@@ -105,4 +110,24 @@ class Person
     {
         return $this->colors;
     }
+
+    /**
+     * @return Address
+     */
+    public function getAddress(): Address
+    {
+        return $this->address;
+    }
+
+    /**
+     * @param Address $address
+     * @return Person
+     */
+    public function setAddress(Address $address): Person
+    {
+        $this->address = $address;
+        return $this;
+    }
+
+
 }

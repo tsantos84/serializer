@@ -50,7 +50,11 @@ class Serializer
     public function serialize($object, string $format)
     {
         $encoder = $this->encoderRegistry->get($format);
+        return $encoder->encode($this->toArray($object));
+    }
 
+    public function toArray($object)
+    {
         $hierarchyMetadata = $this->metadataFactory->getMetadataForClass(get_class($object));
         $classMetadata = $hierarchyMetadata->getOutsideClassMetadata();
 
@@ -58,7 +62,7 @@ class Serializer
 
         $array = $objectSerializer->serialize($classMetadata, $object, $this);
 
-        return $encoder->encode($array);
+        return $array;
     }
 
     /**
