@@ -18,9 +18,22 @@ use Serializer\Type\StringType;
  */
 class Builder
 {
+    private $typeRegistry;
+    private $encoderRegistry;
     private $driver;
     private $serializerClassGenerator;
     private $cache;
+    private $debug;
+
+    /**
+     * Builder constructor.
+     */
+    public function __construct()
+    {
+        $this->typeRegistry = new TypeRegistry();
+        $this->encoderRegistry = new EncoderRegistry();
+        $this->debug = false;
+    }
 
     /**
      * @param DriverInterface $driver
@@ -44,27 +57,31 @@ class Builder
         return $this;
     }
 
+    public function setDebug(bool $debug): Builder
+    {
+        $this->debug = $debug;
+        return $this;
+    }
+
     /**
      * @return Serializer
      */
     public function build(): Serializer
     {
-        $typeRegistry = new TypeRegistry();
-        $typeRegistry
+        $this->typeRegistry
             ->addType(new IntegerType())
             ->addType(new FloatType())
             ->addType(new StringType());
 
-        $encoderRegistry = new EncoderRegistry();
-        $encoderRegistry->add(new JsonEncoder());
+        $this->encoderRegistry->add(new JsonEncoder());
 
-        $metadataFactory = new MetadataFactory($this->driver);
+        $metadataFactory = new MetadataFactory($this->driver, 'Metadata\ClassHierarchyMetadata', $this->debug);
 
         if (null === $this->serializerClassGenerator) {
-            $this->serializerClassGenerator = new SerializerClassGenerator($this->cache ?? sys_get_temp_dir(), $typeRegistry);
+            $this->serializerClassGenerator = new SerializerClassGenerator($this->cache ?? sys_get_temp_dir(), $this->typeRegistry, $this->debug);
         }
 
-        $serializer = new Serializer($metadataFactory, $this->serializerClassGenerator, $encoderRegistry);
+        $serializer = new Serializer($metadataFactory, $this->serializerClassGenerator, $this->encoderRegistry);
 
         return $serializer;
     }

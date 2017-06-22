@@ -23,14 +23,21 @@ class SerializerClassGenerator
     private $typeRegistry;
 
     /**
+     * @var bool
+     */
+    private $debug;
+
+    /**
      * SerializerClassGenerator constructor.
      * @param string $path
      * @param TypeRegistryInterface $typeRegistry
+     * @param bool $debug
      */
-    public function __construct(string $path, TypeRegistryInterface $typeRegistry)
+    public function __construct(string $path, TypeRegistryInterface $typeRegistry, bool $debug = false)
     {
         $this->path = $path;
         $this->typeRegistry = $typeRegistry;
+        $this->debug = $debug;
     }
 
     /**
@@ -39,7 +46,13 @@ class SerializerClassGenerator
      */
     public function getGeneratorFor(ClassMetadata $classMetadata)
     {
+        $filename = $this->getFilename($classMetadata);
         $fqn = $this->getClassName($classMetadata);
+
+        if (!$this->debug && file_exists($filename)) {
+            require_once $filename;
+            return new $fqn();
+        }
 
         $code =
             $this->classDeclaration($fqn) .
@@ -48,7 +61,6 @@ class SerializerClassGenerator
             $this->endMethod() .
             $this->endClass();
 
-        $filename = $this->getFilename($classMetadata);
 
         file_put_contents($filename, $code);
         chmod($filename, 0664);
@@ -58,12 +70,12 @@ class SerializerClassGenerator
         return new $fqn();
     }
 
-    public function getClassName(ClassMetadata $metadata): string
+    private function getClassName(ClassMetadata $metadata): string
     {
         return str_replace('\\', '', $metadata->name) . 'Serializer';
     }
 
-    public function getFilename(ClassMetadata $metadata): string
+    private function getFilename(ClassMetadata $metadata): string
     {
         return $this->path . DIRECTORY_SEPARATOR . $this->getClassName($metadata) . '.php';
     }
