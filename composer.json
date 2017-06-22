@@ -1,4 +1,15 @@
 {
+    "name": "tsantos/serializer",
+    "description": "Serializer component for PHP",
+    "keywords": ["serializer","metadata"],
+    "type": "library",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Tales Santos",
+            "email": "tales.augusto.santos@gmail.com"
+        }
+    ],
     "autoload": {
         "psr-4": {
             "Serializer\\": "src/"
