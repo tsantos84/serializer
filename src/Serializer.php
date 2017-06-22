@@ -51,8 +51,8 @@ class Serializer
     {
         $encoder = $this->encoderRegistry->get($format);
 
-        $hyerarchyMetadata = $this->metadataFactory->getMetadataForClass(get_class($object));
-        $classMetadata = $hyerarchyMetadata->getOutsideClassMetadata();
+        $hierarchyMetadata = $this->metadataFactory->getMetadataForClass(get_class($object));
+        $classMetadata = $hierarchyMetadata->getOutsideClassMetadata();
 
         $objectSerializer = $this->getObjectSerializer($classMetadata);
 
