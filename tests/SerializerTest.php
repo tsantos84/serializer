@@ -21,7 +21,8 @@ class SerializerTest extends TestCase
 
         $builder
             ->setMetadataDriver(new ArrayDriver(require __DIR__ . '/Resources/mapping.php'))
-            ->setCacheDir(__DIR__ . '/cache');
+            ->setCacheDir(__DIR__ . '/cache')
+            ->setDebug(true);
 
         $this->serializer = $builder->build();
     }

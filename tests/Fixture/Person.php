@@ -25,6 +25,11 @@ class Person
     private $married;
 
     /**
+     * @var array
+     */
+    private $colors = ['red', 'blue', 'white'];
+
+    /**
      * @return int
      */
     public function getId(): int
@@ -94,5 +99,10 @@ class Person
     {
         $this->married = $isMarried;
         return $this;
+    }
+
+    public function getColors(): array
+    {
+        return $this->colors;
     }
 }

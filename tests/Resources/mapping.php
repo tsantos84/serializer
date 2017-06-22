@@ -17,9 +17,11 @@ return [
                 'exposeAs' => 'last_name'
             ],
             'married' => [
-                'type' => 'bool',
-                'exposeAs' => 'married',
+                'type' => 'boolean',
                 'getter' => 'isMarried'
+            ],
+            'colors' => [
+                'type' => 'array'
             ]
         ]
     ]

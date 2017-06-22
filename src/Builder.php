@@ -5,7 +5,8 @@ namespace Serializer;
 use Metadata\Driver\DriverInterface;
 use Metadata\MetadataFactory;
 use Serializer\Encoder\JsonEncoder;
-use Serializer\Type\DateTimeType;
+use Serializer\Type\ArrayType;
+use Serializer\Type\BooleanType;
 use Serializer\Type\FloatType;
 use Serializer\Type\IntegerType;
 use Serializer\Type\StringType;
@@ -69,8 +70,10 @@ class Builder
     public function build(): Serializer
     {
         $this->typeRegistry
+            ->addType(new ArrayType())
             ->addType(new IntegerType())
             ->addType(new FloatType())
+            ->addType(new BooleanType())
             ->addType(new StringType());
 
         $this->encoderRegistry->add(new JsonEncoder());

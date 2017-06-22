@@ -10,7 +10,8 @@ $builder = new Builder();
 
 $builder
     ->setMetadataDriver(new ArrayDriver(require __DIR__ . '/../tests/Resources/mapping.php'))
-    ->setCacheDir(__DIR__ . '/../tests/cache');
+    ->setCacheDir(__DIR__ . '/../tests/cache')
+    ->setDebug(true);
 
 $serializer = $builder->build();
 
