@@ -28,6 +28,11 @@ class SerializerClassGenerator
     private $debug;
 
     /**
+     * @var array
+     */
+    private $generated = [];
+
+    /**
      * SerializerClassGenerator constructor.
      * @param string $path
      * @param TypeRegistryInterface $typeRegistry
@@ -47,12 +52,17 @@ class SerializerClassGenerator
      */
     public function getGeneratorFor(ClassMetadata $classMetadata, Serializer $serializer): SerializerClassInterface
     {
-        $filename = $this->getFilename($classMetadata);
         $fqn = $this->getClassName($classMetadata);
+
+        if (isset($this->generated[$fqn])) {
+            return $this->generated[$fqn];
+        }
+
+        $filename = $this->getFilename($classMetadata);
 
         if (!$this->debug && file_exists($filename)) {
             require_once $filename;
-            return new $fqn($serializer, $classMetadata);
+            return $this->generated[$fqn] = new $fqn($serializer, $classMetadata);
         }
 
         $code =
@@ -68,7 +78,7 @@ class SerializerClassGenerator
 
         require $filename;
 
-        return new $fqn($serializer, $classMetadata);
+        return $this->generated[$fqn] = new $fqn($serializer, $classMetadata);
     }
 
     private function getClassName(ClassMetadata $metadata): string

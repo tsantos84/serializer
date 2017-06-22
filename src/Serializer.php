@@ -55,6 +55,14 @@ class Serializer
 
     public function toArray($object): array
     {
+        if (is_array($object) || $object instanceof \Iterator) {
+            $array = [];
+            foreach ($object as $key => $item) {
+                $array[$key] = $this->toArray($item);
+            }
+            return $array;
+        }
+
         $hierarchyMetadata = $this->metadataFactory->getMetadataForClass(get_class($object));
         $classMetadata = $hierarchyMetadata->getOutsideClassMetadata();
 
