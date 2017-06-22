@@ -63,9 +63,9 @@ class Serializer
 
     /**
      * @param ClassMetadata $metadata
-     * @return mixed
+     * @return SerializerClassInterface
      */
-    private function getObjectSerializer(ClassMetadata $metadata)
+    private function getObjectSerializer(ClassMetadata $metadata): SerializerClassInterface
     {
         return $this->serializerClassGenerator->getGeneratorFor($metadata);
     }

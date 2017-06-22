@@ -35,7 +35,7 @@ class SerializerClassGenerator
 
     /**
      * @param ClassMetadata $classMetadata
-     * @return string
+     * @return SerializerClassInterface
      */
     public function getGeneratorFor(ClassMetadata $classMetadata)
     {
