@@ -12,7 +12,8 @@ interface SerializerClassInterface
 {
     /**
      * @param $object
+     * @param SerializationContext $context
      * @return array
      */
-    public function serialize($object): array;
+    public function serialize($object, SerializationContext $context): array;
 }

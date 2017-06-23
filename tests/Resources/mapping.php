@@ -8,7 +8,8 @@ return [
     Person::class => [
         'properties' => [
             'id' => [
-                'type' => 'integer'
+                'type' => 'integer',
+                'groups' => ['web']
             ],
             'name' => [
                 'type' => 'string',
@@ -16,14 +17,16 @@ return [
             ],
             'lastName' => [
                 'type' => 'string',
-                'exposeAs' => 'last_name'
+                'exposeAs' => 'last_name',
+                'groups' => ['web']
             ],
             'married' => [
                 'type' => 'boolean',
                 'getter' => 'isMarried'
             ],
             'colors' => [
-                'type' => 'array'
+                'type' => 'array',
+                'groups' => ['mobile']
             ],
             'address' => [
                 'type' => Address::class

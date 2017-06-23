@@ -2,6 +2,7 @@
 
 require __DIR__ . '/../vendor/autoload.php';
 
+use Serializer\SerializationContext;
 use Serializer\SerializerBuilder;
 use Serializer\Metadata\Driver\ArrayDriver;
 use Tests\Serializer\Fixture\Address;
@@ -28,6 +29,8 @@ $address->setStreet('Afonso Pena');
 $address->setCoordinates(new Coordinates(10.5, 20.9));
 $person->setAddress($address);
 
-$json = $serializer->serialize($person, 'json');
+$context = new SerializationContext();
+$context->setGroups(['mobile']);
+$json = $serializer->serialize($person, 'json', $context);
 
 echo $json;

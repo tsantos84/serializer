@@ -40,6 +40,7 @@ class ArrayDriver implements DriverInterface
             $property->type = $map['type'] ?? 'string';
             $property->getter = $map['getter'] ?? 'get' . ucfirst($name);
             $property->exposeAs = $map['exposeAs'] ?? $name;
+            $property->groups = (array)($map['groups'] ?? ['Default']);
 
             $metadata->addPropertyMetadata($property);
         }
@@ -50,6 +51,7 @@ class ArrayDriver implements DriverInterface
 
             $property = new VirtualPropertyMetadata($class->name, $method);
             $property->exposeAs = $map['exposeAs'] ?? $name;
+            $property->groups = (array)($map['groups'] ?? ['Default']);
             $metadata->addMethodMetadata($property);
         }
 

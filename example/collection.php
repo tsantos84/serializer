@@ -2,6 +2,7 @@
 
 require __DIR__ . '/../vendor/autoload.php';
 
+use Serializer\SerializationContext;
 use Serializer\SerializerBuilder;
 use Serializer\Metadata\Driver\ArrayDriver;
 use Tests\Serializer\Fixture\Person;
@@ -20,11 +21,10 @@ for ($i=1; $i<=10; $i++) {
     $person = new Person();
     $person->setId(10);
     $person->setName('Tales');
-    $person->setLastName('Santos');
     $person->setMarried(true);
     $persons[] = $person;
 }
 
-$json = $serializer->serialize($persons, 'json');
+$json = $serializer->serialize($persons, 'json', SerializationContext::create()->setGroups(['web', 'mobile'])->setSerializeNull(false));
 
 echo $json;

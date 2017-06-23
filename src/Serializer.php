@@ -45,20 +45,25 @@ class Serializer
     /**
      * @param $object
      * @param string $format
+     * @param SerializationContext $context
      * @return string
      */
-    public function serialize($object, string $format) : string
+    public function serialize($object, string $format, SerializationContext $context = null) : string
     {
         $encoder = $this->encoderRegistry->get($format);
-        return $encoder->encode($this->toArray($object));
+        return $encoder->encode($this->toArray($object, $context));
     }
 
-    public function toArray($object): array
+    public function toArray($object, SerializationContext $context = null): array
     {
+        if (null === $context) {
+            $context = new SerializationContext();
+        }
+
         if (is_array($object) || $object instanceof \Iterator) {
             $array = [];
             foreach ($object as $key => $item) {
-                $array[$key] = $this->toArray($item);
+                $array[$key] = $this->toArray($item, $context);
             }
             return $array;
         }
@@ -66,9 +71,9 @@ class Serializer
         $hierarchyMetadata = $this->metadataFactory->getMetadataForClass(get_class($object));
         $classMetadata = $hierarchyMetadata->getOutsideClassMetadata();
 
-        $objectSerializer = $this->getObjectSerializer($classMetadata);
+        $objectSerializer = $this->getObjectSerializer($classMetadata, $context);
 
-        $array = $objectSerializer->serialize($object);
+        $array = $objectSerializer->serialize($object, $context);
 
         return $array;
     }
