@@ -47,7 +47,7 @@ class Serializer
      * @param string $format
      * @return string
      */
-    public function serialize($object, string $format)
+    public function serialize($object, string $format) : string
     {
         $encoder = $this->encoderRegistry->get($format);
         return $encoder->encode($this->toArray($object));
