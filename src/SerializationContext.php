@@ -11,7 +11,7 @@ namespace Serializer;
 class SerializationContext
 {
     private $groups = ['Default'];
-    private $serializeNull = true;
+    private $serializeNull = false;
 
     public static function create(): SerializationContext
     {
