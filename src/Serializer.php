@@ -60,12 +60,8 @@ class Serializer
             $context = new SerializationContext();
         }
 
-        if (is_array($object) || $object instanceof \Iterator) {
-            $array = [];
-            foreach ($object as $key => $item) {
-                $array[$key] = $this->toArray($item, $context);
-            }
-            return $array;
+        if (is_scalar($object)) {
+            return [$object];
         }
 
         $hierarchyMetadata = $this->metadataFactory->getMetadataForClass(get_class($object));
