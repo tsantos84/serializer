@@ -14,6 +14,8 @@ class PropertyMetadata extends BasePropertyMetadata
 {
     public $type;
     public $getter;
+    /** @var  \ReflectionMethod */
+    public $getterRef;
     public $exposeAs;
     public $groups;
 }

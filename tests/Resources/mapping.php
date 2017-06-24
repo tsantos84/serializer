@@ -8,24 +8,19 @@ return [
     Person::class => [
         'properties' => [
             'id' => [
-                'type' => 'integer',
                 'groups' => ['web']
             ],
             'name' => [
-                'type' => 'string',
                 'exposeAs' => 'nome'
             ],
             'lastName' => [
-                'type' => 'string',
                 'exposeAs' => 'last_name',
                 'groups' => ['web']
             ],
             'married' => [
-                'type' => 'boolean',
                 'getter' => 'isMarried'
             ],
             'colors' => [
-                'type' => 'array',
                 'groups' => ['mobile']
             ],
             'address' => [
@@ -49,12 +44,8 @@ return [
     ],
     Coordinates::class => [
         'properties' => [
-            'x' => [
-                'type' => 'float'
-            ],
-            'y' => [
-                'type' => 'float'
-            ]
+            'x' => [],
+            'y' => []
         ]
     ]
 ];

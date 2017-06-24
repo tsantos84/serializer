@@ -29,9 +29,9 @@ class SerializerTest extends TestCase
     public function testSerializeSimpleObject()
     {
         $serializer = $this->createSerializer($this->createMapping(Person::class, [
-            'id' => ['type' => 'integer'],
-            'name' => ['type' => 'string'],
-            'married' => ['type' => 'boolean', 'getter' => 'isMarried']
+            'id' => [],
+            'name' => [],
+            'married' => ['getter' => 'isMarried']
         ]));
 
         $person = $this->createPerson();
