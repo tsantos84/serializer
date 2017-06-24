@@ -56,12 +56,12 @@ class Serializer
 
     public function toArray($object, SerializationContext $context = null): array
     {
-        if (null === $context) {
-            $context = new SerializationContext();
-        }
-
         if (is_scalar($object)) {
             return [$object];
+        }
+
+        if (null === $context) {
+            $context = new SerializationContext();
         }
 
         $hierarchyMetadata = $this->metadataFactory->getMetadataForClass(get_class($object));
