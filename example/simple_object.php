@@ -29,8 +29,6 @@ $address->setStreet('Afonso Pena');
 $address->setCoordinates(new Coordinates(10.5, 20.9));
 $person->setAddress($address);
 
-$context = new SerializationContext();
-$context->setGroups(['mobile']);
-$json = $serializer->serialize($person, 'json', $context);
+$json = $serializer->serialize($person, 'json');
 
 echo $json;

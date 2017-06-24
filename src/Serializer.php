@@ -71,7 +71,7 @@ class Serializer
         $hierarchyMetadata = $this->metadataFactory->getMetadataForClass(get_class($object));
         $classMetadata = $hierarchyMetadata->getOutsideClassMetadata();
 
-        $objectSerializer = $this->getObjectSerializer($classMetadata, $context);
+        $objectSerializer = $this->getObjectSerializer($classMetadata);
 
         $array = $objectSerializer->serialize($object, $context);
 

@@ -27,7 +27,7 @@ class Person
     /**
      * @var array
      */
-    private $colors = ['red', 'blue', 'white'];
+    private $colors = []; // = ['red', 'blue', 'white'];
 
     /**
      * @var Address
@@ -136,6 +136,4 @@ class Person
         $this->address = $address;
         return $this;
     }
-
-
 }

@@ -11,6 +11,7 @@ use Metadata\MethodMetadata;
  */
 class VirtualPropertyMetadata extends MethodMetadata
 {
+    public $type;
     public $exposeAs;
     public $groups;
 }

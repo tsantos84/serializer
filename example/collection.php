@@ -25,6 +25,6 @@ for ($i=1; $i<=10; $i++) {
     $persons[] = $person;
 }
 
-$json = $serializer->serialize($persons, 'json', SerializationContext::create()->setGroups(['web', 'mobile'])->setSerializeNull(false));
+$json = $serializer->serialize($persons, 'json');
 
 echo $json;
