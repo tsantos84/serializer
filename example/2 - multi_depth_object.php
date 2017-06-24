@@ -1,21 +1,10 @@
 <?php
 
-require __DIR__ . '/../vendor/autoload.php';
+$serializer = require 'setup.php';
 
-use Serializer\SerializationContext;
-use Serializer\SerializerBuilder;
-use Serializer\Metadata\Driver\ArrayDriver;
 use Tests\Serializer\Fixture\Address;
 use Tests\Serializer\Fixture\Coordinates;
 use Tests\Serializer\Fixture\Person;
-
-$builder = new SerializerBuilder();
-
-$serializer = $builder
-    ->setMetadataDriver(new ArrayDriver(require __DIR__ . '/../tests/Resources/mapping.php'))
-    ->setCacheDir(__DIR__ . '/../tests/cache')
-    ->setDebug(true)
-    ->build();
 
 $person = new Person();
 $person->setId(10);
