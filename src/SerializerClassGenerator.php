@@ -174,22 +174,7 @@ EOF;
         #property '$property->name'
         if (\$this->isPropertyGroupExposed('{$property->name}', \$context)) {
             if (null !== \$value = $getter) {
-
-EOF;
-            // scalar type?
-            if ($this->isScalarType($property->type)) {
-                $code .= <<<EOF
-                \$data['$property->exposeAs'] = {$this->castType($value, $property->type)};
-EOF;
-            } else {
-                // custom type
-                $code .= <<<EOF
-                \$data['$property->exposeAs'] = \$this->serializer->toArray($value, \$context);
-EOF;
-            }
-
-            $code .= <<<EOF
-
+                {$this->renderValue($property, $value)}
             } elseif (\$shouldSerializeNull) {
                 \$data['$property->exposeAs'] = null;
             }
@@ -213,21 +198,7 @@ EOF;
         #virtual property '$property->name'
         if (\$this->isVirtualPropertyGroupExposed('{$property->name}', \$context)) {
             if (null !== \$value = $getter) {
-
-EOF;
-
-            if ($this->isScalarType($property->type)) {
-                $code .= <<<EOF
-                \$data['$property->exposeAs'] = {$this->castType($value, $property->type)};
-EOF;
-            } else {
-                $code .= <<<EOF
-                \$data['$property->exposeAs'] = \$this->serializer->toArray($value, \$context);
-EOF;
-            }
-
-            $code .= <<<EOF
-
+                {$this->renderValue($property, $value)}
             } elseif (\$shouldSerializeNull) {
                 \$data['$property->exposeAs'] = null;
             }
@@ -238,6 +209,19 @@ EOF;
         }
 
         return $code;
+    }
+
+    private function renderValue($property, string $value)
+    {
+        if ($this->isScalarType($property->type)) {
+            return <<<EOF
+\$data['$property->exposeAs'] = {$this->castType($value, $property->type)};
+EOF;
+        } else {
+            return <<<EOF
+\$data['$property->exposeAs'] = \$this->serializer->toArray($value, \$context);
+EOF;
+        }
     }
 
     private function castType(string $value, string $type)

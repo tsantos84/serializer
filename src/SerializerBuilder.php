@@ -69,13 +69,6 @@ class SerializerBuilder
      */
     public function build(): Serializer
     {
-        $this->typeRegistry
-            ->addType(new ArrayType())
-            ->addType(new IntegerType())
-            ->addType(new FloatType())
-            ->addType(new BooleanType())
-            ->addType(new StringType());
-
         $this->encoderRegistry->add(new JsonEncoder());
 
         $metadataFactory = new MetadataFactory($this->driver, 'Metadata\ClassHierarchyMetadata', $this->debug);
