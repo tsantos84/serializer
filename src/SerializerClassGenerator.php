@@ -65,12 +65,7 @@ class SerializerClassGenerator
             return $this->generated[$fqn] = new $fqn($serializer, $classMetadata);
         }
 
-        $code =
-            $this->classDeclaration($fqn) .
-            $this->serializeMethodDeclaration($classMetadata) .
-            $this->serializeMethodBody($classMetadata) .
-            $this->endOfSerializeMethod() .
-            $this->endClass();
+        $code = $this->classDeclaration($classMetadata, $fqn);
 
 
         file_put_contents($filename, $code);
@@ -91,7 +86,7 @@ class SerializerClassGenerator
         return $this->path . DIRECTORY_SEPARATOR . $this->getClassName($metadata) . '.php';
     }
 
-    private function classDeclaration(string $className): string
+    private function classDeclaration(ClassMetadata $metadata, string $className): string
     {
         return <<<EOF
 <?php
@@ -104,11 +99,13 @@ use Serializer\SerializationContext;
  */
 class $className extends AbstractSerializerClass
 {
+{$this->serializeMethod($metadata)}
+}
 
 EOF;
     }
 
-    private function serializeMethodDeclaration(ClassMetadata $metadata): string
+    private function serializeMethod(ClassMetadata $metadata): string
     {
         return <<<EOF
     /**
@@ -118,7 +115,8 @@ EOF;
      */
     public function serialize(\$object, SerializationContext \$context): array
     {
-
+{$this->serializeMethodBody($metadata)}
+    }
 EOF;
     }
 
@@ -138,28 +136,11 @@ EOF;
             $this->virtualProperties($metadata);
 
         $code .= <<<EOF
+        
         return \$data;
-
 EOF;
 
         return $code;
-    }
-
-    private function endOfSerializeMethod(): string
-    {
-        return <<<EOF
-    }
-
-EOF;
-
-    }
-
-    private function endClass(): string
-    {
-        return <<<EOF
-}
-
-EOF;
     }
 
     private function properties(ClassMetadata $metadata): string
