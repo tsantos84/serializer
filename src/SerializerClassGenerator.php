@@ -30,7 +30,7 @@ class SerializerClassGenerator
     /**
      * @var array
      */
-    private $generated = [];
+    private $instances = [];
 
     /**
      * SerializerClassGenerator constructor.
@@ -54,26 +54,29 @@ class SerializerClassGenerator
     {
         $fqn = $this->getClassName($classMetadata);
 
-        if (isset($this->generated[$fqn])) {
-            return $this->generated[$fqn];
+        if (isset($this->instances[$fqn])) {
+            return $this->instances[$fqn];
+        }
+
+        if (class_exists($fqn, false)) {
+            return $this->instances[$fqn] = new $fqn($serializer, $classMetadata);
         }
 
         $filename = $this->getFilename($classMetadata);
 
         if (!$this->debug && file_exists($filename)) {
             require_once $filename;
-            return $this->generated[$fqn] = new $fqn($serializer, $classMetadata);
+            return $this->instances[$fqn] = new $fqn($serializer, $classMetadata);
         }
 
         $code = $this->classDeclaration($classMetadata, $fqn);
-
 
         file_put_contents($filename, $code);
         chmod($filename, 0664);
 
         require $filename;
 
-        return $this->generated[$fqn] = new $fqn($serializer, $classMetadata);
+        return $this->instances[$fqn] = new $fqn($serializer, $classMetadata);
     }
 
     private function getClassName(ClassMetadata $metadata): string
