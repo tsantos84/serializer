@@ -67,6 +67,44 @@ class SerializerTest extends TestCase
         $this->assertEquals(json_encode([1]), $json);
     }
 
+    public function testSerializeWithSimpleArray()
+    {
+        $serializer = $this->createSerializer([]);
+        $json = $serializer->serialize([1, 2, 3, "four"], 'json');
+        $this->assertEquals(json_encode([1, 2, 3, "four"]), $json);
+    }
+
+    public function testSerializeWithCollectionOfPerson()
+    {
+        $serializer = $this->createSerializer($this->createMapping(Person::class, [
+            'id' => [],
+            'name' => [],
+            'married' => ['getter' => 'isMarried']
+        ]));
+
+        $persons = [$this->createPerson(), $this->createPerson(), $this->createPerson()];
+
+        $json = $serializer->serialize($persons, 'json');
+
+        $this->assertEquals(json_encode([
+            [
+                'id' => 1,
+                'name' => 'Tales',
+                'married' => true
+            ],
+            [
+                'id' => 1,
+                'name' => 'Tales',
+                'married' => true
+            ],
+            [
+                'id' => 1,
+                'name' => 'Tales',
+                'married' => true
+            ]
+        ]), $json);
+    }
+
     private function createPerson()
     {
         $person = new Person();
