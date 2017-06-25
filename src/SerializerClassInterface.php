@@ -1,6 +1,6 @@
 <?php
 
-namespace Serializer;
+namespace TSantos\Serializer;
 
 /**
  * Interface ObjectSerializertInterface

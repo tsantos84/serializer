@@ -1,15 +1,10 @@
 <?php
 
-namespace Serializer;
+namespace TSantos\Serializer;
 
 use Metadata\Driver\DriverInterface;
 use Metadata\MetadataFactory;
-use Serializer\Encoder\JsonEncoder;
-use Serializer\Type\ArrayType;
-use Serializer\Type\BooleanType;
-use Serializer\Type\FloatType;
-use Serializer\Type\IntegerType;
-use Serializer\Type\StringType;
+use TSantos\Serializer\Encoder\JsonEncoder;
 
 /**
  * Class Builder

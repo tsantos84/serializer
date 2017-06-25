@@ -1,6 +1,6 @@
 <?php
 
-namespace Serializer\Metadata;
+namespace TSantos\Serializer\Metadata;
 
 use Metadata\MethodMetadata;
 

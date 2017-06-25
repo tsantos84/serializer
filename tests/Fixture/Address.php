@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\Serializer\Fixture;
+namespace Tests\TSantos\Serializer\Fixture;
 
 /**
  * Class Address

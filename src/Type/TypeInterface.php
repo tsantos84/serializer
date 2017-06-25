@@ -1,8 +1,8 @@
 <?php
 
-namespace Serializer\Type;
+namespace TSantos\Serializer\Type;
 
-use Serializer\Metadata\PropertyMetadata;
+use TSantos\Serializer\Metadata\PropertyMetadata;
 
 /**
  * Interface TypeInterface

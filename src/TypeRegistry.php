@@ -1,8 +1,8 @@
 <?php
 
-namespace Serializer;
+namespace TSantos\Serializer;
 
-use Serializer\Type\TypeInterface;
+use TSantos\Serializer\Type\TypeInterface;
 
 /**
  * Class TypeRegistry

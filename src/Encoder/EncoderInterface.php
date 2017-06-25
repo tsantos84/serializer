@@ -1,6 +1,6 @@
 <?php
 
-namespace Serializer\Encoder;
+namespace TSantos\Serializer\Encoder;
 
 /**
  * Interface EncoderInterface

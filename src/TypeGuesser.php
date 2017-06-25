@@ -1,9 +1,9 @@
 <?php
 
-namespace Serializer;
+namespace TSantos\Serializer;
 
 use Metadata\MethodMetadata;
-use Serializer\Metadata\PropertyMetadata;
+use TSantos\Serializer\Metadata\PropertyMetadata;
 
 /**
  * Class TypeGuesser

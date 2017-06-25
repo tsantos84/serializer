@@ -1,12 +1,12 @@
 <?php
 
-namespace Serializer\Metadata\Driver;
+namespace TSantos\Serializer\Metadata\Driver;
 
 use Metadata\ClassMetadata;
 use Metadata\Driver\DriverInterface;
-use Serializer\Metadata\PropertyMetadata;
-use Serializer\Metadata\VirtualPropertyMetadata;
-use Serializer\TypeGuesser;
+use TSantos\Serializer\Metadata\PropertyMetadata;
+use TSantos\Serializer\Metadata\VirtualPropertyMetadata;
+use TSantos\Serializer\TypeGuesser;
 
 class ArrayDriver implements DriverInterface
 {

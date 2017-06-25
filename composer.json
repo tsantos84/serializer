@@ -12,12 +12,12 @@
     ],
     "autoload": {
         "psr-4": {
-            "Serializer\\": "src/"
+            "TSantos\\Serializer\\": "src/"
         }
     },
     "autoload-dev": {
         "psr-4": {
-            "Tests\\Serializer\\": "tests/"
+            "Tests\\TSantos\\Serializer\\": "tests/"
         }
     },
     "require": {

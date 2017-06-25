@@ -1,12 +1,12 @@
 <?php
 
-namespace Tests\Serializer;
+namespace Tests\TSantos\Serializer;
 
 use PHPUnit\Framework\TestCase;
-use Serializer\SerializerBuilder;
-use Serializer\Metadata\Driver\ArrayDriver;
-use Serializer\Serializer;
-use Tests\Serializer\Fixture\Person;
+use TSantos\Serializer\SerializerBuilder;
+use TSantos\Serializer\Metadata\Driver\ArrayDriver;
+use TSantos\Serializer\Serializer;
+use Tests\TSantos\Serializer\Fixture\Person;
 
 /** @runTestsInSeparateProcesses */
 class SerializerTest extends TestCase

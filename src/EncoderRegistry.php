@@ -1,8 +1,8 @@
 <?php
 
-namespace Serializer;
+namespace TSantos\Serializer;
 
-use Serializer\Encoder\EncoderInterface;
+use TSantos\Serializer\Encoder\EncoderInterface;
 
 /**
  * Class EncoderRegistry
