@@ -2,7 +2,7 @@
 
 $serializer = require 'setup.php';
 
-use Tests\Serializer\Fixture\Person;
+use Tests\TSantos\Serializer\Fixture\Person;
 
 $person = new Person();
 $person->setId(10);

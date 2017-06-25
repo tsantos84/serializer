@@ -2,8 +2,8 @@
 
 require __DIR__ . '/../vendor/autoload.php';
 
-use Serializer\Metadata\Driver\ArrayDriver;
-use Serializer\SerializerBuilder;
+use TSantos\Serializer\Metadata\Driver\ArrayDriver;
+use TSantos\Serializer\SerializerBuilder;
 
 $builder = new SerializerBuilder();
 

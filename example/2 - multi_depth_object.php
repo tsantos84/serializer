@@ -2,9 +2,9 @@
 
 $serializer = require 'setup.php';
 
-use Tests\Serializer\Fixture\Address;
-use Tests\Serializer\Fixture\Coordinates;
-use Tests\Serializer\Fixture\Person;
+use Tests\TSantos\Serializer\Fixture\Address;
+use Tests\TSantos\Serializer\Fixture\Coordinates;
+use Tests\TSantos\Serializer\Fixture\Person;
 
 $person = new Person();
 $person->setId(10);
