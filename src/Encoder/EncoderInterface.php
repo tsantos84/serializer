@@ -19,5 +19,5 @@ interface EncoderInterface
     /**
      * @return string
      */
-    public function getName(): string;
+    public function getFormat(): string;
 }

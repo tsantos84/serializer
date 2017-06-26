@@ -23,7 +23,7 @@ class EncoderRegistry implements EncoderRegistryInterface
      */
     public function add(EncoderInterface $type)
     {
-        $this->encoders[$type->getName()] = $type;
+        $this->encoders[$type->getFormat()] = $type;
         return $this;
     }
 

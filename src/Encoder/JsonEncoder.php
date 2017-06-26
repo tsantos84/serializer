@@ -22,7 +22,7 @@ class JsonEncoder implements EncoderInterface
     /**
      * @return string
      */
-    public function getName(): string
+    public function getFormat(): string
     {
         return 'json';
     }
