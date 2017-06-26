@@ -11,7 +11,7 @@ use Metadata\MetadataFactoryInterface;
  * @package Serializer
  * @author Tales Santos <tales.maxmilhas@gmail.com>
  */
-class Serializer
+class Serializer implements SerializerInterface
 {
     /**
      * @var MetadataFactoryInterface
@@ -43,42 +43,42 @@ class Serializer
     }
 
     /**
-     * @param $object
-     * @param string $format
-     * @param SerializationContext $context
-     * @return string
+     * @inheritdoc
      */
-    public function serialize($object, string $format, SerializationContext $context = null) : string
+    public function serialize($data, string $format, SerializationContext $context = null) : string
     {
         $encoder = $this->encoderRegistry->get($format);
-        return $encoder->encode($this->toArray($object, $context));
+        return $encoder->encode($this->toArray($data, $context));
     }
 
-    public function toArray($object, SerializationContext $context = null): array
+    /**
+     * @inheritdoc
+     */
+    public function toArray($data, SerializationContext $context = null): array
     {
-        if (is_scalar($object)) {
-            return [$object];
+        if (is_scalar($data)) {
+            return [$data];
         }
 
         if (null === $context) {
             $context = new SerializationContext();
         }
 
-        if (is_array($object) || $object instanceof \Iterator) {
+        if (is_array($data) || $data instanceof \Iterator) {
             $array = [];
-            foreach ($object as $key => $value) {
+            foreach ($data as $key => $value) {
                 $array[$key] = is_scalar($value) ? $value : $this->toArray($value);
             }
 
             return $array;
         }
 
-        $hierarchyMetadata = $this->metadataFactory->getMetadataForClass(get_class($object));
+        $hierarchyMetadata = $this->metadataFactory->getMetadataForClass(get_class($data));
         $classMetadata = $hierarchyMetadata->getOutsideClassMetadata();
 
         $objectSerializer = $this->getObjectSerializer($classMetadata);
 
-        $array = $objectSerializer->serialize($object, $context);
+        $array = $objectSerializer->serialize($data, $context);
 
         return $array;
     }
