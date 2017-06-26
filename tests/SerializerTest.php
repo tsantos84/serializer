@@ -15,15 +15,12 @@ class SerializerTest extends TestCase
 
     protected function setUp()
     {
-        $this->cacheDir = __DIR__ . '/cache';
-        $this->assertDirectoryExists($this->cacheDir);
-        $this->assertDirectoryIsWritable($this->cacheDir);
+        $this->cacheDir = sys_get_temp_dir() . '/serializer/cache';
     }
 
     protected function tearDown()
     {
         system('rm -rf ' . escapeshellarg($this->cacheDir), $retval);
-        mkdir($this->cacheDir);
     }
 
     public function testSerializeSimpleObject()
@@ -122,7 +119,7 @@ class SerializerTest extends TestCase
 
         $builder
             ->setMetadataDriver(new ArrayDriver($mapping))
-            ->setCacheDir(__DIR__ . '/cache')
+            ->setCacheDir($this->cacheDir)
             ->setDebug(true);
 
         return $builder->build();

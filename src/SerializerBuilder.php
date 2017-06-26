@@ -49,6 +49,14 @@ class SerializerBuilder
 
     public function setCacheDir(string $dir): SerializerBuilder
     {
+        if (!is_dir($dir)) {
+            $this->createDir($dir);
+        }
+
+        if (!is_writable($dir)) {
+            throw new \InvalidArgumentException(sprintf('The cache directory "%s" is not writable.', $dir));
+        }
+
         $this->cache = $dir;
         return $this;
     }
@@ -75,5 +83,15 @@ class SerializerBuilder
         $serializer = new Serializer($metadataFactory, $this->serializerClassGenerator, $this->encoderRegistry);
 
         return $serializer;
+    }
+
+    private function createDir($dir)
+    {
+        if (is_dir($dir)) {
+            return;
+        }
+        if (false === @mkdir($dir, 0777, true) && false === is_dir($dir)) {
+            throw new \RuntimeException(sprintf('Could not create directory "%s".', $dir));
+        }
     }
 }
