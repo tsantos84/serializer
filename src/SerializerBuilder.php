@@ -68,9 +68,9 @@ class SerializerBuilder
     }
 
     /**
-     * @return Serializer
+     * @return SerializerInterface
      */
-    public function build(): Serializer
+    public function build(): SerializerInterface
     {
         $this->encoderRegistry->add(new JsonEncoder());
 
