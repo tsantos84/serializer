@@ -8,17 +8,11 @@ cache:
 
 matrix:
   include:
-    - php: 7.0
     - php: 7.1
-    # Use the newer stack for HHVM as HHVM does not support Precise anymore since a long time and so Precise has an outdated version
-    - php: hhvm
-      sudo: required
-      dist: trusty
-      group: edge
   fast_finish: true
 
 install:
-  - composer update
+  - composer install -a
 
 script:
   - vendor/bin/phpunit
