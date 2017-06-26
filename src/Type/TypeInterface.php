@@ -8,7 +8,7 @@ use TSantos\Serializer\Metadata\PropertyMetadata;
  * Interface TypeInterface
  *
  * @package Serializer\Type
- * @author Tales Santos <tales.maxmilhas@gmail.com>
+ * @author Tales Santos <tales.augusto.santos@gmail.com>
  */
 interface TypeInterface
 {

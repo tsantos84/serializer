@@ -8,7 +8,7 @@ use TSantos\Serializer\Encoder\EncoderInterface;
  * Class EncoderRegistry
  *
  * @package Serializer
- * @author Tales Santos <tales.maxmilhas@gmail.com>
+ * @author Tales Santos <tales.augusto.santos@gmail.com>
  */
 class EncoderRegistry implements EncoderRegistryInterface
 {

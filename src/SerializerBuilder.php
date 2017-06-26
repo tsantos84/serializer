@@ -10,7 +10,7 @@ use TSantos\Serializer\Encoder\JsonEncoder;
  * Class Builder
  *
  * @package Serializer
- * @author Tales Santos <tales.maxmilhas@gmail.com>
+ * @author Tales Santos <tales.augusto.santos@gmail.com>
  */
 class SerializerBuilder
 {

@@ -6,7 +6,7 @@ namespace TSantos\Serializer\Encoder;
  * Class JsonEncoder
  *
  * @package Serializer\Encoder
- * @author Tales Santos <tales.maxmilhas@gmail.com>
+ * @author Tales Santos <tales.augusto.santos@gmail.com>
  */
 class JsonEncoder implements EncoderInterface
 {

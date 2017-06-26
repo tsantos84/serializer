@@ -8,7 +8,7 @@ use Metadata\PropertyMetadata as BasePropertyMetadata;
  * Class PropertyMetadata
  *
  * @package Serializer\Metadata
- * @author Tales Santos <tales.maxmilhas@gmail.com>
+ * @author Tales Santos <tales.augusto.santos@gmail.com>
  */
 class PropertyMetadata extends BasePropertyMetadata
 {

@@ -6,7 +6,7 @@ namespace TSantos\Serializer\Encoder;
  * Interface EncoderInterface
  *
  * @package Serializer\Encoder
- * @author Tales Santos <tales.maxmilhas@gmail.com>
+ * @author Tales Santos <tales.augusto.santos@gmail.com>
  */
 interface EncoderInterface
 {

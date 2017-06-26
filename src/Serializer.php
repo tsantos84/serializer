@@ -9,7 +9,7 @@ use Metadata\MetadataFactoryInterface;
  * Class Serializer
  *
  * @package Serializer
- * @author Tales Santos <tales.maxmilhas@gmail.com>
+ * @author Tales Santos <tales.augusto.santos@gmail.com>
  */
 class Serializer implements SerializerInterface
 {

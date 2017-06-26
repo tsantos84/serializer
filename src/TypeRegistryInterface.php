@@ -8,7 +8,7 @@ use TSantos\Serializer\Type\TypeInterface;
  * Class TypeRegistry
  *
  * @package Serializer
- * @author Tales Santos <tales.maxmilhas@gmail.com>
+ * @author Tales Santos <tales.augusto.santos@gmail.com>
  */
 interface TypeRegistryInterface
 {
