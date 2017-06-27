@@ -64,14 +64,19 @@ class Serializer implements SerializerInterface
             $context = new SerializationContext();
         }
 
-        if (is_array($data) || $data instanceof \Iterator) {
-            $array = [];
-            foreach ($data as $key => $value) {
-                $array[$key] = is_scalar($value) ? $value : $this->toArray($value);
-            }
-
-            return $array;
+        if (!$context->isStarted()) {
+            $context->start();
         }
+
+        if ($context->isMaxDeepAchieve()) {
+            return [];
+        }
+
+        if (is_array($data) || $data instanceof \Iterator) {
+            return $this->collectionToArray($data, $context);
+        }
+
+        $context->deepen();
 
         $hierarchyMetadata = $this->metadataFactory->getMetadataForClass(get_class($data));
         $classMetadata = $hierarchyMetadata->getOutsideClassMetadata();
@@ -79,6 +84,8 @@ class Serializer implements SerializerInterface
         $objectSerializer = $this->getObjectSerializer($classMetadata);
 
         $array = $objectSerializer->serialize($data, $context);
+
+        $context->emerge();
 
         return $array;
     }
@@ -90,5 +97,21 @@ class Serializer implements SerializerInterface
     private function getObjectSerializer(ClassMetadata $metadata): SerializerClassInterface
     {
         return $this->serializerClassGenerator->getGeneratorFor($metadata, $this);
+    }
+
+    private function collectionToArray($data, SerializationContext $context): array
+    {
+        $context->deepen();
+        $array = [];
+        foreach ($data as $key => $value) {
+            if (is_scalar($value)) {
+                $array[$key] = $value;
+                continue;
+            }
+            $array[$key] = $this->toArray($value, $context);
+        }
+        $context->emerge();
+
+        return $array;
     }
 }

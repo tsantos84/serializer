@@ -3,10 +3,13 @@
 namespace Tests\TSantos\Serializer;
 
 use PHPUnit\Framework\TestCase;
+use Tests\TSantos\Serializer\Fixture\Address;
+use Tests\TSantos\Serializer\Fixture\Coordinates;
+use TSantos\Serializer\SerializationContext;
 use TSantos\Serializer\SerializerBuilder;
 use TSantos\Serializer\Metadata\Driver\ArrayDriver;
-use TSantos\Serializer\Serializer;
 use Tests\TSantos\Serializer\Fixture\Person;
+use TSantos\Serializer\SerializerInterface;
 
 /** @runTestsInSeparateProcesses */
 class SerializerTest extends TestCase
@@ -102,6 +105,70 @@ class SerializerTest extends TestCase
         ]), $json);
     }
 
+    public function testSerializeWithMaxDepth()
+    {
+        $personMapping = $this->createMapping(Person::class, [
+            'id' => [],
+            'name' => [],
+            'address' => ['type' => Address::class],
+            'married' => ['getter' => 'isMarried']
+        ]);
+
+        $addressMapping = $this->createMapping(Address::class, [
+            'city' => [],
+            'coordinates' => ['type' => Coordinates::class]
+        ]);
+
+        $coordinateMapping = $this->createMapping(Coordinates::class, [
+            'x' => ['type' => 'float'],
+            'y' => ['type' => 'float'],
+        ]);
+
+        $mappings = array_merge($personMapping, $addressMapping, $coordinateMapping);
+
+        $serializer = $this->createSerializer($mappings);
+
+        $person = $this->createPerson();
+        $person->setAddress($address = new Address());
+        $address->setCity('Belo Horizonte');
+        $address->setCoordinates(new Coordinates(10, 20));
+
+        $json = $serializer->serialize($person, 'json', SerializationContext::create()->setMaxDepth(2));
+
+        $this->assertEquals(json_encode([
+            'id' => 1,
+            'name' => 'Tales',
+            'address' => [
+                'city' => 'Belo Horizonte',
+                'coordinates' => []
+            ],
+            'married' => true
+        ]), $json);
+    }
+
+    public function testSerializeWithMaxDepthOnPlainArray()
+    {
+        $serializer = $this->createSerializer();
+
+        $data = [
+            1,
+            2,
+            3,
+            "four",
+            "five" => [
+                'six'
+            ],
+            "seven" => [
+                "eight" => [
+                    "nine"
+                ]
+            ]
+        ];
+
+        $json = $serializer->serialize($data, 'json', SerializationContext::create()->setMaxDepth(2));
+        $this->assertEquals('{"0":1,"1":2,"2":3,"3":"four","five":["six"],"seven":{"eight":[]}}', $json);
+    }
+
     private function createPerson()
     {
         $person = new Person();
@@ -113,7 +180,7 @@ class SerializerTest extends TestCase
         return $person;
     }
 
-    private function createSerializer(array $mapping): Serializer
+    private function createSerializer(array $mapping = []): SerializerInterface
     {
         $builder = new SerializerBuilder();
 
