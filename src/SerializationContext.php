@@ -22,6 +22,11 @@ class SerializationContext
     /** @var integer */
     private $currentDepth;
 
+    /**
+     * @var \SplObjectStorage
+     */
+    private $instances;
+
     public static function create(): SerializationContext
     {
         return new self;
@@ -69,6 +74,7 @@ class SerializationContext
             throw new \LogicException('The serialization context cannot be restarted');
         }
 
+        $this->instances = new \SplObjectStorage();
         $this->currentDepth = 0;
     }
 
@@ -77,12 +83,16 @@ class SerializationContext
         return null !== $this->currentDepth;
     }
 
-    public function deepen()
+    public function enter($object = null)
     {
+        if (is_object($object)) {
+            $this->instances->attach($object);
+        }
+
         $this->currentDepth++;
     }
 
-    public function emerge()
+    public function release()
     {
         $this->currentDepth--;
     }
@@ -95,5 +105,10 @@ class SerializationContext
         }
 
         return $this->currentDepth === $this->maxDepth;
+    }
+
+    public function hasObjectProcessed($object)
+    {
+        return $this->instances->contains($object);
     }
 }

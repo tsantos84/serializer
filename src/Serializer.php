@@ -76,16 +76,18 @@ class Serializer implements SerializerInterface
             return $this->collectionToArray($data, $context);
         }
 
-        $context->deepen();
+        if ($context->hasObjectProcessed($data)) {
+            return [];
+        }
+
+        $context->enter($data);
 
         $hierarchyMetadata = $this->metadataFactory->getMetadataForClass(get_class($data));
         $classMetadata = $hierarchyMetadata->getOutsideClassMetadata();
-
         $objectSerializer = $this->getObjectSerializer($classMetadata);
-
         $array = $objectSerializer->serialize($data, $context);
 
-        $context->emerge();
+        $context->release();
 
         return $array;
     }
@@ -101,7 +103,7 @@ class Serializer implements SerializerInterface
 
     private function collectionToArray($data, SerializationContext $context): array
     {
-        $context->deepen();
+        $context->enter();
         $array = [];
         foreach ($data as $key => $value) {
             if (is_scalar($value)) {
@@ -110,7 +112,7 @@ class Serializer implements SerializerInterface
             }
             $array[$key] = $this->toArray($value, $context);
         }
-        $context->emerge();
+        $context->release();
 
         return $array;
     }

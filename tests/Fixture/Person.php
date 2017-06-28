@@ -35,6 +35,11 @@ class Person
     private $address;
 
     /**
+     * @var Person
+     */
+    private $father;
+
+    /**
      * Person constructor.
      * @param int $id
      * @param string $name
@@ -148,6 +153,24 @@ class Person
     public function setAddress(Address $address): Person
     {
         $this->address = $address;
+        return $this;
+    }
+
+    /**
+     * @return Person
+     */
+    public function getFather(): Person
+    {
+        return $this->father;
+    }
+
+    /**
+     * @param Person $father
+     * @return Person
+     */
+    public function setFather(Person $father): Person
+    {
+        $this->father = $father;
         return $this;
     }
 }
