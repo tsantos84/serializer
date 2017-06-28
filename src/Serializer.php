@@ -84,21 +84,12 @@ class Serializer implements SerializerInterface
 
         $hierarchyMetadata = $this->metadataFactory->getMetadataForClass(get_class($data));
         $classMetadata = $hierarchyMetadata->getOutsideClassMetadata();
-        $objectSerializer = $this->getObjectSerializer($classMetadata);
+        $objectSerializer = $this->serializerClassGenerator->getGeneratorFor($classMetadata, $this);
         $array = $objectSerializer->serialize($data, $context);
 
         $context->release();
 
         return $array;
-    }
-
-    /**
-     * @param ClassMetadata $metadata
-     * @return SerializerClassInterface
-     */
-    private function getObjectSerializer(ClassMetadata $metadata): SerializerClassInterface
-    {
-        return $this->serializerClassGenerator->getGeneratorFor($metadata, $this);
     }
 
     private function collectionToArray($data, SerializationContext $context): array
