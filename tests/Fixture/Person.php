@@ -35,6 +35,20 @@ class Person
     private $address;
 
     /**
+     * Person constructor.
+     * @param int $id
+     * @param string $name
+     * @param bool $married
+     */
+    public function __construct(int $id, string $name, bool $married)
+    {
+        $this->id = $id;
+        $this->name = $name;
+        $this->married = $married;
+    }
+
+
+    /**
      * @return int
      */
     public function getId(): int
