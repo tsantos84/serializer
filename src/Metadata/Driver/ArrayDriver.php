@@ -2,8 +2,8 @@
 
 namespace TSantos\Serializer\Metadata\Driver;
 
-use Metadata\ClassMetadata;
 use Metadata\Driver\DriverInterface;
+use Metadata\MergeableClassMetadata;
 use TSantos\Serializer\Metadata\PropertyMetadata;
 use TSantos\Serializer\Metadata\VirtualPropertyMetadata;
 use TSantos\Serializer\TypeGuesser;
@@ -38,10 +38,9 @@ class ArrayDriver implements DriverInterface
 
         $mapping = $this->mapping[$class->name];
 
-        $metadata = new ClassMetadata($class->getName());
+        $metadata = new MergeableClassMetadata($class->getName());
 
         foreach ($mapping['properties'] ?? [] as $name => $map) {
-
             $property = new PropertyMetadata($class->getName(), $name);
 
             $property->getter = $map['getter'] ?? 'get' . ucfirst($name);
@@ -54,7 +53,6 @@ class ArrayDriver implements DriverInterface
         }
 
         foreach ($mapping['virtual_properties'] ?? [] as $name => $map) {
-
             $method = $map['method'] ?? 'get' . ucfirst($name);
 
             $property = new VirtualPropertyMetadata($class->name, $method);

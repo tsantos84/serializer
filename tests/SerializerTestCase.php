@@ -14,7 +14,7 @@ use TSantos\Serializer\SerializerInterface;
  */
 abstract class SerializerTestCase extends TestCase
 {
-    private $cacheDir;
+    protected $cacheDir;
 
     protected function setUp()
     {
