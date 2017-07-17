@@ -10,7 +10,7 @@ use Tests\TSantos\Serializer\SerializerTestCase;
  * Class ByPassingSerializationTest
  *
  * @package Tests\Serializer
- * @author Tales Santos <tales.maxmilhas@gmail.com>
+ * @author Tales Santos <tales.augusto.santos@gmail.com>
  * @runTestsInSeparateProcesses
  */
 class InheritanceSerializationTest extends SerializerTestCase

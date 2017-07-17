@@ -6,7 +6,7 @@ namespace Tests\TSantos\Serializer\Fixture;
  * Class Employee
  *
  * @package Tests\TSantos\Serializer\Fixture
- * @author Tales Santos <tales.maxmilhas@gmail.com>
+ * @author Tales Santos <tales.augusto.santos@gmail.com>
  */
 class Employee extends Person
 {

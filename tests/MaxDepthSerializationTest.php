@@ -5,6 +5,7 @@ namespace Tests\TSantos\Serializer;
 use Tests\TSantos\Serializer\Fixture\Address;
 use Tests\TSantos\Serializer\Fixture\Coordinates;
 use Tests\TSantos\Serializer\Fixture\Person;
+use Tests\TSantos\Serializer\Fixture\Vehicle;
 use TSantos\Serializer\SerializationContext;
 
 /**
@@ -78,5 +79,19 @@ class MaxDepthSerializationTest extends SerializerTestCase
 
         $json = $serializer->serialize($data, 'json', SerializationContext::create()->setMaxDepth(2));
         $this->assertEquals('{"0":1,"1":2,"2":3,"3":"four","five":["six"],"seven":{"eight":[]}}', $json);
+    }
+
+    public function testSerializeWithMaxDepthOnJsonSerializableInterface()
+    {
+        $serializer = $this->createSerializer($this->createMapping(Vehicle::class, [
+            'color' => [],
+            'ports' => ['type'=>'integer']
+        ]));
+
+        $person = new Vehicle('white', 4);
+
+        $expected = '{"color":"white","ports":4,"owner":"Tales","tires":[]}';
+
+        $this->assertEquals($expected, $serializer->serialize($person, 'json', SerializationContext::create()->setMaxDepth(1)));
     }
 }

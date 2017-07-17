@@ -93,12 +93,19 @@ class Serializer implements SerializerInterface
             return [];
         }
 
-        $context->enter($data);
+        return $this->serializeObject($data, $context);
+    }
 
-        $classMetadata = $this->metadataFactory->getMetadataForClass(get_class($data));
+    private function serializeObject($object, SerializationContext $context): array
+    {
+        if ($object instanceof \JsonSerializable) {
+            return $this->toArray($object->jsonSerialize(), $context);
+        }
+
+        $context->enter($object);
+        $classMetadata = $this->metadataFactory->getMetadataForClass(get_class($object));
         $objectSerializer = $this->serializerClassGenerator->getGeneratorFor($classMetadata, $this);
-        $array = $objectSerializer->serialize($data, $context);
-
+        $array = $objectSerializer->serialize($object, $context);
         $context->left();
 
         return $array;
