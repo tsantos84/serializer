@@ -16,7 +16,6 @@ use TSantos\Serializer\Normalizer\IdentityNormalizer;
  */
 class SerializerBuilder
 {
-    private $typeRegistry;
     private $encoders;
     private $normalizers;
     private $driver;
@@ -29,7 +28,6 @@ class SerializerBuilder
      */
     public function __construct()
     {
-        $this->typeRegistry = new TypeRegistry();
         $this->encoders = new EncoderRegistry();
         $this->normalizers = new NormalizerRegistry();
         $this->debug = false;
@@ -88,7 +86,7 @@ class SerializerBuilder
         $metadataFactory = new MetadataFactory($this->driver, 'Metadata\ClassHierarchyMetadata', $this->debug);
 
         if (null === $this->serializerClassGenerator) {
-            $this->serializerClassGenerator = new SerializerClassGenerator($this->cache ?? sys_get_temp_dir(), $this->typeRegistry, $this->debug);
+            $this->serializerClassGenerator = new SerializerClassGenerator($this->cache ?? sys_get_temp_dir(), $this->debug);
         }
 
         $serializer = new Serializer($metadataFactory, $this->serializerClassGenerator, $this->encoders, $this->normalizers);

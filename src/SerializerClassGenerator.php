@@ -18,11 +18,6 @@ class SerializerClassGenerator
     private $path;
 
     /**
-     * @var TypeRegistryInterface
-     */
-    private $typeRegistry;
-
-    /**
      * @var bool
      */
     private $debug;
@@ -35,13 +30,11 @@ class SerializerClassGenerator
     /**
      * SerializerClassGenerator constructor.
      * @param string $path
-     * @param TypeRegistryInterface $typeRegistry
      * @param bool $debug
      */
-    public function __construct(string $path, TypeRegistryInterface $typeRegistry, bool $debug = false)
+    public function __construct(string $path, bool $debug = false)
     {
         $this->path = $path;
-        $this->typeRegistry = $typeRegistry;
         $this->debug = $debug;
     }
 
@@ -154,6 +147,9 @@ EOF;
         foreach ($metadata->propertyMetadata as $property) {
             $getter = "\$object->{$property->getter}()";
             $value = '$value';
+            if (null !== $property->modifier) {
+                $value .= '->' . $property->modifier;
+            }
 
             $code .= <<<EOF
         #property '$property->name'
@@ -178,6 +174,9 @@ EOF;
         foreach ($metadata->methodMetadata as $property) {
             $getter = "\$object->{$property->name}()";
             $value = '$value';
+            if (null !== $property->modifier) {
+                $value .= '->' . $property->modifier;
+            }
 
             $code .= <<<EOF
         #virtual property '$property->name'
@@ -204,7 +203,7 @@ EOF;
 EOF;
         } else {
             return <<<EOF
-\$data['$property->exposeAs'] = \$this->serializer->toArray($value, \$context);
+\$data['$property->exposeAs'] = \$this->serializer->normalize($value, \$context);
 EOF;
         }
     }

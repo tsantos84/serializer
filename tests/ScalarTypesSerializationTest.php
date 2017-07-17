@@ -15,7 +15,7 @@ class ScalarTypesSerializationTest extends SerializerTestCase
     {
         $serializer = $this->createSerializer([]);
         $json = $serializer->serialize(1, 'json');
-        $this->assertEquals(json_encode([1]), $json);
+        $this->assertEquals(1, $json);
     }
 
     public function testSerializeWithSimpleArray()

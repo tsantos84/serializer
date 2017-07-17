@@ -14,4 +14,5 @@ class VirtualPropertyMetadata extends MethodMetadata
     public $type;
     public $exposeAs;
     public $groups;
+    public $modifier;
 }

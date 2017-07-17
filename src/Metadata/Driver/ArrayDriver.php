@@ -46,6 +46,7 @@ class ArrayDriver implements DriverInterface
 
             $property->getter = $map['getter'] ?? 'get' . ucfirst($name);
             $property->getterRef = new \ReflectionMethod($class->getName(), $property->getter);
+            $property->modifier = $map['modifier'] ?? null;
             $property->type = $map['type'] ?? $this->typeGuesser->guessProperty($property, 'string');
             $property->exposeAs = $map['exposeAs'] ?? $name;
             $property->groups = (array)($map['groups'] ?? ['Default']);
@@ -60,6 +61,7 @@ class ArrayDriver implements DriverInterface
             $property->type = $map['type'] ?? $this->typeGuesser->guessVirtualProperty($property, 'string');
             $property->exposeAs = $map['exposeAs'] ?? $name;
             $property->groups = (array)($map['groups'] ?? ['Default']);
+            $property->modifier = $map['modifier'] ?? null;
             $metadata->addMethodMetadata($property);
         }
 

@@ -27,5 +27,5 @@ interface SerializerInterface
      * @param SerializationContext|null $context
      * @return array
      */
-    public function toArray($data, SerializationContext $context = null);
+    public function normalize($data, SerializationContext $context = null);
 }

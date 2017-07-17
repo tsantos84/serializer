@@ -57,16 +57,21 @@ class Serializer implements SerializerInterface
     public function serialize($data, string $format, SerializationContext $context = null) : string
     {
         $encoder = $this->encoders->get($format);
-        return $encoder->encode($this->toArray($data, $context));
+
+        if (is_null($data) || is_scalar($data)) {
+            return $this->normalize($data, $context);
+        }
+
+        return $encoder->encode($this->normalize($data, $context));
     }
 
     /**
      * @inheritdoc
      */
-    public function toArray($data, SerializationContext $context = null)
+    public function normalize($data, SerializationContext $context = null)
     {
-        if (is_scalar($data)) {
-            return [$data];
+        if (is_null($data) || is_scalar($data)) {
+            return $data;
         }
 
         if (null === $context) {
@@ -99,7 +104,7 @@ class Serializer implements SerializerInterface
     private function serializeObject($object, SerializationContext $context): array
     {
         if ($object instanceof \JsonSerializable) {
-            return $this->toArray($object->jsonSerialize(), $context);
+            return $this->normalize($object->jsonSerialize(), $context);
         }
 
         $context->enter($object);
@@ -120,7 +125,7 @@ class Serializer implements SerializerInterface
                 $array[$key] = $value;
                 continue;
             }
-            $array[$key] = $this->toArray($value, $context);
+            $array[$key] = $this->normalize($value, $context);
         }
         $context->left();
 
