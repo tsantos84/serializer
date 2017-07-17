@@ -2,7 +2,6 @@
 
 namespace TSantos\Serializer;
 
-use Metadata\ClassMetadata;
 use Metadata\MetadataFactoryInterface;
 
 /**
@@ -24,22 +23,32 @@ class Serializer implements SerializerInterface
     private $serializerClassGenerator;
 
     /**
-     * @var EncoderRegistry
+     * @var EncoderRegistryInterface
      */
-    private $encoderRegistry;
+    private $encoders;
+
+    /**
+     * @var NormalizerRegistryInterface[]
+     */
+    private $normalizers;
 
     /**
      * Serializer constructor.
      * @param MetadataFactoryInterface $metadataFactory
      * @param SerializerClassGenerator $classGenerator
-     * @param EncoderRegistry $encoderRegistry
-     * @internal param DriverInterface $driver
+     * @param EncoderRegistryInterface $encoders
+     * @param NormalizerRegistryInterface $normalizers
      */
-    public function __construct(MetadataFactoryInterface $metadataFactory, SerializerClassGenerator $classGenerator, EncoderRegistry $encoderRegistry)
-    {
+    public function __construct(
+        MetadataFactoryInterface $metadataFactory,
+        SerializerClassGenerator $classGenerator,
+        EncoderRegistryInterface $encoders,
+        NormalizerRegistryInterface $normalizers
+    ) {
         $this->serializerClassGenerator = $classGenerator;
         $this->metadataFactory = $metadataFactory;
-        $this->encoderRegistry = $encoderRegistry;
+        $this->encoders = $encoders;
+        $this->normalizers = $normalizers;
     }
 
     /**
@@ -47,14 +56,14 @@ class Serializer implements SerializerInterface
      */
     public function serialize($data, string $format, SerializationContext $context = null) : string
     {
-        $encoder = $this->encoderRegistry->get($format);
+        $encoder = $this->encoders->get($format);
         return $encoder->encode($this->toArray($data, $context));
     }
 
     /**
      * @inheritdoc
      */
-    public function toArray($data, SerializationContext $context = null): array
+    public function toArray($data, SerializationContext $context = null)
     {
         if (is_scalar($data)) {
             return [$data];
@@ -72,6 +81,10 @@ class Serializer implements SerializerInterface
             return [];
         }
 
+        if (null !== $normalizer = $this->normalizers->get($data, $context)) {
+            return $normalizer->normalize($data, $context);
+        }
+
         if (is_array($data) || $data instanceof \Iterator) {
             return $this->collectionToArray($data, $context);
         }
@@ -86,7 +99,7 @@ class Serializer implements SerializerInterface
         $objectSerializer = $this->serializerClassGenerator->getGeneratorFor($classMetadata, $this);
         $array = $objectSerializer->serialize($data, $context);
 
-        $context->release();
+        $context->left();
 
         return $array;
     }
@@ -102,7 +115,7 @@ class Serializer implements SerializerInterface
             }
             $array[$key] = $this->toArray($value, $context);
         }
-        $context->release();
+        $context->left();
 
         return $array;
     }

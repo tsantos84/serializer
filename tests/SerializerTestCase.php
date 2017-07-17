@@ -26,9 +26,17 @@ abstract class SerializerTestCase extends TestCase
         system('rm -rf ' . escapeshellarg($this->cacheDir), $retval);
     }
 
+    /**
+     * @return SerializerBuilder
+     */
+    protected function createBuilder()
+    {
+        return new SerializerBuilder();
+    }
+
     protected function createSerializer(array $mapping = []): SerializerInterface
     {
-        $builder = new SerializerBuilder();
+        $builder = $this->createBuilder();
 
         $builder
             ->setMetadataDriver(new ArrayDriver($mapping))

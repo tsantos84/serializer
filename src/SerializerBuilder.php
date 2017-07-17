@@ -5,6 +5,8 @@ namespace TSantos\Serializer;
 use Metadata\Driver\DriverInterface;
 use Metadata\MetadataFactory;
 use TSantos\Serializer\Encoder\JsonEncoder;
+use TSantos\Serializer\Normalizer\DateTimeNormalizer;
+use TSantos\Serializer\Normalizer\IdentityNormalizer;
 
 /**
  * Class Builder
@@ -15,7 +17,8 @@ use TSantos\Serializer\Encoder\JsonEncoder;
 class SerializerBuilder
 {
     private $typeRegistry;
-    private $encoderRegistry;
+    private $encoders;
+    private $normalizers;
     private $driver;
     private $serializerClassGenerator;
     private $cache;
@@ -27,7 +30,8 @@ class SerializerBuilder
     public function __construct()
     {
         $this->typeRegistry = new TypeRegistry();
-        $this->encoderRegistry = new EncoderRegistry();
+        $this->encoders = new EncoderRegistry();
+        $this->normalizers = new NormalizerRegistry();
         $this->debug = false;
     }
 
@@ -67,12 +71,19 @@ class SerializerBuilder
         return $this;
     }
 
+    public function addDefaultNormalizers()
+    {
+        $this->normalizers->add(new DateTimeNormalizer());
+        $this->normalizers->add(new IdentityNormalizer());
+        return $this;
+    }
+
     /**
      * @return SerializerInterface
      */
     public function build(): SerializerInterface
     {
-        $this->encoderRegistry->add(new JsonEncoder());
+        $this->encoders->add(new JsonEncoder());
 
         $metadataFactory = new MetadataFactory($this->driver, 'Metadata\ClassHierarchyMetadata', $this->debug);
 
@@ -80,7 +91,7 @@ class SerializerBuilder
             $this->serializerClassGenerator = new SerializerClassGenerator($this->cache ?? sys_get_temp_dir(), $this->typeRegistry, $this->debug);
         }
 
-        $serializer = new Serializer($metadataFactory, $this->serializerClassGenerator, $this->encoderRegistry);
+        $serializer = new Serializer($metadataFactory, $this->serializerClassGenerator, $this->encoders, $this->normalizers);
 
         return $serializer;
     }

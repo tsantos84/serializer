@@ -92,7 +92,7 @@ class SerializationContext
         $this->currentDepth++;
     }
 
-    public function release()
+    public function left()
     {
         $this->currentDepth--;
     }

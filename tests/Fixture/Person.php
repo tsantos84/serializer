@@ -30,6 +30,11 @@ class Person
     private $colors = []; // = ['red', 'blue', 'white'];
 
     /**
+     * @var \DateTimeInterface
+     */
+    private $birthday;
+
+    /**
      * @var Address
      */
     private $address;
@@ -38,6 +43,11 @@ class Person
      * @var Person
      */
     private $father;
+
+    /**
+     * @var Book
+     */
+    private $favouriteBook;
 
     /**
      * Person constructor.
@@ -171,6 +181,42 @@ class Person
     public function setFather(Person $father): Person
     {
         $this->father = $father;
+        return $this;
+    }
+
+    /**
+     * @return Book
+     */
+    public function getFavouriteBook(): Book
+    {
+        return $this->favouriteBook;
+    }
+
+    /**
+     * @param Book $favouriteBook
+     * @return Person
+     */
+    public function setFavouriteBook(Book $favouriteBook): Person
+    {
+        $this->favouriteBook = $favouriteBook;
+        return $this;
+    }
+
+    /**
+     * @return \DateTimeInterface
+     */
+    public function getBirthday(): \DateTimeInterface
+    {
+        return $this->birthday;
+    }
+
+    /**
+     * @param \DateTimeInterface $birthday
+     * @return Person
+     */
+    public function setBirthday(\DateTimeInterface $birthday): Person
+    {
+        $this->birthday = $birthday;
         return $this;
     }
 }

@@ -95,6 +95,7 @@ class SerializerClassGenerator
 <?php
 
 use TSantos\Serializer\AbstractSerializerClass;
+use TSantos\Serializer\Exception\InvalidArgumentException;
 use TSantos\Serializer\SerializationContext;
 
 /**
@@ -127,7 +128,7 @@ EOF;
     {
         $code = <<<EOF
         if (!\$object instanceof {$metadata->name}) {
-            throw new \InvalidArgumentException(sprintf('%s can serialize instances of "%s" only. "%s" given', get_class(\$this), '{$metadata->name}', is_object(\$object) ? get_class(\$object) : gettype(\$object)));
+            throw new InvalidArgumentException(sprintf('%s can serialize instances of "%s" only. "%s" given', get_class(\$this), '{$metadata->name}', is_object(\$object) ? get_class(\$object) : gettype(\$object)));
         }
 
         \$data = [];

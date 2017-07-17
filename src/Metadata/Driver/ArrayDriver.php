@@ -4,6 +4,7 @@ namespace TSantos\Serializer\Metadata\Driver;
 
 use Metadata\Driver\DriverInterface;
 use Metadata\MergeableClassMetadata;
+use TSantos\Serializer\Exception\MappingException;
 use TSantos\Serializer\Metadata\PropertyMetadata;
 use TSantos\Serializer\Metadata\VirtualPropertyMetadata;
 use TSantos\Serializer\TypeGuesser;
@@ -33,7 +34,7 @@ class ArrayDriver implements DriverInterface
     public function loadMetadataForClass(\ReflectionClass $class)
     {
         if (!isset($this->mapping[$class->name])) {
-            throw new \Exception('There is no mapping for class ' . $class->name);
+            throw new MappingException('There is no mapping for class ' . $class->name);
         }
 
         $mapping = $this->mapping[$class->name];
