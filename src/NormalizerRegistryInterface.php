@@ -18,7 +18,7 @@ interface NormalizerRegistryInterface
     public function add(NormalizerInterface $type);
 
     /**
-     * @param $data
+     * @param mixed $data
      * @param SerializationContext $context
      * @return NormalizerInterface
      */

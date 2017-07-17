@@ -5,9 +5,8 @@ namespace TSantos\Serializer;
 use TSantos\Serializer\Normalizer\NormalizerInterface;
 
 /**
- * Class EncoderRegistry
+ * Class NormalizerRegistry
  *
- * @package Serializer
  * @author Tales Santos <tales.augusto.santos@gmail.com>
  */
 class NormalizerRegistry implements NormalizerRegistryInterface
@@ -28,9 +27,7 @@ class NormalizerRegistry implements NormalizerRegistryInterface
     }
 
     /**
-     * @param $data
-     * @param SerializationContext $context
-     * @return null|NormalizerInterface
+     * @inheritdoc
      */
     public function get($data, SerializationContext $context): ?NormalizerInterface
     {
