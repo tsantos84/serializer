@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<serializer>
+    <class name="Tests\TSantos\Serializer\Fixture\Address">
+        <property name="street" />
+        <property name="city" />
+        <property name="coordinates" type="Tests\TSantos\Serializer\Fixture\Coordinates" />
+        <virtual_property name="point" />
+    </class>
+</serializer>
+

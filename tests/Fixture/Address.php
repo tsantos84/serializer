@@ -71,4 +71,9 @@ class Address
         $this->coordinates = $coordinates;
         return $this;
     }
+
+    public function getPoint(): string
+    {
+        return $this->coordinates->getX() . ',' . $this->coordinates->getY();
+    }
 }
