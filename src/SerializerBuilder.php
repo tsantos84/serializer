@@ -95,7 +95,11 @@ class SerializerBuilder
         $metadataFactory = new MetadataFactory($this->driver, 'Metadata\ClassHierarchyMetadata', $this->debug);
 
         if (null === $this->serializerClassGenerator) {
-            $this->serializerClassGenerator = new SerializerClassGenerator($this->serializerClassDir ?? sys_get_temp_dir() . '/serializer/classes', $this->debug);
+            if (null === $classDir = $this->serializerClassDir) {
+                $this->createDir($classDir = sys_get_temp_dir() . '/serializer/classes');
+            }
+
+            $this->serializerClassGenerator = new SerializerClassGenerator($classDir, $this->debug);
         }
 
         if (null !== $this->cache) {

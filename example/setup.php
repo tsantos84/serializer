@@ -23,7 +23,6 @@ $serializer = $builder
         new XmlDriver($fileLocator, $typeGuesser),
         new PhpDriver($fileLocator, $typeGuesser)
     ]))
-    ->setCacheDir(__DIR__ . '/../tests/cache')
     ->setDebug(true)
     ->build();
 
