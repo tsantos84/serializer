@@ -6,11 +6,7 @@ use Tests\TSantos\Serializer\Fixture\Address;
 use Tests\TSantos\Serializer\Fixture\Coordinates;
 use Tests\TSantos\Serializer\Fixture\Person;
 
-$person = new Person();
-$person->setId(10);
-$person->setName('Tales');
-$person->setLastName('Santos');
-$person->setMarried(true);
+$person = new Person(1,'Tales Santos', true);
 
 $address = new Address();
 $address->setCity('Belo Horizonte');

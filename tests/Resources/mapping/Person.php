@@ -32,20 +32,5 @@ return [
                 'exposeAs' => 'full_name'
             ]
         ]
-    ],
-    Address::class => [
-        'properties' => [
-            'street' => [],
-            'city' => [],
-            'coordinates' => [
-                'type' => Coordinates::class
-            ]
-        ]
-    ],
-    Coordinates::class => [
-        'properties' => [
-            'x' => [],
-            'y' => []
-        ]
     ]
 ];

@@ -7,7 +7,7 @@ use Tests\TSantos\Serializer\Fixture\Person;
 $persons = [];
 
 for ($i=1; $i<=10; $i++) {
-    $person = new Person();
+    $person = new Person(1, 'Tales Santos', true);
     $person->setId(10);
     $person->setName('Tales');
     $person->setMarried(true);

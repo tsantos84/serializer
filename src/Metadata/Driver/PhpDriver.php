@@ -2,48 +2,45 @@
 
 namespace TSantos\Serializer\Metadata\Driver;
 
-use Metadata\Driver\DriverInterface;
+use Metadata\Driver\AbstractFileDriver;
+use Metadata\Driver\FileLocatorInterface;
 use Metadata\MergeableClassMetadata;
 use TSantos\Serializer\Exception\MappingException;
 use TSantos\Serializer\Metadata\PropertyMetadata;
 use TSantos\Serializer\Metadata\VirtualPropertyMetadata;
 use TSantos\Serializer\TypeGuesser;
 
-/**
- * Class ArrayDriver
- *
- * @author Tales Santos <tales.augusto.santos@gmail.com>
- */
-class ArrayDriver implements DriverInterface
+class PhpDriver extends AbstractFileDriver
 {
-    /**
-     * @var array
-     */
-    private $config;
-
     /**
      * @var TypeGuesser
      */
     private $typeGuesser;
 
     /**
-     * ArrayDriver constructor.
-     * @param $config
-     * @param $guesser
+     * PhpDriver constructor.
+     * @param FileLocatorInterface $locator
+     * @param TypeGuesser $guesser
      */
-    public function __construct(array $config, TypeGuesser $guesser)
+    public function __construct(FileLocatorInterface $locator, TypeGuesser $guesser)
     {
-        $this->config = $config;
+        parent::__construct($locator);
         $this->typeGuesser = $guesser;
     }
 
-    public function loadMetadataForClass(\ReflectionClass $class)
+    protected function loadMetadataFromFile(\ReflectionClass $class, $file)
     {
-        if (!isset($this->config[$class->name])) {
+        $config = require $file;
+
+        if (!is_array($config)) {
+            throw new MappingException('Expected that the file "%s" returns an array, "%s" given', gettype($config));
+        }
+
+        if (!isset($config[$class->name])) {
             throw new MappingException('There is no mapping for class ' . $class->name);
         }
 
-        $mapping = $this->config[$class->name];
+        $mapping = $config[$class->name];
 
         $metadata = new MergeableClassMetadata($class->getName());
 
@@ -74,4 +71,8 @@ class ArrayDriver implements DriverInterface
         return $metadata;
     }
 
+    protected function getExtension()
+    {
+        return 'php';
+    }
 }
