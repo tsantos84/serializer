@@ -3,7 +3,7 @@
 namespace TSantos\Serializer;
 
 /**
- * Interface ObjectSerializertInterface
+ * Interface ObjectSerializerInterface
  *
  * @package Serializer
  * @author Tales Santos <tales.augusto.santos@gmail.com>
