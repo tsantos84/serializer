@@ -18,6 +18,7 @@ class PropertyMetadata extends BasePropertyMetadata
     public $getterRef;
     public $exposeAs;
     public $groups;
+    public $modifier;
 
     public function serialize()
     {
@@ -27,7 +28,8 @@ class PropertyMetadata extends BasePropertyMetadata
             $this->type,
             $this->getter,
             $this->exposeAs,
-            $this->groups
+            $this->groups,
+            $this->modifier
         ]);
     }
 
@@ -41,7 +43,8 @@ class PropertyMetadata extends BasePropertyMetadata
             $this->type,
             $this->getter,
             $this->exposeAs,
-            $this->groups
+            $this->groups,
+            $this->modifier
         ) = $unserialized;
 
         $this->getterRef = new \ReflectionMethod($this->class, $this->getter);
