@@ -4,7 +4,6 @@ namespace Tests\TSantos\Serializer;
 
 use PHPUnit\Framework\TestCase;
 use TSantos\Serializer\Metadata\Driver\ArrayDriver;
-use TSantos\Serializer\Metadata\Driver\PhpDriver;
 use TSantos\Serializer\SerializerBuilder;
 use TSantos\Serializer\SerializerInterface;
 use TSantos\Serializer\TypeGuesser;
