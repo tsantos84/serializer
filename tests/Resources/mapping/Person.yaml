@@ -1,0 +1,17 @@
+Tests\TSantos\Serializer\Fixture\Person:
+  properties:
+    id:
+      groups: [web]
+    name:
+      exposeAs: nome
+    lastName:
+      exposeAs: last_name
+    married:
+      getter: isMarried
+    colors:
+      groups: [mobile]
+    address:
+      type: 'Tests\TSantos\Serializer\Fixture\Address'
+  virtual_properties:
+    fullName:
+      exposeAs: full_name

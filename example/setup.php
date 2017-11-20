@@ -2,8 +2,10 @@
 
 require __DIR__ . '/../vendor/autoload.php';
 
+use Metadata\Driver\DriverChain;
 use Metadata\Driver\FileLocator;
 use TSantos\Serializer\Metadata\Driver\PhpDriver;
+use TSantos\Serializer\Metadata\Driver\YamlDriver;
 use TSantos\Serializer\SerializerBuilder;
 use TSantos\Serializer\TypeGuesser;
 
@@ -15,7 +17,10 @@ $fileLocator = new FileLocator([
 $typeGuesser = new TypeGuesser();
 
 $serializer = $builder
-    ->setMetadataDriver(new PhpDriver($fileLocator, $typeGuesser))
+    ->setMetadataDriver(new DriverChain([
+        new YamlDriver($fileLocator, $typeGuesser),
+        new PhpDriver($fileLocator, $typeGuesser)
+    ]))
     ->setCacheDir(__DIR__ . '/../tests/cache')
     ->setDebug(true)
     ->build();
