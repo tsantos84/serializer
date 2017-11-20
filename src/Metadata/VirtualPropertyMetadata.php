@@ -15,4 +15,30 @@ class VirtualPropertyMetadata extends MethodMetadata
     public $exposeAs;
     public $groups;
     public $modifier;
+
+    public function serialize()
+    {
+        return serialize([
+            $this->name,
+            $this->class,
+            $this->type,
+            $this->modifier,
+            $this->exposeAs,
+            $this->groups
+        ]);
+    }
+
+    public function unserialize($str)
+    {
+        $unserialized = unserialize($str);
+
+        list(
+            $this->name,
+            $this->class,
+            $this->type,
+            $this->modifier,
+            $this->exposeAs,
+            $this->groups
+        ) = $unserialized;
+    }
 }

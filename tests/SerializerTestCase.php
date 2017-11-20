@@ -41,7 +41,7 @@ abstract class SerializerTestCase extends TestCase
 
         $builder
             ->setMetadataDriver(new ArrayDriver($mapping, new TypeGuesser()))
-            ->setCacheDir($this->cacheDir)
+            ->setSerializerClassDir($this->cacheDir)
             ->setDebug(true);
 
         return $builder->build();

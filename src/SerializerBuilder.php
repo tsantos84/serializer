@@ -2,6 +2,7 @@
 
 namespace TSantos\Serializer;
 
+use Metadata\Cache\CacheInterface;
 use Metadata\Driver\DriverInterface;
 use Metadata\MetadataFactory;
 use TSantos\Serializer\Encoder\JsonEncoder;
@@ -22,6 +23,7 @@ class SerializerBuilder
     private $serializerClassGenerator;
     private $cache;
     private $debug;
+    private $serializerClassDir;
 
     /**
      * Builder constructor.
@@ -49,17 +51,18 @@ class SerializerBuilder
         return $this;
     }
 
-    public function setCacheDir(string $dir): SerializerBuilder
+    public function setSerializerClassDir(string $dir): SerializerBuilder
     {
         if (!is_dir($dir)) {
             $this->createDir($dir);
         }
 
         if (!is_writable($dir)) {
-            throw new \InvalidArgumentException(sprintf('The cache directory "%s" is not writable.', $dir));
+            throw new \InvalidArgumentException(sprintf('The serializer class directory "%s" is not writable.', $dir));
         }
 
-        $this->cache = $dir;
+        $this->serializerClassDir = $dir;
+
         return $this;
     }
 
@@ -76,6 +79,12 @@ class SerializerBuilder
         return $this;
     }
 
+    public function setMetadataCache(CacheInterface $cache)
+    {
+        $this->cache = $cache;
+        return $this;
+    }
+
     /**
      * @return SerializerInterface
      */
@@ -86,7 +95,11 @@ class SerializerBuilder
         $metadataFactory = new MetadataFactory($this->driver, 'Metadata\ClassHierarchyMetadata', $this->debug);
 
         if (null === $this->serializerClassGenerator) {
-            $this->serializerClassGenerator = new SerializerClassGenerator($this->cache ?? sys_get_temp_dir(), $this->debug);
+            $this->serializerClassGenerator = new SerializerClassGenerator($this->serializerClassDir ?? sys_get_temp_dir() . '/serializer/classes', $this->debug);
+        }
+
+        if (null !== $this->cache) {
+            $metadataFactory->setCache($this->cache);
         }
 
         $serializer = new Serializer($metadataFactory, $this->serializerClassGenerator, $this->encoders, $this->normalizers);

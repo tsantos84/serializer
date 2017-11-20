@@ -14,9 +14,36 @@ class PropertyMetadata extends BasePropertyMetadata
 {
     public $type;
     public $getter;
-    public $modifier;
     /** @var  \ReflectionMethod */
     public $getterRef;
     public $exposeAs;
     public $groups;
+
+    public function serialize()
+    {
+        return serialize([
+            $this->name,
+            $this->class,
+            $this->type,
+            $this->getter,
+            $this->exposeAs,
+            $this->groups
+        ]);
+    }
+
+    public function unserialize($str)
+    {
+        $unserialized = unserialize($str);
+
+        list(
+            $this->name,
+            $this->class,
+            $this->type,
+            $this->getter,
+            $this->exposeAs,
+            $this->groups
+        ) = $unserialized;
+
+        $this->getterRef = new \ReflectionMethod($this->class, $this->getter);
+    }
 }
