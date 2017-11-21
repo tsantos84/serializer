@@ -5,81 +5,24 @@ namespace TSantos\Serializer;
 use Metadata\ClassMetadata;
 
 /**
- * Class ObjectSerializerGenerator
+ * Class SerializerClassCodeGenerator
  *
- * @package Serializer
  * @author Tales Santos <tales.augusto.santos@gmail.com>
  */
-class SerializerClassGenerator
+class SerializerClassCodeGenerator
 {
     /**
-     * @var string
-     */
-    private $path;
-
-    /**
-     * @var bool
-     */
-    private $debug;
-
-    /**
-     * @var array
-     */
-    private $instances = [];
-
-    /**
-     * SerializerClassGenerator constructor.
-     * @param string $path
-     * @param bool $debug
-     */
-    public function __construct(string $path, bool $debug = false)
-    {
-        $this->path = $path;
-        $this->debug = $debug;
-    }
-
-    /**
      * @param ClassMetadata $classMetadata
-     * @param Serializer $serializer
-     * @return SerializerClassInterface
+     * @return string
      */
-    public function getGeneratorFor(ClassMetadata $classMetadata, Serializer $serializer): SerializerClassInterface
+    public function generate(ClassMetadata $classMetadata): string
     {
-        $fqn = $this->getClassName($classMetadata);
-
-        if (isset($this->instances[$fqn])) {
-            return $this->instances[$fqn];
-        }
-
-        if (class_exists($fqn, false)) {
-            return $this->instances[$fqn] = new $fqn($serializer, $classMetadata);
-        }
-
-        $filename = $this->getFilename($classMetadata);
-
-        if (!$this->debug && file_exists($filename)) {
-            require_once $filename;
-            return $this->instances[$fqn] = new $fqn($serializer, $classMetadata);
-        }
-
-        $code = $this->classDeclaration($classMetadata, $fqn);
-
-        file_put_contents($filename, $code);
-        chmod($filename, 0664);
-
-        require $filename;
-
-        return $this->instances[$fqn] = new $fqn($serializer, $classMetadata);
+        return $this->classDeclaration($classMetadata, $this->getClassName($classMetadata));
     }
 
-    private function getClassName(ClassMetadata $metadata): string
+    public function getClassName(ClassMetadata $classMetadata)
     {
-        return str_replace('\\', '', $metadata->name) . 'Serializer';
-    }
-
-    private function getFilename(ClassMetadata $metadata): string
-    {
-        return $this->path . DIRECTORY_SEPARATOR . $this->getClassName($metadata) . '.php';
+        return str_replace('\\', '', $classMetadata->name) . 'Serializer';
     }
 
     private function classDeclaration(ClassMetadata $metadata, string $className): string
@@ -106,7 +49,7 @@ EOF;
     {
         return <<<EOF
     /**
-     * @param {$metadata->name} \$object
+     * @param \\{$metadata->name} \$object
      * @param SerializationContext \$context
      * @return array
      */
@@ -120,7 +63,7 @@ EOF;
     private function serializeMethodBody(ClassMetadata $metadata): string
     {
         $code = <<<EOF
-        if (!\$object instanceof {$metadata->name}) {
+        if (!\$object instanceof \\{$metadata->name}) {
             throw new InvalidArgumentException(sprintf('%s can serialize instances of "%s" only. "%s" given', get_class(\$this), '{$metadata->name}', is_object(\$object) ? get_class(\$object) : gettype(\$object)));
         }
 

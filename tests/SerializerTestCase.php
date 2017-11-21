@@ -3,7 +3,7 @@
 namespace Tests\TSantos\Serializer;
 
 use PHPUnit\Framework\TestCase;
-use TSantos\Serializer\Metadata\Driver\ArrayDriver;
+use TSantos\Serializer\Metadata\Driver\InMemoryDriver;
 use TSantos\Serializer\SerializerBuilder;
 use TSantos\Serializer\SerializerInterface;
 use TSantos\Serializer\TypeGuesser;
@@ -40,7 +40,7 @@ abstract class SerializerTestCase extends TestCase
         $builder = $this->createBuilder();
 
         $builder
-            ->setMetadataDriver(new ArrayDriver($mapping, new TypeGuesser()))
+            ->setMetadataDriver(new InMemoryDriver($mapping, new TypeGuesser()))
             ->setSerializerClassDir($this->cacheDir)
             ->setDebug(true);
 

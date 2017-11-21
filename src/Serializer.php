@@ -2,8 +2,6 @@
 
 namespace TSantos\Serializer;
 
-use Metadata\MetadataFactoryInterface;
-
 /**
  * Class Serializer
  *
@@ -12,16 +10,6 @@ use Metadata\MetadataFactoryInterface;
  */
 class Serializer implements SerializerInterface
 {
-    /**
-     * @var MetadataFactoryInterface
-     */
-    private $metadataFactory;
-
-    /**
-     * @var SerializerClassGenerator
-     */
-    private $serializerClassGenerator;
-
     /**
      * @var EncoderRegistryInterface
      */
@@ -33,20 +21,22 @@ class Serializer implements SerializerInterface
     private $normalizers;
 
     /**
+     * @var SerializerClassLoader
+     */
+    private $classLoader;
+
+    /**
      * Serializer constructor.
-     * @param MetadataFactoryInterface $metadataFactory
-     * @param SerializerClassGenerator $classGenerator
+     * @param SerializerClassLoader $classLoader
      * @param EncoderRegistryInterface $encoders
      * @param NormalizerRegistryInterface $normalizers
      */
     public function __construct(
-        MetadataFactoryInterface $metadataFactory,
-        SerializerClassGenerator $classGenerator,
+        SerializerClassLoader $classLoader,
         EncoderRegistryInterface $encoders,
         NormalizerRegistryInterface $normalizers
     ) {
-        $this->serializerClassGenerator = $classGenerator;
-        $this->metadataFactory = $metadataFactory;
+        $this->classLoader = $classLoader;
         $this->encoders = $encoders;
         $this->normalizers = $normalizers;
     }
@@ -107,9 +97,9 @@ class Serializer implements SerializerInterface
             return $this->normalize($object->jsonSerialize(), $context);
         }
 
+        $objectSerializer = $this->classLoader->load($object, $this);
+
         $context->enter($object);
-        $classMetadata = $this->metadataFactory->getMetadataForClass(get_class($object));
-        $objectSerializer = $this->serializerClassGenerator->getGeneratorFor($classMetadata, $this);
         $array = $objectSerializer->serialize($object, $context);
         $context->left();
 

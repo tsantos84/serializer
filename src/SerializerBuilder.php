@@ -6,6 +6,7 @@ use Metadata\Cache\CacheInterface;
 use Metadata\Driver\DriverInterface;
 use Metadata\MetadataFactory;
 use TSantos\Serializer\Encoder\JsonEncoder;
+use TSantos\Serializer\Metadata\Driver\InMemoryDriver;
 use TSantos\Serializer\Normalizer\DateTimeNormalizer;
 use TSantos\Serializer\Normalizer\IdentityNormalizer;
 
@@ -20,7 +21,6 @@ class SerializerBuilder
     private $encoders;
     private $normalizers;
     private $driver;
-    private $serializerClassGenerator;
     private $cache;
     private $debug;
     private $serializerClassDir;
@@ -42,12 +42,6 @@ class SerializerBuilder
     public function setMetadataDriver(DriverInterface $driver): SerializerBuilder
     {
         $this->driver = $driver;
-        return $this;
-    }
-
-    public function setSerializerClassGenerator(SerializerClassGenerator $generator): SerializerBuilder
-    {
-        $this->serializerClassGenerator = $generator;
         return $this;
     }
 
@@ -92,21 +86,31 @@ class SerializerBuilder
     {
         $this->encoders->add(new JsonEncoder());
 
-        $metadataFactory = new MetadataFactory($this->driver, 'Metadata\ClassHierarchyMetadata', $this->debug);
-
-        if (null === $this->serializerClassGenerator) {
-            if (null === $classDir = $this->serializerClassDir) {
-                $this->createDir($classDir = sys_get_temp_dir() . '/serializer/classes');
-            }
-
-            $this->serializerClassGenerator = new SerializerClassGenerator($classDir, $this->debug);
+        if (null === $classDir = $this->serializerClassDir) {
+            $this->createDir($classDir = sys_get_temp_dir() . '/serializer/classes');
         }
 
+        if (null === $driver = $this->driver) {
+            $driver = new InMemoryDriver([], new TypeGuesser());
+        }
+
+        $metadataFactory = new MetadataFactory($driver, 'Metadata\ClassHierarchyMetadata', $this->debug);
         if (null !== $this->cache) {
             $metadataFactory->setCache($this->cache);
         }
 
-        $serializer = new Serializer($metadataFactory, $this->serializerClassGenerator, $this->encoders, $this->normalizers);
+        $classLoader = new SerializerClassLoader(
+            $metadataFactory,
+            new SerializerClassCodeGenerator(),
+            new SerializerClassWriter($classDir),
+            SerializerClassLoader::AUTOGENERATE_ALWAYS
+        );
+
+        $serializer = new Serializer(
+            $classLoader,
+            $this->encoders,
+            $this->normalizers
+        );
 
         return $serializer;
     }
