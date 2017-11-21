@@ -10,11 +10,11 @@ use TSantos\Serializer\Metadata\VirtualPropertyMetadata;
 use TSantos\Serializer\TypeGuesser;
 
 /**
- * Class ArrayDriver
+ * Class InMemoryDriver
  *
  * @author Tales Santos <tales.augusto.santos@gmail.com>
  */
-class ArrayDriver implements DriverInterface
+class InMemoryDriver implements DriverInterface
 {
     /**
      * @var array
