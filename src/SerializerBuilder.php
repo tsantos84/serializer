@@ -3,10 +3,14 @@
 namespace TSantos\Serializer;
 
 use Metadata\Cache\CacheInterface;
+use Metadata\Driver\DriverChain;
 use Metadata\Driver\DriverInterface;
+use Metadata\Driver\FileLocator;
 use Metadata\MetadataFactory;
 use TSantos\Serializer\Encoder\JsonEncoder;
-use TSantos\Serializer\Metadata\Driver\InMemoryDriver;
+use TSantos\Serializer\Metadata\Driver\PhpDriver;
+use TSantos\Serializer\Metadata\Driver\XmlDriver;
+use TSantos\Serializer\Metadata\Driver\YamlDriver;
 use TSantos\Serializer\Normalizer\DateTimeNormalizer;
 use TSantos\Serializer\Normalizer\IdentityNormalizer;
 
@@ -24,6 +28,7 @@ class SerializerBuilder
     private $cache;
     private $debug;
     private $serializerClassDir;
+    private $metadataDirs;
 
     /**
      * Builder constructor.
@@ -33,6 +38,7 @@ class SerializerBuilder
         $this->encoders = new EncoderRegistry();
         $this->normalizers = new NormalizerRegistry();
         $this->debug = false;
+        $this->metadataDirs = [];
     }
 
     /**
@@ -42,6 +48,32 @@ class SerializerBuilder
     public function setMetadataDriver(DriverInterface $driver): SerializerBuilder
     {
         $this->driver = $driver;
+        return $this;
+    }
+
+    public function setMetadataDirs(array $dirs): SerializerBuilder
+    {
+        $this->metadataDirs = [];
+        $this->addMetadataDirs($dirs);
+        return $this;
+    }
+
+    public function addMetadataDirs(array $dirs): SerializerBuilder
+    {
+        foreach ($dirs as $namespace => $dir) {
+            $this->addMetadataDir($namespace, $dir);
+        }
+
+        return $this;
+    }
+
+    public function addMetadataDir(string $namespace, string $dir): SerializerBuilder
+    {
+        if (!is_dir($dir)) {
+            throw new \InvalidArgumentException('The metadata directory "' . $dir . '" does not exist');
+        }
+
+        $this->metadataDirs[$namespace] = $dir;
         return $this;
     }
 
@@ -91,7 +123,13 @@ class SerializerBuilder
         }
 
         if (null === $driver = $this->driver) {
-            $driver = new InMemoryDriver([], new TypeGuesser());
+            $fileLocator = new FileLocator($this->metadataDirs);
+            $typeGuesser = new TypeGuesser();
+            $driver = new DriverChain([
+                new YamlDriver($fileLocator, $typeGuesser),
+                new XmlDriver($fileLocator, $typeGuesser),
+                new PhpDriver($fileLocator, $typeGuesser)
+            ]);
         }
 
         $metadataFactory = new MetadataFactory($driver, 'Metadata\ClassHierarchyMetadata', $this->debug);
