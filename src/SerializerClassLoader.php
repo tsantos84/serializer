@@ -1,4 +1,12 @@
 <?php
+/**
+ * This file is part of the TSantos Serializer package.
+ *
+ * (c) Tales Santos <tales.augusto.santos@gmail.com>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
 
 namespace TSantos\Serializer;
 
@@ -60,7 +68,7 @@ class SerializerClassLoader
      * @param object $object
      * @return SerializerClassInterface
      */
-    public function load($object, SerializerInterface $serializer): ?SerializerClassInterface
+    public function load($object, SerializerInterface $serializer): SerializerClassInterface
     {
         $classMetadata = $this->metadataFactory->getMetadataForClass(get_class($object));
 

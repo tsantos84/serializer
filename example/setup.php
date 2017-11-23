@@ -1,28 +1,21 @@
 <?php
+/**
+ * This file is part of the TSantos Serializer package.
+ *
+ * (c) Tales Santos <tales.augusto.santos@gmail.com>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
 
 require __DIR__ . '/../vendor/autoload.php';
 
-use Metadata\Driver\DriverChain;
-use Metadata\Driver\FileLocator;
-use TSantos\Serializer\Metadata\Driver\PhpDriver;
-use TSantos\Serializer\Metadata\Driver\XmlDriver;
-use TSantos\Serializer\Metadata\Driver\YamlDriver;
 use TSantos\Serializer\SerializerBuilder;
-use TSantos\Serializer\TypeGuesser;
 
 $builder = new SerializerBuilder();
 
-$fileLocator = new FileLocator([
-    'Tests\TSantos\Serializer\Fixture' => __DIR__ . '/../tests/Resources/mapping'
-]);
-$typeGuesser = new TypeGuesser();
-
 $serializer = $builder
-    ->setMetadataDriver(new DriverChain([
-        new YamlDriver($fileLocator, $typeGuesser),
-        new XmlDriver($fileLocator, $typeGuesser),
-        new PhpDriver($fileLocator, $typeGuesser)
-    ]))
+    ->addMetadataDir('Tests\TSantos\Serializer\Fixture', __DIR__ . '/../tests/Resources/mapping')
     ->setDebug(true)
     ->build();
 
