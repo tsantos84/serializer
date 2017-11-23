@@ -100,14 +100,14 @@ class SerializerBuilder
         return $this;
     }
 
-    public function addDefaultNormalizers()
+    public function addDefaultNormalizers(): SerializerBuilder
     {
         $this->normalizers->add(new DateTimeNormalizer());
         $this->normalizers->add(new IdentityNormalizer());
         return $this;
     }
 
-    public function setMetadataCache(CacheInterface $cache)
+    public function setMetadataCache(CacheInterface $cache): SerializerBuilder
     {
         $this->cache = $cache;
         return $this;

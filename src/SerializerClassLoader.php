@@ -60,7 +60,7 @@ class SerializerClassLoader
      * @param object $object
      * @return SerializerClassInterface
      */
-    public function load($object, SerializerInterface $serializer): ?SerializerClassInterface
+    public function load($object, SerializerInterface $serializer): SerializerClassInterface
     {
         $classMetadata = $this->metadataFactory->getMetadataForClass(get_class($object));
 
