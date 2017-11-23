@@ -6,11 +6,11 @@ With the growth of micro-services a good serializer tool should be use to expose
 
 ## Motivation
 
-No, I'm not forgetting the DRY concept and I have good reasons to writing this library. I know that there are most known library that do this job like JMS Serializer and Symfony Serializer, but I'm not satisfied with its performance. They have a considerable overhead and in almost time they consume precious miliseconds of RESTful APIs.
+No, I'm not forgetting the DRY concept and I have good reasons to writing this library. I know that there are most known library that do this job like [JMS Serializer](https://github.com/schmittjoh/serializer) and [Symfony Serializer](http://symfony.com/doc/current/components/serializer.html), but I'm not satisfied with its performance. They have a considerable overhead and in almost time they consume precious miliseconds of RESTful APIs.
 
 I used to use JMS a lot and I really like that tool, but now I want to get my application's performance to a high level without loosing the great feature as that library provides.
 
-Still not convinced? I've created a benchmark application which compares the most used PHP serializers. Take a look at the results and you'll realize that performance still need to be boosted by the other vendors. I would like to say thanks to [Eduard Sukharev](https://github.com/eduard-sukharev) which did (and keep doing) great contributions on this project.
+Still not convinced? I've created a [benchmark application](https://github.com/tsantos84/serializers-benchmarking) which compares the most used PHP serializers. Take a look at the results and you'll realize that performance still need to be boosted by the other vendors. I would like to say thanks to [Eduard Sukharev](https://github.com/eduard-sukharev) which did (and keep doing) great contributions on this project.
 
 ## Instalation
 
