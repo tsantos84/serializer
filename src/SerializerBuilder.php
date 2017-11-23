@@ -29,6 +29,7 @@ class SerializerBuilder
     private $debug;
     private $serializerClassDir;
     private $metadataDirs;
+    private $serializerClassGenerateStrategy;
 
     /**
      * Builder constructor.
@@ -39,6 +40,7 @@ class SerializerBuilder
         $this->normalizers = new NormalizerRegistry();
         $this->debug = false;
         $this->metadataDirs = [];
+        $this->serializerClassGenerateStrategy = SerializerClassLoader::AUTOGENERATE_ALWAYS;
     }
 
     /**
@@ -111,6 +113,12 @@ class SerializerBuilder
         return $this;
     }
 
+    public function setSerializerClassGenerateStrategy(int $serializerClassGenerateStrategy): SerializerBuilder
+    {
+        $this->serializerClassGenerateStrategy = $serializerClassGenerateStrategy;
+        return $this;
+    }
+
     /**
      * @return SerializerInterface
      */
@@ -141,7 +149,7 @@ class SerializerBuilder
             $metadataFactory,
             new SerializerClassCodeGenerator(),
             new SerializerClassWriter($classDir),
-            SerializerClassLoader::AUTOGENERATE_ALWAYS
+            $this->serializerClassGenerateStrategy
         );
 
         $serializer = new Serializer(
