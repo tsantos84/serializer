@@ -60,7 +60,7 @@ class XmlDriver extends AbstractFileDriver
 
         /** @var \SimpleXMLElement $property */
         foreach ($elem->xpath('./property') as $xmlProperty) {
-            $attribs = $xmlProperty->attributes();
+            $attribs = ((array)$xmlProperty->attributes())['@attributes'];
             $name = (string)$attribs['name'];
             $property = new PropertyMetadata($class->getName(), $name);
 
@@ -69,21 +69,21 @@ class XmlDriver extends AbstractFileDriver
             $property->modifier = $attribs['modifier'] ?? null;
             $property->type = $attribs['type'] ?? $this->typeGuesser->guessProperty($property, 'string');
             $property->exposeAs = $attribs['exposeAs'] ?? $name;
-            $property->groups = (array)($attribs['groups'] ?? ['Default']);
+            $property->groups = $attribs['groups'] ?? ['Default'];
 
             $metadata->addPropertyMetadata($property);
         }
 
         /** @var \SimpleXMLElement $property */
         foreach ($elem->xpath('./virtual_property') ?? [] as $xmlProperty) {
-            $attribs = $xmlProperty->attributes();
-            $name = (string)$attribs['name'];
+            $attribs = ((array)$xmlProperty->attributes())['@attributes'];
+            $name = $attribs['name'];
             $method = $map['method'] ?? 'get' . ucfirst($name);
 
             $property = new VirtualPropertyMetadata($class->name, $method);
             $property->type = $attribs['type'] ?? $this->typeGuesser->guessVirtualProperty($property, 'string');
             $property->exposeAs = $attribs['exposeAs'] ?? $name;
-            $property->groups = (array)($attribs['groups'] ?? ['Default']);
+            $property->groups = $attribs['groups'] ?? ['Default'];
             $property->modifier = $attribs['modifier'] ?? null;
             $metadata->addMethodMetadata($property);
         }
