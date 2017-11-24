@@ -72,6 +72,10 @@ class SerializerClassLoader
     {
         $classMetadata = $this->metadataFactory->getMetadataForClass(get_class($object));
 
+        if (null === $classMetadata) {
+            throw new \RuntimeException('No mapping file was found for class ' . get_class($object) . '. Did you configure the correct paths for serializer?');
+        }
+
         $fqn = $this->getClassName($classMetadata);
 
         if (isset($this->instances[$fqn])) {
