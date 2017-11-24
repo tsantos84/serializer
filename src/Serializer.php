@@ -88,7 +88,7 @@ class Serializer implements SerializerInterface
             return $normalizer->normalize($data, $context);
         }
 
-        if (is_array($data) || $data instanceof \Iterator) {
+        if (is_iterable($data)) {
             return $this->collectionToArray($data, $context);
         }
 
