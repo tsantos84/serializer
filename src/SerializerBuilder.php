@@ -17,6 +17,7 @@ use Metadata\Driver\FileLocator;
 use Metadata\MetadataFactory;
 use TSantos\Serializer\Encoder\JsonEncoder;
 use TSantos\Serializer\Metadata\Driver\PhpDriver;
+use TSantos\Serializer\Metadata\Driver\ReflectionDriver;
 use TSantos\Serializer\Metadata\Driver\XmlDriver;
 use TSantos\Serializer\Metadata\Driver\YamlDriver;
 use TSantos\Serializer\Normalizer\DateTimeNormalizer;
@@ -144,7 +145,8 @@ class SerializerBuilder
             $driver = new DriverChain([
                 new YamlDriver($fileLocator, $typeGuesser),
                 new XmlDriver($fileLocator, $typeGuesser),
-                new PhpDriver($fileLocator, $typeGuesser)
+                new PhpDriver($fileLocator, $typeGuesser),
+                new ReflectionDriver($typeGuesser)
             ]);
         }
 
