@@ -98,6 +98,8 @@ class TypeGuesser
             case 'bool':
             case 'boolean':
                 return 'boolean';
+            case 'array':
+                return 'array';
         }
 
         return null;
