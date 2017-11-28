@@ -63,9 +63,9 @@ class Person
 
 ## Features
 
-Current features supported by TSantos Serializer:
+Features currently supported by TSantos Serializer:
 
-* Supports `PHP`, `YAML`, `XML` and `InMemory (array)` mapping formats
+* Supports `PHP`, `YAML`, `XML`, `Reflection` and `InMemory (array)` mapping formats
 * Supports `JSON` encoders (output)
 * Serializes objects of any depth
 * Custom `getters`
