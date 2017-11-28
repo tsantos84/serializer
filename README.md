@@ -78,6 +78,6 @@ This project is still in development and are fully open to your contribution. Wa
 
 * Ability to deserialize objects
 * Support for `XML` and `CSV` encoders (output)
-* Support for ready configuration from annotations
+* Support for read configuration from annotations
 * Documentation
 * Any idea?
