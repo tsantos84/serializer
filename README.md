@@ -40,8 +40,6 @@ $person = new Person(100, 'Tales Santos');
 echo $serializer->serialize($person, 'json'); // {"id":100, "name":"Tales Santos"}
 ```
 
-All objects should have a mapping file describing the properties and its configuration.
-
 Unlike other libraries, all properties should either be `public` or have a public `getter` method. 
 
 ```php
