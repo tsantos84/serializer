@@ -8,14 +8,20 @@
  * file that was distributed with this source code.
  */
 
-namespace TSantos\Serializer\Metadata\Driver\Annotation;
+namespace TSantos\Serializer\Mapping;
 
 /**
- * Class ClassAnnotation
+ * Class Getter
+ *
+ * @author Tales Santos <tales.augusto.santos@gmail.com>
  *
  * @Annotation
  */
-class ClassAnnotation
+class Getter
 {
+    /**
+     * @var string
+     * @Required
+     */
     public $name;
 }
