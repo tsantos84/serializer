@@ -96,7 +96,7 @@ EOF;
         $code = '';
 
         foreach ($metadata->propertyMetadata as $property) {
-            $getter = "\$object->{$property->getter}()";
+            $getter = "\$object->{$property->accessor}";
             $value = '$value';
             if (null !== $property->modifier) {
                 $value .= '->' . $property->modifier;

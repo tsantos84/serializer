@@ -61,8 +61,9 @@ class YamlDriver extends AbstractFileDriver
         foreach ($mapping['properties'] ?? [] as $name => $map) {
             $property = new PropertyMetadata($class->getName(), $name);
 
-            $property->getter = $map['getter'] ?? 'get' . ucfirst($name);
-            $property->getterRef = new \ReflectionMethod($class->getName(), $property->getter);
+            $getter = $map['getter'] ?? 'get' . ucfirst($name);
+            $property->accessor = $getter . '()';
+            $property->getterRef = new \ReflectionMethod($class->getName(), $getter);
             $property->modifier = $map['modifier'] ?? null;
             $property->type = $map['type'] ?? $this->typeGuesser->guessProperty($property, 'string');
             $property->exposeAs = $map['exposeAs'] ?? $name;

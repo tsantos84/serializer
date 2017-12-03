@@ -40,19 +40,7 @@ $person = new Person(100, 'Tales Santos');
 echo $serializer->serialize($person, 'json'); // {"id":100, "name":"Tales Santos"}
 ```
 
-All objects should have a mapping file describing the properties and its configuration.
-
-```yaml
-# path/to/my/mapping/Person.yaml
-My\Namespace\Entity\Person:
-  properties:
-    id:
-      type: integer
-    name:
-      type: string
-```
-
-Unlike other libraries, only those properties described in the mapping file will be serialized and all properties should have a public `getter` method. 
+Unlike other libraries, all properties should either be `public` or have a public `getter` method. 
 
 ```php
 # path/to/my/entities
@@ -60,25 +48,24 @@ namespace My\Namespace\Entity
 
 class Person
 {
-  private $id;
-  private $name;
-  
-  public function __construct(int $id, string $name)
-  {
-    $this->id = $id;
-    $this->name = $name;
-  }
-  
-  public function getId() { return $this->id; }
-  public function getName() { return $this->name; }
+    /** @var string */
+    public $name;
+    public $age;
+    private $colors;
+
+    /** @return integer */
+    public function getAge(): int { return $this->age; }
+
+    /** @return array */
+    public function getColors(): array { return $this->colors; }
 }
 ```
 
 ## Features
 
-Current features supported by TSantos Serializer:
+Features currently supported by TSantos Serializer:
 
-* Supports `PHP`, `YAML`, `XML` and `InMemory (array)` mapping formats
+* Supports `PHP`, `YAML`, `XML`, `Reflection` and `InMemory (array)` mapping formats
 * Supports `JSON` encoders (output)
 * Serializes objects of any depth
 * Custom `getters`
@@ -91,6 +78,6 @@ This project is still in development and are fully open to your contribution. Wa
 
 * Ability to deserialize objects
 * Support for `XML` and `CSV` encoders (output)
-* Support for ready configuration from annotations
+* Support for read configuration from annotations
 * Documentation
 * Any idea?

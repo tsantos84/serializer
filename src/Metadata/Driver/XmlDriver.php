@@ -64,8 +64,9 @@ class XmlDriver extends AbstractFileDriver
             $name = (string)$attribs['name'];
             $property = new PropertyMetadata($class->getName(), $name);
 
-            $property->getter = $attribs['getter'] ?? 'get' . ucfirst($name);
-            $property->getterRef = new \ReflectionMethod($class->getName(), $property->getter);
+            $getter = $map['getter'] ?? 'get' . ucfirst($name);
+            $property->accessor = $getter . '()';
+            $property->getterRef = new \ReflectionMethod($class->getName(), $getter);
             $property->modifier = $attribs['modifier'] ?? null;
             $property->type = $attribs['type'] ?? $this->typeGuesser->guessProperty($property, 'string');
             $property->exposeAs = $attribs['exposeAs'] ?? $name;

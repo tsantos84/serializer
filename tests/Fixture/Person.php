@@ -10,15 +10,24 @@
 
 namespace Tests\TSantos\Serializer\Fixture;
 
+use TSantos\Serializer\Mapping as Serializer;
+
+/**
+ * Class Person
+ *
+ * @author Tales Santos <tales.augusto.santos@gmail.com>
+ */
 class Person
 {
     /**
      * @var int
+     * @Serializer\Type("integer")
      */
     private $id;
 
     /**
      * @var string
+     * @Serializer\Type("string")
      */
     private $name;
 
@@ -39,6 +48,7 @@ class Person
 
     /**
      * @var \DateTimeInterface
+     * @Serializer\Modifier("format('d/m/Y')")
      */
     private $birthday;
 
@@ -49,6 +59,7 @@ class Person
 
     /**
      * @var Person
+     * @Serializer\Type(Person::class)
      */
     private $father;
 
@@ -127,6 +138,8 @@ class Person
 
     /**
      * @return string
+     * @Serializer\VirtualProperty
+     * @Serializer\ExposeAs("full_name")
      */
     public function getFullName(): string
     {
@@ -177,7 +190,7 @@ class Person
     /**
      * @return Person
      */
-    public function getFather(): Person
+    public function getFather(): ?Person
     {
         return $this->father;
     }
@@ -213,7 +226,7 @@ class Person
     /**
      * @return \DateTimeInterface
      */
-    public function getBirthday(): \DateTimeInterface
+    public function getBirthday(): ?\DateTimeInterface
     {
         return $this->birthday;
     }
