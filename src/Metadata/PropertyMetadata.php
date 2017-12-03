@@ -55,8 +55,7 @@ class PropertyMetadata extends BasePropertyMetadata
             $this->modifier
         ) = $unserialized;
 
-        if (false !== strpos($this->accessor, '(')) {
-            $this->getterRef = new \ReflectionMethod($this->class, $this->accessor);
-        }
+        $getter = substr($this->accessor, 0, strpos($this->accessor, '('));
+        $this->getterRef = new \ReflectionMethod($this->class, $getter);
     }
 }

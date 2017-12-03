@@ -13,6 +13,7 @@ namespace Tests\TSantos\Serializer\Metadata\Driver;
 use Doctrine\Common\Annotations\AnnotationReader;
 use Metadata\Driver\DriverInterface;
 use TSantos\Serializer\Metadata\Driver\AnnotationDriver;
+use TSantos\Serializer\TypeGuesser;
 
 /**
  * Class AnnotationReaderTest
@@ -23,6 +24,6 @@ class AnnotationReaderTest extends AbstractDriverTest
 {
     public function createDriver(): DriverInterface
     {
-        return new AnnotationDriver(new AnnotationReader());
+        return new AnnotationDriver(new AnnotationReader(), new TypeGuesser());
     }
 }

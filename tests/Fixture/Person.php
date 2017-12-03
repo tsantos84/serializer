@@ -190,7 +190,7 @@ class Person
     /**
      * @return Person
      */
-    public function getFather(): Person
+    public function getFather(): ?Person
     {
         return $this->father;
     }
@@ -226,7 +226,7 @@ class Person
     /**
      * @return \DateTimeInterface
      */
-    public function getBirthday(): \DateTimeInterface
+    public function getBirthday(): ?\DateTimeInterface
     {
         return $this->birthday;
     }

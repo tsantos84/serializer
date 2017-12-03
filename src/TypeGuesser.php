@@ -25,7 +25,7 @@ class TypeGuesser
      * @param string $default
      * @return string
      */
-    public function guessProperty(PropertyMetadata $metadata, string $default): string
+    public function guessProperty(PropertyMetadata $metadata, string $default = 'string'): string
     {
         $ref = $metadata->reflection;
 
@@ -41,7 +41,7 @@ class TypeGuesser
      * @param string $default
      * @return string
      */
-    public function guessVirtualProperty(MethodMetadata $metadata, string $default): string
+    public function guessVirtualProperty(MethodMetadata $metadata, string $default = 'string'): string
     {
         return $this->guessFromMethod($metadata->reflection, $default);
     }
