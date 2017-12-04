@@ -18,6 +18,7 @@ use Tests\TSantos\Serializer\SerializerTestCase;
  * Class DeserializeArrayOfObjectTest
  *
  * @author Tales Santos <tales.augusto.santos@gmail.com>
+ * @runTestsInSeparateProcesses
  */
 class DeserializeCollectionsTest extends SerializerTestCase
 {
