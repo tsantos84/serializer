@@ -41,6 +41,7 @@ class SerializerClassCodeGenerator
 
 use TSantos\Serializer\AbstractSerializerClass;
 use TSantos\Serializer\Exception\InvalidArgumentException;
+use TSantos\Serializer\AbstractContext;
 use TSantos\Serializer\SerializationContext;
 use TSantos\Serializer\DeserializationContext;
 use {$metadata->name};
@@ -54,6 +55,8 @@ class $className extends AbstractSerializerClass
 {$this->serializeMethod($metadata)}
 
 {$this->deserializeMethod($metadata)}
+
+{$this->getExposedKeysMethod($metadata)}
 }
 
 EOF;
@@ -77,9 +80,10 @@ EOF;
     private function serializeMethodBody(ClassMetadata $metadata): string
     {
         $code = $this->renderInvalidTypeException($metadata, 'serialize');
-        $code .= <<<EOF
 
+        $code .= <<<EOF
         \$data = [];
+        \$exposedKeys = \$this->getExposedKeys(\$context);
         \$shouldSerializeNull = \$context->shouldSerializeNull();
 
 EOF;
@@ -108,7 +112,7 @@ EOF;
 
             $code .= <<<EOF
         #property '$property->name'
-        if (\$this->isPropertyGroupExposed('{$property->name}', \$context)) {
+        if (isset(\$exposedKeys['$property->name'])) {
             if (null !== \$value = $getter) {
                 {$this->renderSerializationValue($property, $value)}
             } elseif (\$shouldSerializeNull) {
@@ -135,7 +139,7 @@ EOF;
 
             $code .= <<<EOF
         #virtual property '$property->name'
-        if (\$this->isVirtualPropertyGroupExposed('{$property->name}', \$context)) {
+        if (isset(\$exposedKeys['$property->name'])) {
             if (null !== \$value = $getter) {
                 {$this->renderSerializationValue($property, $value)}
             } elseif (\$shouldSerializeNull) {
@@ -170,6 +174,11 @@ EOF;
     private function deserializeMethodBody(ClassMetadata $metadata): string
     {
         $code = $this->renderInvalidTypeException($metadata, 'deserialize');
+        $code .= <<<EOF
+        \$exposedKeys = \$this->getExposedKeys(\$context);
+
+EOF;
+
         $code .= $this->propertyDeserializationCode($metadata);
 
         $code .= <<<EOF
@@ -187,13 +196,11 @@ EOF;
         foreach ($metadata->propertyMetadata as $property) {
             $code .= <<<EOF
         #property '$property->name'
-        if (\$this->isPropertyGroupExposed('{$property->name}', \$context)) {
-            if (isset(\$data['$property->exposeAs'])) {
-                if (null !== \$value = \$data['$property->exposeAs']) {
-                    {$this->renderSetter($property)}
-                } else {
-                    \$object->$property->setter(null);
-                }
+        if (isset(\$data['$property->exposeAs']) && isset(\$exposedKeys['$property->name'])) {
+            if (null !== \$value = \$data['$property->exposeAs']) {
+                {$this->renderSetter($property)}
+            } else {
+                \$object->$property->setter(null);
             }
         }
 
@@ -255,5 +262,51 @@ EOF;
     private function getSimpleClassName(ClassMetadata $metadata)
     {
         return end(explode('\\', $metadata->reflection->getName()));
+    }
+
+    private function renderExposedGroups(ClassMetadata $metadata)
+    {
+        $groups = [];
+        foreach ($metadata->propertyMetadata as $property) {
+            foreach ($property->groups as $group) {
+                $groups[$group][] = $property->name;
+            }
+        }
+
+        foreach ($metadata->methodMetadata as $method) {
+            foreach ($method->groups as $group) {
+                $groups[$group][] = $method->name;
+            }
+        }
+
+        return var_export($groups, true);
+    }
+
+    private function getExposedKeysMethod(ClassMetadata $metadata)
+    {
+        return <<<EOF
+    /**
+     * @param AbstractContext \$context
+     * @return array
+     */
+    private function getExposedKeys(AbstractContext \$context)
+    {
+        static \$computedKeys;
+    
+        if (is_array(\$computedKeys)) {
+            return \$computedKeys;
+        }
+    
+        \$contextGroups = array_flip(\$context->getGroups());
+        \$exposedGroups = {$this->renderExposedGroups($metadata)};
+        \$computedKeys = array_flip(array_reduce(array_intersect_key(\$exposedGroups, \$contextGroups), function (\$g, \$v) {
+            array_push(\$g, ...\$v);
+            return \$g;
+        }, []));
+        
+        return \$computedKeys;
+    }
+EOF;
+
     }
 }

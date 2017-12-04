@@ -106,7 +106,7 @@ class SerializerClassLoader
                 break;
         }
 
-        return $this->instances[$fqn] = new $fqn($serializer, $classMetadata);
+        return $this->instances[$fqn] = new $fqn($serializer);
     }
 
     private function generate(ClassMetadata $classMetadata)
