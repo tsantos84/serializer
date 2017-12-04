@@ -12,6 +12,7 @@ namespace TSantos\Serializer;
 
 use Doctrine\Common\Annotations\AnnotationReader;
 use Doctrine\Common\Annotations\AnnotationRegistry;
+use Doctrine\Instantiator\Instantiator;
 use Metadata\Cache\CacheInterface;
 use Metadata\Cache\FileCache;
 use Metadata\Driver\DriverChain;
@@ -26,6 +27,8 @@ use TSantos\Serializer\Metadata\Driver\XmlDriver;
 use TSantos\Serializer\Metadata\Driver\YamlDriver;
 use TSantos\Serializer\Normalizer\DateTimeNormalizer;
 use TSantos\Serializer\Normalizer\IdentityNormalizer;
+use TSantos\Serializer\ObjectInstantiator\DoctrineInstantiator;
+use TSantos\Serializer\ObjectInstantiator\ObjectInstantiatorInterface;
 
 /**
  * Class Builder
@@ -43,7 +46,7 @@ class SerializerBuilder
     private $serializerClassDir;
     private $metadataDirs;
     private $serializerClassGenerateStrategy;
-    private $annotationReader;
+    private $instantiator;
 
     /**
      * Builder constructor.
@@ -156,6 +159,12 @@ class SerializerBuilder
         return $this;
     }
 
+    public function setObjectInstantiator(ObjectInstantiatorInterface $instantiator): SerializerBuilder
+    {
+        $this->instantiator = $instantiator;
+        return $this;
+    }
+
     /**
      * @return SerializerInterface
      */
@@ -190,10 +199,15 @@ class SerializerBuilder
             $this->serializerClassGenerateStrategy
         );
 
+        if (null === $this->instantiator) {
+            $this->instantiator = new DoctrineInstantiator(new Instantiator());
+        }
+
         $serializer = new Serializer(
             $classLoader,
             $this->encoders,
-            $this->normalizers
+            $this->normalizers,
+            $this->instantiator
         );
 
         return $serializer;

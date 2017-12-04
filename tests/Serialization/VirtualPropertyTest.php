@@ -8,10 +8,10 @@
  * file that was distributed with this source code.
  */
 
-namespace Tests\TSantos\Serializer;
+namespace Tests\TSantos\Serializer\Serialization;
 
 use Tests\TSantos\Serializer\Fixture\Person;
-
+use Tests\TSantos\Serializer\SerializerTestCase;
 
 /**
  * Class VirtualPropertyTest

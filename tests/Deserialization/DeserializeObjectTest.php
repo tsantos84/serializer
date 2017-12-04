@@ -8,10 +8,11 @@
  * file that was distributed with this source code.
  */
 
-namespace Tests\TSantos\Serializer;
+namespace Tests\TSantos\Serializer\Deserialization;
 
 use Tests\TSantos\Serializer\Fixture\Book;
 use Tests\TSantos\Serializer\Fixture\Person;
+use Tests\TSantos\Serializer\SerializerTestCase;
 
 /**
  * Class DeserializeObjectTest

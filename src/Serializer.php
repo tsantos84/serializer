@@ -9,7 +9,7 @@
  */
 
 namespace TSantos\Serializer;
-use Tests\TSantos\Serializer\Fixture\Person;
+use TSantos\Serializer\ObjectInstantiator\ObjectInstantiatorInterface;
 
 /**
  * Class Serializer
@@ -35,19 +35,27 @@ class Serializer implements SerializerInterface
     private $classLoader;
 
     /**
+     * @var ObjectInstantiatorInterface
+     */
+    private $instantiator;
+
+    /**
      * Serializer constructor.
      * @param SerializerClassLoader $classLoader
      * @param EncoderRegistryInterface $encoders
      * @param NormalizerRegistryInterface $normalizers
+     * @param ObjectInstantiatorInterface $instantiator
      */
     public function __construct(
         SerializerClassLoader $classLoader,
         EncoderRegistryInterface $encoders,
-        NormalizerRegistryInterface $normalizers
+        NormalizerRegistryInterface $normalizers,
+        ObjectInstantiatorInterface $instantiator
     ) {
         $this->classLoader = $classLoader;
         $this->encoders = $encoders;
         $this->normalizers = $normalizers;
+        $this->instantiator = $instantiator;
     }
 
     /**
@@ -113,8 +121,7 @@ class Serializer implements SerializerInterface
 
     public function denormalize(array $data, string $type, DeserializationContext $context = null)
     {
-        // @todo create an object constructor interface
-        $object = new $type();
+        $object = $this->instantiator->create($type, $data, $context);
 
         $objectSerializer = $this->classLoader->load($object, $this);
 
