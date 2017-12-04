@@ -261,7 +261,8 @@ EOF;
 
     private function getSimpleClassName(ClassMetadata $metadata)
     {
-        return end(explode('\\', $metadata->reflection->getName()));
+        $parts = explode('\\', $metadata->reflection->getName());
+        return end($parts);
     }
 
     private function renderExposedGroups(ClassMetadata $metadata)
