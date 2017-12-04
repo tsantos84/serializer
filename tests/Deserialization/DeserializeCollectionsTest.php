@@ -28,6 +28,7 @@ class DeserializeCollectionsTest extends SerializerTestCase
         $serializer = $this->createSerializer(array_merge(
             $this->createMapping(Person::class, [
                 'name' => ['type' => 'string'],
+                'colors' => ['type' => 'array<string>'],
                 'favouriteBook' => ['type' => Book::class]
             ]),
             $this->createMapping(Book::class, [
@@ -40,6 +41,7 @@ class DeserializeCollectionsTest extends SerializerTestCase
 [
     {
         "name":"Tales Santos",
+        "colors":["white","blue"],
         "favouriteBook": {
             "id":10,
             "name":"Design Patterns"
@@ -47,6 +49,7 @@ class DeserializeCollectionsTest extends SerializerTestCase
     },
     {
         "name":"Tales Santos",
+        "colors":["white","blue"],
         "favouriteBook": {
             "id":10,
             "name":"Design Patterns"
@@ -54,6 +57,7 @@ class DeserializeCollectionsTest extends SerializerTestCase
     },
     {
         "name":"Tales Santos",
+        "colors":["white","blue"],
         "favouriteBook": {
             "id":10,
             "name":"Design Patterns"
@@ -69,6 +73,7 @@ EOF;
 
         foreach ($persons as $person) {
             $this->assertEquals('Tales Santos', $person->getName());
+            $this->assertEquals(['white', 'blue'], $person->getColors());
             $this->assertInstanceOf(Book::class, $person->getFavouriteBook());
             $this->assertEquals(10, $person->getFavouriteBook()->getId());
             $this->assertEquals('Design Patterns', $person->getFavouriteBook()->getName());
@@ -91,5 +96,23 @@ EOF;
         $content = '[1,2,3,4,5,6,7,8,9,10]';
         $collection = $serializer->deserialize($content, 'array', 'json');
         $this->assertSame([1,2,3,4,5,6,7,8,9,10], $collection);
+    }
+
+    /** @test */
+    public function it_can_deserialize_an_array_of_strings()
+    {
+        $serializer = $this->createSerializer();
+        $content = '[1,2,3,4,5,6,7,8,9,10]';
+        $collection = $serializer->deserialize($content, 'array<string>', 'json');
+        $this->assertSame(["1", "2", "3", "4", "5", "6", "7", "8", "9", "10"], $collection);
+    }
+
+    /** @test */
+    public function it_can_deserialize_an_array_of_float()
+    {
+        $serializer = $this->createSerializer();
+        $content = '[1.1,2.2,3.3,4.4,5.5,6.6,7.7,8.8,9.9,10.11]';
+        $collection = $serializer->deserialize($content, 'array<float>', 'json');
+        $this->assertSame([1.1,2.2,3.3,4.4,5.5,6.6,7.7,8.8,9.9,10.11], $collection);
     }
 }

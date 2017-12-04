@@ -44,7 +44,7 @@ class Person
     /**
      * @var array
      */
-    private $colors = []; // = ['red', 'blue', 'white'];
+    private $colors = ['red', 'blue', 'white'];
 
     /**
      * @var \DateTimeInterface
@@ -167,6 +167,14 @@ class Person
     public function getColors(): array
     {
         return $this->colors;
+    }
+
+    /**
+     * @param array $colors
+     */
+    public function setColors(array $colors): void
+    {
+        $this->colors = $colors;
     }
 
     /**
