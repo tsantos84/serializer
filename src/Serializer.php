@@ -110,18 +110,23 @@ class Serializer implements SerializerInterface
 
     public function deserialize(string $content, string $type, string $format, DeserializationContext $context = null)
     {
-        if (null === $context) {
-            $context = new DeserializationContext();
-        }
-
         $data = $this->encoders->get($format)->decode($content);
-
         return $this->denormalize($data, $type, $context);
     }
 
     public function denormalize(array $data, string $type, DeserializationContext $context = null)
     {
-        $object = $this->instantiator->create($type, $data, $context);
+        if (null === $context) {
+            $context = new DeserializationContext();
+        }
+
+        if (!$context->isStarted()) {
+            $context->start();
+        }
+
+        if (null === $object = $context->getTarget()) {
+            $object = $this->instantiator->create($type, $data, $context);
+        }
 
         $objectSerializer = $this->classLoader->load($object, $this);
 

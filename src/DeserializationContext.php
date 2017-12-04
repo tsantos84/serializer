@@ -18,4 +18,24 @@ namespace TSantos\Serializer;
  */
 class DeserializationContext extends AbstractContext
 {
+    /**
+     * @var object
+     */
+    private $target;
+
+    /**
+     * @return object
+     */
+    public function getTarget()
+    {
+        return $this->target;
+    }
+
+    /**
+     * @param object $target
+     */
+    public function setTarget(object $target): void
+    {
+        $this->target = $target;
+    }
 }

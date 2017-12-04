@@ -20,7 +20,7 @@ use Tests\TSantos\Serializer\SerializerTestCase;
  * @author Tales Santos <tales.augusto.santos@gmail.com>
  * @runTestsInSeparateProcesses
  */
-class DeserializeObjectTest extends SerializerTestCase
+class DeserializeSimpleObjectTest extends SerializerTestCase
 {
     /** @test */
     public function it_can_deserialize_a_simple_object()
