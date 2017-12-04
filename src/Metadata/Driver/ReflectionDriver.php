@@ -48,6 +48,11 @@ class ReflectionDriver implements DriverInterface
                 continue;
             }
 
+            $setter = 'set' . ucfirst($property->getName());
+            if ($class->hasMethod($setter)) {
+                $propertyMetadata->setter = $setter;
+            }
+
             $propertyMetadata->type = $type;
             $metadata->addPropertyMetadata($propertyMetadata);
         }

@@ -24,4 +24,12 @@ interface SerializerClassInterface
      * @return array
      */
     public function serialize($object, SerializationContext $context): array;
+
+    /**
+     * @param $object
+     * @param array $data
+     * @param DeserializationContext $context
+     * @return mixed
+     */
+    public function deserialize($object, array $data, DeserializationContext $context);
 }

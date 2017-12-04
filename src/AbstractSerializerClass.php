@@ -30,10 +30,10 @@ abstract class AbstractSerializerClass implements SerializerClassInterface
 
     /**
      * @param string $property
-     * @param SerializationContext $context
+     * @param AbstractContext $context
      * @return bool
      */
-    protected function isPropertyGroupExposed(string $property, SerializationContext $context)
+    protected function isPropertyGroupExposed(string $property, AbstractContext $context)
     {
         $propertyGroups = $this->classMetadata->propertyMetadata[$property]->groups;
         $contextGroups = $context->getGroups();
@@ -42,10 +42,10 @@ abstract class AbstractSerializerClass implements SerializerClassInterface
 
     /**
      * @param string $property
-     * @param SerializationContext $context
+     * @param AbstractContext $context
      * @return bool
      */
-    protected function isVirtualPropertyGroupExposed(string $property, SerializationContext $context)
+    protected function isVirtualPropertyGroupExposed(string $property, AbstractContext $context)
     {
         $propertyGroups = $this->classMetadata->methodMetadata[$property]->groups;
         $contextGroups = $context->getGroups();

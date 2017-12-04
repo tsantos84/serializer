@@ -23,16 +23,16 @@ use TSantos\Serializer\TypeGuesser;
  */
 abstract class SerializerTestCase extends TestCase
 {
-    protected $cacheDir;
+    protected $classCacheDir;
 
     protected function setUp()
     {
-        $this->cacheDir = sys_get_temp_dir() . '/serializer/cache';
+        $this->classCacheDir = sys_get_temp_dir() . '/serializer/cache';
     }
 
     protected function tearDown()
     {
-        system('rm -rf ' . escapeshellarg($this->cacheDir), $retval);
+        system('rm -rf ' . escapeshellarg($this->classCacheDir), $retval);
     }
 
     /**
@@ -49,7 +49,7 @@ abstract class SerializerTestCase extends TestCase
 
         $builder
             ->setMetadataDriver(new InMemoryDriver($mapping, new TypeGuesser()))
-            ->setSerializerClassDir($this->cacheDir)
+            ->setSerializerClassDir($this->classCacheDir)
             ->setDebug(true);
 
         return $builder->build();

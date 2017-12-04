@@ -59,6 +59,7 @@ class PhpDriver extends AbstractFileDriver
             $property->accessor = $getter . '()';
             $property->getterRef = new \ReflectionMethod($class->getName(), $getter);
             $property->modifier = $map['modifier'] ?? null;
+            $property->setter = $map['setter'] ?? 'set' . ucfirst($name);
             $property->type = $map['type'] ?? $this->typeGuesser->guessProperty($property, 'string');
             $property->exposeAs = $map['exposeAs'] ?? $name;
             $property->groups = (array)($map['groups'] ?? ['Default']);
