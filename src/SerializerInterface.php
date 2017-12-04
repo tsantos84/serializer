@@ -36,4 +36,15 @@ interface SerializerInterface
      * @return array
      */
     public function normalize($data, SerializationContext $context = null);
+
+    /**
+     * Deserialize the given in object of type $type.
+     *
+     * @param string $content
+     * @param string $type
+     * @param string $format
+     * @param DeserializationContext|null $context
+     * @return object
+     */
+    public function deserialize(string $content, string $type, string $format, DeserializationContext $context = null);
 }

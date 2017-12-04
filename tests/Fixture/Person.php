@@ -74,7 +74,7 @@ class Person
      * @param string $name
      * @param bool $married
      */
-    public function __construct(int $id, string $name, bool $married)
+    public function __construct(int $id = null, string $name = null, bool $married = null)
     {
         $this->id = $id;
         $this->name = $name;

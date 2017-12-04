@@ -9,6 +9,7 @@
  */
 
 namespace TSantos\Serializer;
+use Tests\TSantos\Serializer\Fixture\Person;
 
 /**
  * Class Serializer
@@ -97,6 +98,31 @@ class Serializer implements SerializerInterface
         }
 
         return $this->serializeObject($data, $context);
+    }
+
+    public function deserialize(string $content, string $type, string $format, DeserializationContext $context = null)
+    {
+        if (null === $context) {
+            $context = new DeserializationContext();
+        }
+
+        $data = $this->encoders->get($format)->decode($content);
+
+        return $this->denormalize($data, $type, $context);
+    }
+
+    public function denormalize(array $data, string $type, DeserializationContext $context = null)
+    {
+        // @todo create an object constructor interface
+        $object = new $type();
+
+        $objectSerializer = $this->classLoader->load($object, $this);
+
+        $context->enter($object);
+        $object = $objectSerializer->deserialize($object, $data, $context);
+        $context->left();
+
+        return $object;
     }
 
     private function serializeObject($object, SerializationContext $context): array

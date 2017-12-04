@@ -25,6 +25,12 @@ interface EncoderInterface
     public function encode(array $data): string;
 
     /**
+     * @param string $content
+     * @return array
+     */
+    public function decode(string $content): array;
+
+    /**
      * @return string
      */
     public function getFormat(): string;

@@ -24,6 +24,7 @@ class PropertyMetadata extends BasePropertyMetadata
     public $accessor;
     /** @var  \ReflectionMethod */
     public $getterRef;
+    public $setter;
     public $exposeAs;
     public $groups;
     public $modifier;
@@ -35,6 +36,7 @@ class PropertyMetadata extends BasePropertyMetadata
             $this->class,
             $this->type,
             $this->accessor,
+            $this->setter,
             $this->exposeAs,
             $this->groups,
             $this->modifier
@@ -50,6 +52,7 @@ class PropertyMetadata extends BasePropertyMetadata
             $this->class,
             $this->type,
             $this->accessor,
+            $this->setter,
             $this->exposeAs,
             $this->groups,
             $this->modifier

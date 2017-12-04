@@ -30,7 +30,7 @@ class Book implements IdentifiableInterface
      * @param int $id
      * @param string $name
      */
-    public function __construct(int $id, string $name)
+    public function __construct(int $id = null, string $name = null)
     {
         $this->id = $id;
         $this->name = $name;
