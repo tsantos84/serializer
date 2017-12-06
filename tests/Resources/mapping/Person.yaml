@@ -14,6 +14,9 @@ Tests\TSantos\Serializer\Fixture\Person:
       modifier: "format('d/m/Y')"
     father:
       type: Tests\TSantos\Serializer\Fixture\Person
+    address:
+      type: Tests\TSantos\Serializer\Fixture\Address
+      readOnly: true
   virtualProperties:
     fullName:
       exposeAs: full_name

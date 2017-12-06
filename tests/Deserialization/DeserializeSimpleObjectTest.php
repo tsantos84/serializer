@@ -13,6 +13,7 @@ namespace Tests\TSantos\Serializer\Deserialization;
 use Tests\TSantos\Serializer\Fixture\Book;
 use Tests\TSantos\Serializer\Fixture\Person;
 use Tests\TSantos\Serializer\SerializerTestCase;
+use TSantos\Serializer\DeserializationContext;
 
 /**
  * Class DeserializeObjectTest
@@ -53,5 +54,32 @@ EOF;
         $this->assertInstanceOf(Book::class, $person->getFavouriteBook());
         $this->assertEquals(10, $person->getFavouriteBook()->getId());
         $this->assertEquals('Design Patterns', $person->getFavouriteBook()->getName());
+    }
+
+    /** @test */
+    public function it_cannot_deserialize_read_only_attributes()
+    {
+        $serializer = $this->createSerializer(array_merge(
+            $this->createMapping(Person::class, [
+                'id' => ['type' => 'integer', 'readOnly' => true],
+                'name' => ['type' => 'string'],
+            ])
+        ));
+
+        $content = <<<EOF
+{
+    "id":10,
+    "name":"Tales Augusto Santos"
+}
+EOF;
+        $person = new Person(10, 'Tales Santos');
+        $context = new DeserializationContext();
+        $context->setTarget($person);
+
+        /** @var Person $person */
+        $person = $serializer->deserialize($content, Person::class, 'json', $context);
+
+        $this->assertEquals('Tales Augusto Santos', $person->getName());
+        $this->assertEquals(10, $person->getId());
     }
 }

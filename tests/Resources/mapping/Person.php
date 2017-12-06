@@ -1,6 +1,7 @@
 <?php
 
 use Tests\TSantos\Serializer\AbstractSerializerClass;
+use Tests\TSantos\Serializer\Fixture\Address;
 use Tests\TSantos\Serializer\Fixture\Person;
 
 return [
@@ -24,6 +25,10 @@ return [
             ],
             'father' => [
                 'type' => Person::class
+            ],
+            'address' => [
+                'type' => Address::class,
+                'readOnly' => true
             ]
         ],
         'virtualProperties' => [

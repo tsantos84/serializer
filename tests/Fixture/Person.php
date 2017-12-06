@@ -56,6 +56,7 @@ class Person
 
     /**
      * @var Address
+     * @Serializer\ReadOnly
      */
     private $address;
 

@@ -193,6 +193,9 @@ EOF;
         $code = '';
 
         foreach ($metadata->propertyMetadata as $property) {
+            if ($property->readOnly) {
+                continue;
+            }
             $code .= <<<EOF
         #property '$property->name'
         if (isset(\$data['$property->exposeAs']) && isset(\$exposedKeys['$property->name'])) {

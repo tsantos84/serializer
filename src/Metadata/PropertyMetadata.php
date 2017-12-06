@@ -20,7 +20,7 @@ use Metadata\PropertyMetadata as BasePropertyMetadata;
  */
 class PropertyMetadata extends BasePropertyMetadata
 {
-    public $type;
+    public $type = 'string';
     public $accessor;
     /** @var  \ReflectionMethod */
     public $getterRef;
@@ -28,6 +28,7 @@ class PropertyMetadata extends BasePropertyMetadata
     public $exposeAs;
     public $groups;
     public $modifier;
+    public $readOnly = false;
 
     public function serialize()
     {
@@ -39,7 +40,8 @@ class PropertyMetadata extends BasePropertyMetadata
             $this->setter,
             $this->exposeAs,
             $this->groups,
-            $this->modifier
+            $this->modifier,
+            $this->readOnly
         ]);
     }
 
@@ -55,7 +57,8 @@ class PropertyMetadata extends BasePropertyMetadata
             $this->setter,
             $this->exposeAs,
             $this->groups,
-            $this->modifier
+            $this->modifier,
+            $this->readOnly
         ) = $unserialized;
 
         $getter = substr($this->accessor, 0, strpos($this->accessor, '('));
