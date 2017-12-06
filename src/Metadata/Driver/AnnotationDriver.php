@@ -12,12 +12,13 @@ namespace TSantos\Serializer\Metadata\Driver;
 
 use Doctrine\Common\Annotations\AnnotationReader;
 use Metadata\Driver\AdvancedDriverInterface;
-use Metadata\MergeableClassMetadata;
+use TSantos\Serializer\Mapping\BaseClass;
 use TSantos\Serializer\Mapping\ExposeAs;
 use TSantos\Serializer\Mapping\Getter;
 use TSantos\Serializer\Mapping\Groups;
 use TSantos\Serializer\Mapping\Modifier;
 use TSantos\Serializer\Mapping\Type;
+use TSantos\Serializer\Metadata\ClassMetadata;
 use TSantos\Serializer\Metadata\PropertyMetadata;
 use TSantos\Serializer\Metadata\VirtualPropertyMetadata;
 use TSantos\Serializer\TypeGuesser;
@@ -56,7 +57,15 @@ class AnnotationDriver implements AdvancedDriverInterface
 
     public function loadMetadataForClass(\ReflectionClass $class)
     {
-        $metadata = new MergeableClassMetadata($className = $class->name);
+        $metadata = new ClassMetadata($className = $class->name);
+
+        foreach ($this->reader->getClassAnnotations($class) as $annotation) {
+            switch (true) {
+                case $annotation instanceof BaseClass:
+                    $metadata->baseClass = $annotation->name;
+                    break;
+            }
+        }
 
         foreach ($class->getProperties() as $property) {
             if (count($annotations = $this->reader->getPropertyAnnotations($property))) {

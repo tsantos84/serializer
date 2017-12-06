@@ -13,6 +13,7 @@ namespace TSantos\Serializer\Metadata\Driver;
 use Metadata\Driver\DriverInterface;
 use Metadata\MergeableClassMetadata;
 use TSantos\Serializer\Exception\MappingException;
+use TSantos\Serializer\Metadata\ClassMetadata;
 use TSantos\Serializer\Metadata\PropertyMetadata;
 use TSantos\Serializer\Metadata\VirtualPropertyMetadata;
 use TSantos\Serializer\TypeGuesser;
@@ -53,7 +54,11 @@ class InMemoryDriver implements DriverInterface
 
         $mapping = $this->config[$class->name];
 
-        $metadata = new MergeableClassMetadata($class->getName());
+        $metadata = new ClassMetadata($class->getName());
+
+        if (isset($mapping['baseClass'])) {
+            $metadata->baseClass = $mapping['baseClass'];
+        }
 
         foreach ($mapping['properties'] ?? [] as $name => $map) {
             $property = new PropertyMetadata($class->getName(), $name);
@@ -70,7 +75,7 @@ class InMemoryDriver implements DriverInterface
             $metadata->addPropertyMetadata($property);
         }
 
-        foreach ($mapping['virtual_properties'] ?? [] as $name => $map) {
+        foreach ($mapping['virtualProperties'] ?? [] as $name => $map) {
             $method = $map['method'] ?? 'get' . ucfirst($name);
 
             $property = new VirtualPropertyMetadata($class->name, $method);
