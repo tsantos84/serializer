@@ -22,15 +22,6 @@ use Tests\TSantos\Serializer\Fixture\Person;
  */
 class NormalizationTest extends SerializerTestCase
 {
-    protected function setUp()
-    {
-        $this->classCacheDir = __DIR__ . '/var/cache/classes';
-    }
-
-    protected function tearDown()
-    {
-    }
-
     public function testSerializeWithIdentifiableNormalization()
     {
         $serializer = $this->createSerializer(array_merge(

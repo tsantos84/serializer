@@ -23,16 +23,15 @@ use TSantos\Serializer\TypeGuesser;
  */
 abstract class SerializerTestCase extends TestCase
 {
-    protected $classCacheDir;
+    protected $classCacheDir = __DIR__ . '/../var/classes';
 
-    protected function setUp()
-    {
-        $this->classCacheDir = sys_get_temp_dir() . '/serializer/cache';
-    }
+    protected $clearCache = true;
 
     protected function tearDown()
     {
-        system('rm -rf ' . escapeshellarg($this->classCacheDir), $retval);
+        if ($this->clearCache && is_dir($dir = __DIR__ . '/../var')) {
+            system('rm -rf ' . escapeshellarg($dir), $retval);
+        }
     }
 
     /**
