@@ -17,6 +17,7 @@ use TSantos\Serializer\Mapping\ExposeAs;
 use TSantos\Serializer\Mapping\Getter;
 use TSantos\Serializer\Mapping\Groups;
 use TSantos\Serializer\Mapping\Modifier;
+use TSantos\Serializer\Mapping\ReadOnly;
 use TSantos\Serializer\Mapping\Type;
 use TSantos\Serializer\Metadata\ClassMetadata;
 use TSantos\Serializer\Metadata\PropertyMetadata;
@@ -94,6 +95,9 @@ class AnnotationDriver implements AdvancedDriverInterface
                             break;
                         case $annotation instanceof Modifier:
                             $propertyMetadata->modifier = $annotation->name;
+                            break;
+                        case $annotation instanceof ReadOnly:
+                            $propertyMetadata->readOnly = true;
                             break;
                     }
                 }

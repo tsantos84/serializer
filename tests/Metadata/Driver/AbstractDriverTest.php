@@ -29,13 +29,15 @@ abstract class AbstractDriverTest extends TestCase
 
         /** @var ClassMetadata $m */
         $m = $driver->loadMetadataForClass(new \ReflectionClass(Person::class));
+        $pm = $m->propertyMetadata;
 
         $this->assertInstanceOf(ClassMetadata::class, $m);
-        $this->assertEquals('integer', $m->propertyMetadata['id']->type);
-        $this->assertEquals('string', $m->propertyMetadata['name']->type);
-        $this->assertEquals(Person::class, $m->propertyMetadata['father']->type);
-        $this->assertEquals("format('d/m/Y')", $m->propertyMetadata['birthday']->modifier);
+        $this->assertEquals('integer', $pm['id']->type);
+        $this->assertEquals('string', $pm['name']->type);
+        $this->assertEquals(Person::class, $pm['father']->type);
+        $this->assertEquals("format('d/m/Y')", $pm['birthday']->modifier);
         $this->assertEquals('Tests\TSantos\Serializer\AbstractSerializerClass', $m->baseClass);
+        $this->assertTrue($pm['address']->readOnly);
     }
 
     /** @test */

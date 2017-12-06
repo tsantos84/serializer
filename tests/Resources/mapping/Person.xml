@@ -15,6 +15,7 @@
         <property name="married" type="boolean" getter="isMarried"/>
         <property name="birthday" type="DateTime" modifier="format('d/m/Y')" />
         <property name="father" type="Tests\TSantos\Serializer\Fixture\Person" />
+        <property name="address" type="Tests\TSantos\Serializer\Fixture\Address" read-only="true" />
         <virtual_property name="fullName" expose-as="full_name" />
     </class>
 </serializer>
