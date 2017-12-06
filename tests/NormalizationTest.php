@@ -22,15 +22,24 @@ use Tests\TSantos\Serializer\Fixture\Person;
  */
 class NormalizationTest extends SerializerTestCase
 {
+    protected function setUp()
+    {
+        $this->classCacheDir = __DIR__ . '/var/cache/classes';
+    }
+
+    protected function tearDown()
+    {
+    }
+
     public function testSerializeWithIdentifiableNormalization()
     {
         $serializer = $this->createSerializer(array_merge(
-            $this->createMapping(Person::class, [], [
+            $this->createMapping(Person::class, [
                 'id' => ['type' => 'integer'],
                 'name' => ['type' => 'string'],
                 'favouriteBook' => ['type' => Book::class]
             ]),
-            $this->createMapping(Book::class, [], [
+            $this->createMapping(Book::class, [
                 'id' => ['type' => 'integer'],
                 'name' => ['type' => 'string']
             ])

@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!--
+  ~ This file is part of the TSantos Serializer package.
+  ~
+  ~ (c) Tales Santos <tales.augusto.santos@gmail.com>
+  ~
+  ~ For the full copyright and license information, please view the LICENSE
+  ~ file that was distributed with this source code.
+  -->
+
+<serializer>
+    <class name="Tests\TSantos\Serializer\Fixture\Person" base-class="Tests\TSantos\Serializer\AbstractSerializerClass">
+        <property name="id" type="integer" />
+        <property name="name" type="string" expose-as="nome" />
+        <property name="married" type="boolean" getter="isMarried"/>
+        <property name="birthday" type="DateTime" modifier="format('d/m/Y')" />
+        <property name="father" type="Tests\TSantos\Serializer\Fixture\Person" />
+        <virtual_property name="fullName" expose-as="full_name" />
+    </class>
+</serializer>

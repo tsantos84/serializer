@@ -60,7 +60,7 @@ abstract class SerializerTestCase extends TestCase
         return [
             $type => [
                 'properties' => $properties,
-                'virtual_properties' => $virtualProperties
+                'virtualProperties' => $virtualProperties
             ]
         ];
     }

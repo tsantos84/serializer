@@ -4,6 +4,7 @@ namespace TSantos\Serializer\Metadata\Driver;
 
 use Metadata\Driver\DriverInterface;
 use Metadata\MergeableClassMetadata;
+use TSantos\Serializer\Metadata\ClassMetadata;
 use TSantos\Serializer\Metadata\PropertyMetadata;
 use TSantos\Serializer\Metadata\VirtualPropertyMetadata;
 use TSantos\Serializer\TypeGuesser;
@@ -28,7 +29,7 @@ class ReflectionDriver implements DriverInterface
 
     public function loadMetadataForClass(\ReflectionClass $class)
     {
-        $metadata = new MergeableClassMetadata($name = $class->name);
+        $metadata = new ClassMetadata($name = $class->name);
 
         /** @var \ReflectionProperty $property */
         foreach ($class->getProperties() as $property) {

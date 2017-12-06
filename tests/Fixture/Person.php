@@ -16,6 +16,7 @@ use TSantos\Serializer\Mapping as Serializer;
  * Class Person
  *
  * @author Tales Santos <tales.augusto.santos@gmail.com>
+ * @Serializer\BaseClass("Tests\TSantos\Serializer\AbstractSerializerClass")
  */
 class Person
 {
@@ -38,6 +39,7 @@ class Person
 
     /**
      * @var bool
+     * @Serializer\Getter("isMarried")
      */
     private $married;
 

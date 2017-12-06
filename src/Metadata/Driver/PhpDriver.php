@@ -14,6 +14,7 @@ use Metadata\Driver\AbstractFileDriver;
 use Metadata\Driver\FileLocatorInterface;
 use Metadata\MergeableClassMetadata;
 use TSantos\Serializer\Exception\MappingException;
+use TSantos\Serializer\Metadata\ClassMetadata;
 use TSantos\Serializer\Metadata\PropertyMetadata;
 use TSantos\Serializer\Metadata\VirtualPropertyMetadata;
 use TSantos\Serializer\TypeGuesser;
@@ -50,7 +51,11 @@ class PhpDriver extends AbstractFileDriver
 
         $mapping = $config[$class->name];
 
-        $metadata = new MergeableClassMetadata($class->getName());
+        $metadata = new ClassMetadata($class->getName());
+
+        if (isset($mapping['baseClass'])) {
+            $metadata->baseClass = $mapping['baseClass'];
+        }
 
         foreach ($mapping['properties'] ?? [] as $name => $map) {
             $property = new PropertyMetadata($class->getName(), $name);
@@ -67,7 +72,7 @@ class PhpDriver extends AbstractFileDriver
             $metadata->addPropertyMetadata($property);
         }
 
-        foreach ($mapping['virtual_properties'] ?? [] as $name => $map) {
+        foreach ($mapping['virtualProperties'] ?? [] as $name => $map) {
             $method = $map['method'] ?? 'get' . ucfirst($name);
 
             $property = new VirtualPropertyMetadata($class->name, $method);
