@@ -67,7 +67,7 @@ class DeserializeCollectionsTest extends SerializerTestCase
 EOF;
 
         /** @var Person[] $persons */
-        $persons = $serializer->deserialize($content, sprintf('array<%s>', Person::class), 'json');
+        $persons = $serializer->deserialize($content, sprintf('array<%s>', Person::class));
 
         $this->assertCount(3, $persons);
 
@@ -85,7 +85,7 @@ EOF;
     {
         $serializer = $this->createSerializer();
         $content = '[1,2,3,4,5,6,7,8,9,10]';
-        $collection = $serializer->deserialize($content, 'array<integer>', 'json');
+        $collection = $serializer->deserialize($content, 'array<integer>');
         $this->assertSame([1,2,3,4,5,6,7,8,9,10], $collection);
     }
 
@@ -94,7 +94,7 @@ EOF;
     {
         $serializer = $this->createSerializer();
         $content = '[1,2,3,4,5,6,7,8,9,10]';
-        $collection = $serializer->deserialize($content, 'array', 'json');
+        $collection = $serializer->deserialize($content, 'array');
         $this->assertSame([1,2,3,4,5,6,7,8,9,10], $collection);
     }
 
@@ -103,7 +103,7 @@ EOF;
     {
         $serializer = $this->createSerializer();
         $content = '[1,2,3,4,5,6,7,8,9,10]';
-        $collection = $serializer->deserialize($content, 'array<string>', 'json');
+        $collection = $serializer->deserialize($content, 'array<string>');
         $this->assertSame(["1", "2", "3", "4", "5", "6", "7", "8", "9", "10"], $collection);
     }
 
@@ -112,7 +112,7 @@ EOF;
     {
         $serializer = $this->createSerializer();
         $content = '[1.1,2.2,3.3,4.4,5.5,6.6,7.7,8.8,9.9,10.11]';
-        $collection = $serializer->deserialize($content, 'array<float>', 'json');
+        $collection = $serializer->deserialize($content, 'array<float>');
         $this->assertSame([1.1,2.2,3.3,4.4,5.5,6.6,7.7,8.8,9.9,10.11], $collection);
     }
 }

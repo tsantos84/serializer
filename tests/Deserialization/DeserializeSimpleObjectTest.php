@@ -48,7 +48,7 @@ class DeserializeSimpleObjectTest extends SerializerTestCase
 EOF;
 
         /** @var Person $person */
-        $person = $serializer->deserialize($content, Person::class, 'json');
+        $person = $serializer->deserialize($content, Person::class);
 
         $this->assertEquals('Tales Santos', $person->getName());
         $this->assertInstanceOf(Book::class, $person->getFavouriteBook());
@@ -77,7 +77,7 @@ EOF;
         $context->setTarget($person);
 
         /** @var Person $person */
-        $person = $serializer->deserialize($content, Person::class, 'json', $context);
+        $person = $serializer->deserialize($content, Person::class, $context);
 
         $this->assertEquals('Tales Augusto Santos', $person->getName());
         $this->assertEquals(10, $person->getId());

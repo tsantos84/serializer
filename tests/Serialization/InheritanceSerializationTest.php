@@ -39,6 +39,6 @@ class InheritanceSerializationTest extends SerializerTestCase
 
         $expected = '{"name":"Tales","position":"Developer"}';
 
-        $this->assertEquals($expected, $serializer->serialize($employee, 'json'));
+        $this->assertEquals($expected, $serializer->serialize($employee));
     }
 }

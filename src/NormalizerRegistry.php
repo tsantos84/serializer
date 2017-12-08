@@ -10,6 +10,7 @@
 
 namespace TSantos\Serializer;
 
+use TSantos\Serializer\Normalizer\DenormalizerInterface;
 use TSantos\Serializer\Normalizer\NormalizerInterface;
 
 /**
@@ -20,28 +21,42 @@ use TSantos\Serializer\Normalizer\NormalizerInterface;
 class NormalizerRegistry implements NormalizerRegistryInterface
 {
     /**
-     * @var NormalizerInterface[]
+     * @var array
      */
     private $normalizers = [];
 
     /**
-     * @param NormalizerInterface $type
+     * @param $normalizer
      * @return $this
      */
-    public function add(NormalizerInterface $type)
+    public function add($normalizer)
     {
-        $this->normalizers[] = $type;
+        $this->normalizers[] = $normalizer;
         return $this;
     }
 
     /**
      * @inheritdoc
      */
-    public function get($data, SerializationContext $context): ?NormalizerInterface
+    public function getNormalizer($data, SerializationContext $context): ?NormalizerInterface
     {
         foreach ($this->normalizers as $normalizer) {
-            if ($normalizer->supportsNormalization($data, $context)) {
+            if ($normalizer instanceof NormalizerInterface && $normalizer->supportsNormalization($data, $context)) {
                 return $normalizer;
+            }
+        }
+
+        return null;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function getDenormalizer($data, string $type, DeserializationContext $context): ?DenormalizerInterface
+    {
+        foreach ($this->normalizers as $denormalizer) {
+            if ($denormalizer instanceof DenormalizerInterface && $denormalizer->supportsDenormalization($type, $data, $context)) {
+                return $denormalizer;
             }
         }
 

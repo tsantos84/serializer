@@ -22,11 +22,10 @@ interface SerializerInterface
      * Converts any value to the given format.
      *
      * @param mixed $data
-     * @param string $format
      * @param SerializationContext $context
      * @return string
      */
-    public function serialize($data, string $format, SerializationContext $context = null): string;
+    public function serialize($data, SerializationContext $context = null): string;
 
     /**
      * Normalize a data by converting it from some type to array.
@@ -44,11 +43,10 @@ interface SerializerInterface
      *
      * @param string $content
      * @param string $type
-     * @param string $format
      * @param DeserializationContext|null $context
      * @return object
      */
-    public function deserialize(string $content, string $type, string $format, DeserializationContext $context = null);
+    public function deserialize(string $content, string $type, DeserializationContext $context = null);
 
     /**
      * Denormalize a data by converting it from array to some type.
@@ -60,5 +58,5 @@ interface SerializerInterface
      * @param DeserializationContext|null $context
      * @return mixed
      */
-    public function denormalize(array $data, string $type, DeserializationContext $context = null);
+    public function denormalize($data, string $type, DeserializationContext $context = null);
 }

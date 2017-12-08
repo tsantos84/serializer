@@ -34,6 +34,6 @@ class SerializationWithDataHandler extends SerializerTestCase
 
         $expected = '{"color":"white","ports":4,"owner":"Tales","tires":{"FL":"good","FR":"medium","BL":"good","BR":"bad"}}';
 
-        $this->assertEquals($expected, $serializer->serialize($person, 'json'));
+        $this->assertEquals($expected, $serializer->serialize($person));
     }
 }

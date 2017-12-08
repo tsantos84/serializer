@@ -10,6 +10,7 @@
 
 namespace TSantos\Serializer\Normalizer;
 
+use TSantos\Serializer\DeserializationContext;
 use TSantos\Serializer\Exception\InvalidArgumentException;
 use TSantos\Serializer\SerializationContext;
 
@@ -18,7 +19,7 @@ use TSantos\Serializer\SerializationContext;
  *
  * @author Tales Santos <tales.augusto.santos@gmail.com>
  */
-class DateTimeNormalizer implements NormalizerInterface
+class DateTimeNormalizer implements NormalizerInterface, DenormalizerInterface
 {
     /**
      * @var string
@@ -46,5 +47,16 @@ class DateTimeNormalizer implements NormalizerInterface
     public function supportsNormalization($data, SerializationContext $context): bool
     {
         return $data instanceof \DateTimeInterface;
+    }
+
+    public function denormalize($data, DeserializationContext $context)
+    {
+        var_dump($data);
+        return \DateTime::createFromFormat($this->format, $data);
+    }
+
+    public function supportsDenormalization(string $type, $data, DeserializationContext $context): bool
+    {
+        return $type === \DateTime::class || $type === \DateTimeInterface::class;
     }
 }

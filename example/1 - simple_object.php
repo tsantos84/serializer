@@ -18,6 +18,6 @@ $person->setName('Tales');
 $person->setLastName('Santos');
 $person->setMarried(true);
 
-$json = $serializer->serialize($person, 'json');
+$json = $serializer->serialize($person);
 
 echo $json;

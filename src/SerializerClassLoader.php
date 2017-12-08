@@ -65,15 +65,16 @@ class SerializerClassLoader
     }
 
     /**
-     * @param object $object
+     * @param string $class
+     * @param SerializerInterface $serializer
      * @return SerializerClassInterface
      */
-    public function load($object, SerializerInterface $serializer): SerializerClassInterface
+    public function load(string $class, SerializerInterface $serializer): SerializerClassInterface
     {
-        $classMetadata = $this->metadataFactory->getMetadataForClass(get_class($object));
+        $classMetadata = $this->metadataFactory->getMetadataForClass($class);
 
         if (null === $classMetadata) {
-            throw new \RuntimeException('No mapping file was found for class ' . get_class($object) . '. Did you configure the correct paths for serializer?');
+            throw new \RuntimeException('No mapping file was found for class ' . $class . '. Did you configure the correct paths for serializer?');
         }
 
         $fqn = $this->getClassName($classMetadata);

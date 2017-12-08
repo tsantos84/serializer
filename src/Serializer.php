@@ -10,6 +10,7 @@
 
 namespace TSantos\Serializer;
 
+use TSantos\Serializer\Encoder\EncoderInterface;
 use TSantos\Serializer\ObjectInstantiator\ObjectInstantiatorInterface;
 
 /**
@@ -21,9 +22,9 @@ use TSantos\Serializer\ObjectInstantiator\ObjectInstantiatorInterface;
 class Serializer implements SerializerInterface
 {
     /**
-     * @var EncoderRegistryInterface
+     * @var EncoderInterface
      */
-    private $encoders;
+    private $encoder;
 
     /**
      * @var NormalizerRegistryInterface[]
@@ -43,18 +44,18 @@ class Serializer implements SerializerInterface
     /**
      * Serializer constructor.
      * @param SerializerClassLoader $classLoader
-     * @param EncoderRegistryInterface $encoders
+     * @param EncoderInterface $encoder
      * @param NormalizerRegistryInterface $normalizers
      * @param ObjectInstantiatorInterface $instantiator
      */
     public function __construct(
         SerializerClassLoader $classLoader,
-        EncoderRegistryInterface $encoders,
+        EncoderInterface $encoder,
         NormalizerRegistryInterface $normalizers,
         ObjectInstantiatorInterface $instantiator
     ) {
         $this->classLoader = $classLoader;
-        $this->encoders = $encoders;
+        $this->encoder = $encoder;
         $this->normalizers = $normalizers;
         $this->instantiator = $instantiator;
     }
@@ -62,15 +63,13 @@ class Serializer implements SerializerInterface
     /**
      * @inheritdoc
      */
-    public function serialize($data, string $format, SerializationContext $context = null) : string
+    public function serialize($data, SerializationContext $context = null) : string
     {
-        $encoder = $this->encoders->get($format);
-
         if (is_null($data) || is_scalar($data)) {
             return $this->normalize($data, $context);
         }
 
-        return $encoder->encode($this->normalize($data, $context));
+        return $this->encoder->encode($this->normalize($data, $context));
     }
 
     /**
@@ -94,7 +93,7 @@ class Serializer implements SerializerInterface
             return [];
         }
 
-        if (null !== $normalizer = $this->normalizers->get($data, $context)) {
+        if (null !== $normalizer = $this->normalizers->getNormalizer($data, $context)) {
             return $normalizer->normalize($data, $context);
         }
 
@@ -110,7 +109,7 @@ class Serializer implements SerializerInterface
             return $this->normalize($data->jsonSerialize(), $context);
         }
 
-        $objectSerializer = $this->classLoader->load($data, $this);
+        $objectSerializer = $this->classLoader->load(get_class($data), $this);
 
         $context->enter($data);
         $array = $objectSerializer->serialize($data, $context);
@@ -122,16 +121,16 @@ class Serializer implements SerializerInterface
     /**
      * @inheritdoc
      */
-    public function deserialize(string $content, string $type, string $format, DeserializationContext $context = null)
+    public function deserialize(string $content, string $type, DeserializationContext $context = null)
     {
-        $data = $this->encoders->get($format)->decode($content);
+        $data = $this->encoder->decode($content);
         return $this->denormalize($data, $type, $context);
     }
 
     /**
      * @inheritdoc
      */
-    public function denormalize(array $data, string $type, DeserializationContext $context = null)
+    public function denormalize($data, string $type, DeserializationContext $context = null)
     {
         if (null === $context) {
             $context = new DeserializationContext();
@@ -141,32 +140,34 @@ class Serializer implements SerializerInterface
             $context->start();
         }
 
-        // denormalize a collection of objects
-        if (preg_match('/array(\<(.+)\>)?/', $type, $matches)) {
+        if (null !== $normalizer = $this->normalizers->getDenormalizer($data, $type, $context)) {
+            return $normalizer->denormalize($data, $context);
+        }
 
+        if ($type === 'array') {
             if (empty($data)) {
                 return [];
             }
-
-            // untyped collection, guess the type through the first item
-            if (count($matches) === 1) {
-                $type = is_scalar(reset($data)) ? gettype(reset($data)) : 'string';
-                return $this->denormalizeCollection($data, $type, $context);
+            $type = is_scalar(reset($data)) ? gettype(reset($data)) : 'string';
+            return $this->denormalizeCollection($data, $type, $context);
+        } elseif (false === $open = strpos($type, '<')) {
+            if (null === $object = $context->getTarget()) {
+                $object = $this->instantiator->create($type, $data, $context);
             }
 
-            return $this->denormalizeCollection($data, $matches[2], $context);
+            $objectSerializer = $this->classLoader->load($type, $this);
+            $context->enter($object);
+            $object = $objectSerializer->deserialize($object, $data, $context);
+            $context->left();
+            return $object;
+        } else {
+            if (empty($data)) {
+                return [];
+            }
+            $close = strpos($type, '>', -1) - 6;
+            $innerType = substr($type, $open + 1, $close);
+            return $this->denormalizeCollection($data, $innerType, $context);
         }
-
-        if (null === $object = $context->getTarget()) {
-            $object = $this->instantiator->create($type, $data, $context);
-        }
-
-        $objectSerializer = $this->classLoader->load($object, $this);
-        $context->enter($object);
-        $object = $objectSerializer->deserialize($object, $data, $context);
-        $context->left();
-
-        return $object;
     }
 
     private function normalizeCollection($data, SerializationContext $context): array
@@ -195,6 +196,9 @@ class Serializer implements SerializerInterface
             case 'string':
             case 'float':
             case 'double':
+                if ($type === 'boolean') {
+                    $type = 'bool';
+                }
                 if ($type === 'integer') {
                     $type = 'int';
                 }

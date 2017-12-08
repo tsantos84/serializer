@@ -27,6 +27,7 @@ use TSantos\Serializer\Metadata\Driver\XmlDriver;
 use TSantos\Serializer\Metadata\Driver\YamlDriver;
 use TSantos\Serializer\Normalizer\DateTimeNormalizer;
 use TSantos\Serializer\Normalizer\IdentityNormalizer;
+use TSantos\Serializer\Normalizer\NormalizerInterface;
 use TSantos\Serializer\ObjectInstantiator\DoctrineInstantiator;
 use TSantos\Serializer\ObjectInstantiator\ObjectInstantiatorInterface;
 
@@ -47,6 +48,7 @@ class SerializerBuilder
     private $metadataDirs;
     private $serializerClassGenerateStrategy;
     private $instantiator;
+    private $format = 'json';
 
     /**
      * Builder constructor.
@@ -117,6 +119,12 @@ class SerializerBuilder
         return $this;
     }
 
+    public function addNormalizer($normalizer): SerializerBuilder
+    {
+        $this->normalizers->add($normalizer);
+        return $this;
+    }
+
     public function addDefaultNormalizers(): SerializerBuilder
     {
         $this->normalizers->add(new DateTimeNormalizer());
@@ -166,6 +174,16 @@ class SerializerBuilder
     }
 
     /**
+     * @param string $format
+     * @return SerializerBuilder
+     */
+    public function setFormat(string $format): SerializerBuilder
+    {
+        $this->format = $format;
+        return $this;
+    }
+
+    /**
      * @return SerializerInterface
      */
     public function build(): SerializerInterface
@@ -205,7 +223,7 @@ class SerializerBuilder
 
         $serializer = new Serializer(
             $classLoader,
-            $this->encoders,
+            $this->encoders->get($this->format),
             $this->normalizers,
             $this->instantiator
         );

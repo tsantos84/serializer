@@ -32,6 +32,6 @@ class CircularReferencePreventionTest extends SerializerTestCase
             'father' => ['type' => Person::class]
         ]));
 
-        $this->assertEquals('{"name":"Tales","father":[]}', $serializer->serialize($person, 'json'));
+        $this->assertEquals('{"name":"Tales","father":[]}', $serializer->serialize($person));
     }
 }

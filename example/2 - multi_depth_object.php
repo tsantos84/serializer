@@ -22,6 +22,6 @@ $address->setStreet('Afonso Pena');
 $address->setCoordinates(new Coordinates(10.5, 20.9));
 $person->setAddress($address);
 
-$json = $serializer->serialize($person, 'json');
+$json = $serializer->serialize($person);
 
 echo $json;

@@ -24,14 +24,14 @@ class ScalarTypesSerializationTest extends SerializerTestCase
     public function testSerializeWithScalarValue()
     {
         $serializer = $this->createSerializer([]);
-        $json = $serializer->serialize(1, 'json');
+        $json = $serializer->serialize(1);
         $this->assertEquals(1, $json);
     }
 
     public function testSerializeWithSimpleArray()
     {
         $serializer = $this->createSerializer([]);
-        $json = $serializer->serialize([1, 2, 3, "four"], 'json');
+        $json = $serializer->serialize([1, 2, 3, "four"]);
         $this->assertEquals(json_encode([1, 2, 3, "four"]), $json);
     }
 }
