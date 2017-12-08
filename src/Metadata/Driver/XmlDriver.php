@@ -77,7 +77,7 @@ class XmlDriver extends AbstractFileDriver
             $property->type = $attribs['type'] ?? $this->typeGuesser->guessProperty($property, 'string');
             $property->exposeAs = $attribs['expose-as'] ?? $name;
             $property->groups = $attribs['groups'] ?? ['Default'];
-            $property->readOnly = strtolower($attribs['read-only']) === 'true' ?? false;
+            $property->readOnly = strtolower($attribs['read-only'] ?? '') === 'true' ?? false;
 
             $metadata->addPropertyMetadata($property);
         }
