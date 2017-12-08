@@ -26,21 +26,19 @@ Flex recipe: comming soon!
 
 ## Usage
 
-The best way to get start with `Tsantos Serializer` is by using the builder. With a few configurations you are ready to serialize your data:
+The best way to get start with `TSantos Serializer` is by using the builder. With a few configurations you are ready to serialize your data:
 
 ```php
 $builder = new SerializerBuilder();
 
-$serializer = $builder
-  ->addMetadataDir('My\Namespace\Entity', 'path/to/my/mapping')
-  ->build();
+$serializer = $builder->build();
 
 $person = new Person(100, 'Tales Santos');
 
-echo $serializer->serialize($person, 'json'); // {"id":100, "name":"Tales Santos"}
+echo $serializer->serialize($person); // {"id":100, "name":"Tales Santos"}
 ```
 
-Unlike other libraries, all properties should either be `public` or have a public `getter` method. 
+Unlike other libraries, all properties should either be `public` or have a public `getter` and `setter` methods.
 
 ```php
 # path/to/my/entities
@@ -53,11 +51,15 @@ class Person
     public $age;
     private $colors;
 
+    public function setName(string $name) { $this->name = $name; }
+
     /** @return integer */
     public function getAge(): int { return $this->age; }
+    public function setAge(int $age) { $this->age = $age; }
 
     /** @return array */
     public function getColors(): array { return $this->colors; }
+    public function setColors(array $colors) { $this->colors = $colors; }
 }
 ```
 
@@ -65,10 +67,10 @@ class Person
 
 Features currently supported by TSantos Serializer:
 
-* Supports `PHP`, `YAML`, `XML`, `Reflection` and `InMemory (array)` mapping formats
+* Supports `PHP`, `YAML`, `XML`, `Reflection`, `Annotations` and `InMemory (array)` mapping formats
 * Supports `JSON` encoders (output)
-* Serializes objects of any depth
-* Custom `getters`
+* (De-)serializes objects of any depth
+* Custom `getters` and `setters`
 * Virtual properties
 * Properties grouping
 
@@ -76,8 +78,6 @@ Features currently supported by TSantos Serializer:
 
 This project is still in development and are fully open to your contribution. Want to contribute? Choose your feature bellow and lets discuss about it:
 
-* Ability to deserialize objects
 * Support for `XML` and `CSV` encoders (output)
-* Support for read configuration from annotations
 * Documentation
 * Any idea?
