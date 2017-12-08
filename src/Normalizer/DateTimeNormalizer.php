@@ -51,7 +51,6 @@ class DateTimeNormalizer implements NormalizerInterface, DenormalizerInterface
 
     public function denormalize($data, DeserializationContext $context)
     {
-        var_dump($data);
         return \DateTime::createFromFormat($this->format, $data);
     }
 

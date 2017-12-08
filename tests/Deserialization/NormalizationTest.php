@@ -22,8 +22,6 @@ use Tests\TSantos\Serializer\SerializerTestCase;
  */
 class NormalizationTest extends SerializerTestCase
 {
-    protected $clearCache = false;
-
     /** @test */
     public function it_can_deserialize_an_object_containing_an_instance_of_datetime()
     {
