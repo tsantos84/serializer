@@ -51,6 +51,8 @@ use {$metadata->name};
  */
 final class $className extends $metadata->baseClass
 {
+    private \$exposedGroups = {$this->renderExposedGroups($metadata)};
+
 {$this->serializeMethod($metadata)}
 
 {$this->deserializeMethod($metadata)}
@@ -294,18 +296,18 @@ EOF;
      */
     final private function getExposedKeys(AbstractContext \$context)
     {
-        static \$computedKeys;
-    
-        if (is_array(\$computedKeys)) {
-            return \$computedKeys;
+        if (\$this->computedGroupKeys->contains(\$context)) {
+            return \$this->computedGroupKeys[\$context];
         }
-    
+
         \$contextGroups = array_flip(\$context->getGroups());
-        \$exposedGroups = {$this->renderExposedGroups($metadata)};
-        \$computedKeys = array_flip(array_reduce(array_intersect_key(\$exposedGroups, \$contextGroups), function (\$g, \$v) {
+        
+        \$computedKeys = array_flip(array_reduce(array_intersect_key(\$this->exposedGroups, \$contextGroups), function (\$g, \$v) {
             array_push(\$g, ...\$v);
             return \$g;
         }, []));
+
+        \$this->computedGroupKeys->attach(\$context, \$computedKeys);
         
         return \$computedKeys;
     }

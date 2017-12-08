@@ -17,10 +17,19 @@ namespace TSantos\Serializer;
  */
 abstract class AbstractSerializerClass implements SerializerClassInterface
 {
+    /**
+     * @var SerializerInterface
+     */
     protected $serializer;
 
-    public function __construct(Serializer $serializer)
+    /**
+     * @var \SplObjectStorage
+     */
+    protected $computedGroupKeys;
+
+    public function __construct(SerializerInterface $serializer)
     {
         $this->serializer = $serializer;
+        $this->computedGroupKeys = new \SplObjectStorage();
     }
 }
