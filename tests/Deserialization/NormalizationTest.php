@@ -47,7 +47,7 @@ class NormalizationTest extends SerializerTestCase
     protected function createBuilder()
     {
         $builder = parent::createBuilder();
-        $builder->addDefaultNormalizers();
+        $builder->enableBuiltInNormalizers();
         return $builder;
     }
 }

@@ -19,6 +19,7 @@ use Metadata\Driver\DriverChain;
 use Metadata\Driver\DriverInterface;
 use Metadata\Driver\FileLocator;
 use Metadata\MetadataFactory;
+use TSantos\Serializer\Encoder\EncoderInterface;
 use TSantos\Serializer\Encoder\JsonEncoder;
 use TSantos\Serializer\Metadata\Driver\AnnotationDriver;
 use TSantos\Serializer\Metadata\Driver\PhpDriver;
@@ -125,10 +126,22 @@ class SerializerBuilder
         return $this;
     }
 
-    public function addDefaultNormalizers(): SerializerBuilder
+    public function enableBuiltInNormalizers(): SerializerBuilder
     {
         $this->normalizers->add(new DateTimeNormalizer());
         $this->normalizers->add(new IdentityNormalizer());
+        return $this;
+    }
+
+    public function addEncoder(EncoderInterface $encoder): SerializerBuilder
+    {
+        $this->encoders->add($encoder);
+        return $this;
+    }
+
+    public function enableBuiltInEncoders(): SerializerBuilder
+    {
+        $this->encoders->add(new JsonEncoder());
         return $this;
     }
 
@@ -188,7 +201,9 @@ class SerializerBuilder
      */
     public function build(): SerializerInterface
     {
-        $this->encoders->add(new JsonEncoder());
+        if ($this->encoders->isEmpty()) {
+            $this->enableBuiltInEncoders();
+        }
 
         if (null === $classDir = $this->serializerClassDir) {
             $this->createDir($classDir = sys_get_temp_dir() . '/serializer/classes');

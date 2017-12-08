@@ -42,7 +42,7 @@ class EncoderRegistry implements EncoderRegistryInterface
     public function get(string $name): EncoderInterface
     {
         if (!isset($this->encoders[$name])) {
-            throw new \InvalidArgumentException('There is no type registered with name ' . $name);
+            throw new \InvalidArgumentException('There is no encoder registered with name ' . $name);
         }
 
         return $this->encoders[$name];
@@ -55,5 +55,10 @@ class EncoderRegistry implements EncoderRegistryInterface
     public function has(string $name): bool
     {
         return isset($this->encoders[$name]);
+    }
+
+    public function isEmpty(): bool
+    {
+        return empty($this->encoders);
     }
 }
