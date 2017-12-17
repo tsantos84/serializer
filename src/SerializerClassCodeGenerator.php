@@ -39,6 +39,9 @@ class SerializerClassCodeGenerator
         return <<<EOF
 <?php
 
+use TSantos\Serializer\EventDispatcher\Event\PostSerializationEvent;
+use TSantos\Serializer\EventDispatcher\Event\PreSerializationEvent;
+use TSantos\Serializer\EventDispatcher\SerializerEvents;
 use TSantos\Serializer\Exception\InvalidArgumentException;
 use TSantos\Serializer\AbstractContext;
 use TSantos\Serializer\SerializationContext;
@@ -83,6 +86,13 @@ EOF;
         $code = $this->renderInvalidTypeException($metadata, 'serialize');
 
         $code .= <<<EOF
+        
+        \$object = \$this->dispatcher->dispatch(
+            SerializerEvents::PRE_SERIALIZATION,
+            new PreSerializationEvent(\$object, \$context), 
+            Person::class
+        )->getData();
+        
         \$data = [];
         \$exposedKeys = \$this->getExposedKeys(\$context);
         \$shouldSerializeNull = \$context->shouldSerializeNull();
@@ -93,6 +103,12 @@ EOF;
             $this->virtualPropertySerializationCode($metadata);
 
         $code .= <<<EOF
+        
+        \$data = \$this->dispatcher->dispatch(
+            SerializerEvents::POST_SERIALIZATION,
+            new PostSerializationEvent(\$data, \$context), 
+            Person::class
+        )->getData();
         
         return \$data;
 EOF;

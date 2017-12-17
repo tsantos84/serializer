@@ -21,6 +21,7 @@ use Metadata\Driver\FileLocator;
 use Metadata\MetadataFactory;
 use TSantos\Serializer\Encoder\EncoderInterface;
 use TSantos\Serializer\Encoder\JsonEncoder;
+use TSantos\Serializer\EventDispatcher\EventDispatcher;
 use TSantos\Serializer\Metadata\Driver\AnnotationDriver;
 use TSantos\Serializer\Metadata\Driver\PhpDriver;
 use TSantos\Serializer\Metadata\Driver\ReflectionDriver;
@@ -229,7 +230,8 @@ class SerializerBuilder
             $metadataFactory,
             new SerializerClassCodeGenerator(),
             new SerializerClassWriter($classDir),
-            $this->serializerClassGenerateStrategy
+            $this->serializerClassGenerateStrategy,
+            new EventDispatcher()
         );
 
         if (null === $this->instantiator) {
