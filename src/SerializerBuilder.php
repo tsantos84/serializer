@@ -53,6 +53,7 @@ class SerializerBuilder
     private $instantiator;
     private $format = 'json';
     private $dispatcher;
+    private $hasListener = false;
 
     /**
      * Builder constructor.
@@ -193,12 +194,14 @@ class SerializerBuilder
     public function addListener(string $eventName, callable $listener, int $priority = 0, string $type = null)
     {
         $this->dispatcher->addListener($eventName, $listener, $priority, $type);
+        $this->hasListener = true;
         return $this;
     }
 
     public function addSubscriber(EventSubscriberInterface $subscriber)
     {
         $this->dispatcher->addSubscriber($subscriber);
+        $this->hasListener = true;
         return $this;
     }
 
@@ -243,7 +246,7 @@ class SerializerBuilder
 
         $classLoader = new SerializerClassLoader(
             $metadataFactory,
-            new SerializerClassCodeGenerator(),
+            new SerializerClassCodeGenerator($this->hasListener),
             new SerializerClassWriter($classDir),
             $this->serializerClassGenerateStrategy,
             $this->dispatcher

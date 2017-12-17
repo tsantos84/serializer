@@ -20,6 +20,17 @@ use TSantos\Serializer\Metadata\PropertyMetadata;
  */
 class SerializerClassCodeGenerator
 {
+    private $enableListener;
+
+    /**
+     * SerializerClassCodeGenerator constructor.
+     * @param bool $enableListener
+     */
+    public function __construct(bool $enableListener = false)
+    {
+        $this->enableListener = $enableListener;
+    }
+
     /**
      * @param ClassMetadata $classMetadata
      * @return string
@@ -88,14 +99,19 @@ EOF;
         $simpleClassName = $this->getSimpleClassName($metadata);
         $code = $this->renderInvalidTypeException($metadata, 'serialize');
 
-        $code .= <<<EOF
-        
+        if ($this->enableListener) {
+            $code .= <<<EOF
         \$object = \$this->dispatcher->dispatch(
             SerializerEvents::PRE_SERIALIZATION,
             new PreSerializationEvent(\$object, \$context), 
             $simpleClassName::class
         )->getObject();
+EOF;
 
+        }
+
+        $code .= <<<EOF
+        
         \$data = [];
         \$exposedKeys = \$this->getExposedKeys(\$context);
         \$shouldSerializeNull = \$context->shouldSerializeNull();
@@ -105,14 +121,18 @@ EOF;
             $this->propertySerializationCode($metadata) .
             $this->virtualPropertySerializationCode($metadata);
 
-        $code .= <<<EOF
+        if ($this->enableListener) {
+            $code .= <<<EOF
 
         \$data = \$this->dispatcher->dispatch(
             SerializerEvents::POST_SERIALIZATION,
             new PostSerializationEvent(\$data, \$context), 
             $simpleClassName::class
         )->getData();
+EOF;
+        }
 
+        $code .= <<<EOF
         return \$data;
 EOF;
 
@@ -195,13 +215,18 @@ EOF;
     {
         $simpleClassName = $this->getSimpleClassName($metadata);
         $code = $this->renderInvalidTypeException($metadata, 'deserialize');
-        $code .= <<<EOF
 
+        if ($this->enableListener) {
+            $code .= <<<EOF
         \$data = \$this->dispatcher->dispatch(
             SerializerEvents::PRE_DESERIALIZATION,
             new PreDeserializationEvent(\$data, \$context), 
             $simpleClassName::class
         )->getData();
+EOF;
+        }
+
+        $code .= <<<EOF
 
         \$exposedKeys = \$this->getExposedKeys(\$context);
 
@@ -209,13 +234,18 @@ EOF;
 
         $code .= $this->propertyDeserializationCode($metadata);
 
-        $code .= <<<EOF
 
+        if ($this->enableListener) {
+            $code .= <<<EOF
         \$object = \$this->dispatcher->dispatch(
             SerializerEvents::POST_DESERIALIZATION,
             new PostDeserializationEvent(\$object, \$context), 
             $simpleClassName::class
         )->getObject();
+EOF;
+        }
+
+        $code .= <<<EOF
 
         return \$object;
 EOF;
