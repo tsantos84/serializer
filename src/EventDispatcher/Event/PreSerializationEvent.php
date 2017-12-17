@@ -23,7 +23,7 @@ class PreSerializationEvent extends Event
     /**
      * @var object
      */
-    private $data;
+    private $object;
 
     /**
      * @var SerializationContext
@@ -37,25 +37,25 @@ class PreSerializationEvent extends Event
      */
     public function __construct($data, SerializationContext $context)
     {
-        $this->data = $data;
+        $this->object = $data;
         $this->context = $context;
     }
 
     /**
      * @return object
      */
-    public function getData()
+    public function getObject()
     {
-        return $this->data;
+        return $this->object;
     }
 
     /**
-     * @param object $data
+     * @param $object
      * @return PreSerializationEvent
      */
-    public function setData($data): PreSerializationEvent
+    public function setObject($object): PreSerializationEvent
     {
-        $this->data = $data;
+        $this->object = $object;
         return $this;
     }
 

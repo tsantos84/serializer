@@ -22,6 +22,7 @@ use Metadata\MetadataFactory;
 use TSantos\Serializer\Encoder\EncoderInterface;
 use TSantos\Serializer\Encoder\JsonEncoder;
 use TSantos\Serializer\EventDispatcher\EventDispatcher;
+use TSantos\Serializer\EventDispatcher\EventSubscriberInterface;
 use TSantos\Serializer\Metadata\Driver\AnnotationDriver;
 use TSantos\Serializer\Metadata\Driver\PhpDriver;
 use TSantos\Serializer\Metadata\Driver\ReflectionDriver;
@@ -51,6 +52,7 @@ class SerializerBuilder
     private $serializerClassGenerateStrategy;
     private $instantiator;
     private $format = 'json';
+    private $dispatcher;
 
     /**
      * Builder constructor.
@@ -62,6 +64,7 @@ class SerializerBuilder
         $this->debug = false;
         $this->metadataDirs = [];
         $this->serializerClassGenerateStrategy = SerializerClassLoader::AUTOGENERATE_ALWAYS;
+        $this->dispatcher = new EventDispatcher();
     }
 
     /**
@@ -187,6 +190,18 @@ class SerializerBuilder
         return $this;
     }
 
+    public function addListener(string $eventName, callable $listener, int $priority = 0, string $type = null)
+    {
+        $this->dispatcher->addListener($eventName, $listener, $priority, $type);
+        return $this;
+    }
+
+    public function addSubscriber(EventSubscriberInterface $subscriber)
+    {
+        $this->dispatcher->addSubscriber($subscriber);
+        return $this;
+    }
+
     /**
      * @param string $format
      * @return SerializerBuilder
@@ -231,7 +246,7 @@ class SerializerBuilder
             new SerializerClassCodeGenerator(),
             new SerializerClassWriter($classDir),
             $this->serializerClassGenerateStrategy,
-            new EventDispatcher()
+            $this->dispatcher
         );
 
         if (null === $this->instantiator) {

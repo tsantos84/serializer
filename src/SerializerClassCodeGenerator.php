@@ -94,7 +94,7 @@ EOF;
             SerializerEvents::PRE_SERIALIZATION,
             new PreSerializationEvent(\$object, \$context), 
             $simpleClassName::class
-        )->getData();
+        )->getObject();
 
         \$data = [];
         \$exposedKeys = \$this->getExposedKeys(\$context);
