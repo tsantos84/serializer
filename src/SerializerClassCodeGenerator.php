@@ -39,6 +39,11 @@ class SerializerClassCodeGenerator
         return <<<EOF
 <?php
 
+use TSantos\Serializer\EventDispatcher\Event\PostDeserializationEvent;
+use TSantos\Serializer\EventDispatcher\Event\PostSerializationEvent;
+use TSantos\Serializer\EventDispatcher\Event\PreDeserializationEvent;
+use TSantos\Serializer\EventDispatcher\Event\PreSerializationEvent;
+use TSantos\Serializer\EventDispatcher\SerializerEvents;
 use TSantos\Serializer\Exception\InvalidArgumentException;
 use TSantos\Serializer\AbstractContext;
 use TSantos\Serializer\SerializationContext;
@@ -80,9 +85,17 @@ EOF;
 
     private function serializeMethodBody(ClassMetadata $metadata): string
     {
+        $simpleClassName = $this->getSimpleClassName($metadata);
         $code = $this->renderInvalidTypeException($metadata, 'serialize');
 
         $code .= <<<EOF
+        
+        \$object = \$this->dispatcher->dispatch(
+            SerializerEvents::PRE_SERIALIZATION,
+            new PreSerializationEvent(\$object, \$context), 
+            $simpleClassName::class
+        )->getObject();
+
         \$data = [];
         \$exposedKeys = \$this->getExposedKeys(\$context);
         \$shouldSerializeNull = \$context->shouldSerializeNull();
@@ -93,7 +106,13 @@ EOF;
             $this->virtualPropertySerializationCode($metadata);
 
         $code .= <<<EOF
-        
+
+        \$data = \$this->dispatcher->dispatch(
+            SerializerEvents::POST_SERIALIZATION,
+            new PostSerializationEvent(\$data, \$context), 
+            $simpleClassName::class
+        )->getData();
+
         return \$data;
 EOF;
 
@@ -174,8 +193,16 @@ EOF;
 
     private function deserializeMethodBody(ClassMetadata $metadata): string
     {
+        $simpleClassName = $this->getSimpleClassName($metadata);
         $code = $this->renderInvalidTypeException($metadata, 'deserialize');
         $code .= <<<EOF
+
+        \$data = \$this->dispatcher->dispatch(
+            SerializerEvents::PRE_DESERIALIZATION,
+            new PreDeserializationEvent(\$data, \$context), 
+            $simpleClassName::class
+        )->getData();
+
         \$exposedKeys = \$this->getExposedKeys(\$context);
 
 EOF;
@@ -183,7 +210,13 @@ EOF;
         $code .= $this->propertyDeserializationCode($metadata);
 
         $code .= <<<EOF
-        
+
+        \$object = \$this->dispatcher->dispatch(
+            SerializerEvents::POST_DESERIALIZATION,
+            new PostDeserializationEvent(\$object, \$context), 
+            $simpleClassName::class
+        )->getObject();
+
         return \$object;
 EOF;
 
@@ -301,14 +334,14 @@ EOF;
         }
 
         \$contextGroups = array_flip(\$context->getGroups());
-        
+
         \$computedKeys = array_flip(array_reduce(array_intersect_key(\$this->exposedGroups, \$contextGroups), function (\$g, \$v) {
             array_push(\$g, ...\$v);
             return \$g;
         }, []));
 
         \$this->computedGroupKeys->attach(\$context, \$computedKeys);
-        
+
         return \$computedKeys;
     }
 EOF;

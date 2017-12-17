@@ -9,6 +9,7 @@
  */
 
 namespace TSantos\Serializer;
+use TSantos\Serializer\EventDispatcher\EventDispatcherInterface;
 
 /**
  * Class AbstractSerializerClass
@@ -23,13 +24,24 @@ abstract class AbstractSerializerClass implements SerializerClassInterface
     protected $serializer;
 
     /**
+     * @var EventDispatcherInterface
+     */
+    protected $dispatcher;
+
+    /**
      * @var \SplObjectStorage
      */
     protected $computedGroupKeys;
 
-    public function __construct(SerializerInterface $serializer)
+    /**
+     * AbstractSerializerClass constructor.
+     * @param SerializerInterface $serializer
+     * @param EventDispatcherInterface $dispatcher
+     */
+    public function __construct(SerializerInterface $serializer, EventDispatcherInterface $dispatcher)
     {
         $this->serializer = $serializer;
         $this->computedGroupKeys = new \SplObjectStorage();
+        $this->dispatcher = $dispatcher;
     }
 }
