@@ -19,4 +19,6 @@ final class SerializerEvents
 {
     const PRE_SERIALIZATION = 'serializer.pre_serialization';
     const POST_SERIALIZATION = 'serializer.post_serialization';
+    const PRE_DESERIALIZATION = 'serializer.post_deserialization';
+    const POST_DESERIALIZATION = 'serializer.post_deserialization';
 }
