@@ -12,7 +12,7 @@ namespace TSantos\Serializer\Metadata\Driver;
 
 use Metadata\Driver\AbstractFileDriver;
 use Metadata\Driver\FileLocatorInterface;
-use Metadata\MergeableClassMetadata;
+use TSantos\Serializer\Metadata\ClassMetadata;
 use TSantos\Serializer\Metadata\PropertyMetadata;
 use TSantos\Serializer\Metadata\VirtualPropertyMetadata;
 use TSantos\Serializer\TypeGuesser;
@@ -50,13 +50,18 @@ class XmlDriver extends AbstractFileDriver
             throw new \RuntimeException(libxml_get_last_error());
         }
 
-        $metadata = new MergeableClassMetadata($name = $class->name);
+        $metadata = new ClassMetadata($name = $class->name);
 
         if (!$elems = $elem->xpath("./class[@name = '" . $name . "']")) {
             throw new \RuntimeException(sprintf('Could not find class %s inside XML element.', $name));
         }
 
+        /** @var \SimpleXMLElement $elem */
         $elem = reset($elems);
+
+        if (null !== $baseClass = $elem->attributes()->{'base-class'}) {
+            $metadata->baseClass = $baseClass;
+        }
 
         /** @var \SimpleXMLElement $property */
         foreach ($elem->xpath('./property') as $xmlProperty) {
@@ -64,12 +69,15 @@ class XmlDriver extends AbstractFileDriver
             $name = (string)$attribs['name'];
             $property = new PropertyMetadata($class->getName(), $name);
 
-            $property->getter = $attribs['getter'] ?? 'get' . ucfirst($name);
-            $property->getterRef = new \ReflectionMethod($class->getName(), $property->getter);
+            $getter = $attribs['getter'] ?? 'get' . ucfirst($name);
+            $property->accessor = $getter . '()';
+            $property->getterRef = new \ReflectionMethod($class->getName(), $getter);
             $property->modifier = $attribs['modifier'] ?? null;
+            $property->setter = $attribs['setter'] ?? 'set' . ucfirst($name);
             $property->type = $attribs['type'] ?? $this->typeGuesser->guessProperty($property, 'string');
-            $property->exposeAs = $attribs['exposeAs'] ?? $name;
+            $property->exposeAs = $attribs['expose-as'] ?? $name;
             $property->groups = $attribs['groups'] ?? ['Default'];
+            $property->readOnly = strtolower($attribs['read-only'] ?? '') === 'true' ?? false;
 
             $metadata->addPropertyMetadata($property);
         }
@@ -78,11 +86,11 @@ class XmlDriver extends AbstractFileDriver
         foreach ($elem->xpath('./virtual_property') ?? [] as $xmlProperty) {
             $attribs = ((array)$xmlProperty->attributes())['@attributes'];
             $name = $attribs['name'];
-            $method = $map['method'] ?? 'get' . ucfirst($name);
+            $method = $attribs['method'] ?? 'get' . ucfirst($name);
 
             $property = new VirtualPropertyMetadata($class->name, $method);
             $property->type = $attribs['type'] ?? $this->typeGuesser->guessVirtualProperty($property, 'string');
-            $property->exposeAs = $attribs['exposeAs'] ?? $name;
+            $property->exposeAs = $attribs['expose-as'] ?? $name;
             $property->groups = $attribs['groups'] ?? ['Default'];
             $property->modifier = $attribs['modifier'] ?? null;
             $metadata->addMethodMetadata($property);

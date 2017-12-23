@@ -10,6 +10,7 @@
 
 namespace TSantos\Serializer;
 
+use TSantos\Serializer\Normalizer\DenormalizerInterface;
 use TSantos\Serializer\Normalizer\NormalizerInterface;
 
 /**
@@ -20,15 +21,23 @@ use TSantos\Serializer\Normalizer\NormalizerInterface;
 interface NormalizerRegistryInterface
 {
     /**
-     * @param NormalizerInterface $type
+     * @param $normalizer
      * @return $this
      */
-    public function add(NormalizerInterface $type);
+    public function add($normalizer);
 
     /**
      * @param mixed $data
      * @param SerializationContext $context
      * @return NormalizerInterface
      */
-    public function get($data, SerializationContext $context): ?NormalizerInterface;
+    public function getNormalizer($data, SerializationContext $context): ?NormalizerInterface;
+
+    /**
+     * @param $data
+     * @param string $type
+     * @param DeserializationContext $context
+     * @return DenormalizerInterface
+     */
+    public function getDenormalizer($data, string $type, DeserializationContext $context): ?DenormalizerInterface;
 }

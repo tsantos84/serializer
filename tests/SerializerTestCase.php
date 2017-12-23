@@ -23,16 +23,15 @@ use TSantos\Serializer\TypeGuesser;
  */
 abstract class SerializerTestCase extends TestCase
 {
-    protected $cacheDir;
+    protected $classCacheDir = __DIR__ . '/../var/classes';
 
-    protected function setUp()
-    {
-        $this->cacheDir = sys_get_temp_dir() . '/serializer/cache';
-    }
+    protected $clearCache = true;
 
     protected function tearDown()
     {
-        system('rm -rf ' . escapeshellarg($this->cacheDir), $retval);
+        if ($this->clearCache && is_dir($dir = __DIR__ . '/../var')) {
+            system('rm -rf ' . escapeshellarg($dir), $retval);
+        }
     }
 
     /**
@@ -49,7 +48,7 @@ abstract class SerializerTestCase extends TestCase
 
         $builder
             ->setMetadataDriver(new InMemoryDriver($mapping, new TypeGuesser()))
-            ->setSerializerClassDir($this->cacheDir)
+            ->setSerializerClassDir($this->classCacheDir)
             ->setDebug(true);
 
         return $builder->build();
@@ -60,7 +59,7 @@ abstract class SerializerTestCase extends TestCase
         return [
             $type => [
                 'properties' => $properties,
-                'virtual_properties' => $virtualProperties
+                'virtualProperties' => $virtualProperties
             ]
         ];
     }

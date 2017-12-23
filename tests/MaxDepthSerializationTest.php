@@ -53,7 +53,7 @@ class MaxDepthSerializationTest extends SerializerTestCase
         $address->setCity('Belo Horizonte');
         $address->setCoordinates(new Coordinates(10, 20));
 
-        $json = $serializer->serialize($person, 'json', SerializationContext::create()->setMaxDepth(2));
+        $json = $serializer->serialize($person, SerializationContext::create()->setMaxDepth(2));
 
         $this->assertEquals(json_encode([
             'id' => 1,
@@ -85,7 +85,7 @@ class MaxDepthSerializationTest extends SerializerTestCase
             ]
         ];
 
-        $json = $serializer->serialize($data, 'json', SerializationContext::create()->setMaxDepth(2));
+        $json = $serializer->serialize($data, SerializationContext::create()->setMaxDepth(2));
         $this->assertEquals('{"0":1,"1":2,"2":3,"3":"four","five":["six"],"seven":{"eight":[]}}', $json);
     }
 
@@ -100,6 +100,6 @@ class MaxDepthSerializationTest extends SerializerTestCase
 
         $expected = '{"color":"white","ports":4,"owner":"Tales","tires":[]}';
 
-        $this->assertEquals($expected, $serializer->serialize($person, 'json', SerializationContext::create()->setMaxDepth(1)));
+        $this->assertEquals($expected, $serializer->serialize($person, SerializationContext::create()->setMaxDepth(1)));
     }
 }

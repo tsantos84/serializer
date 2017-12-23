@@ -8,9 +8,10 @@
  * file that was distributed with this source code.
  */
 
-namespace Tests\TSantos\Serializer;
+namespace Tests\TSantos\Serializer\Serialization;
 
 use Tests\TSantos\Serializer\Fixture\Person;
+use Tests\TSantos\Serializer\SerializerTestCase;
 use TSantos\Serializer\SerializationContext;
 
 /**
@@ -34,6 +35,6 @@ class PropertyGroupsTest extends SerializerTestCase
 
         $expected = json_encode(['id'=>1, 'married' => true]);
 
-        $this->assertEquals($expected, $serializer->serialize($person, 'json', SerializationContext::create()->setGroups(['web', 'Default'])));
+        $this->assertEquals($expected, $serializer->serialize($person, SerializationContext::create()->setGroups(['web', 'Default'])));
     }
 }

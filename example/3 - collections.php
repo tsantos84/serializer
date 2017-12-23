@@ -22,6 +22,6 @@ for ($i=1; $i<=10; $i++) {
     $persons[] = $person;
 }
 
-$json = $serializer->serialize($persons, 'json');
+$json = $serializer->serialize($persons);
 
 echo $json;

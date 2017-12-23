@@ -14,6 +14,7 @@ use Metadata\Driver\AbstractFileDriver;
 use Metadata\Driver\FileLocatorInterface;
 use Metadata\MergeableClassMetadata;
 use TSantos\Serializer\Exception\MappingException;
+use TSantos\Serializer\Metadata\ClassMetadata;
 use TSantos\Serializer\Metadata\PropertyMetadata;
 use TSantos\Serializer\Metadata\VirtualPropertyMetadata;
 use TSantos\Serializer\TypeGuesser;
@@ -50,22 +51,29 @@ class PhpDriver extends AbstractFileDriver
 
         $mapping = $config[$class->name];
 
-        $metadata = new MergeableClassMetadata($class->getName());
+        $metadata = new ClassMetadata($class->getName());
+
+        if (isset($mapping['baseClass'])) {
+            $metadata->baseClass = $mapping['baseClass'];
+        }
 
         foreach ($mapping['properties'] ?? [] as $name => $map) {
             $property = new PropertyMetadata($class->getName(), $name);
 
-            $property->getter = $map['getter'] ?? 'get' . ucfirst($name);
-            $property->getterRef = new \ReflectionMethod($class->getName(), $property->getter);
+            $getter = $map['getter'] ?? 'get' . ucfirst($name);
+            $property->accessor = $getter . '()';
+            $property->getterRef = new \ReflectionMethod($class->getName(), $getter);
             $property->modifier = $map['modifier'] ?? null;
+            $property->setter = $map['setter'] ?? 'set' . ucfirst($name);
             $property->type = $map['type'] ?? $this->typeGuesser->guessProperty($property, 'string');
             $property->exposeAs = $map['exposeAs'] ?? $name;
             $property->groups = (array)($map['groups'] ?? ['Default']);
+            $property->readOnly = (bool)($map['readOnly'] ?? false);
 
             $metadata->addPropertyMetadata($property);
         }
 
-        foreach ($mapping['virtual_properties'] ?? [] as $name => $map) {
+        foreach ($mapping['virtualProperties'] ?? [] as $name => $map) {
             $method = $map['method'] ?? 'get' . ucfirst($name);
 
             $property = new VirtualPropertyMetadata($class->name, $method);

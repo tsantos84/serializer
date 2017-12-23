@@ -22,18 +22,41 @@ interface SerializerInterface
      * Converts any value to the given format.
      *
      * @param mixed $data
-     * @param string $format
      * @param SerializationContext $context
      * @return string
      */
-    public function serialize($data, string $format, SerializationContext $context = null): string;
+    public function serialize($data, SerializationContext $context = null): string;
 
     /**
-     * Converts any value in array.
+     * Normalize a data by converting it from some type to array.
+     *
+     * This operation is like a "toArray" conversion.
      *
      * @param mixed $data
      * @param SerializationContext|null $context
-     * @return array
+     * @return mixed
      */
     public function normalize($data, SerializationContext $context = null);
+
+    /**
+     * Deserialize the given in object of type $type.
+     *
+     * @param string $content
+     * @param string $type
+     * @param DeserializationContext|null $context
+     * @return object
+     */
+    public function deserialize(string $content, string $type, DeserializationContext $context = null);
+
+    /**
+     * Denormalize a data by converting it from array to some type.
+     *
+     * This operation is like a "fromArray" conversion.
+     *
+     * @param array $data
+     * @param string $type
+     * @param DeserializationContext|null $context
+     * @return mixed
+     */
+    public function denormalize($data, string $type, DeserializationContext $context = null);
 }

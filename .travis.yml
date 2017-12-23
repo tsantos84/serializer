@@ -9,10 +9,12 @@ cache:
 matrix:
   include:
     - php: 7.1
+    - php: 7.2
   fast_finish: true
 
 install:
   - composer install -a
+  - composer require symfony/yaml
 
 script:
   - vendor/bin/phpunit

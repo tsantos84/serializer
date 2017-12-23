@@ -8,10 +8,11 @@
  * file that was distributed with this source code.
  */
 
-namespace Tests\TSantos\Serializer;
+namespace Tests\TSantos\Serializer\Serialization;
 
 use Tests\TSantos\Serializer\Fixture\Book;
 use Tests\TSantos\Serializer\Fixture\Person;
+use Tests\TSantos\Serializer\SerializerTestCase;
 
 /**
  * Class NormalizationTest
@@ -25,12 +26,12 @@ class NormalizationTest extends SerializerTestCase
     public function testSerializeWithIdentifiableNormalization()
     {
         $serializer = $this->createSerializer(array_merge(
-            $this->createMapping(Person::class, [], [
+            $this->createMapping(Person::class, [
                 'id' => ['type' => 'integer'],
                 'name' => ['type' => 'string'],
                 'favouriteBook' => ['type' => Book::class]
             ]),
-            $this->createMapping(Book::class, [], [
+            $this->createMapping(Book::class, [
                 'id' => ['type' => 'integer'],
                 'name' => ['type' => 'string']
             ])
@@ -39,7 +40,7 @@ class NormalizationTest extends SerializerTestCase
         $person = new Person(1, 'Tales', true);
         $person->setFavouriteBook(new Book(10, 'Data Transformation'));
 
-        $json = $serializer->serialize($person, 'json');
+        $json = $serializer->serialize($person);
 
         $this->assertEquals(json_encode([
             'id' => 1,
@@ -58,13 +59,13 @@ class NormalizationTest extends SerializerTestCase
             'birthday' => ['type' => \DateTimeInterface::class]
         ]));
 
-        $this->assertEquals('{"name":"Tales","birthday":"1984-11-28T00:00:00+00:00"}', $serializer->serialize($person, 'json'));
+        $this->assertEquals('{"name":"Tales","birthday":"1984-11-28T00:00:00+00:00"}', $serializer->serialize($person));
     }
 
     protected function createBuilder()
     {
         $builder = parent::createBuilder();
-        $builder->addDefaultNormalizers();
+        $builder->enableBuiltInNormalizers();
         return $builder;
     }
 }

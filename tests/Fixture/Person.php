@@ -10,15 +10,25 @@
 
 namespace Tests\TSantos\Serializer\Fixture;
 
+use TSantos\Serializer\Mapping as Serializer;
+
+/**
+ * Class Person
+ *
+ * @author Tales Santos <tales.augusto.santos@gmail.com>
+ * @Serializer\BaseClass("Tests\TSantos\Serializer\AbstractSerializerClass")
+ */
 class Person
 {
     /**
      * @var int
+     * @Serializer\Type("integer")
      */
     private $id;
 
     /**
      * @var string
+     * @Serializer\Type("string")
      */
     private $name;
 
@@ -29,26 +39,30 @@ class Person
 
     /**
      * @var bool
+     * @Serializer\Getter("isMarried")
      */
     private $married;
 
     /**
      * @var array
      */
-    private $colors = []; // = ['red', 'blue', 'white'];
+    private $colors = ['red', 'blue', 'white'];
 
     /**
      * @var \DateTimeInterface
+     * @Serializer\Modifier("format('d/m/Y')")
      */
     private $birthday;
 
     /**
      * @var Address
+     * @Serializer\ReadOnly
      */
     private $address;
 
     /**
      * @var Person
+     * @Serializer\Type(Person::class)
      */
     private $father;
 
@@ -63,7 +77,7 @@ class Person
      * @param string $name
      * @param bool $married
      */
-    public function __construct(int $id, string $name, bool $married)
+    public function __construct(int $id = null, string $name = null, bool $married = null)
     {
         $this->id = $id;
         $this->name = $name;
@@ -127,6 +141,8 @@ class Person
 
     /**
      * @return string
+     * @Serializer\VirtualProperty
+     * @Serializer\ExposeAs("full_name")
      */
     public function getFullName(): string
     {
@@ -157,6 +173,14 @@ class Person
     }
 
     /**
+     * @param array $colors
+     */
+    public function setColors(array $colors): void
+    {
+        $this->colors = $colors;
+    }
+
+    /**
      * @return Address
      */
     public function getAddress(): ?Address
@@ -177,7 +201,7 @@ class Person
     /**
      * @return Person
      */
-    public function getFather(): Person
+    public function getFather(): ?Person
     {
         return $this->father;
     }
@@ -213,7 +237,7 @@ class Person
     /**
      * @return \DateTimeInterface
      */
-    public function getBirthday(): \DateTimeInterface
+    public function getBirthday(): ?\DateTimeInterface
     {
         return $this->birthday;
     }

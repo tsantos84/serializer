@@ -8,10 +8,10 @@
  * file that was distributed with this source code.
  */
 
-namespace Tests\TSantos\Serializer;
+namespace Tests\TSantos\Serializer\Serialization;
 
 use Tests\TSantos\Serializer\Fixture\Person;
-
+use Tests\TSantos\Serializer\SerializerTestCase;
 
 /**
  * Class VirtualPropertyTest
@@ -30,7 +30,7 @@ class VirtualPropertyTest extends SerializerTestCase
 
         $person = (new Person(1, 'Tales', true))->setLastName('Santos');
 
-        $json = $serializer->serialize($person, 'json');
+        $json = $serializer->serialize($person);
 
         $this->assertEquals(json_encode([
             'fullName' => 'Tales Santos'
@@ -47,7 +47,7 @@ class VirtualPropertyTest extends SerializerTestCase
         $person = (new Person(1, 'Tales', true));
         $person->setBirthday(new \DateTime('1984-11-28'));
 
-        $json = $serializer->serialize($person, 'json');
+        $json = $serializer->serialize($person);
 
         $this->assertEquals(json_encode([
             'birthday' => '28/11/1984'

@@ -37,4 +37,9 @@ interface EncoderRegistryInterface
      * @return bool
      */
     public function has(string $name): bool;
+
+    /**
+     * @return bool
+     */
+    public function isEmpty(): bool;
 }

@@ -8,9 +8,10 @@
  * file that was distributed with this source code.
  */
 
-namespace Tests\TSantos\Serializer;
+namespace Tests\TSantos\Serializer\Serialization;
 
 use Tests\TSantos\Serializer\Fixture\Person;
+use Tests\TSantos\Serializer\SerializerTestCase;
 
 /** @runTestsInSeparateProcesses */
 class SerializerTest extends SerializerTestCase
@@ -25,7 +26,7 @@ class SerializerTest extends SerializerTestCase
 
         $person = $this->createPerson();
 
-        $json = $serializer->serialize($person, 'json');
+        $json = $serializer->serialize($person);
 
         $this->assertEquals(json_encode([
             'id' => 1,
@@ -44,7 +45,7 @@ class SerializerTest extends SerializerTestCase
 
         $persons = [$this->createPerson(), $this->createPerson(), $this->createPerson()];
 
-        $json = $serializer->serialize($persons, 'json');
+        $json = $serializer->serialize($persons);
 
         $this->assertEquals(json_encode([
             [

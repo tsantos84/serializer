@@ -1,17 +1,22 @@
 Tests\TSantos\Serializer\Fixture\Person:
+  baseClass: Tests\TSantos\Serializer\AbstractSerializerClass
   properties:
     id:
-      groups: [web]
+      type: integer
     name:
+      type: string
       exposeAs: nome
-    lastName:
-      exposeAs: last_name
     married:
+      type: boolean
       getter: isMarried
-    colors:
-      groups: [mobile]
+    birthday:
+      type: DateTime
+      modifier: "format('d/m/Y')"
+    father:
+      type: Tests\TSantos\Serializer\Fixture\Person
     address:
-      type: 'Tests\TSantos\Serializer\Fixture\Address'
-  virtual_properties:
+      type: Tests\TSantos\Serializer\Fixture\Address
+      readOnly: true
+  virtualProperties:
     fullName:
       exposeAs: full_name

@@ -8,8 +8,10 @@
  * file that was distributed with this source code.
  */
 
-namespace Tests\TSantos\Serializer;
+namespace Tests\TSantos\Serializer\Serialization;
+
 use Tests\TSantos\Serializer\Fixture\Person;
+use Tests\TSantos\Serializer\SerializerTestCase;
 
 /**
  * Class CircularReferencePreventionTest
@@ -30,6 +32,6 @@ class CircularReferencePreventionTest extends SerializerTestCase
             'father' => ['type' => Person::class]
         ]));
 
-        $this->assertEquals('{"name":"Tales","father":[]}', $serializer->serialize($person, 'json'));
+        $this->assertEquals('{"name":"Tales","father":[]}', $serializer->serialize($person));
     }
 }
