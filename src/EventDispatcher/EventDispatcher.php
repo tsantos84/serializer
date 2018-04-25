@@ -10,7 +10,7 @@
 
 namespace TSantos\Serializer\EventDispatcher;
 
-use Symfony\Component\EventDispatcher\Event;
+use TSantos\Serializer\EventDispatcher\Event\Event;
 
 /**
  * Class EventDispatcher
@@ -33,7 +33,7 @@ class EventDispatcher implements EventDispatcherInterface
         $this->dispatcher = $dispatcher ?? new \Symfony\Component\EventDispatcher\EventDispatcher();
     }
 
-    public function dispatch(string $eventName, Event $event = null, string $type = null): Event
+    public function dispatch(string $eventName, Event $event, string $type = null): Event
     {
         if (null !== $type && $this->dispatcher->hasListeners($typeEventName = $eventName . '.' . $type)) {
             $this->dispatcher->dispatch($typeEventName, $event);

@@ -51,25 +51,18 @@ class SerializerClassLoader
     private $writer;
 
     /**
-     * @var EventDispatcherInterface
-     */
-    private $dispatcher;
-
-    /**
      * SerializerClassLoader constructor.
      * @param MetadataFactoryInterface $metadataFactory
      * @param SerializerClassCodeGenerator $codeGenerator
      * @param SerializerClassWriter $writer
      * @param int $autogenerate
-     * @param EventDispatcherInterface $dispatcher
      */
-    public function __construct(MetadataFactoryInterface $metadataFactory, SerializerClassCodeGenerator $codeGenerator, SerializerClassWriter $writer, int $autogenerate, EventDispatcherInterface $dispatcher)
+    public function __construct(MetadataFactoryInterface $metadataFactory, SerializerClassCodeGenerator $codeGenerator, SerializerClassWriter $writer, int $autogenerate)
     {
         $this->metadataFactory = $metadataFactory;
         $this->codeGenerator = $codeGenerator;
         $this->writer = $writer;
         $this->autogenerate = $autogenerate;
-        $this->dispatcher = $dispatcher;
     }
 
     /**
@@ -92,7 +85,7 @@ class SerializerClassLoader
         }
 
         if (class_exists($fqn, false)) {
-            return $this->instances[$fqn] = new $fqn($serializer, $this->dispatcher);
+            return $this->instances[$fqn] = new $fqn($serializer);
         }
 
         $filename = $this->getFilename($classMetadata);
@@ -115,7 +108,7 @@ class SerializerClassLoader
                 break;
         }
 
-        return $this->instances[$fqn] = new $fqn($serializer, $this->dispatcher);
+        return $this->instances[$fqn] = new $fqn($serializer);
     }
 
     private function generate(ClassMetadata $classMetadata)

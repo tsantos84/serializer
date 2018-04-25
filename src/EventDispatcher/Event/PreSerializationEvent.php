@@ -10,7 +10,6 @@
 
 namespace TSantos\Serializer\EventDispatcher\Event;
 
-use Symfony\Component\EventDispatcher\Event;
 use TSantos\Serializer\SerializationContext;
 
 /**
