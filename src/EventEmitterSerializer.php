@@ -50,6 +50,10 @@ class EventEmitterSerializer extends Serializer
             $context = new SerializationContext();
         }
 
+        if (!$context->isStarted()) {
+            $context->start();
+        }
+
         $type = is_object($data) ? get_class($data) : gettype($data);
 
         $event = new PreSerializationEvent($data, $context);
@@ -67,6 +71,10 @@ class EventEmitterSerializer extends Serializer
     {
         if (null === $context) {
             $context = new DeserializationContext();
+        }
+
+        if (!$context->isStarted()) {
+            $context->start();
         }
 
         $event = new PreDeserializationEvent($data, $context);
