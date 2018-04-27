@@ -71,7 +71,7 @@ class SerializerTest extends SerializerTestCase
     private function createPerson()
     {
         $person = new Person(1, 'Tales', true);
-        $person->setLastName('Santos');
+//        $person->setLastName('Santos');
 
         return $person;
     }
