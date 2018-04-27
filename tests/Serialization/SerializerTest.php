@@ -16,7 +16,8 @@ use Tests\TSantos\Serializer\SerializerTestCase;
 /** @runTestsInSeparateProcesses */
 class SerializerTest extends SerializerTestCase
 {
-    public function testSerializeSimpleObject()
+    /** @test */
+    public function it_can_serialize_a_simple_object()
     {
         $serializer = $this->createSerializer($this->createMapping(Person::class, [
             'id' => [],
@@ -35,7 +36,8 @@ class SerializerTest extends SerializerTestCase
         ]), $json);
     }
 
-    public function testSerializeWithCollectionOfPerson()
+    /** @test */
+    public function it_can_serialize_a_collection_of_simple_objects()
     {
         $serializer = $this->createSerializer($this->createMapping(Person::class, [
             'id' => [],
