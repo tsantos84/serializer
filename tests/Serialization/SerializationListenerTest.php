@@ -21,6 +21,7 @@ use TSantos\Serializer\SerializerBuilder;
  * Class SerializationListenerTest
  *
  * @author Tales Santos <tales.augusto.santos@gmail.com>
+ * @runTestsInSeparateProcesses
  */
 class SerializationListenerTest extends SerializerTestCase
 {
