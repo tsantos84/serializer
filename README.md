@@ -40,7 +40,7 @@ $person = new Person(100, 'Tales Santos');
 echo $serializer->serialize($person, 'json'); // {"id":100, "name":"Tales Santos"}
 ```
 
-Unlike other libraries, all properties should either be `public` or have a public `getter` method. 
+Unlike other libraries, all properties should either be `public` or have a public `getter` method.
 
 ```php
 # path/to/my/entities
@@ -71,13 +71,12 @@ Features currently supported by TSantos Serializer:
 * Custom `getters`
 * Virtual properties
 * Properties grouping
+* Event listeners to hook into serialization operations
 
 ## Call for contribution
 
 This project is still in development and are fully open to your contribution. Want to contribute? Choose your feature bellow and lets discuss about it:
 
-* Ability to deserialize objects
 * Support for `XML` and `CSV` encoders (output)
-* Support for read configuration from annotations
 * Documentation
-* Any idea?
+* Any new idea?
