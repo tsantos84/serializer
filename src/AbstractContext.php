@@ -92,4 +92,12 @@ abstract class AbstractContext
 
         return $this->currentDepth === $this->maxDepth;
     }
+
+    /**
+     * @return int
+     */
+    public function getCurrentDepth(): int
+    {
+        return $this->currentDepth;
+    }
 }

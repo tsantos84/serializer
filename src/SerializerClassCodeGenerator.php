@@ -20,17 +20,6 @@ use TSantos\Serializer\Metadata\PropertyMetadata;
  */
 class SerializerClassCodeGenerator
 {
-    private $enableListener;
-
-    /**
-     * SerializerClassCodeGenerator constructor.
-     * @param bool $enableListener
-     */
-    public function __construct(bool $enableListener = false)
-    {
-        $this->enableListener = $enableListener;
-    }
-
     /**
      * @param ClassMetadata $classMetadata
      * @return string
@@ -50,10 +39,6 @@ class SerializerClassCodeGenerator
         return <<<EOF
 <?php
 
-use TSantos\Serializer\EventDispatcher\Event\PostDeserializationEvent;
-use TSantos\Serializer\EventDispatcher\Event\PostSerializationEvent;
-use TSantos\Serializer\EventDispatcher\Event\PreDeserializationEvent;
-use TSantos\Serializer\EventDispatcher\Event\PreSerializationEvent;
 use TSantos\Serializer\EventDispatcher\SerializerEvents;
 use TSantos\Serializer\Exception\InvalidArgumentException;
 use TSantos\Serializer\AbstractContext;
@@ -73,7 +58,7 @@ final class $className extends $metadata->baseClass
 
 {$this->deserializeMethod($metadata)}
 
-{$this->getExposedKeysMethod($metadata)}
+{$this->getExposedKeysMethod()}
 }
 
 EOF;
@@ -96,19 +81,7 @@ EOF;
 
     private function serializeMethodBody(ClassMetadata $metadata): string
     {
-        $simpleClassName = $this->getSimpleClassName($metadata);
         $code = $this->renderInvalidTypeException($metadata, 'serialize');
-
-        if ($this->enableListener) {
-            $code .= <<<EOF
-        \$object = \$this->dispatcher->dispatch(
-            SerializerEvents::PRE_SERIALIZATION,
-            new PreSerializationEvent(\$object, \$context), 
-            $simpleClassName::class
-        )->getObject();
-EOF;
-
-        }
 
         $code .= <<<EOF
         
@@ -120,17 +93,6 @@ EOF;
         $code .=
             $this->propertySerializationCode($metadata) .
             $this->virtualPropertySerializationCode($metadata);
-
-        if ($this->enableListener) {
-            $code .= <<<EOF
-
-        \$data = \$this->dispatcher->dispatch(
-            SerializerEvents::POST_SERIALIZATION,
-            new PostSerializationEvent(\$data, \$context), 
-            $simpleClassName::class
-        )->getData();
-EOF;
-        }
 
         $code .= <<<EOF
         return \$data;
@@ -213,18 +175,7 @@ EOF;
 
     private function deserializeMethodBody(ClassMetadata $metadata): string
     {
-        $simpleClassName = $this->getSimpleClassName($metadata);
         $code = $this->renderInvalidTypeException($metadata, 'deserialize');
-
-        if ($this->enableListener) {
-            $code .= <<<EOF
-        \$data = \$this->dispatcher->dispatch(
-            SerializerEvents::PRE_DESERIALIZATION,
-            new PreDeserializationEvent(\$data, \$context), 
-            $simpleClassName::class
-        )->getData();
-EOF;
-        }
 
         $code .= <<<EOF
 
@@ -233,17 +184,6 @@ EOF;
 EOF;
 
         $code .= $this->propertyDeserializationCode($metadata);
-
-
-        if ($this->enableListener) {
-            $code .= <<<EOF
-        \$object = \$this->dispatcher->dispatch(
-            SerializerEvents::POST_DESERIALIZATION,
-            new PostDeserializationEvent(\$object, \$context), 
-            $simpleClassName::class
-        )->getObject();
-EOF;
-        }
 
         $code .= <<<EOF
 
@@ -350,7 +290,7 @@ EOF;
         return var_export($groups, true);
     }
 
-    private function getExposedKeysMethod(ClassMetadata $metadata)
+    private function getExposedKeysMethod()
     {
         return <<<EOF
     /**

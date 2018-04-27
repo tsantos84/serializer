@@ -21,22 +21,22 @@ use TSantos\Serializer\SerializerBuilder;
  * Class SerializationListenerTest
  *
  * @author Tales Santos <tales.augusto.santos@gmail.com>
+ * @runTestsInSeparateProcesses
  */
 class SerializationListenerTest extends SerializerTestCase
 {
-    protected $clearCache = false;
-
     /** @test */
     public function it_can_change_the_serialized_object()
     {
-        $person = new Person(10);
+        $person = new Person(10, 'Tales');
 
         $serializer = $this->createSerializer($this->createMapping(Person::class, [
             'id' => ['type' => 'integer'],
-            'name' => []
+            'name' => [],
+            'lastName' => []
         ]));
 
-        $expected = '{"id":10,"name":"Tales Santos","age":33}';
+        $expected = '{"id":10,"name":"Tales","lastName":"Santos","age":33}';
 
         $this->assertEquals($expected, $serializer->serialize($person));
     }
@@ -47,7 +47,7 @@ class SerializationListenerTest extends SerializerTestCase
             ->addListener(SerializerEvents::PRE_SERIALIZATION, function (PreSerializationEvent $event) {
                 /** @var Person $person */
                 $person = $event->getObject();
-                $person->setName('Tales Santos');
+                $person->setLastName('Santos');
             })
             ->addListener(SerializerEvents::POST_SERIALIZATION, function (PostSerializationEvent $event) {
                 $data = $event->getData();

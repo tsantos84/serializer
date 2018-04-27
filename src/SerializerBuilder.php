@@ -65,7 +65,6 @@ class SerializerBuilder
         $this->debug = false;
         $this->metadataDirs = [];
         $this->serializerClassGenerateStrategy = SerializerClassLoader::AUTOGENERATE_ALWAYS;
-        $this->dispatcher = new EventDispatcher();
     }
 
     /**
@@ -193,6 +192,10 @@ class SerializerBuilder
 
     public function addListener(string $eventName, callable $listener, int $priority = 0, string $type = null)
     {
+        if (null === $this->dispatcher) {
+            $this->dispatcher = new EventDispatcher();
+        }
+
         $this->dispatcher->addListener($eventName, $listener, $priority, $type);
         $this->hasListener = true;
         return $this;
@@ -200,6 +203,10 @@ class SerializerBuilder
 
     public function addSubscriber(EventSubscriberInterface $subscriber)
     {
+        if (null === $this->dispatcher) {
+            $this->dispatcher = new EventDispatcher();
+        }
+
         $this->dispatcher->addSubscriber($subscriber);
         $this->hasListener = true;
         return $this;
@@ -256,14 +263,22 @@ class SerializerBuilder
             $this->instantiator = new DoctrineInstantiator(new Instantiator());
         }
 
-        $serializer = new Serializer(
+        if (null === $this->dispatcher) {
+            return new Serializer(
+                $classLoader,
+                $this->encoders->get($this->format),
+                $this->normalizers,
+                $this->instantiator
+            );
+        }
+
+        return new EventEmitterSerializer(
             $classLoader,
             $this->encoders->get($this->format),
             $this->normalizers,
-            $this->instantiator
+            $this->instantiator,
+            $this->dispatcher
         );
-
-        return $serializer;
     }
 
     private function createDir($dir)

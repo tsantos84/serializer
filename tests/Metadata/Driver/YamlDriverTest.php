@@ -22,6 +22,14 @@ use TSantos\Serializer\TypeGuesser;
  */
 class YamlDriverTest extends AbstractDriverTest
 {
+    public function setUp()
+    {
+        parent::setUp();
+        if (!class_exists('Symfony\Component\Yaml\Yaml')) {
+            $this->markTestSkipped('Skipping test as symfony/yaml component is not installed');
+        }
+    }
+
     public function createDriver(): DriverInterface
     {
         return new YamlDriver(new FileLocator([

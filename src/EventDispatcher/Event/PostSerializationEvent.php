@@ -10,7 +10,6 @@
 
 namespace TSantos\Serializer\EventDispatcher\Event;
 
-use Symfony\Component\EventDispatcher\Event;
 use TSantos\Serializer\SerializationContext;
 
 /**
@@ -21,7 +20,7 @@ use TSantos\Serializer\SerializationContext;
 class PostSerializationEvent extends Event
 {
     /**
-     * @var array
+     * @var mixed
      */
     private $data;
 
@@ -35,25 +34,25 @@ class PostSerializationEvent extends Event
      * @param mixed $data
      * @param SerializationContext $context
      */
-    public function __construct(array $data, SerializationContext $context)
+    public function __construct($data, SerializationContext $context)
     {
         $this->data = $data;
         $this->context = $context;
     }
 
     /**
-     * @return array
+     * @return mixed
      */
-    public function getData(): array
+    public function getData()
     {
         return $this->data;
     }
 
     /**
-     * @param array $data
+     * @param mixed $data
      * @return PostSerializationEvent
      */
-    public function setData(array $data): PostSerializationEvent
+    public function setData($data): PostSerializationEvent
     {
         $this->data = $data;
         return $this;

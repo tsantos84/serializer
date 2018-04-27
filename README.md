@@ -73,6 +73,7 @@ Features currently supported by TSantos Serializer:
 * Custom `getters` and `setters`
 * Virtual properties
 * Properties grouping
+* Event listeners to hook into serialization operations
 
 ## Call for contribution
 
@@ -80,4 +81,4 @@ This project is still in development and are fully open to your contribution. Wa
 
 * Support for `XML` and `CSV` encoders (output)
 * Documentation
-* Any idea?
+* Any new idea?
