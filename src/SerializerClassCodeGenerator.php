@@ -39,7 +39,6 @@ class SerializerClassCodeGenerator
         return <<<EOF
 <?php
 
-use TSantos\Serializer\EventDispatcher\SerializerEvents;
 use TSantos\Serializer\Exception\InvalidArgumentException;
 use TSantos\Serializer\AbstractContext;
 use TSantos\Serializer\SerializationContext;
