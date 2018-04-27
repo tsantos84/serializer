@@ -25,8 +25,6 @@ use TSantos\Serializer\SerializerBuilder;
  */
 class SerializationListenerTest extends SerializerTestCase
 {
-    protected $clearCache = false;
-
     /** @test */
     public function it_can_change_the_serialized_object()
     {
