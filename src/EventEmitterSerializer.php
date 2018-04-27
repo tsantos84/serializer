@@ -80,7 +80,7 @@ class EventEmitterSerializer extends Serializer
         $event = new PreDeserializationEvent($data, $context);
         $this->dispatcher->dispatch(SerializerEvents::PRE_DESERIALIZATION, $event, $type);
 
-        $denormalized = parent::denormalize($event->getData(), $context);
+        $denormalized = parent::denormalize($event->getData(), $type, $context);
 
         $event = new PostDeserializationEvent($denormalized, $context);
         $this->dispatcher->dispatch(SerializerEvents::POST_DESERIALIZATION, $event, $type);
