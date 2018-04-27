@@ -17,26 +17,6 @@ use Tests\TSantos\Serializer\SerializerTestCase;
 class SerializerTest extends SerializerTestCase
 {
     /** @test */
-    public function it_can_serialize_a_simple_object()
-    {
-        $serializer = $this->createSerializer($this->createMapping(Person::class, [
-            'id' => [],
-            'name' => [],
-            'married' => ['getter' => 'isMarried']
-        ]));
-
-        $person = $this->createPerson();
-
-        $json = $serializer->serialize($person);
-
-        $this->assertEquals(json_encode([
-            'id' => 1,
-            'name' => 'Tales',
-            'married' => true
-        ]), $json);
-    }
-
-    /** @test */
     public function it_can_serialize_a_collection_of_simple_objects()
     {
         $serializer = $this->createSerializer($this->createMapping(Person::class, [
@@ -65,6 +45,26 @@ class SerializerTest extends SerializerTestCase
                 'name' => 'Tales',
                 'married' => true
             ]
+        ]), $json);
+    }
+
+    /** @test */
+    public function it_can_serialize_a_simple_object()
+    {
+        $serializer = $this->createSerializer($this->createMapping(Person::class, [
+            'id' => [],
+            'name' => [],
+            'married' => ['getter' => 'isMarried']
+        ]));
+
+        $person = $this->createPerson();
+
+        $json = $serializer->serialize($person);
+
+        $this->assertEquals(json_encode([
+            'id' => 1,
+            'name' => 'Tales',
+            'married' => true
         ]), $json);
     }
 
