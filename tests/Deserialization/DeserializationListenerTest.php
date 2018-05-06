@@ -29,7 +29,7 @@ class DeserializationListenerTest extends SerializerTestCase
     /** @test */
     public function it_can_change_the_serialized_object()
     {
-        $content = '{"id":10,"name":"Tales","lastName":"Santos","married":true}';
+        $content = '{"name":"Tales","lastName":"Santos","married":true}';
 
         $serializer = $this->createSerializer($this->createMapping(Person::class, [
             'id' => ['type' => 'integer'],
@@ -41,7 +41,6 @@ class DeserializationListenerTest extends SerializerTestCase
         /** @var Person $person */
         $person = $serializer->deserialize($content, Person::class);
 
-        $this->assertEquals(10, $person->getId());
         $this->assertEquals('Tales', $person->getName());
         $this->assertEquals('Santos', $person->getLastName());
         $this->assertTrue($person->isMarried());

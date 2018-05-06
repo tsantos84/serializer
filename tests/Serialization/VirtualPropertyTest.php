@@ -25,7 +25,7 @@ class VirtualPropertyTest extends SerializerTestCase
     public function testSerializeWithVirtualProperty()
     {
         $serializer = $this->createSerializer($this->createMapping(Person::class, [], [
-            'fullName' => []
+            'getFullName' => ['exposeAs' => 'fullName']
         ]));
 
         $person = (new Person(1, 'Tales', true))->setLastName('Santos');
@@ -41,7 +41,7 @@ class VirtualPropertyTest extends SerializerTestCase
     public function testSerializeWithVirtualPropertyAndGetterModifier()
     {
         $serializer = $this->createSerializer($this->createMapping(Person::class, [], [
-            'birthday' => ['modifier' => 'format("d/m/Y")']
+            'getBirthday' => ['exposeAs' => 'birthday', 'modifier' => 'format("d/m/Y")']
         ]));
 
         $person = (new Person(1, 'Tales', true));

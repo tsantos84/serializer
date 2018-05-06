@@ -20,9 +20,9 @@ class SerializerTest extends SerializerTestCase
     public function it_can_serialize_a_collection_of_simple_objects()
     {
         $serializer = $this->createSerializer($this->createMapping(Person::class, [
-            'id' => [],
+            'id' => ['type' => 'integer'],
             'name' => [],
-            'married' => ['getter' => 'isMarried']
+            'married' => ['type'=>'boolean', 'getter' => 'isMarried']
         ]));
 
         $persons = [$this->createPerson(), $this->createPerson(), $this->createPerson()];
@@ -52,9 +52,9 @@ class SerializerTest extends SerializerTestCase
     public function it_can_serialize_a_simple_object()
     {
         $serializer = $this->createSerializer($this->createMapping(Person::class, [
-            'id' => [],
+            'id' => ['type' => 'integer'],
             'name' => [],
-            'married' => ['getter' => 'isMarried']
+            'married' => ['type' => 'boolean', 'getter' => 'isMarried']
         ]));
 
         $person = $this->createPerson();

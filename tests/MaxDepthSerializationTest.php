@@ -28,10 +28,10 @@ class MaxDepthSerializationTest extends SerializerTestCase
     public function testSerializeWithMaxDepth()
     {
         $personMapping = $this->createMapping(Person::class, [
-            'id' => [],
+            'id' => ['type' => 'integer'],
             'name' => [],
             'address' => ['type' => Address::class],
-            'married' => ['getter' => 'isMarried']
+            'married' => ['type' => 'boolean', 'getter' => 'isMarried']
         ]);
 
         $addressMapping = $this->createMapping(Address::class, [
