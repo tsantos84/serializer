@@ -110,9 +110,11 @@ class AnnotationDriver implements DriverInterface
                 }
                 if (!$hasGetterAnnotation && $class->hasMethod($getter = 'get' . ucfirst($property->getName()))) {
                     $propertyMetadata->getter = $getter;
+                    $propertyMetadata->getterRef = new \ReflectionMethod($propertyMetadata->class, $getter);
                 }
                 if (!$hasSetterAnnotation && $class->hasMethod($setter = 'set' . ucfirst($property->getName()))) {
                     $propertyMetadata->setter = $setter;
+                    $propertyMetadata->setterRef = new \ReflectionMethod($propertyMetadata->class, $setter);
                 }
                 $metadata->addPropertyMetadata($propertyMetadata);
             }

@@ -76,7 +76,7 @@ class XmlDriver extends AbstractFileDriver
 
             if ($class->hasMethod($setter = $attribs['setter'] ?? 'set' . ucfirst($name))) {
                 $property->setter = $setter;
-                $property->getterRef = new \ReflectionMethod($class->getName(), $setter);
+                $property->setterRef = new \ReflectionMethod($class->getName(), $setter);
             }
 
             if (isset($attribs['groups'])) {
