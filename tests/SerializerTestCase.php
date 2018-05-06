@@ -28,7 +28,7 @@ abstract class SerializerTestCase extends TestCase
 {
     protected $classCacheDir = __DIR__ . '/../var/classes';
 
-    protected $clearCache = false;
+    protected $clearCache = true;
 
     protected function tearDown()
     {
