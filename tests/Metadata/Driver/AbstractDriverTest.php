@@ -46,6 +46,8 @@ abstract class AbstractDriverTest extends TestCase
         $this->assertEquals('getName', $pm['name']->getter);
         $this->assertEquals('setName', $pm['name']->setter);
         $this->assertEquals(['api'], $pm['name']->groups);
+        $this->assertInstanceOf(\ReflectionMethod::class, $pm['name']->getterRef);
+        $this->assertInstanceOf(\ReflectionMethod::class, $pm['name']->setterRef);
 
         // field 'lastName'
         $this->assertEquals('string', $pm['lastName']->type);
