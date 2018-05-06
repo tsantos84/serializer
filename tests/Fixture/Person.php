@@ -29,17 +29,20 @@ class Person
     /**
      * @var string
      * @Serializer\Type("string")
+     * @Serializer\Groups({"api"})
      */
     private $name;
 
     /**
      * @var string
+     * @Serializer\Type("string")
      */
     private $lastName;
 
     /**
      * @var bool
      * @Serializer\Getter("isMarried")
+     * @Serializer\ExposeAs("is_married")
      */
     private $married;
 
@@ -50,6 +53,7 @@ class Person
 
     /**
      * @var \DateTimeInterface
+     * @Serializer\Type("DateTime")
      * @Serializer\Modifier("format('d/m/Y')")
      */
     private $birthday;
@@ -84,23 +88,12 @@ class Person
         $this->married = $married;
     }
 
-
     /**
      * @return int
      */
     public function getId(): int
     {
         return $this->id;
-    }
-
-    /**
-     * @param int $id
-     * @return Person
-     */
-    public function setId(int $id): Person
-    {
-        $this->id = $id;
-        return $this;
     }
 
     /**
@@ -142,7 +135,9 @@ class Person
     /**
      * @return string
      * @Serializer\VirtualProperty
+     * @Serializer\Type("string")
      * @Serializer\ExposeAs("full_name")
+     * @Serializer\Groups({"api"})
      */
     public function getFullName(): string
     {
@@ -186,6 +181,19 @@ class Person
     public function getAddress(): ?Address
     {
         return $this->address;
+    }
+
+    /**
+     * @Serializer\VirtualProperty()
+     * @return string
+     */
+    public function getFormattedAddress(): string
+    {
+        if (null === $this->address) {
+            return '';
+        }
+
+        return $this->address->getStreet() . ' ' . $this->address->getCity();
     }
 
     /**
