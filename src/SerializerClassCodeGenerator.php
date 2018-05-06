@@ -105,7 +105,10 @@ EOF;
         $code = '';
 
         foreach ($metadata->propertyMetadata as $property) {
-            $getter = "\$object->{$property->accessor}";
+            if (null === $property->getter) {
+                continue;
+            }
+            $getter = "\$object->{$property->getter}()";
             $value = '$value';
             if (null !== $property->modifier) {
                 $value .= '->' . $property->modifier;
@@ -197,7 +200,7 @@ EOF;
         $code = '';
 
         foreach ($metadata->propertyMetadata as $property) {
-            if ($property->readOnly) {
+            if ($property->readOnly || null === $property->setter) {
                 continue;
             }
             $code .= <<<EOF
