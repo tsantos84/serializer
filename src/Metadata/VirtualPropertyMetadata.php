@@ -19,9 +19,9 @@ use Metadata\MethodMetadata;
  */
 class VirtualPropertyMetadata extends MethodMetadata
 {
-    public $type;
+    public $type = 'string';
     public $exposeAs;
-    public $groups;
+    public $groups = ['Default'];
     public $modifier;
 
     public function serialize()

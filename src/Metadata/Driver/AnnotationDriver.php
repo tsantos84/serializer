@@ -11,13 +11,14 @@
 namespace TSantos\Serializer\Metadata\Driver;
 
 use Doctrine\Common\Annotations\AnnotationReader;
-use Metadata\Driver\AdvancedDriverInterface;
+use Metadata\Driver\DriverInterface;
 use TSantos\Serializer\Mapping\BaseClass;
 use TSantos\Serializer\Mapping\ExposeAs;
 use TSantos\Serializer\Mapping\Getter;
 use TSantos\Serializer\Mapping\Groups;
 use TSantos\Serializer\Mapping\Modifier;
 use TSantos\Serializer\Mapping\ReadOnly;
+use TSantos\Serializer\Mapping\Setter;
 use TSantos\Serializer\Mapping\Type;
 use TSantos\Serializer\Metadata\ClassMetadata;
 use TSantos\Serializer\Metadata\PropertyMetadata;
@@ -29,7 +30,7 @@ use TSantos\Serializer\TypeGuesser;
  *
  * @author Tales Santos <tales.augusto.santos@gmail.com>
  */
-class AnnotationDriver implements AdvancedDriverInterface
+class AnnotationDriver implements DriverInterface
 {
     /**
      * @var AnnotationReader
@@ -52,10 +53,6 @@ class AnnotationDriver implements AdvancedDriverInterface
         $this->guesser = $guesser;
     }
 
-    public function getAllClassNames()
-    {
-    }
-
     public function loadMetadataForClass(\ReflectionClass $class)
     {
         $metadata = new ClassMetadata($className = $class->name);
@@ -69,11 +66,15 @@ class AnnotationDriver implements AdvancedDriverInterface
         }
 
         foreach ($class->getProperties() as $property) {
-            if (count($annotations = $this->reader->getPropertyAnnotations($property))) {
+            $annotations = array_filter($this->reader->getPropertyAnnotations($property), function ($annotation) {
+                $ref = new \ReflectionObject($annotation);
+                return strpos($ref->getNamespaceName(), 'TSantos\Serializer') === 0;
+            });
+            if ($annotations) {
                 $propertyMetadata = new PropertyMetadata($property->class, $property->name);
                 $hasTypeAnnotation = false;
                 $hasGetterAnnotation = false;
-                $hasGroupsAnnotation = false;
+                $hasSetterAnnotation = false;
                 $hasExposeAsAnnotation = false;
                 foreach ($annotations as $annotation) {
                     switch (true) {
@@ -82,12 +83,17 @@ class AnnotationDriver implements AdvancedDriverInterface
                             $hasTypeAnnotation = true;
                             break;
                         case $annotation instanceof Getter:
-                            $propertyMetadata->accessor = $annotation->name . '()';
+                            $propertyMetadata->getter = $annotation->name;
                             $propertyMetadata->getterRef = new \ReflectionMethod($propertyMetadata->class, $annotation->name);
                             $hasGetterAnnotation = true;
                             break;
+                        case $annotation instanceof Setter:
+                            $propertyMetadata->setter = $annotation->name;
+                            $propertyMetadata->setterRef = new \ReflectionMethod($propertyMetadata->class, $annotation->name);
+                            $hasSetterAnnotation = true;
+                            break;
                         case $annotation instanceof Groups:
-                            $hasGroupsAnnotation = true;
+                            $propertyMetadata->groups = $annotation->groups;
                             break;
                         case $annotation instanceof ExposeAs:
                             $propertyMetadata->exposeAs = $annotation->name;
@@ -104,11 +110,11 @@ class AnnotationDriver implements AdvancedDriverInterface
                 if (!$hasTypeAnnotation) {
                     $propertyMetadata->type = $this->guesser->guessProperty($propertyMetadata);
                 }
-                if (!$hasGetterAnnotation) {
-                    $propertyMetadata->accessor = 'get' . ucfirst($property->getName()) . '()';
+                if (!$hasGetterAnnotation && $class->hasMethod($getter = 'get' . ucfirst($property->getName()))) {
+                    $propertyMetadata->getter = $getter;
                 }
-                if (!$hasGroupsAnnotation) {
-                    $propertyMetadata->groups = ['Default'];
+                if (!$hasSetterAnnotation && $class->hasMethod($setter = 'set' . ucfirst($property->getName()))) {
+                    $propertyMetadata->setter = $setter;
                 }
                 if (!$hasExposeAsAnnotation) {
                     $propertyMetadata->exposeAs = $propertyMetadata->name;
@@ -119,9 +125,12 @@ class AnnotationDriver implements AdvancedDriverInterface
 
         foreach ($class->getMethods(\ReflectionMethod::IS_PUBLIC) as $method) {
             $virtualPropertyMetadata = new VirtualPropertyMetadata($method->class, $method->name);
-            if (count($annotations = $this->reader->getMethodAnnotations($method))) {
+            $annotations = array_filter($this->reader->getMethodAnnotations($method), function ($annotation) {
+                $ref = new \ReflectionObject($annotation);
+                return strpos($ref->getNamespaceName(), 'TSantos\Serializer') === 0;
+            });
+            if (count($annotations)) {
                 $hasTypeAnnotation = false;
-                $hasGroupsAnnotation = false;
                 $hasExposeAsAnnotation = false;
                 foreach ($annotations as $annotation) {
                     switch (true) {
@@ -135,7 +144,6 @@ class AnnotationDriver implements AdvancedDriverInterface
                             break;
                         case $annotation instanceof Groups:
                             $virtualPropertyMetadata->groups = $annotation->groups;
-                            $hasGroupsAnnotation = true;
                             break;
                         case $annotation instanceof Modifier:
                             $virtualPropertyMetadata->modifier = $annotation->name;
@@ -144,9 +152,6 @@ class AnnotationDriver implements AdvancedDriverInterface
                 }
                 if (!$hasTypeAnnotation) {
                     $virtualPropertyMetadata->type = $this->guesser->guessVirtualProperty($virtualPropertyMetadata);
-                }
-                if (!$hasGroupsAnnotation) {
-                    $virtualPropertyMetadata->groups = ['Default'];
                 }
                 if (!$hasExposeAsAnnotation) {
                     $virtualPropertyMetadata->exposeAs = $virtualPropertyMetadata->name;

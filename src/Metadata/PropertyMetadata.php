@@ -21,12 +21,14 @@ use Metadata\PropertyMetadata as BasePropertyMetadata;
 class PropertyMetadata extends BasePropertyMetadata
 {
     public $type = 'string';
-    public $accessor;
+    public $getter;
     /** @var  \ReflectionMethod */
     public $getterRef;
     public $setter;
+    /** @var  \ReflectionMethod */
+    public $setterRef;
     public $exposeAs;
-    public $groups;
+    public $groups = ['Default'];
     public $modifier;
     public $readOnly = false;
 
@@ -36,7 +38,7 @@ class PropertyMetadata extends BasePropertyMetadata
             $this->name,
             $this->class,
             $this->type,
-            $this->accessor,
+            $this->getter,
             $this->setter,
             $this->exposeAs,
             $this->groups,
@@ -53,7 +55,7 @@ class PropertyMetadata extends BasePropertyMetadata
             $this->name,
             $this->class,
             $this->type,
-            $this->accessor,
+            $this->getter,
             $this->setter,
             $this->exposeAs,
             $this->groups,
@@ -61,7 +63,9 @@ class PropertyMetadata extends BasePropertyMetadata
             $this->readOnly
         ) = $unserialized;
 
-        $getter = substr($this->accessor, 0, strpos($this->accessor, '('));
+        $getter = substr($this->getter, 0, strpos($this->getter, '('));
         $this->getterRef = new \ReflectionMethod($this->class, $getter);
+        $setter = substr($this->setter, 0, strpos($this->setter, '('));
+        $this->setterRef = new \ReflectionMethod($this->class, $setter);
     }
 }
