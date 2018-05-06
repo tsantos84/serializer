@@ -75,7 +75,6 @@ class AnnotationDriver implements DriverInterface
                 $hasTypeAnnotation = false;
                 $hasGetterAnnotation = false;
                 $hasSetterAnnotation = false;
-                $hasExposeAsAnnotation = false;
                 foreach ($annotations as $annotation) {
                     switch (true) {
                         case $annotation instanceof Type:
@@ -97,7 +96,6 @@ class AnnotationDriver implements DriverInterface
                             break;
                         case $annotation instanceof ExposeAs:
                             $propertyMetadata->exposeAs = $annotation->name;
-                            $hasExposeAsAnnotation = true;
                             break;
                         case $annotation instanceof Modifier:
                             $propertyMetadata->modifier = $annotation->name;
@@ -115,9 +113,6 @@ class AnnotationDriver implements DriverInterface
                 }
                 if (!$hasSetterAnnotation && $class->hasMethod($setter = 'set' . ucfirst($property->getName()))) {
                     $propertyMetadata->setter = $setter;
-                }
-                if (!$hasExposeAsAnnotation) {
-                    $propertyMetadata->exposeAs = $propertyMetadata->name;
                 }
                 $metadata->addPropertyMetadata($propertyMetadata);
             }

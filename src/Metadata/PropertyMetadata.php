@@ -32,6 +32,12 @@ class PropertyMetadata extends BasePropertyMetadata
     public $modifier;
     public $readOnly = false;
 
+    public function __construct($class, $name)
+    {
+        parent::__construct($class, $name);
+        $this->exposeAs = $name;
+    }
+
     public function serialize()
     {
         return serialize([
