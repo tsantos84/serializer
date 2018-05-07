@@ -12,7 +12,6 @@ namespace TSantos\Serializer;
 
 use Metadata\ClassMetadata;
 use Metadata\MetadataFactoryInterface;
-use TSantos\Serializer\EventDispatcher\EventDispatcherInterface;
 
 /**
  * Class SerializerClassLoader
