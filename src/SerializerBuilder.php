@@ -238,8 +238,6 @@ class SerializerBuilder
             $driver = new DriverChain([
                 new YamlDriver($fileLocator, $typeGuesser),
                 new XmlDriver($fileLocator, $typeGuesser),
-                new PhpDriver($fileLocator, $typeGuesser),
-                new ReflectionDriver($typeGuesser)
             ]);
         }
 
@@ -252,8 +250,7 @@ class SerializerBuilder
             $metadataFactory,
             new SerializerClassCodeGenerator(),
             new SerializerClassWriter($classDir),
-            $this->serializerClassGenerateStrategy,
-            $this->dispatcher
+            $this->serializerClassGenerateStrategy
         );
 
         if (null === $this->instantiator) {
