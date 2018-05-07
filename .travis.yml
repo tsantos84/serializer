@@ -27,4 +27,4 @@ install:
   - composer install -a
 
 script:
-  - vendor/bin/phpunit
+  - vendor/bin/phpunit -v
