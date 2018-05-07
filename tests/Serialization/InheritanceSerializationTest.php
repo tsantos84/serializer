@@ -10,8 +10,8 @@
 
 namespace Tests\Serializer;
 
-use Tests\TSantos\Serializer\Fixture\Person;
-use Tests\TSantos\Serializer\Fixture\Employee;
+use Tests\TSantos\Serializer\Fixture\Model\Person;
+use Tests\TSantos\Serializer\Fixture\Model\Employee;
 use Tests\TSantos\Serializer\SerializerTestCase;
 
 /**

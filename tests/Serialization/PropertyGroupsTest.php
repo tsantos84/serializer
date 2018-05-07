@@ -10,7 +10,7 @@
 
 namespace Tests\TSantos\Serializer\Serialization;
 
-use Tests\TSantos\Serializer\Fixture\Person;
+use Tests\TSantos\Serializer\Fixture\Model\Person;
 use Tests\TSantos\Serializer\SerializerTestCase;
 use TSantos\Serializer\SerializationContext;
 

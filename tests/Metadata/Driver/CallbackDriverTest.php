@@ -11,7 +11,7 @@
 namespace Tests\TSantos\Serializer\Metadata\Driver;
 
 use PHPUnit\Framework\TestCase;
-use Tests\TSantos\Serializer\Fixture\Person;
+use Tests\TSantos\Serializer\Fixture\Model\Person;
 use TSantos\Serializer\Metadata\ClassMetadata;
 use TSantos\Serializer\Metadata\Driver\CallbackDriver;
 use TSantos\Serializer\Metadata\PropertyMetadata;

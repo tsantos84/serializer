@@ -1,4 +1,4 @@
-Tests\TSantos\Serializer\Fixture\Person:
+Tests\TSantos\Serializer\Fixture\Model\Person:
   baseClass: Tests\TSantos\Serializer\AbstractSerializerClass
   properties:
     id:
@@ -16,9 +16,9 @@ Tests\TSantos\Serializer\Fixture\Person:
       type: DateTime
       modifier: "format('d/m/Y')"
     father:
-      type: Tests\TSantos\Serializer\Fixture\Person
+      type: Tests\TSantos\Serializer\Fixture\Model\Person
     address:
-      type: Tests\TSantos\Serializer\Fixture\Address
+      type: Tests\TSantos\Serializer\Fixture\Model\Address
       readOnly: true
   virtualProperties:
     getFullName:

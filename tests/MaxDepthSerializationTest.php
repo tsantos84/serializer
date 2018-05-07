@@ -10,10 +10,10 @@
 
 namespace Tests\TSantos\Serializer;
 
-use Tests\TSantos\Serializer\Fixture\Address;
-use Tests\TSantos\Serializer\Fixture\Coordinates;
-use Tests\TSantos\Serializer\Fixture\Person;
-use Tests\TSantos\Serializer\Fixture\Vehicle;
+use Tests\TSantos\Serializer\Fixture\Model\Address;
+use Tests\TSantos\Serializer\Fixture\Model\Coordinates;
+use Tests\TSantos\Serializer\Fixture\Model\Person;
+use Tests\TSantos\Serializer\Fixture\Model\Vehicle;
 use TSantos\Serializer\SerializationContext;
 
 /**

@@ -12,7 +12,7 @@ namespace Tests\TSantos\Serializer\Metadata\Driver;
 
 use Metadata\Driver\DriverInterface;
 use PHPUnit\Framework\TestCase;
-use Tests\TSantos\Serializer\Fixture\Person;
+use Tests\TSantos\Serializer\Fixture\Model\Person;
 use TSantos\Serializer\Metadata\ClassMetadata;
 
 /**

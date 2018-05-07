@@ -10,7 +10,7 @@
 
 namespace Tests\Serializer;
 
-use Tests\TSantos\Serializer\Fixture\Vehicle;
+use Tests\TSantos\Serializer\Fixture\Model\Vehicle;
 use Tests\TSantos\Serializer\SerializerTestCase;
 
 /**
