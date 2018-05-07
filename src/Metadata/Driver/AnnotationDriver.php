@@ -70,7 +70,7 @@ class AnnotationDriver implements DriverInterface
                 $ref = new \ReflectionObject($annotation);
                 return strpos($ref->getNamespaceName(), 'TSantos\Serializer') === 0;
             });
-            if ($annotations) {
+            if (!empty($annotations)) {
                 $propertyMetadata = new PropertyMetadata($property->class, $property->name);
                 $hasTypeAnnotation = false;
                 $hasGetterAnnotation = false;
