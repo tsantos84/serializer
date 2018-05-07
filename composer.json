@@ -24,6 +24,7 @@
         "php": "^7.1",
         "jms/metadata": "^1.6",
         "doctrine/instantiator": "^1.1",
+        "doctrine/annotations": "^1.5",
         "symfony/event-dispatcher": "^3.4 || ^4.0"
     },
     "require-dev": {
