@@ -16,7 +16,7 @@ call_user_func(function () {
     }
     require $autoloadFile;
 
-//    if (class_exists('Doctrine\Common\Annotations\AnnotationRegistry', false)) {
+    if (class_exists('Doctrine\Common\Annotations\AnnotationRegistry')) {
         AnnotationRegistry::registerLoader('class_exists');
-//    }
+    }
 });
