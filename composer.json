@@ -30,7 +30,7 @@
         "phpunit/phpunit": "^6.2"
     },
     "suggest": {
-        "doctrine/annotations": "Allow to use Yaml format to define class metadata",
+        "doctrine/annotations": "Allow to use annotations format to define class metadata",
         "symfony/yaml": "Allow to use Yaml format to define class metadata"
     }
 }
