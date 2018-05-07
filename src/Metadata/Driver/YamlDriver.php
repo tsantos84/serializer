@@ -65,11 +65,17 @@ class YamlDriver extends AbstractFileDriver
         foreach ($mapping['properties'] ?? [] as $name => $map) {
             $property = new PropertyMetadata($class->getName(), $name);
 
-            $getter = $map['getter'] ?? 'get' . ucfirst($name);
-            $property->accessor = $getter . '()';
-            $property->getterRef = new \ReflectionMethod($class->getName(), $getter);
+            if ($class->hasMethod($getter = $map['getter'] ?? 'get' . ucfirst($name))) {
+                $property->getter = $getter;
+                $property->getterRef = new \ReflectionMethod($class->getName(), $getter);
+            }
+
+            if ($class->hasMethod($setter = $map['setter'] ?? 'set' . ucfirst($name))) {
+                $property->setter = $setter;
+                $property->setterRef = new \ReflectionMethod($class->getName(), $setter);
+            }
+
             $property->modifier = $map['modifier'] ?? null;
-            $property->setter = $map['setter'] ?? 'set' . ucfirst($name);
             $property->type = $map['type'] ?? $this->typeGuesser->guessProperty($property, 'string');
             $property->exposeAs = $map['exposeAs'] ?? $name;
             $property->groups = (array)($map['groups'] ?? ['Default']);
@@ -79,7 +85,7 @@ class YamlDriver extends AbstractFileDriver
         }
 
         foreach ($mapping['virtualProperties'] ?? [] as $name => $map) {
-            $method = $map['method'] ?? 'get' . ucfirst($name);
+            $method = $map['method'] ?? $name;
 
             $property = new VirtualPropertyMetadata($class->name, $method);
             $property->type = $map['type'] ?? $this->typeGuesser->guessVirtualProperty($property, 'string');
