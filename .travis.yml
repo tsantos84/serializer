@@ -9,14 +9,15 @@ cache:
 matrix:
   include:
     - php: 7.1
-
     - php: 7.1
       env: DEPENDENCIES="symfony/yaml:^3.4||^4.0"
-
+    - php: 7.1
+      env: DEPENDENCIES="doctrine/annotation:^1.5"
     - php: 7.2
-
     - php: 7.2
       env: DEPENDENCIES="symfony/yaml:^3.4||^4.0"
+    - php: 7.2
+      env: DEPENDENCIES="doctrine/annotation:^1.5"
   fast_finish: true
 
 before_install:
