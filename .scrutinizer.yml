@@ -5,6 +5,11 @@ build:
     environment:
         php:
             version: 7.1
+    dependencies:
+        before:
+            - 'composer require "doctrine/annotations:^1.5" --no-update'
+            - 'composer require "symfony/yaml:^3.4||^4.0" --no-update'
+
     tests:
         override:
             -
