@@ -9,7 +9,6 @@
   -->
 <ruleset name="TSantos Serializer">
     <description>The coding standard for TSantos Serializer.</description>
-    <file>./example</file>
     <file>./src</file>
     <exclude-pattern>*/tests/*</exclude-pattern>
     <exclude-pattern>*/vendor/*</exclude-pattern>
