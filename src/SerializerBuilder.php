@@ -161,9 +161,9 @@ class SerializerBuilder
         return $this;
     }
 
-    public function setSerializerClassGenerateStrategy(int $serializerClassGenerateStrategy): SerializerBuilder
+    public function setSerializerClassGenerateStrategy(int $strategy): SerializerBuilder
     {
-        $this->serializerClassGenerateStrategy = $serializerClassGenerateStrategy;
+        $this->serializerClassGenerateStrategy = $strategy;
         return $this;
     }
 
