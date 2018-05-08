@@ -57,6 +57,21 @@ class AnnotationDriver implements DriverInterface
     {
         $metadata = new ClassMetadata($class->name);
 
+        $this->loadClassAnnotations($class, $metadata);
+
+        $this->loadPropertyAnnotations($class, $metadata);
+
+        $this->loadVirtualPropertyAnnotations($class, $metadata);
+
+        return $metadata;
+    }
+
+    /**
+     * @param \ReflectionClass $class
+     * @param ClassMetadata $metadata
+     */
+    private function loadClassAnnotations(\ReflectionClass $class, ClassMetadata $metadata): void
+    {
         foreach ($this->reader->getClassAnnotations($class) as $annotation) {
             switch (true) {
                 case $annotation instanceof BaseClass:
@@ -64,7 +79,15 @@ class AnnotationDriver implements DriverInterface
                     break;
             }
         }
+    }
 
+    /**
+     * @param \ReflectionClass $class
+     * @param $metadata
+     * @throws \ReflectionException
+     */
+    private function loadPropertyAnnotations(\ReflectionClass $class, ClassMetadata $metadata): void
+    {
         foreach ($class->getProperties() as $property) {
             $annotations = array_filter($this->reader->getPropertyAnnotations($property), function ($annotation) {
                 $ref = new \ReflectionObject($annotation);
@@ -121,7 +144,14 @@ class AnnotationDriver implements DriverInterface
                 $metadata->addPropertyMetadata($propertyMetadata);
             }
         }
+    }
 
+    /**
+     * @param \ReflectionClass $class
+     * @param $metadata
+     */
+    private function loadVirtualPropertyAnnotations(\ReflectionClass $class, ClassMetadata $metadata): void
+    {
         foreach ($class->getMethods(\ReflectionMethod::IS_PUBLIC) as $method) {
             $virtualPropertyMetadata = new VirtualPropertyMetadata($method->class, $method->name);
             $annotations = array_filter($this->reader->getMethodAnnotations($method), function ($annotation) {
@@ -158,7 +188,5 @@ class AnnotationDriver implements DriverInterface
                 $metadata->addMethodMetadata($virtualPropertyMetadata);
             }
         }
-
-        return $metadata;
     }
 }
