@@ -40,7 +40,11 @@ class CallbackDriver implements DriverInterface
 
         if (!$metadata instanceof ClassMetadata) {
             throw new \BadMethodCallException(
-                sprintf('The metadata callback should return an instance of %s, %s given', ClassMetadata::class, is_object($metadata) ? get_class($metadata) : gettype($metadata))
+                sprintf(
+                    'The metadata callback should return an instance of %s, %s given',
+                    ClassMetadata::class,
+                    is_object($metadata) ? get_class($metadata) : gettype($metadata)
+                )
             );
         }
 

@@ -55,7 +55,8 @@ class NormalizerRegistry implements NormalizerRegistryInterface
     public function getDenormalizer($data, string $type, DeserializationContext $context): ?DenormalizerInterface
     {
         foreach ($this->normalizers as $denormalizer) {
-            if ($denormalizer instanceof DenormalizerInterface && $denormalizer->supportsDenormalization($type, $data, $context)) {
+            if ($denormalizer instanceof DenormalizerInterface
+                && $denormalizer->supportsDenormalization($type, $data, $context)) {
                 return $denormalizer;
             }
         }

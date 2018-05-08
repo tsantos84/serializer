@@ -1,5 +1,5 @@
 filter:
-    paths: ["src/*"]
+    paths: ["src/*", "example/*"]
 
 build:
     environment:
@@ -11,6 +11,8 @@ build:
             - 'composer require "symfony/yaml:^3.4||^4.0" --no-update'
 
     tests:
+        before:
+            - 'vendor/bin/phpcs .'
         override:
             -
                 command: vendor/bin/phpunit --coverage-clover=coverage-file -v

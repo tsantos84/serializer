@@ -45,7 +45,9 @@ class YamlDriver extends AbstractFileDriver
     protected function loadMetadataFromFile(\ReflectionClass $class, $file)
     {
         if (!class_exists('Symfony\Component\Yaml\Yaml')) {
-            throw new \RuntimeException('Yaml parser was not found. Did you added `symfony/yaml` to your project dependency?');
+            throw new \RuntimeException(
+                'Yaml parser was not found. Did you added `symfony/yaml` to your project dependency?'
+            );
         }
 
         $config = Yaml::parse(file_get_contents($file));

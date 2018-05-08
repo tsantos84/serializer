@@ -10,11 +10,11 @@
 
 $serializer = require 'setup.php';
 
-use Tests\TSantos\Serializer\Fixture\Address;
-use Tests\TSantos\Serializer\Fixture\Coordinates;
-use Tests\TSantos\Serializer\Fixture\Person;
+use Tests\TSantos\Serializer\Fixture\Model\Address;
+use Tests\TSantos\Serializer\Fixture\Model\Coordinates;
+use Tests\TSantos\Serializer\Fixture\Model\Person;
 
-$person = new Person(1,'Tales Santos', true);
+$person = new Person(1, 'Tales Santos', true);
 
 $address = new Address();
 $address->setCity('Belo Horizonte');

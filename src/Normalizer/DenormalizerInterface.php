@@ -9,6 +9,7 @@
  */
 
 namespace TSantos\Serializer\Normalizer;
+
 use TSantos\Serializer\DeserializationContext;
 
 /**

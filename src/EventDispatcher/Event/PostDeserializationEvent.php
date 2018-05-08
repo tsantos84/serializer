@@ -12,7 +12,6 @@ namespace TSantos\Serializer\EventDispatcher\Event;
 
 use TSantos\Serializer\DeserializationContext;
 
-
 /**
  * Class PostDeserializationEvent
  *

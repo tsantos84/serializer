@@ -152,7 +152,6 @@ EOF;
         }
 
 EOF;
-
         }
 
         return $code;
@@ -232,17 +231,16 @@ EOF;
         }
     }
 
-    private function renderSetter(PropertyMetadata $property)
+    private function renderSetter(PropertyMetadata $prop)
     {
-        if ($this->isScalarType($property->type)) {
+        if ($this->isScalarType($prop->type)) {
             return <<<EOF
-\$object->$property->setter({$this->castType("\$data['$property->exposeAs']", $property->type)});
+\$object->$prop->setter({$this->castType("\$data['$prop->exposeAs']", $prop->type)});
 EOF;
         } else {
             return <<<EOF
-\$object->$property->setter(\$this->serializer->denormalize(\$data['$property->exposeAs'], '$property->type', \$context));
+\$object->$prop->setter(\$this->serializer->denormalize(\$data['$prop->exposeAs'], '$prop->type', \$context));
 EOF;
-
         }
     }
 
@@ -252,7 +250,14 @@ EOF;
 
         return <<<EOF
         if (!\$object instanceof $simpleClassName) {
-            throw new InvalidArgumentException(sprintf('%s is able to $direction only instances of "%s" only. "%s" given', get_class(\$this), $simpleClassName::class, is_object(\$object) ? get_class(\$object) : gettype(\$object)));
+            throw new InvalidArgumentException(
+                sprintf(
+                    '%s is able to $direction only instances of "%s" only. "%s" given', 
+                    get_class(\$this), 
+                    $simpleClassName::class, 
+                    is_object(\$object) ? get_class(\$object) : gettype(\$object)
+                )
+            );
         }
 
 EOF;
@@ -306,8 +311,10 @@ EOF;
         }
 
         \$contextGroups = array_flip(\$context->getGroups());
-
-        \$computedKeys = array_flip(array_reduce(array_intersect_key(\$this->exposedGroups, \$contextGroups), function (\$g, \$v) {
+        
+        
+        \$keys = array_intersect_key(\$this->exposedGroups, \$contextGroups);
+        \$computedKeys = array_flip(array_reduce(\$keys, function (\$g, \$v) {
             array_push(\$g, ...\$v);
             return \$g;
         }, []));
@@ -317,6 +324,5 @@ EOF;
         return \$computedKeys;
     }
 EOF;
-
     }
 }

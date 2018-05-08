@@ -83,12 +83,14 @@ class AnnotationDriver implements DriverInterface
                             break;
                         case $annotation instanceof Getter:
                             $propertyMetadata->getter = $annotation->name;
-                            $propertyMetadata->getterRef = new \ReflectionMethod($propertyMetadata->class, $annotation->name);
+                            $propertyMetadata->getterRef =
+                                new \ReflectionMethod($propertyMetadata->class, $annotation->name);
                             $hasGetterAnnotation = true;
                             break;
                         case $annotation instanceof Setter:
                             $propertyMetadata->setter = $annotation->name;
-                            $propertyMetadata->setterRef = new \ReflectionMethod($propertyMetadata->class, $annotation->name);
+                            $propertyMetadata->setterRef =
+                                new \ReflectionMethod($propertyMetadata->class, $annotation->name);
                             $hasSetterAnnotation = true;
                             break;
                         case $annotation instanceof Groups:
