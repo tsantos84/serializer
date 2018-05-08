@@ -55,7 +55,7 @@ class AnnotationDriver implements DriverInterface
 
     public function loadMetadataForClass(\ReflectionClass $class)
     {
-        $metadata = new ClassMetadata($className = $class->name);
+        $metadata = new ClassMetadata($class->name);
 
         foreach ($this->reader->getClassAnnotations($class) as $annotation) {
             switch (true) {
