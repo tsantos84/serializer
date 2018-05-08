@@ -224,11 +224,11 @@ EOF;
             return <<<EOF
 \$data['$property->exposeAs'] = {$this->castType($value, $property->type)};
 EOF;
-        } else {
-            return <<<EOF
+        }
+
+        return <<<EOF
 \$data['$property->exposeAs'] = \$this->serializer->normalize($value, \$context);
 EOF;
-        }
     }
 
     private function renderSetter(PropertyMetadata $prop)
@@ -237,11 +237,11 @@ EOF;
             return <<<EOF
 \$object->$prop->setter({$this->castType("\$data['$prop->exposeAs']", $prop->type)});
 EOF;
-        } else {
-            return <<<EOF
+        }
+
+        return <<<EOF
 \$object->$prop->setter(\$this->serializer->denormalize(\$data['$prop->exposeAs'], '$prop->type', \$context));
 EOF;
-        }
     }
 
     private function renderInvalidTypeException(ClassMetadata $metadata, string $direction)
