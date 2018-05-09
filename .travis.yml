@@ -29,3 +29,9 @@ install:
 script:
   - vendor/bin/phpcs .
   - vendor/bin/phpunit -v
+
+after_success:
+  - git clone https://github.com/tsantos84/serializers-benchmarking.git
+  - cd serializers-benchmarking
+  - composer install -a --no-dev
+  - php app serialize -i 100
