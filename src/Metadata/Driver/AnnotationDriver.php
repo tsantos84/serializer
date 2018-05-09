@@ -89,60 +89,54 @@ class AnnotationDriver implements DriverInterface
     private function loadPropertyAnnotations(\ReflectionClass $class, ClassMetadata $metadata): void
     {
         foreach ($class->getProperties() as $property) {
-            $annotations = array_filter($this->reader->getPropertyAnnotations($property), function ($annotation) {
-                $ref = new \ReflectionObject($annotation);
-                return strpos($ref->getNamespaceName(), 'TSantos\Serializer') === 0;
-            });
-            if (!empty($annotations)) {
-                $propertyMetadata = new PropertyMetadata($property->class, $property->name);
-                $hasTypeAnnotation = false;
-                $hasGetterAnnotation = false;
-                $hasSetterAnnotation = false;
-                foreach ($annotations as $annotation) {
-                    switch (true) {
-                        case $annotation instanceof Type:
-                            $propertyMetadata->type = $annotation->name;
-                            $hasTypeAnnotation = true;
-                            break;
-                        case $annotation instanceof Getter:
-                            $propertyMetadata->getter = $annotation->name;
-                            $propertyMetadata->getterRef =
-                                new \ReflectionMethod($propertyMetadata->class, $annotation->name);
-                            $hasGetterAnnotation = true;
-                            break;
-                        case $annotation instanceof Setter:
-                            $propertyMetadata->setter = $annotation->name;
-                            $propertyMetadata->setterRef =
-                                new \ReflectionMethod($propertyMetadata->class, $annotation->name);
-                            $hasSetterAnnotation = true;
-                            break;
-                        case $annotation instanceof Groups:
-                            $propertyMetadata->groups = $annotation->groups;
-                            break;
-                        case $annotation instanceof ExposeAs:
-                            $propertyMetadata->exposeAs = $annotation->name;
-                            break;
-                        case $annotation instanceof Modifier:
-                            $propertyMetadata->modifier = $annotation->name;
-                            break;
-                        case $annotation instanceof ReadOnly:
-                            $propertyMetadata->readOnly = true;
-                            break;
-                    }
-                }
-                if (!$hasTypeAnnotation) {
-                    $propertyMetadata->type = $this->guesser->guessProperty($propertyMetadata);
-                }
-                if (!$hasGetterAnnotation && $class->hasMethod($getter = 'get' . ucfirst($property->getName()))) {
-                    $propertyMetadata->getter = $getter;
-                    $propertyMetadata->getterRef = new \ReflectionMethod($propertyMetadata->class, $getter);
-                }
-                if (!$hasSetterAnnotation && $class->hasMethod($setter = 'set' . ucfirst($property->getName()))) {
-                    $propertyMetadata->setter = $setter;
-                    $propertyMetadata->setterRef = new \ReflectionMethod($propertyMetadata->class, $setter);
-                }
-                $metadata->addPropertyMetadata($propertyMetadata);
+            $annotations = $this->filterAnnotations($this->reader->getPropertyAnnotations($property));
+
+            if (empty($annotations)) {
+                continue;
             }
+
+            $propertyMetadata = new PropertyMetadata($property->class, $property->name);
+            $propertyMetadata->type = $this->guesser->guessProperty($propertyMetadata);
+            $getter = 'get' . ucfirst($property->getName());
+            $setter = 'set' . ucfirst($property->getName());
+
+            foreach ($annotations as $annotation) {
+                switch (true) {
+                    case $annotation instanceof Type:
+                        $propertyMetadata->type = $annotation->name;
+                        break;
+                    case $annotation instanceof Getter:
+                        $getter = $annotation->name;
+                        break;
+                    case $annotation instanceof Setter:
+                        $setter = $annotation->name;
+                        break;
+                    case $annotation instanceof Groups:
+                        $propertyMetadata->groups = $annotation->groups;
+                        break;
+                    case $annotation instanceof ExposeAs:
+                        $propertyMetadata->exposeAs = $annotation->name;
+                        break;
+                    case $annotation instanceof Modifier:
+                        $propertyMetadata->modifier = $annotation->name;
+                        break;
+                    case $annotation instanceof ReadOnly:
+                        $propertyMetadata->readOnly = true;
+                        break;
+                }
+            }
+
+            if ($class->hasMethod($getter)) {
+                $propertyMetadata->getter = $getter;
+                $propertyMetadata->getterRef = new \ReflectionMethod($propertyMetadata->class, $getter);
+            }
+
+            if ($class->hasMethod($setter)) {
+                $propertyMetadata->setter = $setter;
+                $propertyMetadata->setterRef = new \ReflectionMethod($propertyMetadata->class, $setter);
+            }
+
+            $metadata->addPropertyMetadata($propertyMetadata);
         }
     }
 
@@ -154,39 +148,45 @@ class AnnotationDriver implements DriverInterface
     {
         foreach ($class->getMethods(\ReflectionMethod::IS_PUBLIC) as $method) {
             $virtualPropertyMetadata = new VirtualPropertyMetadata($method->class, $method->name);
-            $annotations = array_filter($this->reader->getMethodAnnotations($method), function ($annotation) {
-                $ref = new \ReflectionObject($annotation);
-                return strpos($ref->getNamespaceName(), 'TSantos\Serializer') === 0;
-            });
-            if (count($annotations)) {
-                $hasTypeAnnotation = false;
-                $hasExposeAsAnnotation = false;
-                foreach ($annotations as $annotation) {
-                    switch (true) {
-                        case $annotation instanceof Type:
-                            $virtualPropertyMetadata->type = $annotation->name;
-                            $hasTypeAnnotation = true;
-                            break;
-                        case $annotation instanceof ExposeAs:
-                            $virtualPropertyMetadata->exposeAs = $annotation->name;
-                            $hasExposeAsAnnotation = true;
-                            break;
-                        case $annotation instanceof Groups:
-                            $virtualPropertyMetadata->groups = $annotation->groups;
-                            break;
-                        case $annotation instanceof Modifier:
-                            $virtualPropertyMetadata->modifier = $annotation->name;
-                            break;
-                    }
-                }
-                if (!$hasTypeAnnotation) {
-                    $virtualPropertyMetadata->type = $this->guesser->guessVirtualProperty($virtualPropertyMetadata);
-                }
-                if (!$hasExposeAsAnnotation) {
-                    $virtualPropertyMetadata->exposeAs = $virtualPropertyMetadata->name;
-                }
-                $metadata->addMethodMetadata($virtualPropertyMetadata);
+
+            $annotations = $this->filterAnnotations($this->reader->getMethodAnnotations($method));
+
+            if (empty($annotations)) {
+                continue;
             }
+
+            $virtualPropertyMetadata->type = $this->guesser->guessVirtualProperty($virtualPropertyMetadata);
+
+            foreach ($annotations as $annotation) {
+                switch (true) {
+                    case $annotation instanceof Type:
+                        $virtualPropertyMetadata->type = $annotation->name;
+                        break;
+                    case $annotation instanceof ExposeAs:
+                        $virtualPropertyMetadata->exposeAs = $annotation->name;
+                        break;
+                    case $annotation instanceof Groups:
+                        $virtualPropertyMetadata->groups = $annotation->groups;
+                        break;
+                    case $annotation instanceof Modifier:
+                        $virtualPropertyMetadata->modifier = $annotation->name;
+                        break;
+                }
+            }
+            $metadata->addMethodMetadata($virtualPropertyMetadata);
         }
+    }
+
+    /**
+     * @param array $annotations
+     * @return array
+     */
+    private function filterAnnotations(array $annotations): array
+    {
+        $annotations = array_filter($annotations, function ($annotation) {
+            $ref = new \ReflectionObject($annotation);
+            return strpos($ref->getNamespaceName(), 'TSantos\Serializer') === 0;
+        });
+        return $annotations;
     }
 }
