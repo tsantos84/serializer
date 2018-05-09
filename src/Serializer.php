@@ -140,17 +140,20 @@ class Serializer implements SerializerInterface
             $context->start();
         }
 
+        if (empty($data)) {
+            return [];
+        }
+
         if (null !== $normalizer = $this->normalizers->getDenormalizer($data, $type, $context)) {
             return $normalizer->denormalize($data, $context);
         }
 
         if ($type === 'array') {
-            if (empty($data)) {
-                return [];
-            }
             $type = is_scalar(reset($data)) ? gettype(reset($data)) : 'string';
             return $this->denormalizeCollection($data, $type, $context);
-        } elseif (false === $open = strpos($type, '<')) {
+        }
+
+        if (false === $open = strpos($type, '<')) {
             if (null === $object = $context->getTarget()) {
                 $object = $this->instantiator->create($type, $data, $context);
             }
@@ -160,14 +163,11 @@ class Serializer implements SerializerInterface
             $object = $objectSerializer->deserialize($object, $data, $context);
             $context->left();
             return $object;
-        } else {
-            if (empty($data)) {
-                return [];
-            }
-            $close = strpos($type, '>', -1) - 6;
-            $innerType = substr($type, $open + 1, $close);
-            return $this->denormalizeCollection($data, $innerType, $context);
         }
+
+        $close = strpos($type, '>', -1) - 6;
+        $innerType = substr($type, $open + 1, $close);
+        return $this->denormalizeCollection($data, $innerType, $context);
     }
 
     private function normalizeCollection($data, SerializationContext $context): array
@@ -190,29 +190,23 @@ class Serializer implements SerializerInterface
     {
         $result = [];
 
-        switch ($type) {
-            case 'int':
-            case 'integer':
-            case 'string':
-            case 'float':
-            case 'double':
-                if ($type === 'boolean') {
-                    $type = 'bool';
-                }
-                if ($type === 'integer') {
-                    $type = 'int';
-                }
-                if ($type === 'string') {
-                    $type = 'str';
-                }
-                $callback = function ($item) use ($type) {
-                    return call_user_func($type . 'val', $item);
-                };
-                break;
-            default:
-                $callback = function ($item) use ($type, $context) {
-                    return $this->denormalize($item, $type, $context);
-                };
+        $scalarTypes = [
+            'integer' => 'int',
+            'string' => 'str',
+            'float' => 'float',
+            'double' => 'double',
+            'boolean' => 'bool'
+        ];
+
+        $callback = function ($item) use ($type, $context) {
+            return $this->denormalize($item, $type, $context);
+        };
+
+        if (isset($scalarTypes[$type])) {
+            $type = $scalarTypes[$type];
+            $callback = function ($item) use ($type) {
+                return call_user_func($type . 'val', $item);
+            };
         }
 
         foreach ($data as $key => $item) {
