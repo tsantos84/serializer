@@ -34,4 +34,5 @@ after_success:
   - git clone https://github.com/tsantos84/serializers-benchmarking.git
   - cd serializers-benchmarking
   - composer install -a --no-dev
-  - php app serialize -i 100
+  - php app serialize -s 100 -b 100
+  - php app deserialize -s 100 -b 100
