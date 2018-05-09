@@ -88,11 +88,12 @@ class AnnotationDriver implements DriverInterface
      */
     private function loadPropertyAnnotations(\ReflectionClass $class, ClassMetadata $metadata): void
     {
-        foreach ($class->getProperties() as $property) {
+        array_map(function (\ReflectionProperty $property) use ($class, $metadata) {
+
             $annotations = $this->filterAnnotations($this->reader->getPropertyAnnotations($property));
 
             if (empty($annotations)) {
-                continue;
+                return;
             }
 
             $propertyMetadata = new PropertyMetadata($property->class, $property->name);
@@ -113,7 +114,8 @@ class AnnotationDriver implements DriverInterface
             $this->configureProperty($propertyMetadata, $annotations);
 
             $metadata->addPropertyMetadata($propertyMetadata);
-        }
+
+        }, $class->getProperties());
     }
 
     /**
