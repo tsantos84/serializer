@@ -67,7 +67,7 @@ class PropertyMetadata extends BasePropertyMetadata
             $this->groups,
             $this->modifier,
             $this->readOnly
-        ) = $unserialized;
+            ) = $unserialized;
 
         $getter = substr($this->getter, 0, strpos($this->getter, '('));
         $this->getterRef = new \ReflectionMethod($this->class, $getter);

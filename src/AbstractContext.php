@@ -17,7 +17,7 @@ namespace TSantos\Serializer;
 
 abstract class AbstractContext
 {
-    /** @var array  */
+    /** @var array */
     private $groups = ['Default'];
 
     /** @var integer */

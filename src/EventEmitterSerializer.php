@@ -47,7 +47,8 @@ class EventEmitterSerializer extends Serializer
         NormalizerRegistryInterface $normalizers,
         ObjectInstantiatorInterface $instantiator,
         EventDispatcherInterface $dispatcher
-    ) {
+    )
+    {
         parent::__construct($classLoader, $encoder, $normalizers, $instantiator);
         $this->dispatcher = $dispatcher;
     }

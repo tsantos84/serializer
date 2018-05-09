@@ -10,8 +10,8 @@
 
 namespace TSantos\Serializer;
 
-use TSantos\Serializer\Metadata\ClassMetadata;
 use Metadata\MetadataFactoryInterface;
+use TSantos\Serializer\Metadata\ClassMetadata;
 
 /**
  * Class SerializerClassLoader
@@ -61,7 +61,8 @@ class SerializerClassLoader
         SerializerClassCodeGenerator $codeGenerator,
         SerializerClassWriter $writer,
         int $autogenerate
-    ) {
+    )
+    {
         $this->metadataFactory = $metadataFactory;
         $this->codeGenerator = $codeGenerator;
         $this->writer = $writer;

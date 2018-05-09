@@ -81,7 +81,7 @@ class YamlDriver extends AbstractFileDriver
             $property->type = $map['type'] ?? $this->typeGuesser->guessProperty($property, 'string');
             $property->exposeAs = $map['exposeAs'] ?? $name;
             $property->groups = (array)($map['groups'] ?? ['Default']);
-            $property->readOnly = (bool) ($map['readOnly'] ?? false);
+            $property->readOnly = (bool)($map['readOnly'] ?? false);
 
             $metadata->addPropertyMetadata($property);
         }

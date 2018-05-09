@@ -53,7 +53,8 @@ class Serializer implements SerializerInterface
         EncoderInterface $encoder,
         NormalizerRegistryInterface $normalizers,
         ObjectInstantiatorInterface $instantiator
-    ) {
+    )
+    {
         $this->classLoader = $classLoader;
         $this->encoder = $encoder;
         $this->normalizers = $normalizers;
@@ -63,7 +64,7 @@ class Serializer implements SerializerInterface
     /**
      * @inheritdoc
      */
-    public function serialize($data, SerializationContext $context = null) : string
+    public function serialize($data, SerializationContext $context = null): string
     {
         if (is_null($data) || is_scalar($data)) {
             return $this->normalize($data, $context);
