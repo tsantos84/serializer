@@ -10,7 +10,7 @@
 
 namespace TSantos\Serializer;
 
-use Metadata\ClassMetadata;
+use TSantos\Serializer\Metadata\ClassMetadata;
 use Metadata\MetadataFactoryInterface;
 
 /**
@@ -75,6 +75,7 @@ class SerializerClassLoader
      */
     public function load(string $class, SerializerInterface $serializer): SerializerClassInterface
     {
+        /** @var ClassMetadata $classMetadata */
         $classMetadata = $this->metadataFactory->getMetadataForClass($class);
 
         if (null === $classMetadata) {
