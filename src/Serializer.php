@@ -53,8 +53,7 @@ class Serializer implements SerializerInterface
         EncoderInterface $encoder,
         NormalizerRegistryInterface $normalizers,
         ObjectInstantiatorInterface $instantiator
-    )
-    {
+    ) {
         $this->classLoader = $classLoader;
         $this->encoder = $encoder;
         $this->normalizers = $normalizers;

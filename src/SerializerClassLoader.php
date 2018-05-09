@@ -61,8 +61,7 @@ class SerializerClassLoader
         SerializerClassCodeGenerator $codeGenerator,
         SerializerClassWriter $writer,
         int $autogenerate
-    )
-    {
+    ) {
         $this->metadataFactory = $metadataFactory;
         $this->codeGenerator = $codeGenerator;
         $this->writer = $writer;
