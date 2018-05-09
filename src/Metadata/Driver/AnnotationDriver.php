@@ -100,32 +100,6 @@ class AnnotationDriver implements DriverInterface
             $getter = 'get' . ucfirst($property->getName());
             $setter = 'set' . ucfirst($property->getName());
 
-            foreach ($annotations as $annotation) {
-                switch (true) {
-                    case $annotation instanceof Type:
-                        $propertyMetadata->type = $annotation->name;
-                        break;
-                    case $annotation instanceof Getter:
-                        $getter = $annotation->name;
-                        break;
-                    case $annotation instanceof Setter:
-                        $setter = $annotation->name;
-                        break;
-                    case $annotation instanceof Groups:
-                        $propertyMetadata->groups = $annotation->groups;
-                        break;
-                    case $annotation instanceof ExposeAs:
-                        $propertyMetadata->exposeAs = $annotation->name;
-                        break;
-                    case $annotation instanceof Modifier:
-                        $propertyMetadata->modifier = $annotation->name;
-                        break;
-                    case $annotation instanceof ReadOnly:
-                        $propertyMetadata->readOnly = true;
-                        break;
-                }
-            }
-
             if ($class->hasMethod($getter)) {
                 $propertyMetadata->getter = $getter;
                 $propertyMetadata->getterRef = new \ReflectionMethod($propertyMetadata->class, $getter);
@@ -135,6 +109,8 @@ class AnnotationDriver implements DriverInterface
                 $propertyMetadata->setter = $setter;
                 $propertyMetadata->setterRef = new \ReflectionMethod($propertyMetadata->class, $setter);
             }
+
+            $this->configureProperty($propertyMetadata, $annotations);
 
             $metadata->addPropertyMetadata($propertyMetadata);
         }
@@ -147,32 +123,15 @@ class AnnotationDriver implements DriverInterface
     private function loadVirtualPropertyAnnotations(\ReflectionClass $class, ClassMetadata $metadata): void
     {
         foreach ($class->getMethods(\ReflectionMethod::IS_PUBLIC) as $method) {
-            $property = new VirtualPropertyMetadata($method->class, $method->name);
-
             $annotations = $this->filterAnnotations($this->reader->getMethodAnnotations($method));
 
             if (empty($annotations)) {
                 continue;
             }
 
+            $property = new VirtualPropertyMetadata($method->class, $method->name);
             $property->type = $this->guesser->guessVirtualProperty($property);
-
-            foreach ($annotations as $annotation) {
-                switch (true) {
-                    case $annotation instanceof Type:
-                        $property->type = $annotation->name;
-                        break;
-                    case $annotation instanceof ExposeAs:
-                        $property->exposeAs = $annotation->name;
-                        break;
-                    case $annotation instanceof Groups:
-                        $property->groups = $annotation->groups;
-                        break;
-                    case $annotation instanceof Modifier:
-                        $property->modifier = $annotation->name;
-                        break;
-                }
-            }
+            $this->configureProperty($property, $annotations);
             $metadata->addMethodMetadata($property);
         }
     }
@@ -188,5 +147,43 @@ class AnnotationDriver implements DriverInterface
             return strpos($ref->getNamespaceName(), 'TSantos\Serializer') === 0;
         });
         return $annotations;
+    }
+
+    private function configureProperty($property, array $annotations)
+    {
+        $config = [
+            Type::class => function($property, Type $annotation) {
+                $property->type = $annotation->name;
+            },
+            ExposeAs::class => function($property, ExposeAs $annotation) {
+                $property->exposeAs = $annotation->name;
+            },
+            Groups::class => function($property, Groups $annotation) {
+                $property->groups = (array)$annotation->groups;
+            },
+            Modifier::class => function($property, Modifier $annotation) {
+                $property->modifier = $annotation->name;
+            },
+            Getter::class => function($property, Getter $annotation) {
+                $property->getter = $annotation->name;
+                $property->getterRef = new \ReflectionMethod($property->class, $annotation->name);
+            },
+            Setter::class => function($property, Setter $annotation) {
+                $property->setter = $annotation->name;
+                $property->setterRef = new \ReflectionMethod($property->class, $annotation->name);
+            },
+            ReadOnly::class => function($property) {
+                $property->readOnly = true;
+            },
+        ];
+
+        foreach ($annotations as $annotation) {
+            $annotationClass = get_class($annotation);
+            if (!isset($config[$annotationClass])) {
+                continue;
+            }
+
+            call_user_func($config[$annotationClass], $property, $annotation);
+        }
     }
 }
