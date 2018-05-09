@@ -147,7 +147,7 @@ class AnnotationDriver implements DriverInterface
     private function loadVirtualPropertyAnnotations(\ReflectionClass $class, ClassMetadata $metadata): void
     {
         foreach ($class->getMethods(\ReflectionMethod::IS_PUBLIC) as $method) {
-            $virtualPropertyMetadata = new VirtualPropertyMetadata($method->class, $method->name);
+            $property = new VirtualPropertyMetadata($method->class, $method->name);
 
             $annotations = $this->filterAnnotations($this->reader->getMethodAnnotations($method));
 
@@ -155,25 +155,25 @@ class AnnotationDriver implements DriverInterface
                 continue;
             }
 
-            $virtualPropertyMetadata->type = $this->guesser->guessVirtualProperty($virtualPropertyMetadata);
+            $property->type = $this->guesser->guessVirtualProperty($property);
 
             foreach ($annotations as $annotation) {
                 switch (true) {
                     case $annotation instanceof Type:
-                        $virtualPropertyMetadata->type = $annotation->name;
+                        $property->type = $annotation->name;
                         break;
                     case $annotation instanceof ExposeAs:
-                        $virtualPropertyMetadata->exposeAs = $annotation->name;
+                        $property->exposeAs = $annotation->name;
                         break;
                     case $annotation instanceof Groups:
-                        $virtualPropertyMetadata->groups = $annotation->groups;
+                        $property->groups = $annotation->groups;
                         break;
                     case $annotation instanceof Modifier:
-                        $virtualPropertyMetadata->modifier = $annotation->name;
+                        $property->modifier = $annotation->name;
                         break;
                 }
             }
-            $metadata->addMethodMetadata($virtualPropertyMetadata);
+            $metadata->addMethodMetadata($property);
         }
     }
 

@@ -24,6 +24,12 @@ class VirtualPropertyMetadata extends MethodMetadata
     public $groups = ['Default'];
     public $modifier;
 
+    public function __construct($class, $name)
+    {
+        parent::__construct($class, $name);
+        $this->exposeAs = $name;
+    }
+
     public function serialize()
     {
         return serialize([
