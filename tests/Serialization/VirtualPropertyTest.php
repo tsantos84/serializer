@@ -22,7 +22,8 @@ use Tests\TSantos\Serializer\SerializerTestCase;
  */
 class VirtualPropertyTest extends SerializerTestCase
 {
-    public function testSerializeWithVirtualProperty()
+    /** @test */
+    public function it_can_serialize_a_virtual_property()
     {
         $serializer = $this->createSerializer($this->createMapping(Person::class, [], [
             'getFullName' => ['exposeAs' => 'fullName']
@@ -37,8 +38,8 @@ class VirtualPropertyTest extends SerializerTestCase
         ]), $json);
     }
 
-
-    public function testSerializeWithVirtualPropertyAndGetterModifier()
+    /** @test */
+    public function it_can_serialize_a_virtual_property_with_modifier()
     {
         $serializer = $this->createSerializer($this->createMapping(Person::class, [], [
             'getBirthday' => ['exposeAs' => 'birthday', 'modifier' => 'format("d/m/Y")']

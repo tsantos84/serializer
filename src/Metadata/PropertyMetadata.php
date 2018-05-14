@@ -38,6 +38,18 @@ class PropertyMetadata extends BasePropertyMetadata
         $this->exposeAs = $name;
     }
 
+    public function setGetter(string $getter): void
+    {
+        $this->getter = $getter;
+        $this->getterRef = new \ReflectionMethod($this->class, $getter);
+    }
+
+    public function setSetter(string $setter): void
+    {
+        $this->setter = $setter;
+        $this->setterRef = new \ReflectionMethod($this->class, $setter);
+    }
+
     public function serialize()
     {
         return serialize([
@@ -69,9 +81,7 @@ class PropertyMetadata extends BasePropertyMetadata
             $this->readOnly
             ) = $unserialized;
 
-        $getter = substr($this->getter, 0, strpos($this->getter, '('));
-        $this->getterRef = new \ReflectionMethod($this->class, $getter);
-        $setter = substr($this->setter, 0, strpos($this->setter, '('));
-        $this->setterRef = new \ReflectionMethod($this->class, $setter);
+        $this->getterRef = new \ReflectionMethod($this->class, $this->getter);
+        $this->setterRef = new \ReflectionMethod($this->class, $this->setter);
     }
 }

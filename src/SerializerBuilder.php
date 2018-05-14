@@ -50,6 +50,7 @@ class SerializerBuilder
     private $instantiator;
     private $format = 'json';
     private $dispatcher;
+    private $accessStrategy = 'accessors';
 
     /**
      * Builder constructor.
@@ -216,6 +217,18 @@ class SerializerBuilder
         return $this;
     }
 
+    public function accessThroughAccessors(): SerializerBuilder
+    {
+        $this->accessStrategy = 'accessors';
+        return $this;
+    }
+
+    public function accessThroughReflection(): SerializerBuilder
+    {
+        $this->accessStrategy = 'reflection';
+        return $this;
+    }
+
     /**
      * @return SerializerInterface
      */
@@ -243,10 +256,24 @@ class SerializerBuilder
             $metadataFactory->setCache($this->metadataCache);
         }
 
+        $twig = new \Twig_Environment(
+            new \Twig_Loader_Filesystem([__DIR__ . '/Resources/templates']),
+            [
+                'debug' => true,
+                'strict_variables' => true
+            ]
+        );
+
+        $template = 'accessors.php.twig';
+
+        if ('reflection' === $this->accessStrategy) {
+            $template = 'reflection.php.twig';
+        }
+
         $classLoader = new SerializerClassLoader(
             $metadataFactory,
-            new SerializerClassCodeGenerator(),
-            new SerializerClassWriter($classDir),
+            new SerializerClassCodeGenerator($twig, $template, ucfirst($this->accessStrategy)),
+            new SerializerClassWriter($classDir, ucfirst($this->accessStrategy)),
             $this->serializerClassGenerateStrategy
         );
 

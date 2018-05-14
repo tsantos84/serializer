@@ -1,0 +1,53 @@
+{% extends 'base.php.twig' %}
+
+{% macro render_getter(prop, accessor) %}
+        // property '{{ prop.name }}'
+        if (isset($exposedKeys['{{ prop.name }}'])) {
+            if (null !== $value = $object->{{ attribute(prop, accessor) }}()) {
+                {% spaceless %}
+                {% if prop.modifier is not null %}
+                    $data['{{ prop.exposeAs }}'] = {{ ('$value->' ~ prop.modifier)|raw }};
+                {% elseif prop.type in ['integer', 'string', 'float', 'boolean'] %}
+                    $data['{{ prop.exposeAs }}'] = ({{ prop.type }}) $value;
+                {% else %}
+                    $data['{{ prop.exposeAs }}'] = $this->serializer->normalize($value, $context);
+                {% endif %}
+                {% endspaceless %}
+
+            } elseif ($shouldSerializeNull) {
+                $data['{{ prop.exposeAs }}'] = null;
+            }
+        }
+{% endmacro %}
+
+{% macro render_setter(prop) %}
+        // property '{{ prop.name }}'
+        if (isset($data['{{ prop.exposeAs }}']) && isset($exposedKeys['{{ prop.name }}'])) {
+            if (null !== $value = $data['{{ prop.exposeAs }}']) {
+                {% spaceless %}
+                {% if prop.type in ['integer', 'string', 'float', 'boolean'] %}
+                    $object->{{ prop.setter }}(({{ prop.type }}) $value);
+                {% else %}
+                    $object->{{ prop.setter }}($this->serializer->denormalize($value, '{{ prop.type|raw }}', $context));
+                {% endif %}
+                {% endspaceless %}
+
+            } else {
+                $object->{{ prop.setter }}(null);
+            }
+        }
+{% endmacro %}
+
+{% import _self as helper %}
+
+{% block property_getters %}
+{{ helper.render_getter(prop, 'getter') }}
+{% endblock %}
+
+{% block virtual_property_getters %}
+{{ helper.render_getter(prop, 'name') }}
+{% endblock %}
+
+{% block property_setters %}
+{{ helper.render_setter(prop) }}
+{% endblock %}
