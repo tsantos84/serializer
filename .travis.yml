@@ -33,7 +33,7 @@ script:
 after_success:
   - export BENCHMARK_DIR=/tmp/serializers-benchmarking
   - git clone https://github.com/tsantos84/serializers-benchmarking.git ${BENCHMARK_DIR}
-  - composer require tsantos/serializer:dev-${TRAVIS_BRANCH}
+  - composer require tsantos/serializer:dev-${TRAVIS_BRANCH} --no-update -d ${BENCHMARK_DIR}
   - composer install -a --no-dev -d ${BENCHMARK_DIR}
   - echo "# Serialization operations using 'ACCESSORS' strategy to read and write data"
   - php ${BENCHMARK_DIR}/app serialize -s 100 -b 100
