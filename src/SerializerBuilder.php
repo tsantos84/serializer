@@ -133,8 +133,10 @@ class SerializerBuilder
 
     public function enableBuiltInNormalizers(): SerializerBuilder
     {
+        $this->normalizers->add(new CollectionNormalizer());
         $this->normalizers->add(new DateTimeNormalizer());
-        $this->normalizers->add(new IdentityNormalizer());
+        $this->normalizers->add(new JsonNormalizer());
+        $this->normalizers->add(new ScalarNormalizer());
         return $this;
     }
 
@@ -263,7 +265,7 @@ class SerializerBuilder
         $twig = new \Twig_Environment(
             new \Twig_Loader_Filesystem([__DIR__ . '/Resources/templates']),
             [
-                'debug' => true,
+                'debug' => $this->debug,
                 'strict_variables' => true
             ]
         );
@@ -284,26 +286,18 @@ class SerializerBuilder
         if (null === $this->instantiator) {
             $this->instantiator = new DoctrineInstantiator(new Instantiator());
         }
-
-        $this->normalizers->add(new ObjectNormalizer($classLoader));
-        $this->normalizers->add(new CollectionNormalizer());
-        $this->normalizers->add(new ScalarNormalizer());
-        $this->normalizers->add(new JsonNormalizer());
+        $this->normalizers->unshift(new ObjectNormalizer($classLoader, $this->instantiator));
 
         if (null === $this->dispatcher) {
             return new Serializer(
-                $classLoader,
                 $this->encoders->get($this->format),
-                $this->normalizers,
-                $this->instantiator
+                $this->normalizers
             );
         }
 
         return new EventEmitterSerializer(
-            $classLoader,
             $this->encoders->get($this->format),
             $this->normalizers,
-            $this->instantiator,
             $this->dispatcher
         );
     }

@@ -10,7 +10,6 @@
 
 namespace TSantos\Serializer;
 
-use Traversable;
 use TSantos\Serializer\Normalizer\DenormalizerInterface;
 use TSantos\Serializer\Normalizer\NormalizerInterface;
 
@@ -33,6 +32,12 @@ class NormalizerRegistry implements NormalizerRegistryInterface
     public function add($normalizer)
     {
         $this->normalizers[] = $normalizer;
+        return $this;
+    }
+
+    public function unshift($normalizer)
+    {
+        array_unshift($this->normalizers, $normalizer);
         return $this;
     }
 

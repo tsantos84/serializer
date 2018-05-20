@@ -14,6 +14,11 @@ class JsonNormalizer implements NormalizerInterface, SerializerAwareInterface
 {
     use SerializerAwareTrait;
 
+    /**
+     * @param \JsonSerializable $data
+     * @param SerializationContext $context
+     * @return mixed
+     */
     public function normalize($data, SerializationContext $context)
     {
         return $this->serializer->normalize($data->jsonSerialize(), $context);

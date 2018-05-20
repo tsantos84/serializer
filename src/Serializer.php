@@ -32,31 +32,15 @@ class Serializer implements SerializerInterface
     private $normalizers;
 
     /**
-     * @var SerializerClassLoader
-     */
-    private $classLoader;
-
-    /**
-     * @var ObjectInstantiatorInterface
-     */
-    private $instantiator;
-
-    /**
      * Serializer constructor.
-     * @param SerializerClassLoader $classLoader
      * @param EncoderInterface $encoder
      * @param NormalizerRegistryInterface $normalizers
-     * @param ObjectInstantiatorInterface $instantiator
      */
     public function __construct(
-        SerializerClassLoader $classLoader,
         EncoderInterface $encoder,
-        NormalizerRegistryInterface $normalizers,
-        ObjectInstantiatorInterface $instantiator
+        NormalizerRegistryInterface $normalizers
     ) {
-        $this->classLoader = $classLoader;
         $this->encoder = $encoder;
-        $this->instantiator = $instantiator;
 
         foreach ($normalizers as $normalizer) {
             if ($normalizer instanceof SerializerAwareInterface) {
@@ -100,7 +84,7 @@ class Serializer implements SerializerInterface
             return $normalizer->normalize($data, $context);
         }
 
-        throw new \RuntimeException('There is no normalizer able to normalize the data given');
+        throw new \RuntimeException('There is no normalizer able to normalize the given data');
     }
 
     /**
@@ -125,63 +109,10 @@ class Serializer implements SerializerInterface
             $context->start();
         }
 
-        if (empty($data)) {
-            return [];
-        }
-
         if (null !== $normalizer = $this->normalizers->getDenormalizer($data, $type, $context)) {
-            return $normalizer->denormalize($data, $context);
+            return $normalizer->denormalize($data, $type, $context);
         }
 
-        if ($type === 'array') {
-            $type = is_scalar(reset($data)) ? gettype(reset($data)) : 'string';
-            return $this->denormalizeCollection($data, $type, $context);
-        }
-
-        if (false === $open = strpos($type, '<')) {
-            if (null === $object = $context->getTarget()) {
-                $object = $this->instantiator->create($type, $data, $context);
-            }
-
-            $objectSerializer = $this->classLoader->load($type, $this);
-            $context->enter($object);
-            $object = $objectSerializer->deserialize($object, $data, $context);
-            $context->left();
-            return $object;
-        }
-
-        $close = strpos($type, '>', -1) - 6;
-        $innerType = substr($type, $open + 1, $close);
-        return $this->denormalizeCollection($data, $innerType, $context);
-    }
-
-    private function denormalizeCollection(iterable $data, string $type, DeserializationContext $context)
-    {
-        $result = [];
-
-        $scalarTypes = [
-            'integer' => 'int',
-            'string' => 'str',
-            'float' => 'float',
-            'double' => 'double',
-            'boolean' => 'bool'
-        ];
-
-        $callback = function ($item) use ($type, $context) {
-            return $this->denormalize($item, $type, $context);
-        };
-
-        if (isset($scalarTypes[$type])) {
-            $type = $scalarTypes[$type];
-            $callback = function ($item) use ($type) {
-                return call_user_func($type . 'val', $item);
-            };
-        }
-
-        foreach ($data as $key => $item) {
-            $result[$key] = $callback($item);
-        }
-
-        return $result;
+        throw new \RuntimeException('There is no normalizer able to denormalize the given data');
     }
 }
