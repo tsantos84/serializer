@@ -272,8 +272,8 @@ class SerializerBuilder
 
         $classLoader = new SerializerClassLoader(
             $metadataFactory,
-            new SerializerClassCodeGenerator($twig, $template, ucfirst($this->accessStrategy)),
-            new SerializerClassWriter($classDir, ucfirst($this->accessStrategy)),
+            new SerializerClassCodeGenerator($twig, $template),
+            new SerializerClassWriter($classDir),
             $this->serializerClassGenerateStrategy
         );
 

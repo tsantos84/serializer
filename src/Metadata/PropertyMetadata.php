@@ -81,7 +81,12 @@ class PropertyMetadata extends BasePropertyMetadata
             $this->readOnly
             ) = $unserialized;
 
-        $this->getterRef = new \ReflectionMethod($this->class, $this->getter);
-        $this->setterRef = new \ReflectionMethod($this->class, $this->setter);
+        if ($this->getter) {
+            $this->getterRef = new \ReflectionMethod($this->class, $this->getter);
+        }
+
+        if ($this->setter) {
+            $this->setterRef = new \ReflectionMethod($this->class, $this->setter);
+        }
     }
 }

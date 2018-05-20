@@ -75,6 +75,10 @@ class SerializerClassLoader
      */
     public function load(string $class, SerializerInterface $serializer): SerializerClassInterface
     {
+        if (isset($this->instances[$class])) {
+            return $this->instances[$class];
+        }
+
         /** @var ClassMetadata $classMetadata */
         $classMetadata = $this->metadataFactory->getMetadataForClass($class);
 
@@ -87,12 +91,8 @@ class SerializerClassLoader
 
         $fqn = $this->getClassName($classMetadata);
 
-        if (isset($this->instances[$fqn])) {
-            return $this->instances[$fqn];
-        }
-
         if (class_exists($fqn, false)) {
-            return $this->instances[$fqn] = new $fqn($serializer);
+            return $this->instances[$class] = new $fqn($serializer);
         }
 
         $filename = $this->getFilename($classMetadata);
@@ -115,7 +115,7 @@ class SerializerClassLoader
                 break;
         }
 
-        return $this->instances[$fqn] = new $fqn($serializer);
+        return $this->instances[$class] = new $fqn($serializer);
     }
 
     private function generate(ClassMetadata $classMetadata)
