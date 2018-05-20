@@ -18,7 +18,7 @@ use TSantos\Serializer\Normalizer\NormalizerInterface;
  *
  * @author Tales Santos <tales.augusto.santos@gmail.com>
  */
-interface NormalizerRegistryInterface
+interface NormalizerRegistryInterface extends \IteratorAggregate
 {
     /**
      * @param $normalizer

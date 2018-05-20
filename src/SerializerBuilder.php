@@ -26,8 +26,12 @@ use TSantos\Serializer\EventDispatcher\EventSubscriberInterface;
 use TSantos\Serializer\Metadata\Driver\AnnotationDriver;
 use TSantos\Serializer\Metadata\Driver\XmlDriver;
 use TSantos\Serializer\Metadata\Driver\YamlDriver;
+use TSantos\Serializer\Normalizer\CollectionNormalizer;
 use TSantos\Serializer\Normalizer\DateTimeNormalizer;
 use TSantos\Serializer\Normalizer\IdentityNormalizer;
+use TSantos\Serializer\Normalizer\JsonNormalizer;
+use TSantos\Serializer\Normalizer\ObjectNormalizer;
+use TSantos\Serializer\Normalizer\ScalarNormalizer;
 use TSantos\Serializer\ObjectInstantiator\DoctrineInstantiator;
 use TSantos\Serializer\ObjectInstantiator\ObjectInstantiatorInterface;
 
@@ -280,6 +284,11 @@ class SerializerBuilder
         if (null === $this->instantiator) {
             $this->instantiator = new DoctrineInstantiator(new Instantiator());
         }
+
+        $this->normalizers->add(new ObjectNormalizer($classLoader));
+        $this->normalizers->add(new CollectionNormalizer());
+        $this->normalizers->add(new ScalarNormalizer());
+        $this->normalizers->add(new JsonNormalizer());
 
         if (null === $this->dispatcher) {
             return new Serializer(

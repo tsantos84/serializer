@@ -10,6 +10,7 @@
 
 namespace TSantos\Serializer;
 
+use Traversable;
 use TSantos\Serializer\Normalizer\DenormalizerInterface;
 use TSantos\Serializer\Normalizer\NormalizerInterface;
 
@@ -62,5 +63,10 @@ class NormalizerRegistry implements NormalizerRegistryInterface
         }
 
         return null;
+    }
+
+    public function getIterator()
+    {
+        return new \ArrayIterator($this->normalizers);
     }
 }

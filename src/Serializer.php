@@ -56,8 +56,15 @@ class Serializer implements SerializerInterface
     ) {
         $this->classLoader = $classLoader;
         $this->encoder = $encoder;
-        $this->normalizers = $normalizers;
         $this->instantiator = $instantiator;
+
+        foreach ($normalizers as $normalizer) {
+            if ($normalizer instanceof SerializerAwareInterface) {
+                $normalizer->setSerializer($this);
+            }
+        }
+
+        $this->normalizers = $normalizers;
     }
 
     /**
@@ -77,10 +84,6 @@ class Serializer implements SerializerInterface
      */
     public function normalize($data, SerializationContext $context = null)
     {
-        if (is_null($data) || is_scalar($data)) {
-            return $data;
-        }
-
         if (null === $context) {
             $context = new SerializationContext();
         }
@@ -97,25 +100,7 @@ class Serializer implements SerializerInterface
             return $normalizer->normalize($data, $context);
         }
 
-        if (is_iterable($data)) {
-            return $this->normalizeCollection($data, $context);
-        }
-
-        if ($context->hasObjectProcessed($data)) {
-            return [];
-        }
-
-        if ($data instanceof \JsonSerializable) {
-            return $this->normalize($data->jsonSerialize(), $context);
-        }
-
-        $objectSerializer = $this->classLoader->load(get_class($data), $this);
-
-        $context->enter($data);
-        $array = $objectSerializer->serialize($data, $context);
-        $context->left();
-
-        return $array;
+        throw new \RuntimeException('There is no normalizer able to normalize the data given');
     }
 
     /**
@@ -168,22 +153,6 @@ class Serializer implements SerializerInterface
         $close = strpos($type, '>', -1) - 6;
         $innerType = substr($type, $open + 1, $close);
         return $this->denormalizeCollection($data, $innerType, $context);
-    }
-
-    private function normalizeCollection($data, SerializationContext $context): array
-    {
-        $context->enter();
-        $array = [];
-        foreach ($data as $key => $value) {
-            if (is_scalar($value)) {
-                $array[$key] = $value;
-                continue;
-            }
-            $array[$key] = $this->normalize($value, $context);
-        }
-        $context->left();
-
-        return $array;
     }
 
     private function denormalizeCollection(iterable $data, string $type, DeserializationContext $context)
