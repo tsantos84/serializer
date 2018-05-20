@@ -2,35 +2,33 @@
 
 {% macro render_getter(prop) %}
         // property '{{ prop.name }}'
-        if (isset($exposedKeys['{{ prop.name }}'])) {
-            $propReflection = static::getReflection({{ prop.reflection.declaringClass.shortName }}::class, '{{ prop.name }}');
-            $public = $propReflection->isPublic();
-            if (!$public) {
-                $propReflection->setAccessible(true);
-            }
-            if (null !== $value = $propReflection->getValue($object)) {
-                {% spaceless %}
-                {% if prop.modifier is not null %}
-                    $data['{{ prop.exposeAs }}'] = {{ ('$value->' ~ prop.modifier)|raw }};
-                {% elseif prop.type in ['integer', 'string', 'float', 'boolean'] %}
-                    $data['{{ prop.exposeAs }}'] = ({{ prop.type }}) $value;
-                {% else %}
-                    $data['{{ prop.exposeAs }}'] = $this->serializer->normalize($value, $context);
-                {% endif %}
-                {% endspaceless %}
+        $propReflection = static::getReflection({{ prop.reflection.declaringClass.shortName }}::class, '{{ prop.name }}');
+        $public = $propReflection->isPublic();
+        if (!$public) {
+            $propReflection->setAccessible(true);
+        }
+        if (null !== $value = $propReflection->getValue($object)) {
+            {% spaceless %}
+            {% if prop.modifier is not null %}
+                $data['{{ prop.exposeAs }}'] = {{ ('$value->' ~ prop.modifier)|raw }};
+            {% elseif prop.type in ['integer', 'string', 'float', 'boolean'] %}
+                $data['{{ prop.exposeAs }}'] = ({{ prop.type }}) $value;
+            {% else %}
+                $data['{{ prop.exposeAs }}'] = $this->serializer->normalize($value, $context);
+            {% endif %}
+            {% endspaceless %}
 
-            } elseif ($shouldSerializeNull) {
-                $data['{{ prop.exposeAs }}'] = null;
-            }
-            if (!$public) {
-                $propReflection->setAccessible(false);
-            }
+        } elseif ($shouldSerializeNull) {
+            $data['{{ prop.exposeAs }}'] = null;
+        }
+        if (!$public) {
+            $propReflection->setAccessible(false);
         }
 {% endmacro %}
 
 {% macro render_setter(prop) %}
         // property '{{ prop.name }}'
-        if (isset($data['{{ prop.exposeAs }}']) && isset($exposedKeys['{{ prop.name }}'])) {
+        if (isset($data['{{ prop.exposeAs }}'])) {
             $propReflection = self::getReflection({{ prop.reflection.declaringClass.shortName }}::class, '{{ prop.name }}');
             $public = $propReflection->isPublic();
             if (!$public) {
@@ -56,21 +54,19 @@
 
 {% macro render_virtual_property_getter(prop) %}
         // property '{{ prop.name }}'
-        if (isset($exposedKeys['{{ prop.name }}'])) {
-            if (null !== $value = $object->{{ prop.name }}()) {
-                {% spaceless %}
-                {% if prop.modifier is not null %}
-                    $data['{{ prop.exposeAs }}'] = {{ ('$value->' ~ prop.modifier)|raw }};
-                {% elseif prop.type in ['integer', 'string', 'float', 'boolean'] %}
-                    $data['{{ prop.exposeAs }}'] = ({{ prop.type }}) $value;
-                {% else %}
-                    $data['{{ prop.exposeAs }}'] = $this->serializer->normalize($value, $context);
-                {% endif %}
-                {% endspaceless %}
+        if (null !== $value = $object->{{ prop.name }}()) {
+            {% spaceless %}
+            {% if prop.modifier is not null %}
+                $data['{{ prop.exposeAs }}'] = {{ ('$value->' ~ prop.modifier)|raw }};
+            {% elseif prop.type in ['integer', 'string', 'float', 'boolean'] %}
+                $data['{{ prop.exposeAs }}'] = ({{ prop.type }}) $value;
+            {% else %}
+                $data['{{ prop.exposeAs }}'] = $this->serializer->normalize($value, $context);
+            {% endif %}
+            {% endspaceless %}
 
-            } elseif ($shouldSerializeNull) {
-                $data['{{ prop.exposeAs }}'] = null;
-            }
+        } elseif ($shouldSerializeNull) {
+            $data['{{ prop.exposeAs }}'] = null;
         }
 {% endmacro %}
 

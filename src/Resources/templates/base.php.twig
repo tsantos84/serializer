@@ -31,12 +31,20 @@ final class {{ class_name }} extends {{ base_class_name }}
         return [];
 {% else %}
         $data = [];
-        $exposedKeys = $this->getExposedKeys($context);
         $shouldSerializeNull = $context->shouldSerializeNull();
 {% block serializer_initialization '' %}
 
 {% for prop in properties if prop.getter is defined %}{% block property_getters '' %}{% endfor %}
 {% for prop in virtual_properties %}{% block virtual_property_getters '' %}{% endfor %}
+        static $contextKeys = [];
+        $contextId = spl_object_hash($context);
+
+        if (!isset($contextKeys[$contextId])) {
+            $contextKeys[$contextId] = $this->getExposedKeys($context);
+        }
+
+        $data = array_intersect_key($data, $contextKeys[$contextId]);
+
         return $data;
 {% endif %}
     }
@@ -54,7 +62,14 @@ final class {{ class_name }} extends {{ base_class_name }}
         }
 {% if properties|length > 0 %}
 
-        $exposedKeys = $this->getExposedKeys($context);
+        static $contextKeys = [];
+        $contextId = spl_object_hash($context);
+
+        if (!isset($contextKeys[$contextId])) {
+            $contextKeys[$contextId] = $this->getExposedKeys($context);
+        }
+
+        $data = array_intersect_key($data, $contextKeys[$contextId]);
 {% block deserializer_initialization '' %}
 
 {% for prop in properties if prop.setter and not prop.readOnly%}
@@ -70,20 +85,14 @@ final class {{ class_name }} extends {{ base_class_name }}
      */
     final private function getExposedKeys(AbstractContext $context)
     {
-        if ($this->computedGroupKeys->contains($context)) {
-            return $this->computedGroupKeys[$context];
-        }
+        $contextGroups = $context->getGroups();
+        $exposedGroups = array_intersect_key($this->exposedGroups, $contextGroups);
+        $exposedKeys = array_reduce($exposedGroups, function ($keys, $groupKeys) {
+            array_push($keys, ...(array_keys($groupKeys)));
+            return $keys;
+        }, []);
 
-        $contextGroups = array_flip($context->getGroups());
-
-        $computedKeys = array_flip(array_reduce(array_intersect_key($this->exposedGroups, $contextGroups), function ($g, $v) {
-            array_push($g, ...$v);
-            return $g;
-        }, []));
-
-        $this->computedGroupKeys->attach($context, $computedKeys);
-
-        return $computedKeys;
+        return array_flip($exposedKeys);
     }
 {% block additional_methods '' %}
 }
