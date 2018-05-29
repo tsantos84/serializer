@@ -12,13 +12,3 @@ build:
         before:
             - 'composer require "doctrine/annotations:^1.5" --no-update'
             - 'composer require "symfony/yaml:^3.4||^4.0" --no-update'
-
-    tests:
-        before:
-            - 'vendor/bin/phpcs .'
-        override:
-            -
-                command: vendor/bin/phpunit --coverage-clover=coverage-file -v
-                coverage:
-                    file: coverage-file
-                    format: php-clover
