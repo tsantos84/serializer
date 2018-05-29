@@ -140,12 +140,6 @@ class SerializerBuilder
         return $this;
     }
 
-    public function enableBuiltInEncoders(): SerializerBuilder
-    {
-        $this->encoders->add(new JsonEncoder());
-        return $this;
-    }
-
     public function setMetadataCacheDir(string $dir): SerializerBuilder
     {
         if (!is_dir($dir)) {

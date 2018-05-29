@@ -27,9 +27,5 @@ Summary
 
    installation
    usage
-   twig
-   console
-   configuration_reference
-   event_listener
-   normalizer
-   encoder
+   how_it_works
+   accessors
