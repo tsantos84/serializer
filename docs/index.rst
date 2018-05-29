@@ -29,3 +29,4 @@ Summary
    usage
    how_it_works
    accessors
+   mapping
