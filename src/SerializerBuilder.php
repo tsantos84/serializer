@@ -28,7 +28,6 @@ use TSantos\Serializer\Metadata\Driver\XmlDriver;
 use TSantos\Serializer\Metadata\Driver\YamlDriver;
 use TSantos\Serializer\Normalizer\CollectionNormalizer;
 use TSantos\Serializer\Normalizer\DateTimeNormalizer;
-use TSantos\Serializer\Normalizer\IdentityNormalizer;
 use TSantos\Serializer\Normalizer\JsonNormalizer;
 use TSantos\Serializer\Normalizer\ObjectNormalizer;
 use TSantos\Serializer\Normalizer\ScalarNormalizer;
