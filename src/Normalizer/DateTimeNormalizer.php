@@ -49,7 +49,7 @@ class DateTimeNormalizer implements NormalizerInterface, DenormalizerInterface
         return $data instanceof \DateTimeInterface;
     }
 
-    public function denormalize($data, DeserializationContext $context)
+    public function denormalize($data, string $type, DeserializationContext $context)
     {
         return \DateTime::createFromFormat($this->format, $data);
     }

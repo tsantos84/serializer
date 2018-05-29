@@ -52,6 +52,7 @@ abstract class SerializerTestCase extends TestCase
         $builder
             ->setMetadataDriver(new TestDriver($mapping))
             ->setSerializerClassDir($this->classCacheDir)
+            ->enableBuiltInNormalizers()
             ->setDebug(true);
 
         return $builder->build();

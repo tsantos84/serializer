@@ -23,17 +23,11 @@ abstract class AbstractSerializerClass implements SerializerClassInterface
     protected $serializer;
 
     /**
-     * @var \SplObjectStorage
-     */
-    protected $computedGroupKeys;
-
-    /**
      * AbstractSerializerClass constructor.
      * @param SerializerInterface $serializer
      */
     public function __construct(SerializerInterface $serializer)
     {
         $this->serializer = $serializer;
-        $this->computedGroupKeys = new \SplObjectStorage();
     }
 }

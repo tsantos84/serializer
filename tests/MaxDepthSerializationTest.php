@@ -98,7 +98,7 @@ class MaxDepthSerializationTest extends SerializerTestCase
 
         $person = new Vehicle('white', 4);
 
-        $expected = '{"color":"white","ports":4,"owner":"Tales","tires":[]}';
+        $expected = '{"color":"white","ports":4}';
 
         $this->assertEquals($expected, $serializer->serialize($person, SerializationContext::create()->setMaxDepth(1)));
     }

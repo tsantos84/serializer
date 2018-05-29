@@ -11,14 +11,13 @@
 namespace TSantos\Serializer;
 
 /**
- * Trait ContextTrait
+ * Class AbstractContext
  * @package TSantos\Serializer
  */
-
 abstract class AbstractContext
 {
     /** @var array */
-    private $groups = ['Default'];
+    private $groups = ['Default' => true];
 
     /** @var integer */
     private $maxDepth;
@@ -40,7 +39,7 @@ abstract class AbstractContext
      */
     public function setGroups(array $groups): self
     {
-        $this->groups = $groups;
+        $this->groups = array_flip($groups);
         return $this;
     }
 

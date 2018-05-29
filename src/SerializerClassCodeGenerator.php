@@ -80,13 +80,13 @@ class SerializerClassCodeGenerator
         $groups = [];
         foreach ($metadata->propertyMetadata as $property) {
             foreach ($property->groups as $group) {
-                $groups[$group][] = $property->name;
+                $groups[$group][$property->exposeAs] = true;
             }
         }
 
         foreach ($metadata->methodMetadata as $method) {
             foreach ($method->groups as $group) {
-                $groups[$group][] = $method->name;
+                $groups[$group][$method->exposeAs] = true;
             }
         }
 

@@ -13,6 +13,7 @@ namespace Tests\TSantos\Serializer\Serialization;
 use Tests\TSantos\Serializer\Fixture\Model\Person;
 use Tests\TSantos\Serializer\SerializerTestCase;
 use TSantos\Serializer\SerializationContext;
+use TSantos\Serializer\SerializerClassLoader;
 
 /**
  * Class PropertyGroupsTest
@@ -23,11 +24,12 @@ use TSantos\Serializer\SerializationContext;
  */
 class PropertyGroupsTest extends SerializerTestCase
 {
-    public function testSerializerWithPropertyGroups()
+    /** @test */
+    public function it_should_serialize_only_properties_specified_in_group_list()
     {
         $serializer = $this->createSerializer($this->createMapping(Person::class, [
             'id' => ['type' => 'integer', 'groups' => ['web']],
-            'name' => ['type' => 'integer', 'groups' => ['mobile']],
+            'name' => ['type' => 'string', 'groups' => ['mobile']],
             'married' => ['type' => 'boolean', 'getter' => 'isMarried'],
         ]));
 

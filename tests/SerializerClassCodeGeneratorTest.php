@@ -60,10 +60,10 @@ final class TestsTSantosSerializerFixtureModelPersonSerializer extends TSantos\S
     private $exposedGroups = array (
   'Default' => 
   array (
-    0 => 'id',
-    1 => 'birthday',
-    2 => 'father',
-    3 => 'getFullName',
+    'id' => true,
+    'birthday' => true,
+    'father' => true,
+    'full_name' => true,
   ),
 );
 
@@ -79,44 +79,44 @@ final class TestsTSantosSerializerFixtureModelPersonSerializer extends TSantos\S
         }
 
         $data = [];
-        $exposedKeys = $this->getExposedKeys($context);
         $shouldSerializeNull = $context->shouldSerializeNull();
 
         // property 'id'
-        if (isset($exposedKeys['id'])) {
-            if (null !== $value = $object->getId()) {
-                $data['id'] = (integer) $value;
-            } elseif ($shouldSerializeNull) {
-                $data['id'] = null;
-            }
+        if (null !== $value = $object->getId()) {
+            $data['id'] = (integer) $value;
+        } elseif ($shouldSerializeNull) {
+            $data['id'] = null;
         }
 
         // property 'birthday'
-        if (isset($exposedKeys['birthday'])) {
-            if (null !== $value = $object->getBirthday()) {
-                $data['birthday'] = $value->format("d/m/Y");
-            } elseif ($shouldSerializeNull) {
-                $data['birthday'] = null;
-            }
+        if (null !== $value = $object->getBirthday()) {
+            $data['birthday'] = $value->format("d/m/Y");
+        } elseif ($shouldSerializeNull) {
+            $data['birthday'] = null;
         }
 
         // property 'father'
-        if (isset($exposedKeys['father'])) {
-            if (null !== $value = $object->getFather()) {
-                $data['father'] = $this->serializer->normalize($value, $context);
-            } elseif ($shouldSerializeNull) {
-                $data['father'] = null;
-            }
+        if (null !== $value = $object->getFather()) {
+            $data['father'] = $this->serializer->normalize($value, $context);
+        } elseif ($shouldSerializeNull) {
+            $data['father'] = null;
         }
 
         // property 'getFullName'
-        if (isset($exposedKeys['getFullName'])) {
-            if (null !== $value = $object->getFullName()) {
-                $data['full_name'] = (string) $value;
-            } elseif ($shouldSerializeNull) {
-                $data['full_name'] = null;
-            }
+        if (null !== $value = $object->getFullName()) {
+            $data['full_name'] = (string) $value;
+        } elseif ($shouldSerializeNull) {
+            $data['full_name'] = null;
         }
+
+        static $contextKeys = [];
+        $contextId = spl_object_hash($context);
+
+        if (!isset($contextKeys[$contextId])) {
+            $contextKeys[$contextId] = $this->getExposedKeys($context);
+        }
+
+        $data = array_intersect_key($data, $contextKeys[$contextId]);
 
         return $data;
     }
@@ -133,10 +133,17 @@ final class TestsTSantosSerializerFixtureModelPersonSerializer extends TSantos\S
             throw new InvalidArgumentException(sprintf('%s is able to deserialize only instances of "%s" only. "%s" given', get_class($this), Person::class, is_object($object) ? get_class($object) : gettype($object)));
         }
 
-        $exposedKeys = $this->getExposedKeys($context);
+        static $contextKeys = [];
+        $contextId = spl_object_hash($context);
+
+        if (!isset($contextKeys[$contextId])) {
+            $contextKeys[$contextId] = $this->getExposedKeys($context);
+        }
+
+        $data = array_intersect_key($data, $contextKeys[$contextId]);
 
         // property 'birthday'
-        if (isset($data['birthday']) && isset($exposedKeys['birthday'])) {
+        if (isset($data['birthday'])) {
             if (null !== $value = $data['birthday']) {
                 $object->setBirthday($this->serializer->denormalize($value, 'DateTime', $context));
             } else {
@@ -145,7 +152,7 @@ final class TestsTSantosSerializerFixtureModelPersonSerializer extends TSantos\S
         }
 
         // property 'father'
-        if (isset($data['father']) && isset($exposedKeys['father'])) {
+        if (isset($data['father'])) {
             if (null !== $value = $data['father']) {
                 $object->setFather($this->serializer->denormalize($value, 'Tests\TSantos\Serializer\Fixture\Model\Person', $context));
             } else {
@@ -162,20 +169,14 @@ final class TestsTSantosSerializerFixtureModelPersonSerializer extends TSantos\S
      */
     final private function getExposedKeys(AbstractContext $context)
     {
-        if ($this->computedGroupKeys->contains($context)) {
-            return $this->computedGroupKeys[$context];
-        }
+        $contextGroups = $context->getGroups();
+        $exposedGroups = array_intersect_key($this->exposedGroups, $contextGroups);
+        $exposedKeys = array_reduce($exposedGroups, function ($keys, $groupKeys) {
+            array_push($keys, ...(array_keys($groupKeys)));
+            return $keys;
+        }, []);
 
-        $contextGroups = array_flip($context->getGroups());
-
-        $computedKeys = array_flip(array_reduce(array_intersect_key($this->exposedGroups, $contextGroups), function ($g, $v) {
-            array_push($g, ...$v);
-            return $g;
-        }, []));
-
-        $this->computedGroupKeys->attach($context, $computedKeys);
-
-        return $computedKeys;
+        return array_flip($exposedKeys);
     }
 }
 
@@ -207,10 +208,10 @@ final class TestsTSantosSerializerFixtureModelPersonSerializer extends TSantos\S
     private $exposedGroups = array (
   'Default' => 
   array (
-    0 => 'id',
-    1 => 'birthday',
-    2 => 'father',
-    3 => 'getFullName',
+    'id' => true,
+    'birthday' => true,
+    'father' => true,
+    'full_name' => true,
   ),
 );
 
@@ -226,68 +227,68 @@ final class TestsTSantosSerializerFixtureModelPersonSerializer extends TSantos\S
         }
 
         $data = [];
-        $exposedKeys = $this->getExposedKeys($context);
         $shouldSerializeNull = $context->shouldSerializeNull();
 
         // property 'id'
-        if (isset($exposedKeys['id'])) {
-            $propReflection = static::getReflection(Person::class, 'id');
-            $public = $propReflection->isPublic();
-            if (!$public) {
-                $propReflection->setAccessible(true);
-            }
-            if (null !== $value = $propReflection->getValue($object)) {
-                $data['id'] = (integer) $value;
-            } elseif ($shouldSerializeNull) {
-                $data['id'] = null;
-            }
-            if (!$public) {
-                $propReflection->setAccessible(false);
-            }
+        $propReflection = static::getReflection(Person::class, 'id');
+        $public = $propReflection->isPublic();
+        if (!$public) {
+            $propReflection->setAccessible(true);
+        }
+        if (null !== $value = $propReflection->getValue($object)) {
+            $data['id'] = (integer) $value;
+        } elseif ($shouldSerializeNull) {
+            $data['id'] = null;
+        }
+        if (!$public) {
+            $propReflection->setAccessible(false);
         }
 
         // property 'birthday'
-        if (isset($exposedKeys['birthday'])) {
-            $propReflection = static::getReflection(Person::class, 'birthday');
-            $public = $propReflection->isPublic();
-            if (!$public) {
-                $propReflection->setAccessible(true);
-            }
-            if (null !== $value = $propReflection->getValue($object)) {
-                $data['birthday'] = $value->format("d/m/Y");
-            } elseif ($shouldSerializeNull) {
-                $data['birthday'] = null;
-            }
-            if (!$public) {
-                $propReflection->setAccessible(false);
-            }
+        $propReflection = static::getReflection(Person::class, 'birthday');
+        $public = $propReflection->isPublic();
+        if (!$public) {
+            $propReflection->setAccessible(true);
+        }
+        if (null !== $value = $propReflection->getValue($object)) {
+            $data['birthday'] = $value->format("d/m/Y");
+        } elseif ($shouldSerializeNull) {
+            $data['birthday'] = null;
+        }
+        if (!$public) {
+            $propReflection->setAccessible(false);
         }
 
         // property 'father'
-        if (isset($exposedKeys['father'])) {
-            $propReflection = static::getReflection(Person::class, 'father');
-            $public = $propReflection->isPublic();
-            if (!$public) {
-                $propReflection->setAccessible(true);
-            }
-            if (null !== $value = $propReflection->getValue($object)) {
-                $data['father'] = $this->serializer->normalize($value, $context);
-            } elseif ($shouldSerializeNull) {
-                $data['father'] = null;
-            }
-            if (!$public) {
-                $propReflection->setAccessible(false);
-            }
+        $propReflection = static::getReflection(Person::class, 'father');
+        $public = $propReflection->isPublic();
+        if (!$public) {
+            $propReflection->setAccessible(true);
+        }
+        if (null !== $value = $propReflection->getValue($object)) {
+            $data['father'] = $this->serializer->normalize($value, $context);
+        } elseif ($shouldSerializeNull) {
+            $data['father'] = null;
+        }
+        if (!$public) {
+            $propReflection->setAccessible(false);
         }
 
         // property 'getFullName'
-        if (isset($exposedKeys['getFullName'])) {
-            if (null !== $value = $object->getFullName()) {
-                $data['full_name'] = (string) $value;
-            } elseif ($shouldSerializeNull) {
-                $data['full_name'] = null;
-            }
+        if (null !== $value = $object->getFullName()) {
+            $data['full_name'] = (string) $value;
+        } elseif ($shouldSerializeNull) {
+            $data['full_name'] = null;
         }
+
+        static $contextKeys = [];
+        $contextId = spl_object_hash($context);
+
+        if (!isset($contextKeys[$contextId])) {
+            $contextKeys[$contextId] = $this->getExposedKeys($context);
+        }
+
+        $data = array_intersect_key($data, $contextKeys[$contextId]);
 
         return $data;
     }
@@ -304,10 +305,17 @@ final class TestsTSantosSerializerFixtureModelPersonSerializer extends TSantos\S
             throw new InvalidArgumentException(sprintf('%s is able to deserialize only instances of "%s" only. "%s" given', get_class($this), Person::class, is_object($object) ? get_class($object) : gettype($object)));
         }
 
-        $exposedKeys = $this->getExposedKeys($context);
+        static $contextKeys = [];
+        $contextId = spl_object_hash($context);
+
+        if (!isset($contextKeys[$contextId])) {
+            $contextKeys[$contextId] = $this->getExposedKeys($context);
+        }
+
+        $data = array_intersect_key($data, $contextKeys[$contextId]);
 
         // property 'birthday'
-        if (isset($data['birthday']) && isset($exposedKeys['birthday'])) {
+        if (isset($data['birthday'])) {
             $propReflection = self::getReflection(Person::class, 'birthday');
             $public = $propReflection->isPublic();
             if (!$public) {
@@ -324,7 +332,7 @@ final class TestsTSantosSerializerFixtureModelPersonSerializer extends TSantos\S
         }
 
         // property 'father'
-        if (isset($data['father']) && isset($exposedKeys['father'])) {
+        if (isset($data['father'])) {
             $propReflection = self::getReflection(Person::class, 'father');
             $public = $propReflection->isPublic();
             if (!$public) {
@@ -349,20 +357,14 @@ final class TestsTSantosSerializerFixtureModelPersonSerializer extends TSantos\S
      */
     final private function getExposedKeys(AbstractContext $context)
     {
-        if ($this->computedGroupKeys->contains($context)) {
-            return $this->computedGroupKeys[$context];
-        }
+        $contextGroups = $context->getGroups();
+        $exposedGroups = array_intersect_key($this->exposedGroups, $contextGroups);
+        $exposedKeys = array_reduce($exposedGroups, function ($keys, $groupKeys) {
+            array_push($keys, ...(array_keys($groupKeys)));
+            return $keys;
+        }, []);
 
-        $contextGroups = array_flip($context->getGroups());
-
-        $computedKeys = array_flip(array_reduce(array_intersect_key($this->exposedGroups, $contextGroups), function ($g, $v) {
-            array_push($g, ...$v);
-            return $g;
-        }, []));
-
-        $this->computedGroupKeys->attach($context, $computedKeys);
-
-        return $computedKeys;
+        return array_flip($exposedKeys);
     }
 
     private function getReflection(string $class, string $property): \ReflectionProperty

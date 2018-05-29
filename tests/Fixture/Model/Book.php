@@ -10,14 +10,12 @@
 
 namespace Tests\TSantos\Serializer\Fixture\Model;
 
-use TSantos\Serializer\Normalizer\IdentifiableInterface;
-
 /**
  * Class Book
  *
  * @author Tales Santos <tales.augusto.santos@gmail.com>
  */
-class Book implements IdentifiableInterface
+class Book
 {
     /** @var integer */
     private $id;

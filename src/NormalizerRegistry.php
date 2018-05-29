@@ -35,6 +35,12 @@ class NormalizerRegistry implements NormalizerRegistryInterface
         return $this;
     }
 
+    public function unshift($normalizer)
+    {
+        array_unshift($this->normalizers, $normalizer);
+        return $this;
+    }
+
     /**
      * @inheritdoc
      */
@@ -62,5 +68,10 @@ class NormalizerRegistry implements NormalizerRegistryInterface
         }
 
         return null;
+    }
+
+    public function getIterator()
+    {
+        return new \ArrayIterator($this->normalizers);
     }
 }

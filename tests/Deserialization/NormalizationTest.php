@@ -43,11 +43,4 @@ class NormalizationTest extends SerializerTestCase
 
         $this->assertEquals('28/11/1984', $person->getBirthday()->format('d/m/Y'));
     }
-
-    protected function createBuilder()
-    {
-        $builder = parent::createBuilder();
-        $builder->enableBuiltInNormalizers();
-        return $builder;
-    }
 }
