@@ -30,12 +30,6 @@ after_success:
   - git clone https://github.com/tsantos84/serializers-benchmarking.git ${BENCHMARK_DIR}
   - composer config repositories.serializer path ${TRAVIS_BUILD_DIR} -d ${BENCHMARK_DIR}
   - composer require tsantos/serializer:*@dev --no-update -d ${BENCHMARK_DIR}
-  - cat ${BENCHMARK_DIR}/composer.json
   - composer install -a --no-dev -d ${BENCHMARK_DIR}
-  - echo "# Serialization operations using 'ACCESSORS' strategy to read and write data"
-  - php ${BENCHMARK_DIR}/app serialize -s 10 -b 100
-  - php ${BENCHMARK_DIR}/app deserialize -s 10 -b 100
-  - echo "# Serialization operations using 'REFLECTION' strategy to read and write data"
-  - export SERIALIZER_ACCESSOR_STRATEGY=REFLECTION
-  - php ${BENCHMARK_DIR}/app serialize -s 10 -b 100
-  - php ${BENCHMARK_DIR}/app deserialize -s 10 -b 100
+  - php ${BENCHMARK_DIR}/vendor/bin/phpbench run --warmup=1 --report=tsantos --group=serialize
+  - php ${BENCHMARK_DIR}/vendor/bin/phpbench run --warmup=1 --report=tsantos --group=deserialize
