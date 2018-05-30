@@ -30,8 +30,7 @@ after_success:
   - git clone https://github.com/tsantos84/serializers-benchmarking.git ${BENCHMARK_DIR}
   - composer config repositories.serializer path ${TRAVIS_BUILD_DIR} -d ${BENCHMARK_DIR}
   - composer require tsantos/serializer:*@dev --no-update -d ${BENCHMARK_DIR}
-  - cat composer.json && ls ${TRAVIS_BUILD_DIR}
-  - composer clear-cache
+  - cat ${BENCHMARK_DIR}/composer.json
   - composer install -a --no-dev -d ${BENCHMARK_DIR}
   - cd ${BENCHMARK_DIR}
   - php vendor/bin/phpbench run --warmup=1 --report=tsantos --group=serialize
