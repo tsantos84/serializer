@@ -27,9 +27,9 @@ script:
 
 after_success:
   - export BENCHMARK_DIR=/tmp/serializers-benchmarking
-  - git clone https://github.com/tsantos84/serializers-benchmarking.git ${BENCHMARK_DIR}
-  - composer config repositories.serializer path ${TRAVIS_BUILD_DIR} -d ${BENCHMARK_DIR}
-  - composer require tsantos/serializer:*@dev --no-update -d ${BENCHMARK_DIR}
-  - composer install -a --no-dev -d ${BENCHMARK_DIR}
-  - php ${BENCHMARK_DIR}/vendor/bin/phpbench run --warmup=1 --report=tsantos --group=serialize
-  - php ${BENCHMARK_DIR}/vendor/bin/phpbench run --warmup=1 --report=tsantos --group=deserialize
+  - git clone https://github.com/tsantos84/serializers-benchmarking.git ${BENCHMARK_DIR} && cd ${BENCHMARK_DIR}
+  - composer config repositories.serializer path ${TRAVIS_BUILD_DIR}
+  - composer require tsantos/serializer:*@dev --no-update
+  - composer install -a --no-dev
+  - php vendor/bin/phpbench run --warmup=1 --report=tsantos --group=serialize
+  - php vendor/bin/phpbench run --warmup=1 --report=tsantos --group=deserialize
