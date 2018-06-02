@@ -33,5 +33,5 @@ after_success:
   - cat ${BENCHMARK_DIR}/composer.json
   - composer install -a --no-dev -d ${BENCHMARK_DIR}
   - cd ${BENCHMARK_DIR}
-  - php vendor/bin/phpbench run --warmup=1 --report=tsantos --group=serialize
-  - php vendor/bin/phpbench run --warmup=1 --report=tsantos --group=deserialize
+  - php vendor/bin/phpbench run --warmup=1 --report=tsantos --group=serialize --iterations=10
+  - php vendor/bin/phpbench run --warmup=1 --report=tsantos --group=deserialize --iterations=10
