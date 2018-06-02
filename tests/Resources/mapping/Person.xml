@@ -14,7 +14,7 @@
         <property name="name" type="string" expose-as="nome" groups="api" />
         <property name="lastName" type="string" />
         <property name="married" type="boolean" getter="isMarried" expose-as="is_married" />
-        <property name="birthday" type="DateTime" modifier="format('d/m/Y')" />
+        <property name="birthday" type="DateTime" read-value="$value->format('d/m/Y')" write-value="\DateTime::createFromFormat('d/m/Y', $value)" />
         <property name="address" read-only="true" />
         <property name="father" type="Tests\TSantos\Serializer\Fixture\Model\Person" />
         <virtual_property name="getFullName" type="string" expose-as="full_name" >

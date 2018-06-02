@@ -21,12 +21,16 @@ use Metadata\PropertyMetadata as BasePropertyMetadata;
 class PropertyMetadata extends BasePropertyMetadata
 {
     public $type = 'string';
-    public $getter;
     /** @var  \ReflectionMethod */
     public $getterRef;
-    public $setter;
+    public $getter;
+    public $readValue;
+
     /** @var  \ReflectionMethod */
     public $setterRef;
+    public $setter;
+    public $writeValue;
+
     public $exposeAs;
     public $groups = ['Default'];
     public $modifier;

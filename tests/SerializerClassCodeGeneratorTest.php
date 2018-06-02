@@ -396,7 +396,7 @@ CODE;
 
         $birthday = new PropertyMetadata(Person::class, 'birthday');
         $birthday->type = 'DateTime';
-        $birthday->modifier = 'format("d/m/Y")';
+        $birthday->readValue = '$value->format("d/m/Y")';
         $birthday->setGetter('getBirthday');
         $birthday->setSetter('setBirthday');
         $metadata->addPropertyMetadata($birthday);

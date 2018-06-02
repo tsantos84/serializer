@@ -22,7 +22,7 @@ class VirtualPropertyMetadata extends MethodMetadata
     public $type = 'string';
     public $exposeAs;
     public $groups = ['Default'];
-    public $modifier;
+    public $readValue;
 
     public function __construct($class, $name)
     {
