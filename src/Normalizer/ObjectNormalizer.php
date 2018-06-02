@@ -14,7 +14,8 @@ use TSantos\Serializer\Traits\SerializerAwareTrait;
  * Class ObjectNormalizer
  * @package TSantos\Serializer\Normalizer
  */
-class ObjectNormalizer implements NormalizerInterface, DenormalizerInterface, SerializerAwareInterface, CacheableNormalizerInterface
+class ObjectNormalizer implements
+    NormalizerInterface, DenormalizerInterface, SerializerAwareInterface, CacheableNormalizerInterface
 {
     use SerializerAwareTrait;
 

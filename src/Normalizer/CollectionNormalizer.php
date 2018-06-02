@@ -12,7 +12,8 @@ use TSantos\Serializer\Traits\SerializerAwareTrait;
  * Class CollectionNormalizer
  * @package TSantos\Serializer\Normalizer
  */
-class CollectionNormalizer implements NormalizerInterface, DenormalizerInterface, SerializerAwareInterface, CacheableNormalizerInterface
+class CollectionNormalizer implements
+    NormalizerInterface, DenormalizerInterface, SerializerAwareInterface, CacheableNormalizerInterface
 {
     use SerializerAwareTrait;
 
@@ -55,11 +56,21 @@ class CollectionNormalizer implements NormalizerInterface, DenormalizerInterface
                     continue;
                 }
                 switch ($type) {
-                    case 'string': $data[$key] = (string)$val; continue;
-                    case 'integer': $data[$key] = (integer)$val; continue;
-                    case 'float': $data[$key] = (float)$val; continue;
-                    case 'double': $data[$key] = (double)$val; continue;
-                    case 'boolean': $data[$key] = (boolean)$val; continue;
+                    case 'string':
+                        $data[$key] = (string)$val;
+                        continue;
+                    case 'integer':
+                        $data[$key] = (integer)$val;
+                        continue;
+                    case 'float':
+                        $data[$key] = (float)$val;
+                        continue;
+                    case 'double':
+                        $data[$key] = (double)$val;
+                        continue;
+                    case 'boolean':
+                        $data[$key] = (boolean)$val;
+                        continue;
                 }
             }
             return $data;

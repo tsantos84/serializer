@@ -84,10 +84,12 @@ class Serializer implements SerializerInterface
             return $normalizer->normalize($data, $context);
         }
 
-        throw new \RuntimeException(sprintf(
-    'There is no normalizer able to normalize the data of type %s',
-            is_object($data) ? get_class($data) : gettype($data)
-        ));
+        throw new \RuntimeException(
+            sprintf(
+                'There is no normalizer able to normalize the data of type %s',
+                is_object($data) ? get_class($data) : gettype($data)
+            )
+        );
     }
 
     /**
