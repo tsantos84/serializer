@@ -26,6 +26,7 @@ script:
   - php ocular.phar code-coverage:upload --format=php-clover coverage.clover
 
 after_success:
+  - phpenv config-rm xdebug.ini;
   - export BENCHMARK_DIR=/tmp/serializers-benchmarking
   - git clone https://github.com/tsantos84/serializers-benchmarking.git ${BENCHMARK_DIR}
   - composer config repositories.serializer path ${TRAVIS_BUILD_DIR} -d ${BENCHMARK_DIR}
