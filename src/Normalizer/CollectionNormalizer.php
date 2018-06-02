@@ -13,7 +13,10 @@ use TSantos\Serializer\Traits\SerializerAwareTrait;
  * @package TSantos\Serializer\Normalizer
  */
 class CollectionNormalizer implements
-    NormalizerInterface, DenormalizerInterface, SerializerAwareInterface, CacheableNormalizerInterface
+    NormalizerInterface,
+    DenormalizerInterface,
+    SerializerAwareInterface,
+    CacheableNormalizerInterface
 {
     use SerializerAwareTrait;
 
