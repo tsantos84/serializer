@@ -15,7 +15,7 @@ Tests\TSantos\Serializer\Fixture\Model\Person:
     birthday:
       type: DateTime
       readValue: "$value->format('d/m/Y')"
-      writeValue: "\DateTime::createFromFormat('d/m/Y', $value)"
+      writeValue: "\\DateTime::createFromFormat('d/m/Y', $value)"
     father:
       type: Tests\TSantos\Serializer\Fixture\Model\Person
     address:
