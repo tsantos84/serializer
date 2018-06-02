@@ -2,10 +2,6 @@ language: php
 
 sudo: false
 
-cache:
-  directories:
-    - $HOME/.composer/cache
-
 matrix:
   include:
     - php: 7.1
@@ -22,8 +18,10 @@ install:
 script:
   - vendor/bin/phpcs .
   - vendor/bin/phpunit -v --coverage-clover=coverage.clover
-  - wget https://scrutinizer-ci.com/ocular.phar
-  - php ocular.phar code-coverage:upload --format=php-clover coverage.clover
+  - |
+    # Sending code coverage to Scrutinizer
+    wget https://scrutinizer-ci.com/ocular.phar
+    php ocular.phar code-coverage:upload --format=php-clover coverage.clover
 
 after_success:
   - |
