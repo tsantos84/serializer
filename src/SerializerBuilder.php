@@ -193,6 +193,7 @@ class SerializerBuilder
         }
 
         $this->dispatcher->addListener($eventName, $listener, $priority, $type);
+        $this->hasListener = true;
         return $this;
     }
 
@@ -203,6 +204,7 @@ class SerializerBuilder
         }
 
         $this->dispatcher->addSubscriber($subscriber);
+        $this->hasListener = true;
         return $this;
     }
 
