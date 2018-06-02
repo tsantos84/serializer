@@ -2,6 +2,7 @@
 
 namespace TSantos\Serializer\Normalizer;
 
+use TSantos\Serializer\CacheableNormalizerInterface;
 use TSantos\Serializer\DeserializationContext;
 use TSantos\Serializer\ObjectInstantiator\ObjectInstantiatorInterface;
 use TSantos\Serializer\SerializationContext;
@@ -13,7 +14,7 @@ use TSantos\Serializer\Traits\SerializerAwareTrait;
  * Class ObjectNormalizer
  * @package TSantos\Serializer\Normalizer
  */
-class ObjectNormalizer implements NormalizerInterface, DenormalizerInterface, SerializerAwareInterface
+class ObjectNormalizer implements NormalizerInterface, DenormalizerInterface, SerializerAwareInterface, CacheableNormalizerInterface
 {
     use SerializerAwareTrait;
 
@@ -42,11 +43,16 @@ class ObjectNormalizer implements NormalizerInterface, DenormalizerInterface, Se
     {
         $objectSerializer = $this->classLoader->load(get_class($data), $this->serializer);
 
-        $context->enter($data);
+        $context->enter();
         $array = $objectSerializer->serialize($data, $context);
         $context->left();
 
         return $array;
+    }
+
+    public function canBeCachedByType(): bool
+    {
+        return true;
     }
 
     public function supportsNormalization($data, SerializationContext $context): bool
@@ -65,7 +71,7 @@ class ObjectNormalizer implements NormalizerInterface, DenormalizerInterface, Se
         }
 
         $objectSerializer = $this->classLoader->load($type, $this->serializer);
-        $context->enter($object);
+        $context->enter();
         $object = $objectSerializer->deserialize($object, $data, $context);
         $context->left();
 

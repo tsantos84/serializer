@@ -84,7 +84,10 @@ class Serializer implements SerializerInterface
             return $normalizer->normalize($data, $context);
         }
 
-        throw new \RuntimeException('There is no normalizer able to normalize the given data');
+        throw new \RuntimeException(sprintf(
+    'There is no normalizer able to normalize the data of type %s',
+            is_object($data) ? get_class($data) : gettype($data)
+        ));
     }
 
     /**
@@ -113,6 +116,6 @@ class Serializer implements SerializerInterface
             return $normalizer->denormalize($data, $type, $context);
         }
 
-        throw new \RuntimeException('There is no normalizer able to denormalize the given data');
+        throw new \RuntimeException('There is no denormalizer able to denormalize data of type ' . $type);
     }
 }

@@ -26,6 +26,14 @@ class NormalizerRegistry implements NormalizerRegistryInterface
     private $normalizers = [];
 
     /**
+     * @var array
+     */
+    private $cachedNormalizers = [
+        'normalizer' => [],
+        'denormalizer' => []
+    ];
+
+    /**
      * @param $normalizer
      * @return $this
      */
@@ -46,8 +54,17 @@ class NormalizerRegistry implements NormalizerRegistryInterface
      */
     public function getNormalizer($data, SerializationContext $context): ?NormalizerInterface
     {
+        $type = is_object($data) ? get_class($data) : gettype($data);
+
+        if (isset($this->cachedNormalizers['normalizer'][$type])) {
+            return $this->cachedNormalizers['normalizer'][$type];
+        }
+
         foreach ($this->normalizers as $normalizer) {
             if ($normalizer instanceof NormalizerInterface && $normalizer->supportsNormalization($data, $context)) {
+                if ($normalizer instanceof CacheableNormalizerInterface && $normalizer->canBeCachedByType()) {
+                    $this->cachedNormalizers['normalizer'][$type] = $normalizer;
+                }
                 return $normalizer;
             }
         }
@@ -60,9 +77,16 @@ class NormalizerRegistry implements NormalizerRegistryInterface
      */
     public function getDenormalizer($data, string $type, DeserializationContext $context): ?DenormalizerInterface
     {
+        if (isset($this->cachedNormalizers['denormalizer'][$type])) {
+            return $this->cachedNormalizers['denormalizer'][$type];
+        }
+
         foreach ($this->normalizers as $denormalizer) {
             if ($denormalizer instanceof DenormalizerInterface
                 && $denormalizer->supportsDenormalization($type, $data, $context)) {
+                if ($denormalizer instanceof CacheableNormalizerInterface && $denormalizer->canBeCachedByType()) {
+                    $this->cachedNormalizers['denormalizer'][$type] = $denormalizer;
+                }
                 return $denormalizer;
             }
         }

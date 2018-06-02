@@ -28,7 +28,7 @@ class DeserializeCollectionsTest extends SerializerTestCase
         $serializer = $this->createSerializer(array_merge(
             $this->createMapping(Person::class, [
                 'name' => ['type' => 'string'],
-                'colors' => ['type' => 'string[]'],
+                'colors' => ['type' => 'array'],
                 'favouriteBook' => ['type' => Book::class]
             ]),
             $this->createMapping(Book::class, [

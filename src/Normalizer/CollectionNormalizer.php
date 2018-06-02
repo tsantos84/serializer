@@ -2,6 +2,7 @@
 
 namespace TSantos\Serializer\Normalizer;
 
+use TSantos\Serializer\CacheableNormalizerInterface;
 use TSantos\Serializer\DeserializationContext;
 use TSantos\Serializer\SerializationContext;
 use TSantos\Serializer\SerializerAwareInterface;
@@ -11,7 +12,7 @@ use TSantos\Serializer\Traits\SerializerAwareTrait;
  * Class CollectionNormalizer
  * @package TSantos\Serializer\Normalizer
  */
-class CollectionNormalizer implements NormalizerInterface, DenormalizerInterface, SerializerAwareInterface
+class CollectionNormalizer implements NormalizerInterface, DenormalizerInterface, SerializerAwareInterface, CacheableNormalizerInterface
 {
     use SerializerAwareTrait;
 
@@ -38,35 +39,35 @@ class CollectionNormalizer implements NormalizerInterface, DenormalizerInterface
 
     public function denormalize($data, string $type, DeserializationContext $context)
     {
-        if ($type === '[]') {
-            $type = is_scalar(reset($data)) ? gettype(reset($data)) : 'string';
-        } else {
-            $type = substr($type, 0, strpos($type, '[]'));
+        $type = substr($type, 0, strpos($type, '[]'));
+
+        $scalarTypes = [
+            'integer' => true,
+            'string' => true,
+            'float' => true,
+            'double' => true,
+            'boolean' => true
+        ];
+
+        if (isset($scalarTypes[$type])) {
+            foreach ($data as $key => $val) {
+                if ($val === null) {
+                    continue;
+                }
+                switch ($type) {
+                    case 'string': $data[$key] = (string)$val; continue;
+                    case 'integer': $data[$key] = (integer)$val; continue;
+                    case 'float': $data[$key] = (float)$val; continue;
+                    case 'double': $data[$key] = (double)$val; continue;
+                    case 'boolean': $data[$key] = (boolean)$val; continue;
+                }
+            }
+            return $data;
         }
 
         $result = [];
-
-        $scalarTypes = [
-            'integer' => 'int',
-            'string' => 'str',
-            'float' => 'float',
-            'double' => 'double',
-            'boolean' => 'bool'
-        ];
-
-        $callback = function ($item) use ($type, $context) {
-            return $this->serializer->denormalize($item, $type, $context);
-        };
-
-        if (isset($scalarTypes[$type])) {
-            $type = $scalarTypes[$type];
-            $callback = function ($item) use ($type) {
-                return call_user_func($type . 'val', $item);
-            };
-        }
-
         foreach ($data as $key => $item) {
-            $result[$key] = $callback($item);
+            $result[$key] = $this->serializer->denormalize($item, $type, $context);
         }
 
         return $result;
@@ -74,6 +75,11 @@ class CollectionNormalizer implements NormalizerInterface, DenormalizerInterface
 
     public function supportsDenormalization(string $type, $data, DeserializationContext $context): bool
     {
-        return strpos($type, '[]') !== false;
+        return strpos($type, '[]') > 0;
+    }
+
+    public function canBeCachedByType(): bool
+    {
+        return true;
     }
 }

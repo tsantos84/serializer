@@ -26,6 +26,12 @@ interface NormalizerRegistryInterface extends \IteratorAggregate
      */
     public function add($normalizer);
 
+    /**
+     * Adds a normalizer at the beginning
+     *
+     * @param $normalizer
+     * @return mixed
+     */
     public function unshift($normalizer);
 
     /**

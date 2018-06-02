@@ -72,7 +72,7 @@ abstract class AbstractContext
         return null !== $this->currentDepth;
     }
 
-    public function enter($object = null)
+    public function enter()
     {
         $this->currentDepth++;
     }
