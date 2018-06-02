@@ -36,7 +36,7 @@ class VirtualPropertyMetadata extends MethodMetadata
             $this->name,
             $this->class,
             $this->type,
-            $this->modifier,
+            $this->readValue,
             $this->exposeAs,
             $this->groups
         ]);
@@ -50,7 +50,7 @@ class VirtualPropertyMetadata extends MethodMetadata
             $this->name,
             $this->class,
             $this->type,
-            $this->modifier,
+            $this->readValue,
             $this->exposeAs,
             $this->groups
             ) = $unserialized;
