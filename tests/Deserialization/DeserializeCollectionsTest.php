@@ -90,12 +90,12 @@ EOF;
     }
 
     /** @test */
-    public function it_can_deserialize_an_untyped_array()
+    public function it_can_deserialize_an_untyped_array_and_keep_its_items_data_type()
     {
         $serializer = $this->createSerializer();
-        $content = '[1,2,3,4,5,6,7,8,9,10]';
-        $collection = $serializer->deserialize($content, '[]');
-        $this->assertSame([1,2,3,4,5,6,7,8,9,10], $collection);
+        $content = '[1,2,"3",4,5,6,7,8,9,10]';
+        $collection = $serializer->deserialize($content, 'array');
+        $this->assertSame([1,2,'3',4,5,6,7,8,9,10], $collection);
     }
 
     /** @test */

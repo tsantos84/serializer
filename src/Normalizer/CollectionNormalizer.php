@@ -75,7 +75,7 @@ class CollectionNormalizer implements NormalizerInterface, DenormalizerInterface
 
     public function supportsDenormalization(string $type, $data, DeserializationContext $context): bool
     {
-        return strpos($type, '[]') > 0;
+        return strpos($type, '[]') > 0 || 'array' === $type;
     }
 
     public function canBeCachedByType(): bool
