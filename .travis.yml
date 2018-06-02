@@ -2,10 +2,6 @@ language: php
 
 sudo: false
 
-cache:
-  directories:
-    - $HOME/.composer/cache
-
 matrix:
   include:
     - php: 7.1
@@ -22,17 +18,31 @@ install:
 script:
   - vendor/bin/phpcs .
   - vendor/bin/phpunit -v --coverage-clover=coverage.clover
-  - wget https://scrutinizer-ci.com/ocular.phar
-  - php ocular.phar code-coverage:upload --format=php-clover coverage.clover
+  - |
+    # Sending code coverage to Scrutinizer
+    wget https://scrutinizer-ci.com/ocular.phar
+    php ocular.phar code-coverage:upload --format=php-clover coverage.clover
 
 after_success:
-  - phpenv config-rm xdebug.ini;
-  - export BENCHMARK_DIR=/tmp/serializers-benchmarking
-  - git clone https://github.com/tsantos84/serializers-benchmarking.git ${BENCHMARK_DIR}
-  - composer config repositories.serializer path ${TRAVIS_BUILD_DIR} -d ${BENCHMARK_DIR}
-  - composer require tsantos/serializer:*@dev --no-update -d ${BENCHMARK_DIR}
-  - cat ${BENCHMARK_DIR}/composer.json
-  - composer install -a --no-dev -d ${BENCHMARK_DIR}
-  - cd ${BENCHMARK_DIR}
-  - php vendor/bin/phpbench run --warmup=1 --report=tsantos --group=serialize --iterations=10
-  - php vendor/bin/phpbench run --warmup=1 --report=tsantos --group=deserialize --iterations=10
+  - |
+    # Setting up Benchmark Tool
+    phpenv config-rm xdebug.ini;
+    export BENCHMARK_DIR=/tmp/serializers-benchmarking
+    git clone https://github.com/tsantos84/serializers-benchmarking.git ${BENCHMARK_DIR}
+    cd ${BENCHMARK_DIR}
+    composer config repositories.serializer path ${TRAVIS_BUILD_DIR}
+    composer require tsantos/serializer:*@dev --no-update
+    cat ${BENCHMARK_DIR}/composer.json
+
+  - |
+    # Installing Benchmark Dependencies
+    composer install -a --no-dev -d ${BENCHMARK_DIR}
+    composer info tsantos/serializer
+
+  - |
+    # Performing serialization benchmark
+    php vendor/bin/phpbench run --warmup=1 --report=tsantos --group=serialize --iterations=10
+
+  - |
+    # Performing deserialization benchmark
+    php vendor/bin/phpbench run --warmup=1 --report=tsantos --group=deserialize --iterations=10
