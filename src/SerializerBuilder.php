@@ -54,6 +54,7 @@ class SerializerBuilder
     private $format = 'json';
     private $dispatcher;
     private $accessStrategy = 'accessors';
+    private $hasListener = false;
 
     /**
      * Builder constructor.
