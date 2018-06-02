@@ -9,13 +9,19 @@
   -->
 
 <serializer>
-    <class name="Tests\TSantos\Serializer\Fixture\Person" base-class="Tests\TSantos\Serializer\AbstractSerializerClass">
+    <class name="Tests\TSantos\Serializer\Fixture\Model\Person" base-class="Tests\TSantos\Serializer\AbstractSerializerClass">
         <property name="id" type="integer" />
-        <property name="name" type="string" expose-as="nome" />
-        <property name="married" type="boolean" getter="isMarried"/>
+        <property name="name" type="string" expose-as="nome" groups="api" />
+        <property name="lastName" type="string" />
+        <property name="married" type="boolean" getter="isMarried" expose-as="is_married" />
         <property name="birthday" type="DateTime" modifier="format('d/m/Y')" />
-        <property name="father" type="Tests\TSantos\Serializer\Fixture\Person" />
-        <property name="address" type="Tests\TSantos\Serializer\Fixture\Address" read-only="true" />
-        <virtual_property name="fullName" expose-as="full_name" />
+        <property name="address" read-only="true" />
+        <property name="father" type="Tests\TSantos\Serializer\Fixture\Model\Person" />
+        <virtual_property name="getFullName" type="string" expose-as="full_name" >
+            <groups>
+                <value>api</value>
+            </groups>
+        </virtual_property>
+        <virtual_property name="getFormattedAddress" />
     </class>
 </serializer>

@@ -10,10 +10,10 @@
 
 namespace Tests\TSantos\Serializer;
 
-use Tests\TSantos\Serializer\Fixture\Address;
-use Tests\TSantos\Serializer\Fixture\Coordinates;
-use Tests\TSantos\Serializer\Fixture\Person;
-use Tests\TSantos\Serializer\Fixture\Vehicle;
+use Tests\TSantos\Serializer\Fixture\Model\Address;
+use Tests\TSantos\Serializer\Fixture\Model\Coordinates;
+use Tests\TSantos\Serializer\Fixture\Model\Person;
+use Tests\TSantos\Serializer\Fixture\Model\Vehicle;
 use TSantos\Serializer\SerializationContext;
 
 /**
@@ -28,10 +28,10 @@ class MaxDepthSerializationTest extends SerializerTestCase
     public function testSerializeWithMaxDepth()
     {
         $personMapping = $this->createMapping(Person::class, [
-            'id' => [],
+            'id' => ['type' => 'integer'],
             'name' => [],
             'address' => ['type' => Address::class],
-            'married' => ['getter' => 'isMarried']
+            'married' => ['type' => 'boolean', 'getter' => 'isMarried']
         ]);
 
         $addressMapping = $this->createMapping(Address::class, [
@@ -98,7 +98,7 @@ class MaxDepthSerializationTest extends SerializerTestCase
 
         $person = new Vehicle('white', 4);
 
-        $expected = '{"color":"white","ports":4,"owner":"Tales","tires":[]}';
+        $expected = '{"color":"white","ports":4}';
 
         $this->assertEquals($expected, $serializer->serialize($person, SerializationContext::create()->setMaxDepth(1)));
     }

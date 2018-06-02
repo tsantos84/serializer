@@ -41,18 +41,4 @@ class SerializationContext extends AbstractContext
     {
         return $this->serializeNull;
     }
-
-    public function enter($object = null)
-    {
-        if (is_object($object)) {
-            $this->instances->attach($object);
-        }
-
-        parent::enter($object);
-    }
-
-    public function hasObjectProcessed($object)
-    {
-        return $this->instances->contains($object);
-    }
 }

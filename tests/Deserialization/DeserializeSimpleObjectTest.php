@@ -10,8 +10,8 @@
 
 namespace Tests\TSantos\Serializer\Deserialization;
 
-use Tests\TSantos\Serializer\Fixture\Book;
-use Tests\TSantos\Serializer\Fixture\Person;
+use Tests\TSantos\Serializer\Fixture\Model\Book;
+use Tests\TSantos\Serializer\Fixture\Model\Person;
 use Tests\TSantos\Serializer\SerializerTestCase;
 use TSantos\Serializer\DeserializationContext;
 

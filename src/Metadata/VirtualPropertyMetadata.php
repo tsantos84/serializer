@@ -19,10 +19,16 @@ use Metadata\MethodMetadata;
  */
 class VirtualPropertyMetadata extends MethodMetadata
 {
-    public $type;
+    public $type = 'string';
     public $exposeAs;
-    public $groups;
+    public $groups = ['Default'];
     public $modifier;
+
+    public function __construct($class, $name)
+    {
+        parent::__construct($class, $name);
+        $this->exposeAs = $name;
+    }
 
     public function serialize()
     {
@@ -47,6 +53,6 @@ class VirtualPropertyMetadata extends MethodMetadata
             $this->modifier,
             $this->exposeAs,
             $this->groups
-        ) = $unserialized;
+            ) = $unserialized;
     }
 }

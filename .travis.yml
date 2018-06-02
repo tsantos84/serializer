@@ -9,21 +9,30 @@ cache:
 matrix:
   include:
     - php: 7.1
-
-    - php: 7.1
-      env: DEPENDENCIES="symfony/yaml:^3.4||^4.0"
-
     - php: 7.2
-
-    - php: 7.2
-      env: DEPENDENCIES="symfony/yaml:^3.4||^4.0"
   fast_finish: true
 
 before_install:
-    - if ! [ -v "$DEPENDENCIES" ]; then composer require --no-update ${DEPENDENCIES}; fi;
+    - composer require --no-update symfony/yaml:^3.4||^4.0
+    - composer require --no-update doctrine/annotations:^1.5
 
 install:
   - composer install -a
 
 script:
-  - vendor/bin/phpunit
+  - vendor/bin/phpcs .
+  - vendor/bin/phpunit -v --coverage-clover=coverage.clover
+  - wget https://scrutinizer-ci.com/ocular.phar
+  - php ocular.phar code-coverage:upload --format=php-clover coverage.clover
+
+after_success:
+  - phpenv config-rm xdebug.ini;
+  - export BENCHMARK_DIR=/tmp/serializers-benchmarking
+  - git clone https://github.com/tsantos84/serializers-benchmarking.git ${BENCHMARK_DIR}
+  - composer config repositories.serializer path ${TRAVIS_BUILD_DIR} -d ${BENCHMARK_DIR}
+  - composer require tsantos/serializer:*@dev --no-update -d ${BENCHMARK_DIR}
+  - cat ${BENCHMARK_DIR}/composer.json
+  - composer install -a --no-dev -d ${BENCHMARK_DIR}
+  - cd ${BENCHMARK_DIR}
+  - php vendor/bin/phpbench run --warmup=1 --report=tsantos --group=serialize --iterations=10
+  - php vendor/bin/phpbench run --warmup=1 --report=tsantos --group=deserialize --iterations=10

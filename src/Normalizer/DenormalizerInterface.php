@@ -9,6 +9,7 @@
  */
 
 namespace TSantos\Serializer\Normalizer;
+
 use TSantos\Serializer\DeserializationContext;
 
 /**
@@ -25,7 +26,7 @@ interface DenormalizerInterface
      * @param DeserializationContext $context
      * @return mixed
      */
-    public function denormalize($data, DeserializationContext $context);
+    public function denormalize($data, string $type, DeserializationContext $context);
 
     /**
      * Checks whether this denormalizer supports denormalization of the given type.

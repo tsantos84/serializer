@@ -8,17 +8,20 @@
  * file that was distributed with this source code.
  */
 
-namespace TSantos\Serializer\Normalizer;
+namespace TSantos\Serializer\Mapping;
 
 /**
- * Class IdentifiableInterface
+ * Class Setter
  *
  * @author Tales Santos <tales.augusto.santos@gmail.com>
+ *
+ * @Annotation
  */
-interface IdentifiableInterface
+class Setter
 {
     /**
-     * @return mixed
+     * @var string
+     * @Required
      */
-    public function getId();
+    public $name;
 }

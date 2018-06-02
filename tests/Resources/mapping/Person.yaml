@@ -1,22 +1,29 @@
-Tests\TSantos\Serializer\Fixture\Person:
+Tests\TSantos\Serializer\Fixture\Model\Person:
   baseClass: Tests\TSantos\Serializer\AbstractSerializerClass
   properties:
     id:
       type: integer
     name:
       type: string
-      exposeAs: nome
+      groups: ["api"]
+    lastName:
+      type: string
     married:
       type: boolean
       getter: isMarried
+      exposeAs: is_married
     birthday:
       type: DateTime
       modifier: "format('d/m/Y')"
     father:
-      type: Tests\TSantos\Serializer\Fixture\Person
+      type: Tests\TSantos\Serializer\Fixture\Model\Person
     address:
-      type: Tests\TSantos\Serializer\Fixture\Address
+      type: Tests\TSantos\Serializer\Fixture\Model\Address
       readOnly: true
   virtualProperties:
-    fullName:
+    getFullName:
+      type: string
       exposeAs: full_name
+      groups: ["api"]
+    getFormattedAddress:
+      type: string

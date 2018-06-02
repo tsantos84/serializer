@@ -1,4 +1,12 @@
 <?php
+/**
+ * This file is part of the TSantos Serializer package.
+ *
+ * (c) Tales Santos <tales.augusto.santos@gmail.com>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
 
 namespace TSantos\Serializer;
 
@@ -26,21 +34,17 @@ class EventEmitterSerializer extends Serializer
     private $dispatcher;
 
     /**
-     * Serializer constructor.
-     * @param SerializerClassLoader $classLoader
+     * EventEmitterSerializer constructor.
      * @param EncoderInterface $encoder
      * @param NormalizerRegistryInterface $normalizers
-     * @param ObjectInstantiatorInterface $instantiator
      * @param EventDispatcherInterface $dispatcher
      */
     public function __construct(
-        SerializerClassLoader $classLoader,
         EncoderInterface $encoder,
         NormalizerRegistryInterface $normalizers,
-        ObjectInstantiatorInterface $instantiator,
         EventDispatcherInterface $dispatcher
     ) {
-        parent::__construct($classLoader, $encoder, $normalizers, $instantiator);
+        parent::__construct($encoder, $normalizers);
         $this->dispatcher = $dispatcher;
     }
 

@@ -10,9 +10,8 @@
 
 namespace TSantos\Serializer;
 
-use Metadata\ClassMetadata;
 use Metadata\MetadataFactoryInterface;
-use TSantos\Serializer\EventDispatcher\EventDispatcherInterface;
+use TSantos\Serializer\Metadata\ClassMetadata;
 
 /**
  * Class SerializerClassLoader
@@ -57,8 +56,12 @@ class SerializerClassLoader
      * @param SerializerClassWriter $writer
      * @param int $autogenerate
      */
-    public function __construct(MetadataFactoryInterface $metadataFactory, SerializerClassCodeGenerator $codeGenerator, SerializerClassWriter $writer, int $autogenerate)
-    {
+    public function __construct(
+        MetadataFactoryInterface $metadataFactory,
+        SerializerClassCodeGenerator $codeGenerator,
+        SerializerClassWriter $writer,
+        int $autogenerate
+    ) {
         $this->metadataFactory = $metadataFactory;
         $this->codeGenerator = $codeGenerator;
         $this->writer = $writer;
@@ -72,20 +75,24 @@ class SerializerClassLoader
      */
     public function load(string $class, SerializerInterface $serializer): SerializerClassInterface
     {
+        if (isset($this->instances[$class])) {
+            return $this->instances[$class];
+        }
+
+        /** @var ClassMetadata $classMetadata */
         $classMetadata = $this->metadataFactory->getMetadataForClass($class);
 
         if (null === $classMetadata) {
-            throw new \RuntimeException('No mapping file was found for class ' . $class . '. Did you configure the correct paths for serializer?');
+            throw new \RuntimeException(
+                'No mapping file was found for class ' . $class .
+                '. Did you configure the correct paths for serializer?'
+            );
         }
 
         $fqn = $this->getClassName($classMetadata);
 
-        if (isset($this->instances[$fqn])) {
-            return $this->instances[$fqn];
-        }
-
         if (class_exists($fqn, false)) {
-            return $this->instances[$fqn] = new $fqn($serializer);
+            return $this->instances[$class] = new $fqn($serializer);
         }
 
         $filename = $this->getFilename($classMetadata);
@@ -108,7 +115,7 @@ class SerializerClassLoader
                 break;
         }
 
-        return $this->instances[$fqn] = new $fqn($serializer);
+        return $this->instances[$class] = new $fqn($serializer);
     }
 
     private function generate(ClassMetadata $classMetadata)

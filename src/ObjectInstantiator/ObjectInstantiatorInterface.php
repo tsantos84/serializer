@@ -9,6 +9,7 @@
  */
 
 namespace TSantos\Serializer\ObjectInstantiator;
+
 use TSantos\Serializer\DeserializationContext;
 
 /**

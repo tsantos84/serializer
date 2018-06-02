@@ -10,9 +10,10 @@
 
 namespace Tests\TSantos\Serializer\Serialization;
 
-use Tests\TSantos\Serializer\Fixture\Book;
-use Tests\TSantos\Serializer\Fixture\Person;
+use Tests\TSantos\Serializer\Fixture\Model\Book;
+use Tests\TSantos\Serializer\Fixture\Model\Person;
 use Tests\TSantos\Serializer\SerializerTestCase;
+use TSantos\Serializer\Normalizer\DateTimeNormalizer;
 
 /**
  * Class NormalizationTest
@@ -23,32 +24,6 @@ use Tests\TSantos\Serializer\SerializerTestCase;
  */
 class NormalizationTest extends SerializerTestCase
 {
-    public function testSerializeWithIdentifiableNormalization()
-    {
-        $serializer = $this->createSerializer(array_merge(
-            $this->createMapping(Person::class, [
-                'id' => ['type' => 'integer'],
-                'name' => ['type' => 'string'],
-                'favouriteBook' => ['type' => Book::class]
-            ]),
-            $this->createMapping(Book::class, [
-                'id' => ['type' => 'integer'],
-                'name' => ['type' => 'string']
-            ])
-        ));
-
-        $person = new Person(1, 'Tales', true);
-        $person->setFavouriteBook(new Book(10, 'Data Transformation'));
-
-        $json = $serializer->serialize($person);
-
-        $this->assertEquals(json_encode([
-            'id' => 1,
-            'name' => 'Tales',
-            'favouriteBook' => 10
-        ]), $json);
-    }
-
     public function testSerializeWithDateTimeNormalization()
     {
         $person = new Person(1,'Tales', true);
@@ -65,7 +40,7 @@ class NormalizationTest extends SerializerTestCase
     protected function createBuilder()
     {
         $builder = parent::createBuilder();
-        $builder->enableBuiltInNormalizers();
+        $builder->addNormalizer(new DateTimeNormalizer());
         return $builder;
     }
 }

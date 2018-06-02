@@ -11,10 +11,13 @@
 namespace Tests\TSantos\Serializer;
 
 use PHPUnit\Framework\TestCase;
-use TSantos\Serializer\Metadata\Driver\InMemoryDriver;
+use Tests\TSantos\Serializer\Fixture\Driver\TestDriver;
+use TSantos\Serializer\Metadata\ClassMetadata;
+use TSantos\Serializer\Metadata\Driver\CallbackDriver;
+use TSantos\Serializer\Metadata\PropertyMetadata;
+use TSantos\Serializer\Metadata\VirtualPropertyMetadata;
 use TSantos\Serializer\SerializerBuilder;
 use TSantos\Serializer\SerializerInterface;
-use TSantos\Serializer\TypeGuesser;
 
 /**
  * Class SerializerTestCase
@@ -47,8 +50,9 @@ abstract class SerializerTestCase extends TestCase
         $builder = $this->createBuilder();
 
         $builder
-            ->setMetadataDriver(new InMemoryDriver($mapping, new TypeGuesser()))
+            ->setMetadataDriver(new TestDriver($mapping))
             ->setSerializerClassDir($this->classCacheDir)
+            ->enableBuiltInNormalizers()
             ->setDebug(true);
 
         return $builder->build();
@@ -57,10 +61,37 @@ abstract class SerializerTestCase extends TestCase
     protected function createMapping(string $type, array $properties, array $virtualProperties = []): array
     {
         return [
-            $type => [
-                'properties' => $properties,
-                'virtualProperties' => $virtualProperties
-            ]
+            $type => new CallbackDriver(function (\ReflectionClass $class) use ($properties, $virtualProperties) {
+                $metadata = new ClassMetadata($class->name);
+                foreach ($properties as $name => $options) {
+                    $pm = new PropertyMetadata($class->name, $name);
+
+                    if (!isset($options['getter']) && $class->hasMethod($method = 'get' . ucfirst($name))) {
+                        $options['getter'] = $method;
+                        $options['getterRef'] = new \ReflectionMethod($class->name, $method);
+                    }
+
+                    if (!isset($options['setter']) && $class->hasMethod($method = 'set' . ucfirst($name))) {
+                        $options['setter'] = $method;
+                        $options['setterRef'] = new \ReflectionMethod($class->name, $method);
+                    }
+
+                    foreach ($options as $k => $v) {
+                        $pm->{$k} = $v;
+                    }
+
+                    $metadata->addPropertyMetadata($pm);
+                }
+
+                foreach ($virtualProperties as $name => $options) {
+                    $m = new VirtualPropertyMetadata($class->name, $name);
+                    foreach ($options as $k => $v) {
+                        $m->{$k} = $v;
+                    }
+                    $metadata->addMethodMetadata($m);
+                }
+                return $metadata;
+            })
         ];
     }
 }

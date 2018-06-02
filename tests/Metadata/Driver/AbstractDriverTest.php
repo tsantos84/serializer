@@ -12,7 +12,7 @@ namespace Tests\TSantos\Serializer\Metadata\Driver;
 
 use Metadata\Driver\DriverInterface;
 use PHPUnit\Framework\TestCase;
-use Tests\TSantos\Serializer\Fixture\Person;
+use Tests\TSantos\Serializer\Fixture\Model\Person;
 use TSantos\Serializer\Metadata\ClassMetadata;
 
 /**
@@ -32,11 +32,41 @@ abstract class AbstractDriverTest extends TestCase
         $pm = $m->propertyMetadata;
 
         $this->assertInstanceOf(ClassMetadata::class, $m);
-        $this->assertEquals('integer', $pm['id']->type);
-        $this->assertEquals('string', $pm['name']->type);
-        $this->assertEquals(Person::class, $pm['father']->type);
-        $this->assertEquals("format('d/m/Y')", $pm['birthday']->modifier);
         $this->assertEquals('Tests\TSantos\Serializer\AbstractSerializerClass', $m->baseClass);
+
+        // field 'id'
+        $this->assertEquals('integer', $pm['id']->type);
+        $this->assertEquals('getId', $pm['id']->getter);
+        $this->assertNull($pm['id']->setter);
+        $this->assertEquals(['Default'], $pm['id']->groups);
+        $this->assertEquals('id', $pm['id']->exposeAs);
+
+        // field 'name'
+        $this->assertEquals('string', $pm['name']->type);
+        $this->assertEquals('getName', $pm['name']->getter);
+        $this->assertEquals('setName', $pm['name']->setter);
+        $this->assertEquals(['api'], $pm['name']->groups);
+        $this->assertInstanceOf(\ReflectionMethod::class, $pm['name']->getterRef);
+        $this->assertInstanceOf(\ReflectionMethod::class, $pm['name']->setterRef);
+
+        // field 'lastName'
+        $this->assertEquals('string', $pm['lastName']->type);
+        $this->assertEquals('getLastName', $pm['lastName']->getter);
+
+        // field 'married'
+        $this->assertEquals('boolean', $pm['married']->type);
+        $this->assertEquals('isMarried', $pm['married']->getter);
+        $this->assertEquals('setMarried', $pm['married']->setter);
+        $this->assertEquals('is_married', $pm['married']->exposeAs);
+
+        // field 'father'
+        $this->assertEquals(Person::class, $pm['father']->type);
+
+        // field 'birthday'
+        $this->assertEquals("DateTime", $pm['birthday']->type);
+        $this->assertEquals("format('d/m/Y')", $pm['birthday']->modifier);
+
+        // field 'address'
         $this->assertTrue($pm['address']->readOnly);
     }
 
@@ -46,8 +76,15 @@ abstract class AbstractDriverTest extends TestCase
         $driver = $this->createDriver();
         $m = $driver->loadMetadataForClass(new \ReflectionClass(Person::class));
 
-        $this->assertArrayHasKey('getFullName', $m->methodMetadata);
+        // virtual property 'getFullName'
+        $this->assertEquals('string', $m->methodMetadata['getFullName']->type);
         $this->assertEquals('full_name', $m->methodMetadata['getFullName']->exposeAs);
+        $this->assertEquals(['api'], $m->methodMetadata['getFullName']->groups);
+
+        // virtual property 'getFormattedAddress'
+        $this->assertEquals('string', $m->methodMetadata['getFormattedAddress']->type);
+        $this->assertEquals('getFormattedAddress', $m->methodMetadata['getFormattedAddress']->exposeAs);
+        $this->assertEquals(['Default'], $m->methodMetadata['getFormattedAddress']->groups);
     }
 
     public abstract function createDriver(): DriverInterface;

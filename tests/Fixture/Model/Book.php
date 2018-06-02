@@ -8,16 +8,14 @@
  * file that was distributed with this source code.
  */
 
-namespace Tests\TSantos\Serializer\Fixture;
-
-use TSantos\Serializer\Normalizer\IdentifiableInterface;
+namespace Tests\TSantos\Serializer\Fixture\Model;
 
 /**
  * Class Book
  *
  * @author Tales Santos <tales.augusto.santos@gmail.com>
  */
-class Book implements IdentifiableInterface
+class Book
 {
     /** @var integer */
     private $id;

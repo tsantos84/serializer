@@ -58,7 +58,7 @@ class TypeGuesser
                 return $this->translate($type) ?? $default;
             }
         } elseif ($returnType->isBuiltin()) {
-            return $this->translate((string) $returnType) ?? $default;
+            return $this->translate((string)$returnType) ?? $default;
         }
 
         return $default;

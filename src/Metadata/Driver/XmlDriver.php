@@ -69,14 +69,25 @@ class XmlDriver extends AbstractFileDriver
             $name = (string)$attribs['name'];
             $property = new PropertyMetadata($class->getName(), $name);
 
-            $getter = $attribs['getter'] ?? 'get' . ucfirst($name);
-            $property->accessor = $getter . '()';
-            $property->getterRef = new \ReflectionMethod($class->getName(), $getter);
+            if ($class->hasMethod($getter = $attribs['getter'] ?? 'get' . ucfirst($name))) {
+                $property->getter = $getter;
+                $property->getterRef = new \ReflectionMethod($class->getName(), $property->getter);
+            }
+
+            if ($class->hasMethod($setter = $attribs['setter'] ?? 'set' . ucfirst($name))) {
+                $property->setter = $setter;
+                $property->setterRef = new \ReflectionMethod($class->getName(), $setter);
+            }
+
+            if (isset($attribs['groups'])) {
+                $property->groups = preg_split('/\s*,\s*/', trim((string)$attribs['groups']));
+            } elseif (isset($xmlProperty->groups)) {
+                $property->groups = (array)$xmlProperty->groups->value;
+            }
+
             $property->modifier = $attribs['modifier'] ?? null;
-            $property->setter = $attribs['setter'] ?? 'set' . ucfirst($name);
             $property->type = $attribs['type'] ?? $this->typeGuesser->guessProperty($property, 'string');
             $property->exposeAs = $attribs['expose-as'] ?? $name;
-            $property->groups = $attribs['groups'] ?? ['Default'];
             $property->readOnly = strtolower($attribs['read-only'] ?? '') === 'true' ?? false;
 
             $metadata->addPropertyMetadata($property);
@@ -86,13 +97,19 @@ class XmlDriver extends AbstractFileDriver
         foreach ($elem->xpath('./virtual_property') ?? [] as $xmlProperty) {
             $attribs = ((array)$xmlProperty->attributes())['@attributes'];
             $name = $attribs['name'];
-            $method = $attribs['method'] ?? 'get' . ucfirst($name);
+            $method = $attribs['method'] ?? $name;
 
             $property = new VirtualPropertyMetadata($class->name, $method);
             $property->type = $attribs['type'] ?? $this->typeGuesser->guessVirtualProperty($property, 'string');
             $property->exposeAs = $attribs['expose-as'] ?? $name;
-            $property->groups = $attribs['groups'] ?? ['Default'];
             $property->modifier = $attribs['modifier'] ?? null;
+
+            if (isset($attribs['groups'])) {
+                $property->groups = preg_split('/\s*,\s*/', trim((string)$attribs['groups']));
+            } elseif (isset($xmlProperty->groups)) {
+                $property->groups = (array)$xmlProperty->groups->value;
+            }
+
             $metadata->addMethodMetadata($property);
         }
 

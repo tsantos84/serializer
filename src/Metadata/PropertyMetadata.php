@@ -21,14 +21,34 @@ use Metadata\PropertyMetadata as BasePropertyMetadata;
 class PropertyMetadata extends BasePropertyMetadata
 {
     public $type = 'string';
-    public $accessor;
+    public $getter;
     /** @var  \ReflectionMethod */
     public $getterRef;
     public $setter;
+    /** @var  \ReflectionMethod */
+    public $setterRef;
     public $exposeAs;
-    public $groups;
+    public $groups = ['Default'];
     public $modifier;
     public $readOnly = false;
+
+    public function __construct($class, $name)
+    {
+        parent::__construct($class, $name);
+        $this->exposeAs = $name;
+    }
+
+    public function setGetter(string $getter): void
+    {
+        $this->getter = $getter;
+        $this->getterRef = new \ReflectionMethod($this->class, $getter);
+    }
+
+    public function setSetter(string $setter): void
+    {
+        $this->setter = $setter;
+        $this->setterRef = new \ReflectionMethod($this->class, $setter);
+    }
 
     public function serialize()
     {
@@ -36,7 +56,7 @@ class PropertyMetadata extends BasePropertyMetadata
             $this->name,
             $this->class,
             $this->type,
-            $this->accessor,
+            $this->getter,
             $this->setter,
             $this->exposeAs,
             $this->groups,
@@ -53,15 +73,20 @@ class PropertyMetadata extends BasePropertyMetadata
             $this->name,
             $this->class,
             $this->type,
-            $this->accessor,
+            $this->getter,
             $this->setter,
             $this->exposeAs,
             $this->groups,
             $this->modifier,
             $this->readOnly
-        ) = $unserialized;
+            ) = $unserialized;
 
-        $getter = substr($this->accessor, 0, strpos($this->accessor, '('));
-        $this->getterRef = new \ReflectionMethod($this->class, $getter);
+        if ($this->getter) {
+            $this->getterRef = new \ReflectionMethod($this->class, $this->getter);
+        }
+
+        if ($this->setter) {
+            $this->setterRef = new \ReflectionMethod($this->class, $this->setter);
+        }
     }
 }

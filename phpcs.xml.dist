@@ -1,0 +1,17 @@
+<?xml version="1.0"?>
+<!--
+  ~ This file is part of the TSantos Serializer package.
+  ~
+  ~ (c) Tales Santos <tales.augusto.santos@gmail.com>
+  ~
+  ~ For the full copyright and license information, please view the LICENSE
+  ~ file that was distributed with this source code.
+  -->
+<ruleset name="TSantos Serializer">
+    <description>The coding standard for TSantos Serializer.</description>
+    <file>./src</file>
+    <exclude-pattern>*/tests/*</exclude-pattern>
+    <exclude-pattern>*/vendor/*</exclude-pattern>
+    <arg name="colors" />
+    <rule ref="PSR2" />
+</ruleset>

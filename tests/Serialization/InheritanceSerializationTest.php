@@ -10,12 +10,12 @@
 
 namespace Tests\Serializer;
 
-use Tests\TSantos\Serializer\Fixture\Person;
-use Tests\TSantos\Serializer\Fixture\Employee;
+use Tests\TSantos\Serializer\Fixture\Model\Person;
+use Tests\TSantos\Serializer\Fixture\Model\Employee;
 use Tests\TSantos\Serializer\SerializerTestCase;
 
 /**
- * Class ByPassingSerializationTest
+ * Class InheritanceSerializationTest
  *
  * @package Tests\Serializer
  * @author Tales Santos <tales.augusto.santos@gmail.com>
@@ -23,7 +23,8 @@ use Tests\TSantos\Serializer\SerializerTestCase;
  */
 class InheritanceSerializationTest extends SerializerTestCase
 {
-    public function testSingleInheritanceObjects()
+    /** @test */
+    public function it_can_serialize_an_employee_which_inherits_from_person()
     {
         $employee = new Employee(1, 'Tales', true);
         $employee->setPosition('Developer');
@@ -40,5 +41,25 @@ class InheritanceSerializationTest extends SerializerTestCase
         $expected = '{"name":"Tales","position":"Developer"}';
 
         $this->assertEquals($expected, $serializer->serialize($employee));
+    }
+
+    /** @test */
+    public function it_can_deserialize_an_employee_which_inherits_from_person()
+    {
+        $serializer = $this->createSerializer(array_merge(
+            $this->createMapping(Person::class, [
+                'name' => []
+            ]),
+            $this->createMapping(Employee::class, [
+                'position' => []
+            ])
+        ));
+
+        $content = '{"name":"Tales","position":"Developer"}';
+
+        $employee = $serializer->deserialize($content, Employee::class);
+
+        $this->assertEquals('Tales', $employee->getName());
+        $this->assertEquals('Developer', $employee->getPosition());
     }
 }

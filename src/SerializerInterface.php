@@ -44,7 +44,7 @@ interface SerializerInterface
      * @param string $content
      * @param string $type
      * @param DeserializationContext|null $context
-     * @return object
+     * @return mixed
      */
     public function deserialize(string $content, string $type, DeserializationContext $context = null);
 

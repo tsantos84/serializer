@@ -24,13 +24,13 @@ use TSantos\Serializer\Encoder\JsonEncoder;
 use TSantos\Serializer\EventDispatcher\EventDispatcher;
 use TSantos\Serializer\EventDispatcher\EventSubscriberInterface;
 use TSantos\Serializer\Metadata\Driver\AnnotationDriver;
-use TSantos\Serializer\Metadata\Driver\PhpDriver;
-use TSantos\Serializer\Metadata\Driver\ReflectionDriver;
 use TSantos\Serializer\Metadata\Driver\XmlDriver;
 use TSantos\Serializer\Metadata\Driver\YamlDriver;
+use TSantos\Serializer\Normalizer\CollectionNormalizer;
 use TSantos\Serializer\Normalizer\DateTimeNormalizer;
-use TSantos\Serializer\Normalizer\IdentityNormalizer;
-use TSantos\Serializer\Normalizer\NormalizerInterface;
+use TSantos\Serializer\Normalizer\JsonNormalizer;
+use TSantos\Serializer\Normalizer\ObjectNormalizer;
+use TSantos\Serializer\Normalizer\ScalarNormalizer;
 use TSantos\Serializer\ObjectInstantiator\DoctrineInstantiator;
 use TSantos\Serializer\ObjectInstantiator\ObjectInstantiatorInterface;
 
@@ -53,6 +53,7 @@ class SerializerBuilder
     private $instantiator;
     private $format = 'json';
     private $dispatcher;
+    private $accessStrategy = 'accessors';
     private $hasListener = false;
 
     /**
@@ -132,20 +133,16 @@ class SerializerBuilder
 
     public function enableBuiltInNormalizers(): SerializerBuilder
     {
+        $this->normalizers->add(new CollectionNormalizer());
         $this->normalizers->add(new DateTimeNormalizer());
-        $this->normalizers->add(new IdentityNormalizer());
+        $this->normalizers->add(new JsonNormalizer());
+        $this->normalizers->add(new ScalarNormalizer());
         return $this;
     }
 
     public function addEncoder(EncoderInterface $encoder): SerializerBuilder
     {
         $this->encoders->add($encoder);
-        return $this;
-    }
-
-    public function enableBuiltInEncoders(): SerializerBuilder
-    {
-        $this->encoders->add(new JsonEncoder());
         return $this;
     }
 
@@ -165,9 +162,9 @@ class SerializerBuilder
         return $this;
     }
 
-    public function setSerializerClassGenerateStrategy(int $serializerClassGenerateStrategy): SerializerBuilder
+    public function setSerializerClassGenerateStrategy(int $strategy): SerializerBuilder
     {
-        $this->serializerClassGenerateStrategy = $serializerClassGenerateStrategy;
+        $this->serializerClassGenerateStrategy = $strategy;
         return $this;
     }
 
@@ -222,13 +219,25 @@ class SerializerBuilder
         return $this;
     }
 
+    public function accessThroughAccessors(): SerializerBuilder
+    {
+        $this->accessStrategy = 'accessors';
+        return $this;
+    }
+
+    public function accessThroughReflection(): SerializerBuilder
+    {
+        $this->accessStrategy = 'reflection';
+        return $this;
+    }
+
     /**
      * @return SerializerInterface
      */
     public function build(): SerializerInterface
     {
         if ($this->encoders->isEmpty()) {
-            $this->enableBuiltInEncoders();
+            $this->encoders->add(new JsonEncoder());
         }
 
         if (null === $classDir = $this->serializerClassDir) {
@@ -241,8 +250,6 @@ class SerializerBuilder
             $driver = new DriverChain([
                 new YamlDriver($fileLocator, $typeGuesser),
                 new XmlDriver($fileLocator, $typeGuesser),
-                new PhpDriver($fileLocator, $typeGuesser),
-                new ReflectionDriver($typeGuesser)
             ]);
         }
 
@@ -251,32 +258,42 @@ class SerializerBuilder
             $metadataFactory->setCache($this->metadataCache);
         }
 
+        $twig = new \Twig_Environment(
+            new \Twig_Loader_Filesystem([__DIR__ . '/Resources/templates']),
+            [
+                'debug' => $this->debug,
+                'strict_variables' => true
+            ]
+        );
+
+        $template = 'accessors.php.twig';
+
+        if ('reflection' === $this->accessStrategy) {
+            $template = 'reflection.php.twig';
+        }
+
         $classLoader = new SerializerClassLoader(
             $metadataFactory,
-            new SerializerClassCodeGenerator($this->hasListener),
+            new SerializerClassCodeGenerator($twig, $template),
             new SerializerClassWriter($classDir),
-            $this->serializerClassGenerateStrategy,
-            $this->dispatcher
+            $this->serializerClassGenerateStrategy
         );
 
         if (null === $this->instantiator) {
             $this->instantiator = new DoctrineInstantiator(new Instantiator());
         }
+        $this->normalizers->unshift(new ObjectNormalizer($classLoader, $this->instantiator));
 
         if (null === $this->dispatcher) {
             return new Serializer(
-                $classLoader,
                 $this->encoders->get($this->format),
-                $this->normalizers,
-                $this->instantiator
+                $this->normalizers
             );
         }
 
         return new EventEmitterSerializer(
-            $classLoader,
             $this->encoders->get($this->format),
             $this->normalizers,
-            $this->instantiator,
             $this->dispatcher
         );
     }

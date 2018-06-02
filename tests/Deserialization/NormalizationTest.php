@@ -10,7 +10,7 @@
 
 namespace Tests\TSantos\Serializer\Deserialization;
 
-use Tests\TSantos\Serializer\Fixture\Person;
+use Tests\TSantos\Serializer\Fixture\Model\Person;
 use Tests\TSantos\Serializer\SerializerTestCase;
 
 /**
@@ -42,12 +42,5 @@ class NormalizationTest extends SerializerTestCase
         $person = $serializer->deserialize($json, Person::class);
 
         $this->assertEquals('28/11/1984', $person->getBirthday()->format('d/m/Y'));
-    }
-
-    protected function createBuilder()
-    {
-        $builder = parent::createBuilder();
-        $builder->enableBuiltInNormalizers();
-        return $builder;
     }
 }
