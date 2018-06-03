@@ -4,8 +4,8 @@
         // property '{{ prop.name }}'
         if (null !== $value = $object->{{ attribute(prop, accessor) }}()) {
             {% spaceless %}
-            {% if prop.modifier is not null %}
-                $data['{{ prop.exposeAs }}'] = {{ ('$value->' ~ prop.modifier)|raw }};
+            {% if prop.readValue is not null %}
+                $data['{{ prop.exposeAs }}'] = {{ prop.readValue|raw }};
             {% elseif prop.type in ['integer', 'string', 'float', 'boolean', 'array'] %}
                 $data['{{ prop.exposeAs }}'] = ({{ prop.type }}) $value;
             {% else %}
@@ -23,7 +23,9 @@
         if (isset($data['{{ prop.exposeAs }}'])) {
             if (null !== $value = $data['{{ prop.exposeAs }}']) {
                 {% spaceless %}
-                {% if prop.type in ['integer', 'string', 'float', 'boolean', 'array'] %}
+                {% if prop.writeValue is not null %}
+                    $object->{{ prop.setter }}({{ prop.writeValue|raw }});
+                {% elseif prop.type in ['integer', 'string', 'float', 'boolean', 'array'] %}
                     $object->{{ prop.setter }}(({{ prop.type }}) $value);
                 {% else %}
                     $object->{{ prop.setter }}($this->serializer->denormalize($value, '{{ prop.type|raw }}', $context));

@@ -77,7 +77,8 @@ class YamlDriver extends AbstractFileDriver
                 $property->setterRef = new \ReflectionMethod($class->getName(), $setter);
             }
 
-            $property->modifier = $map['modifier'] ?? null;
+            $property->readValue = $map['readValue'] ?? null;
+            $property->writeValue = $map['writeValue'] ?? null;
             $property->type = $map['type'] ?? $this->typeGuesser->guessProperty($property, 'string');
             $property->exposeAs = $map['exposeAs'] ?? $name;
             $property->groups = (array)($map['groups'] ?? ['Default']);
@@ -93,7 +94,7 @@ class YamlDriver extends AbstractFileDriver
             $property->type = $map['type'] ?? $this->typeGuesser->guessVirtualProperty($property, 'string');
             $property->exposeAs = $map['exposeAs'] ?? $name;
             $property->groups = (array)($map['groups'] ?? ['Default']);
-            $property->modifier = $map['modifier'] ?? null;
+            $property->readValue = $map['readValue'] ?? null;
             $metadata->addMethodMetadata($property);
         }
 

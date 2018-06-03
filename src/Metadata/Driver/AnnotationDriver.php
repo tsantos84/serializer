@@ -16,10 +16,11 @@ use TSantos\Serializer\Mapping\BaseClass;
 use TSantos\Serializer\Mapping\ExposeAs;
 use TSantos\Serializer\Mapping\Getter;
 use TSantos\Serializer\Mapping\Groups;
-use TSantos\Serializer\Mapping\Modifier;
+use TSantos\Serializer\Mapping\ReadValue;
 use TSantos\Serializer\Mapping\ReadOnly;
 use TSantos\Serializer\Mapping\Setter;
 use TSantos\Serializer\Mapping\Type;
+use TSantos\Serializer\Mapping\WriteValue;
 use TSantos\Serializer\Metadata\ClassMetadata;
 use TSantos\Serializer\Metadata\PropertyMetadata;
 use TSantos\Serializer\Metadata\VirtualPropertyMetadata;
@@ -162,8 +163,11 @@ class AnnotationDriver implements DriverInterface
             Groups::class => function ($property, Groups $annotation) {
                 $property->groups = (array)$annotation->groups;
             },
-            Modifier::class => function ($property, Modifier $annotation) {
-                $property->modifier = $annotation->name;
+            ReadValue::class => function ($property, ReadValue $annotation) {
+                $property->readValue = $annotation->name;
+            },
+            WriteValue::class => function ($property, WriteValue $annotation) {
+                $property->writeValue = $annotation->name;
             },
             Getter::class => function ($property, Getter $annotation) {
                 $property->getter = $annotation->name;

@@ -11,13 +11,13 @@
 namespace TSantos\Serializer\Mapping;
 
 /**
- * Class Modifier
+ * Class ReadValue
  *
  * @author Tales Santos <tales.augusto.santos@gmail.com>
  *
  * @Annotation
  */
-class Modifier
+class ReadValue
 {
     /**
      * @var string

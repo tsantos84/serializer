@@ -14,7 +14,8 @@ Tests\TSantos\Serializer\Fixture\Model\Person:
       exposeAs: is_married
     birthday:
       type: DateTime
-      modifier: "format('d/m/Y')"
+      readValue: "$value->format('d/m/Y')"
+      writeValue: "\\DateTime::createFromFormat('d/m/Y', $value)"
     father:
       type: Tests\TSantos\Serializer\Fixture\Model\Person
     address:

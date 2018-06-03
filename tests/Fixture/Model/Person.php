@@ -54,7 +54,8 @@ class Person
     /**
      * @var \DateTimeInterface
      * @Serializer\Type("DateTime")
-     * @Serializer\Modifier("format('d/m/Y')")
+     * @Serializer\ReadValue("$value->format('d/m/Y')")
+     * @Serializer\WriteValue("\DateTime::createFromFormat('d/m/Y', $value)")
      */
     private $birthday;
 

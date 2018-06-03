@@ -9,8 +9,8 @@
         }
         if (null !== $value = $propReflection->getValue($object)) {
             {% spaceless %}
-            {% if prop.modifier is not null %}
-                $data['{{ prop.exposeAs }}'] = {{ ('$value->' ~ prop.modifier)|raw }};
+            {% if prop.readValue is not null %}
+                $data['{{ prop.exposeAs }}'] = {{ prop.readValue|raw }};
             {% elseif prop.type in ['integer', 'string', 'float', 'boolean', 'array'] %}
                 $data['{{ prop.exposeAs }}'] = ({{ prop.type }}) $value;
             {% else %}
@@ -36,7 +36,9 @@
             }
             if (null !== $value = $data['{{ prop.exposeAs }}']) {
                 {% spaceless %}
-                {% if prop.type in ['integer', 'string', 'float', 'boolean', 'array'] %}
+                {% if prop.writeValue is not null %}
+                    $propReflection->setValue($object, {{ prop.writeValue|raw }});
+                {% elseif prop.type in ['integer', 'string', 'float', 'boolean', 'array'] %}
                     $propReflection->setValue($object, $value);
                 {% else %}
                     $propReflection->setValue($object, $this->serializer->denormalize($value, '{{ prop.type|raw }}', $context));
@@ -56,8 +58,8 @@
         // property '{{ prop.name }}'
         if (null !== $value = $object->{{ prop.name }}()) {
             {% spaceless %}
-            {% if prop.modifier is not null %}
-                $data['{{ prop.exposeAs }}'] = {{ ('$value->' ~ prop.modifier)|raw }};
+            {% if prop.readValue is not null %}
+                $data['{{ prop.exposeAs }}'] = {{ prop.readValue|raw }};
             {% elseif prop.type in ['integer', 'string', 'float', 'boolean'] %}
                 $data['{{ prop.exposeAs }}'] = ({{ prop.type }}) $value;
             {% else %}
