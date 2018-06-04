@@ -59,7 +59,15 @@ class TypeConfigurator implements ConfiguratorInterface
             return;
         }
 
-        // impossible to guess the type from its getter, so lets try to guess from property's doc-block
+        // guess type from property's default value
+        $defaultProperties = $classMetadata->reflection->getDefaultProperties();
+
+        if (isset($defaultProperties[$propertyMetadata->name])) {
+            $propertyMetadata->type = $this->translate(gettype($defaultProperties[$propertyMetadata->name]));
+            return;
+        }
+
+        // impossible to guess the type from its getter and default value, so lets try to guess from property's doc-block
         if (null !== $type = $this->readTypeFromPropertyDocBlock($propertyMetadata->reflection)) {
             $propertyMetadata->type = $this->translate($type);
             return;
