@@ -13,7 +13,6 @@ namespace Tests\TSantos\Serializer\Metadata\Driver;
 use Metadata\Driver\DriverInterface;
 use Metadata\Driver\FileLocator;
 use TSantos\Serializer\Metadata\Driver\XmlDriver;
-use TSantos\Serializer\TypeGuesser;
 
 /**
  * Class XmlDriverTest
@@ -26,6 +25,6 @@ class XmlDriverTest extends AbstractDriverTest
     {
         return new XmlDriver(new FileLocator([
             'Tests\TSantos\Serializer\Fixture\Model' => __DIR__ . '/../../Resources/mapping']
-        ), new TypeGuesser());
+        ));
     }
 }

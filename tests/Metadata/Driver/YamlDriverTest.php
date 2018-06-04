@@ -13,7 +13,6 @@ namespace Tests\TSantos\Serializer\Metadata\Driver;
 use Metadata\Driver\DriverInterface;
 use Metadata\Driver\FileLocator;
 use TSantos\Serializer\Metadata\Driver\YamlDriver;
-use TSantos\Serializer\TypeGuesser;
 
 /**
  * Class YamlDriverTest
@@ -34,6 +33,6 @@ class YamlDriverTest extends AbstractDriverTest
     {
         return new YamlDriver(new FileLocator([
             'Tests\TSantos\Serializer\Fixture\Model' => __DIR__ . '/../../Resources/mapping']
-        ), new TypeGuesser());
+        ));
     }
 }
