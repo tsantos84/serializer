@@ -18,6 +18,7 @@ use TSantos\Serializer\Metadata\ConfiguratorInterface;
  * Class ConfiguratorDriver
  *
  * @author Tales Santos <tales.augusto.santos@gmail.com>
+ * @internal
  */
 class ConfiguratorDriver implements DriverInterface
 {
