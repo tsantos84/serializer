@@ -10,8 +10,6 @@
 
 namespace Tests\TSantos\Serializer\Metadata\Configurator;
 
-use PHPUnit\Framework\TestCase;
-use TSantos\Serializer\Metadata\ClassMetadata;
 use TSantos\Serializer\Metadata\Configurator\ReadValueConfigurator;
 use TSantos\Serializer\Metadata\ConfiguratorInterface;
 use TSantos\Serializer\Metadata\PropertyMetadata;
@@ -21,7 +19,7 @@ use TSantos\Serializer\Metadata\PropertyMetadata;
  *
  * @author Tales Santos <tales.augusto.santos@gmail.com>
  */
-class ReadValueConfiguratorTest extends TestCase
+class ReadValueConfiguratorTest extends AbstractConfiguratorTest
 {
     /**
      * @var ConfiguratorInterface
@@ -100,10 +98,5 @@ class ReadValueConfiguratorTest extends TestCase
         $classMetadata->addPropertyMetadata($property = new PropertyMetadata($classMetadata->name, 'address'));
         $this->configurator->configure($classMetadata);
         $this->assertEquals('hasAddress', $property->getter);
-    }
-
-    private function createClassMetadata($subject): ClassMetadata
-    {
-        return new ClassMetadata(get_class($subject));
     }
 }
