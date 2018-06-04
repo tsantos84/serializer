@@ -36,27 +36,19 @@ abstract class AbstractDriverTest extends TestCase
 
         // field 'id'
         $this->assertEquals('integer', $pm['id']->type);
-        $this->assertEquals('getId', $pm['id']->getter);
         $this->assertNull($pm['id']->setter);
         $this->assertEquals(['Default'], $pm['id']->groups);
         $this->assertEquals('id', $pm['id']->exposeAs);
 
         // field 'name'
         $this->assertEquals('string', $pm['name']->type);
-        $this->assertEquals('getName', $pm['name']->getter);
-        $this->assertEquals('setName', $pm['name']->setter);
         $this->assertEquals(['api'], $pm['name']->groups);
-        $this->assertInstanceOf(\ReflectionMethod::class, $pm['name']->getterRef);
-        $this->assertInstanceOf(\ReflectionMethod::class, $pm['name']->setterRef);
 
         // field 'lastName'
         $this->assertEquals('string', $pm['lastName']->type);
-        $this->assertEquals('getLastName', $pm['lastName']->getter);
 
         // field 'married'
-        $this->assertEquals('boolean', $pm['married']->type);
         $this->assertEquals('isMarried', $pm['married']->getter);
-        $this->assertEquals('setMarried', $pm['married']->setter);
         $this->assertEquals('is_married', $pm['married']->exposeAs);
 
         // field 'father'
@@ -83,7 +75,6 @@ abstract class AbstractDriverTest extends TestCase
         $this->assertEquals(['api'], $m->methodMetadata['getFullName']->groups);
 
         // virtual property 'getFormattedAddress'
-        $this->assertEquals('string', $m->methodMetadata['getFormattedAddress']->type);
         $this->assertEquals('getFormattedAddress', $m->methodMetadata['getFormattedAddress']->exposeAs);
         $this->assertEquals(['Default'], $m->methodMetadata['getFormattedAddress']->groups);
     }

@@ -23,7 +23,12 @@ use TSantos\Serializer\Encoder\EncoderInterface;
 use TSantos\Serializer\Encoder\JsonEncoder;
 use TSantos\Serializer\EventDispatcher\EventDispatcher;
 use TSantos\Serializer\EventDispatcher\EventSubscriberInterface;
+use TSantos\Serializer\Metadata\Configurator\DateTimeConfigurator;
+use TSantos\Serializer\Metadata\Configurator\ReadValueConfigurator;
+use TSantos\Serializer\Metadata\Configurator\TypeConfigurator;
+use TSantos\Serializer\Metadata\Configurator\WriteValueConfigurator;
 use TSantos\Serializer\Metadata\Driver\AnnotationDriver;
+use TSantos\Serializer\Metadata\Driver\ConfiguratorDriver;
 use TSantos\Serializer\Metadata\Driver\XmlDriver;
 use TSantos\Serializer\Metadata\Driver\YamlDriver;
 use TSantos\Serializer\Normalizer\CollectionNormalizer;
@@ -246,12 +251,18 @@ class SerializerBuilder
 
         if (null === $driver = $this->driver) {
             $fileLocator = new FileLocator($this->metadataDirs);
-            $typeGuesser = new TypeGuesser();
             $driver = new DriverChain([
-                new YamlDriver($fileLocator, $typeGuesser),
-                new XmlDriver($fileLocator, $typeGuesser),
+                new YamlDriver($fileLocator),
+                new XmlDriver($fileLocator),
             ]);
         }
+
+        $driver = new ConfiguratorDriver($driver, [
+            new TypeConfigurator(),
+            new ReadValueConfigurator(),
+            new WriteValueConfigurator(),
+            new DateTimeConfigurator()
+        ]);
 
         $metadataFactory = new MetadataFactory($driver, 'Metadata\ClassHierarchyMetadata', $this->debug);
         if (null !== $this->metadataCache) {

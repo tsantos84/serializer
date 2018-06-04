@@ -11,11 +11,9 @@
 namespace TSantos\Serializer\Metadata\Driver;
 
 use Metadata\Driver\AbstractFileDriver;
-use Metadata\Driver\FileLocatorInterface;
 use TSantos\Serializer\Metadata\ClassMetadata;
 use TSantos\Serializer\Metadata\PropertyMetadata;
 use TSantos\Serializer\Metadata\VirtualPropertyMetadata;
-use TSantos\Serializer\TypeGuesser;
 
 /**
  * Class XmlDriver
@@ -24,22 +22,6 @@ use TSantos\Serializer\TypeGuesser;
  */
 class XmlDriver extends AbstractFileDriver
 {
-    /**
-     * @var TypeGuesser
-     */
-    private $typeGuesser;
-
-    /**
-     * XmlDriver constructor.
-     * @param FileLocatorInterface $locator
-     * @param TypeGuesser $typeGuesser
-     */
-    public function __construct(FileLocatorInterface $locator, TypeGuesser $typeGuesser)
-    {
-        $this->typeGuesser = $typeGuesser;
-        parent::__construct($locator);
-    }
-
     protected function loadMetadataFromFile(\ReflectionClass $class, $file)
     {
         $previous = libxml_use_internal_errors(true);
@@ -69,15 +51,14 @@ class XmlDriver extends AbstractFileDriver
             $name = (string)$attribs['name'];
             $property = new PropertyMetadata($class->getName(), $name);
 
-            if ($class->hasMethod($getter = $attribs['getter'] ?? 'get' . ucfirst($name))) {
-                $property->getter = $getter;
-                $property->getterRef = new \ReflectionMethod($class->getName(), $property->getter);
+            if (isset($attribs['getter'])) {
+                $property->setGetter($attribs['getter']);
             }
 
-            if ($class->hasMethod($setter = $attribs['setter'] ?? 'set' . ucfirst($name))) {
-                $property->setter = $setter;
-                $property->setterRef = new \ReflectionMethod($class->getName(), $setter);
+            if (isset($attribs['setter'])) {
+                $property->setGetter($attribs['setter']);
             }
+
 
             if (isset($attribs['groups'])) {
                 $property->groups = preg_split('/\s*,\s*/', trim((string)$attribs['groups']));
@@ -87,7 +68,7 @@ class XmlDriver extends AbstractFileDriver
 
             $property->readValue = $attribs['read-value'] ?? null;
             $property->writeValue = $attribs['write-value'] ?? null;
-            $property->type = $attribs['type'] ?? $this->typeGuesser->guessProperty($property, 'string');
+            $property->type = $attribs['type'] ?? null;
             $property->exposeAs = $attribs['expose-as'] ?? $name;
             $property->readOnly = strtolower($attribs['read-only'] ?? '') === 'true' ?? false;
 
@@ -101,7 +82,7 @@ class XmlDriver extends AbstractFileDriver
             $method = $attribs['method'] ?? $name;
 
             $property = new VirtualPropertyMetadata($class->name, $method);
-            $property->type = $attribs['type'] ?? $this->typeGuesser->guessVirtualProperty($property, 'string');
+            $property->type = $attribs['type'] ?? null;
             $property->exposeAs = $attribs['expose-as'] ?? $name;
             $property->readValue = $attribs['read-value'] ?? null;
 

@@ -26,22 +26,6 @@ use TSantos\Serializer\TypeGuesser;
  */
 class YamlDriver extends AbstractFileDriver
 {
-    /**
-     * @var TypeGuesser
-     */
-    private $typeGuesser;
-
-    /**
-     * YamlDriver constructor.
-     * @param FileLocatorInterface $fileLocator
-     * @param TypeGuesser $typeGuesser
-     */
-    public function __construct(FileLocatorInterface $fileLocator, TypeGuesser $typeGuesser)
-    {
-        $this->typeGuesser = $typeGuesser;
-        parent::__construct($fileLocator);
-    }
-
     protected function loadMetadataFromFile(\ReflectionClass $class, $file)
     {
         if (!class_exists('Symfony\Component\Yaml\Yaml')) {
@@ -67,19 +51,17 @@ class YamlDriver extends AbstractFileDriver
         foreach ($mapping['properties'] ?? [] as $name => $map) {
             $property = new PropertyMetadata($class->getName(), $name);
 
-            if ($class->hasMethod($getter = $map['getter'] ?? 'get' . ucfirst($name))) {
-                $property->getter = $getter;
-                $property->getterRef = new \ReflectionMethod($class->getName(), $getter);
+            if (isset($map['getter'])) {
+                $property->setGetter($map['getter']);
             }
 
-            if ($class->hasMethod($setter = $map['setter'] ?? 'set' . ucfirst($name))) {
-                $property->setter = $setter;
-                $property->setterRef = new \ReflectionMethod($class->getName(), $setter);
+            if (isset($map['setter'])) {
+                $property->setGetter($map['setter']);
             }
 
             $property->readValue = $map['readValue'] ?? null;
             $property->writeValue = $map['writeValue'] ?? null;
-            $property->type = $map['type'] ?? $this->typeGuesser->guessProperty($property, 'string');
+            $property->type = $map['type'] ?? null;
             $property->exposeAs = $map['exposeAs'] ?? $name;
             $property->groups = (array)($map['groups'] ?? ['Default']);
             $property->readOnly = (bool)($map['readOnly'] ?? false);
@@ -91,7 +73,7 @@ class YamlDriver extends AbstractFileDriver
             $method = $map['method'] ?? $name;
 
             $property = new VirtualPropertyMetadata($class->name, $method);
-            $property->type = $map['type'] ?? $this->typeGuesser->guessVirtualProperty($property, 'string');
+            $property->type = $map['type'] ?? null;
             $property->exposeAs = $map['exposeAs'] ?? $name;
             $property->groups = (array)($map['groups'] ?? ['Default']);
             $property->readValue = $map['readValue'] ?? null;
