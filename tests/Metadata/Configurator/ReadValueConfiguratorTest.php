@@ -11,7 +11,6 @@
 namespace Tests\TSantos\Serializer\Metadata\Configurator;
 
 use TSantos\Serializer\Metadata\Configurator\ReadValueConfigurator;
-use TSantos\Serializer\Metadata\ConfiguratorInterface;
 use TSantos\Serializer\Metadata\PropertyMetadata;
 
 /**
@@ -21,11 +20,6 @@ use TSantos\Serializer\Metadata\PropertyMetadata;
  */
 class ReadValueConfiguratorTest extends AbstractConfiguratorTest
 {
-    /**
-     * @var ConfiguratorInterface
-     */
-    private $configurator;
-
     public function setup()
     {
         $this->configurator = new ReadValueConfigurator();
