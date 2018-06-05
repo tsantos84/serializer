@@ -56,8 +56,7 @@ abstract class AbstractDriverTest extends TestCase
 
         // field 'birthday'
         $this->assertEquals("DateTime", $pm['birthday']->type);
-        $this->assertEquals("\$value->format('d/m/Y')", $pm['birthday']->readValue);
-        $this->assertEquals("\\DateTime::createFromFormat('d/m/Y', \$value)", $pm['birthday']->writeValue);
+        $this->assertEquals(['format' => 'd/m/Y'], $pm['birthday']->options);
 
         // field 'address'
         $this->assertTrue($pm['address']->readOnly);

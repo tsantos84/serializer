@@ -16,6 +16,7 @@ use TSantos\Serializer\Mapping\BaseClass;
 use TSantos\Serializer\Mapping\ExposeAs;
 use TSantos\Serializer\Mapping\Getter;
 use TSantos\Serializer\Mapping\Groups;
+use TSantos\Serializer\Mapping\Options;
 use TSantos\Serializer\Mapping\ReadOnly;
 use TSantos\Serializer\Mapping\ReadValue;
 use TSantos\Serializer\Mapping\Setter;
@@ -155,6 +156,9 @@ class AnnotationDriver implements DriverInterface
             },
             ReadOnly::class => function ($property) {
                 $property->readOnly = true;
+            },
+            Options::class => function ($property, Options $annotation) {
+                $property->options = $annotation->name;
             },
         ];
 
