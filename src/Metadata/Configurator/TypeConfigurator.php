@@ -99,7 +99,9 @@ class TypeConfigurator implements ConfiguratorInterface
 
     private function readTypeFromPropertyDocBlock(\ReflectionProperty $property): ?string
     {
-        if (false !== $docBlock = $property->getDocComment()) {
+        $docBlock = $property->getDocComment();
+
+        if (is_string($docBlock)) {
             return $this->readFromDocComment($docBlock);
         }
 
@@ -108,7 +110,9 @@ class TypeConfigurator implements ConfiguratorInterface
 
     private function readTypeFromGetterDocBlock(\ReflectionMethod $getter): ?string
     {
-        if (false !== $docBlock = $getter->getDocComment()) {
+        $docBlock = $getter->getDocComment();
+
+        if (is_string($docBlock)) {
             return $this->readFromDocComment($docBlock);
         }
 

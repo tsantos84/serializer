@@ -78,11 +78,10 @@ class AnnotationDriver implements DriverInterface
     /**
      * @param \ReflectionClass $class
      * @param $metadata
-     * @throws \ReflectionException
      */
     private function loadPropertyAnnotations(\ReflectionClass $class, ClassMetadata $metadata): void
     {
-        array_map(function (\ReflectionProperty $property) use ($class, $metadata) {
+        array_map(function (\ReflectionProperty $property) use ($metadata) {
 
             $annotations = $this->filterAnnotations($this->reader->getPropertyAnnotations($property));
 
