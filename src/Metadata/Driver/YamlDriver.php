@@ -11,13 +11,11 @@
 namespace TSantos\Serializer\Metadata\Driver;
 
 use Metadata\Driver\AbstractFileDriver;
-use Metadata\Driver\FileLocatorInterface;
 use Symfony\Component\Yaml\Yaml;
 use TSantos\Serializer\Exception\MappingException;
 use TSantos\Serializer\Metadata\ClassMetadata;
 use TSantos\Serializer\Metadata\PropertyMetadata;
 use TSantos\Serializer\Metadata\VirtualPropertyMetadata;
-use TSantos\Serializer\TypeGuesser;
 
 /**
  * Class YamlDriver

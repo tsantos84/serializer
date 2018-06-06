@@ -182,7 +182,7 @@ class SerializerBuilder
 
         AnnotationRegistry::registerLoader('class_exists');
 
-        $this->driver = new AnnotationDriver($reader ?? new AnnotationReader(), new TypeGuesser());
+        $this->driver = new AnnotationDriver($reader ?? new AnnotationReader());
         return $this;
     }
 
