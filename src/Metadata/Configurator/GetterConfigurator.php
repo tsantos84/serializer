@@ -19,7 +19,7 @@ use TSantos\Serializer\Metadata\PropertyMetadata;
  *
  * @author Tales Santos <tales.augusto.santos@gmail.com>
  */
-class ReadValueConfigurator implements ConfiguratorInterface
+class GetterConfigurator implements ConfiguratorInterface
 {
     public function configure(ClassMetadata $classMetadata): void
     {
@@ -41,6 +41,7 @@ class ReadValueConfigurator implements ConfiguratorInterface
         foreach ($getters as $getter) {
             if ($classMetadata->reflection->hasMethod($getter)) {
                 $propertyMetadata->setGetter($getter);
+                $hasGetter = true;
                 break;
             }
         }

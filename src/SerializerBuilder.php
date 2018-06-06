@@ -24,7 +24,7 @@ use TSantos\Serializer\Encoder\JsonEncoder;
 use TSantos\Serializer\EventDispatcher\EventDispatcher;
 use TSantos\Serializer\EventDispatcher\EventSubscriberInterface;
 use TSantos\Serializer\Metadata\Configurator\DateTimeConfigurator;
-use TSantos\Serializer\Metadata\Configurator\ReadValueConfigurator;
+use TSantos\Serializer\Metadata\Configurator\GetterConfigurator;
 use TSantos\Serializer\Metadata\Configurator\TypeConfigurator;
 use TSantos\Serializer\Metadata\Configurator\WriteValueConfigurator;
 use TSantos\Serializer\Metadata\Driver\AnnotationDriver;
@@ -259,7 +259,7 @@ class SerializerBuilder
 
         $driver = new ConfiguratorDriver($driver, [
             new TypeConfigurator(),
-            new ReadValueConfigurator(),
+            new GetterConfigurator(),
             new WriteValueConfigurator(),
             new DateTimeConfigurator()
         ]);

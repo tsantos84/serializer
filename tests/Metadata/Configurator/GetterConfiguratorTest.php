@@ -10,19 +10,19 @@
 
 namespace Tests\TSantos\Serializer\Metadata\Configurator;
 
-use TSantos\Serializer\Metadata\Configurator\ReadValueConfigurator;
+use TSantos\Serializer\Metadata\Configurator\GetterConfigurator;
 use TSantos\Serializer\Metadata\PropertyMetadata;
 
 /**
- * Class ReadValueConfiguratorTest
+ * Class GetterConfiguratorTest
  *
  * @author Tales Santos <tales.augusto.santos@gmail.com>
  */
-class ReadValueConfiguratorTest extends AbstractConfiguratorTest
+class GetterConfiguratorTest extends AbstractConfiguratorTest
 {
     public function setup()
     {
-        $this->configurator = new ReadValueConfigurator();
+        $this->configurator = new GetterConfigurator();
     }
 
     /** @test */
