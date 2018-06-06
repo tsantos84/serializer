@@ -15,11 +15,11 @@ use TSantos\Serializer\Metadata\ConfiguratorInterface;
 use TSantos\Serializer\Metadata\PropertyMetadata;
 
 /**
- * Class WriteValueConfigurator
+ * Class SetterConfigurator
  *
  * @author Tales Santos <tales.augusto.santos@gmail.com>
  */
-class WriteValueConfigurator implements ConfiguratorInterface
+class SetterConfigurator implements ConfiguratorInterface
 {
     public function configure(ClassMetadata $classMetadata): void
     {

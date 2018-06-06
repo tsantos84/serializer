@@ -10,14 +10,14 @@
 
 namespace Tests\TSantos\Serializer\Metadata\Configurator;
 
-use TSantos\Serializer\Metadata\Configurator\WriteValueConfigurator;
+use TSantos\Serializer\Metadata\Configurator\SetterConfigurator;
 use TSantos\Serializer\Metadata\PropertyMetadata;
 
-class WriteValueConfiguratorTest extends AbstractConfiguratorTest
+class SetterConfiguratorTest extends AbstractConfiguratorTest
 {
     protected function setUp()
     {
-        $this->configurator = new WriteValueConfigurator();
+        $this->configurator = new SetterConfigurator();
     }
 
     /** @test */
