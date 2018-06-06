@@ -25,7 +25,7 @@ class YamlDriverTest extends AbstractDriverTest
     {
         parent::setUp();
         if (!class_exists('Symfony\Component\Yaml\Yaml')) {
-            $this->markTestSkipped('Skipping test as symfony/yaml component is not installed');
+            $this->markTestSkipped('Skipping YamlDriver tests as symfony/yaml component is not installed');
         }
     }
 

@@ -16,7 +16,7 @@
         <property name="married" type="boolean" getter="isMarried" expose-as="is_married" />
         <property name="birthday" type="DateTime">
             <options>
-                <option name="format">d/m/y</option>
+                <option name="format">d/m/Y</option>
             </options>
         </property>
         <property name="address" read-only="true" />

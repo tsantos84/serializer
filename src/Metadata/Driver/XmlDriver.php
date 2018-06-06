@@ -48,8 +48,11 @@ class XmlDriver extends AbstractFileDriver
         /** @var \SimpleXMLElement $property */
         foreach ($elem->xpath('./property') as $xmlProperty) {
             $attribs = ((array)$xmlProperty->attributes())['@attributes'];
-            $name = (string)$attribs['name'];
-            $property = new PropertyMetadata($class->getName(), $name);
+            $property = new PropertyMetadata($class->getName(), (string)$attribs['name']);
+
+            if (isset($attribs['expose-as'])) {
+                $property->exposeAs = $attribs['expose-as'];
+            }
 
             if (isset($attribs['getter'])) {
                 $property->setGetter($attribs['getter']);
@@ -59,6 +62,14 @@ class XmlDriver extends AbstractFileDriver
                 $property->setGetter($attribs['setter']);
             }
 
+            /** @var \SimpleXMLElement[] $options */
+            if (count($options = $xmlProperty->xpath('./options/option'))) {
+                $o = [];
+                foreach ($options as $v) {
+                    $o[(string) $v['name']] = (string) $v;
+                }
+                $property->options = $o;
+            }
 
             if (isset($attribs['groups'])) {
                 $property->groups = preg_split('/\s*,\s*/', trim((string)$attribs['groups']));
@@ -69,7 +80,6 @@ class XmlDriver extends AbstractFileDriver
             $property->readValue = $attribs['read-value'] ?? null;
             $property->writeValue = $attribs['write-value'] ?? null;
             $property->type = $attribs['type'] ?? null;
-            $property->exposeAs = $attribs['expose-as'] ?? $name;
             $property->readOnly = strtolower($attribs['read-only'] ?? '') === 'true' ?? false;
 
             $metadata->addPropertyMetadata($property);
@@ -90,6 +100,15 @@ class XmlDriver extends AbstractFileDriver
                 $property->groups = preg_split('/\s*,\s*/', trim((string)$attribs['groups']));
             } elseif (isset($xmlProperty->groups)) {
                 $property->groups = (array)$xmlProperty->groups->value;
+            }
+
+            /** @var \SimpleXMLElement[] $options */
+            if (count($options = $xmlProperty->xpath('./options/option'))) {
+                $o = [];
+                foreach ($options as $v) {
+                    $o[(string) $v['name']] = (string) $v;
+                }
+                $property->options = $o;
             }
 
             $metadata->addMethodMetadata($property);

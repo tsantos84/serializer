@@ -23,6 +23,7 @@ class VirtualPropertyMetadata extends MethodMetadata
     public $exposeAs;
     public $groups = ['Default'];
     public $readValue;
+    public $options = [];
 
     public function __construct($class, $name)
     {
@@ -38,7 +39,8 @@ class VirtualPropertyMetadata extends MethodMetadata
             $this->type,
             $this->readValue,
             $this->exposeAs,
-            $this->groups
+            $this->groups,
+            $this->options
         ]);
     }
 
@@ -52,7 +54,8 @@ class VirtualPropertyMetadata extends MethodMetadata
             $this->type,
             $this->readValue,
             $this->exposeAs,
-            $this->groups
+            $this->groups,
+            $this->options
             ) = $unserialized;
     }
 }
