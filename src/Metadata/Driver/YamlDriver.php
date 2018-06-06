@@ -68,7 +68,7 @@ class YamlDriver extends AbstractFileDriver
             $property->type = $map['type'] ?? null;
             $property->groups = (array)($map['groups'] ?? ['Default']);
             $property->readOnly = (bool)($map['readOnly'] ?? false);
-            $property->options = isset($map['options']) ?? [];
+            $property->options = isset($map['options']) ? (array) $map['options'] : [];
 
             $metadata->addPropertyMetadata($property);
         }
@@ -80,7 +80,7 @@ class YamlDriver extends AbstractFileDriver
             $property->type = $map['type'] ?? null;
             $property->groups = (array)($map['groups'] ?? ['Default']);
             $property->readValue = $map['readValue'] ?? null;
-            $property->options = isset($map['options']) ?? [];
+            $property->options = isset($map['options']) ? (array) $map['options'] : [];
             $metadata->addMethodMetadata($property);
 
             if (isset($map['exposeAs'])) {
