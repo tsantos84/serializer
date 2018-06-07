@@ -36,7 +36,7 @@ class TypeConfigurator implements ConfiguratorInterface
                 continue;
             }
 
-            $methodMetadata->type = $this->readTypeFromMethod($methodMetadata->reflection);
+            $methodMetadata->type = $this->readTypeFromGetter($methodMetadata->reflection);
         }
     }
 
@@ -53,13 +53,22 @@ class TypeConfigurator implements ConfiguratorInterface
             }
         }
 
-        // there is a getter method
-        if (null !== $getter && null !== $type = $this->readTypeFromMethod($getter)) {
+        // 1. guess type from getter method
+        if (null !== $getter && null !== $type = $this->readTypeFromGetter($getter)) {
             $propertyMetadata->type = $type;
             return;
         }
 
-        // guess type from property's default value
+        // 2. guess type from setter method
+        $setter = 'set' . ucfirst($propertyMetadata->name);
+        if ($classMetadata->reflection->hasMethod($setter)
+            && null !== $type = $this->readTypeFromSetter($classMetadata->reflection->getMethod($setter)))
+        {
+            $propertyMetadata->type = $this->translate($type);
+            return;
+        }
+
+        // 3. guess type from property's default value type
         $defaultProperties = $classMetadata->reflection->getDefaultProperties();
 
         if (isset($defaultProperties[$propertyMetadata->name])) {
@@ -67,8 +76,7 @@ class TypeConfigurator implements ConfiguratorInterface
             return;
         }
 
-        // impossible to guess the type from its getter and default value,
-        // so lets try to guess from property's doc-block
+        // 4. guess type from property's doc block
         if (null !== $type = $this->readTypeFromPropertyDocBlock($propertyMetadata->reflection)) {
             $propertyMetadata->type = $this->translate($type);
             return;
@@ -78,10 +86,10 @@ class TypeConfigurator implements ConfiguratorInterface
         $propertyMetadata->type =  'string';
     }
 
-    private function readTypeFromMethod(\ReflectionMethod $method): ?string
+    private function readTypeFromGetter(\ReflectionMethod $getter): ?string
     {
         // try to read from its return type
-        if (null !== $returnType = $method->getReturnType()) {
+        if (null !== $returnType = $getter->getReturnType()) {
             $type = $returnType->getName();
             if ($returnType->isBuiltin()) {
                 $type = $this->translate($type);
@@ -90,11 +98,25 @@ class TypeConfigurator implements ConfiguratorInterface
         }
 
         // try to read from its doc-block return type
-        if (null !== $returnType = $this->readTypeFromGetterDocBlock($method)) {
+        if (null !== $returnType = $this->readTypeFromGetterDocBlock($getter)) {
             return $this->translate($returnType);
         }
 
         return null;
+    }
+
+    private function readTypeFromSetter(\ReflectionMethod $setter): ?string
+    {
+        $args = $setter->getParameters();
+
+        // 1. guess type from the first argument type hint
+        if (count($args)) {
+            /** @var \ReflectionParameter $firstArg */
+            $firstArg = $args[0];
+            if ($firstArg->hasType()) {
+                return $firstArg->getType()->getName();
+            }
+        }
     }
 
     private function readTypeFromPropertyDocBlock(\ReflectionProperty $property): ?string
