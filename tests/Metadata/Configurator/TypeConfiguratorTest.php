@@ -36,9 +36,7 @@ class TypeConfiguratorTest extends AbstractConfiguratorTest
         $property = new PropertyMetadata($classMetadata->name, 'id');
         $property->type = 'some_type';
         $classMetadata->addPropertyMetadata($property);
-
         $this->configurator->configure($classMetadata);
-
         $this->assertEquals('some_type', $property->type);
     }
 
@@ -53,9 +51,7 @@ class TypeConfiguratorTest extends AbstractConfiguratorTest
         $classMetadata = $this->createClassMetadata($subject);
         $property = new PropertyMetadata($classMetadata->name, 'id');
         $classMetadata->addPropertyMetadata($property);
-
         $this->configurator->configure($classMetadata);
-
         $this->assertEquals('integer', $property->type);
     }
 
@@ -74,9 +70,7 @@ class TypeConfiguratorTest extends AbstractConfiguratorTest
         $classMetadata = $this->createClassMetadata($subject);
         $property = new PropertyMetadata($classMetadata->name, 'published');
         $classMetadata->addPropertyMetadata($property);
-
         $this->configurator->configure($classMetadata);
-
         $this->assertEquals('boolean', $property->type);
     }
 
@@ -91,9 +85,7 @@ class TypeConfiguratorTest extends AbstractConfiguratorTest
         $classMetadata = $this->createClassMetadata($subject);
         $property = new PropertyMetadata($classMetadata->name, 'published');
         $classMetadata->addPropertyMetadata($property);
-
         $this->configurator->configure($classMetadata);
-
         $this->assertEquals('boolean', $property->type);
     }
 
@@ -107,9 +99,7 @@ class TypeConfiguratorTest extends AbstractConfiguratorTest
         $classMetadata = $this->createClassMetadata($subject);
         $property = new PropertyMetadata($classMetadata->name, 'name');
         $classMetadata->addPropertyMetadata($property);
-
         $this->configurator->configure($classMetadata);
-
         $this->assertEquals('string', $property->type);
     }
 
@@ -127,9 +117,7 @@ class TypeConfiguratorTest extends AbstractConfiguratorTest
         $classMetadata = $this->createClassMetadata($subject);
         $property = new PropertyMetadata($classMetadata->name, 'name');
         $classMetadata->addPropertyMetadata($property);
-
         $this->configurator->configure($classMetadata);
-
         $this->assertEquals('string', $property->type);
     }
 
@@ -147,9 +135,7 @@ class TypeConfiguratorTest extends AbstractConfiguratorTest
         $classMetadata = $this->createClassMetadata($subject);
         $property = new PropertyMetadata($classMetadata->name, 'name');
         $classMetadata->addPropertyMetadata($property);
-
         $this->configurator->configure($classMetadata);
-
         $this->assertEquals('string', $property->type);
     }
 
@@ -163,9 +149,7 @@ class TypeConfiguratorTest extends AbstractConfiguratorTest
         $classMetadata = $this->createClassMetadata($subject);
         $property = new PropertyMetadata($classMetadata->name, 'age');
         $classMetadata->addPropertyMetadata($property);
-
         $this->configurator->configure($classMetadata);
-
         $this->assertEquals('integer', $property->type);
     }
 
@@ -180,9 +164,7 @@ class TypeConfiguratorTest extends AbstractConfiguratorTest
         $classMetadata = $this->createClassMetadata($subject);
         $property = new PropertyMetadata($classMetadata->name, 'age');
         $classMetadata->addPropertyMetadata($property);
-
         $this->configurator->configure($classMetadata);
-
         $this->assertEquals('integer', $property->type);
     }
 
@@ -201,9 +183,41 @@ class TypeConfiguratorTest extends AbstractConfiguratorTest
         $classMetadata = $this->createClassMetadata($subject);
         $property = new PropertyMetadata($classMetadata->name, 'age');
         $classMetadata->addPropertyMetadata($property);
-
         $this->configurator->configure($classMetadata);
+        $this->assertEquals('integer', $property->type);
+    }
 
+    /** @test */
+    public function it_should_guess_type_from_constructor_param_type_hint()
+    {
+        $subject = new class(33) {
+            private $age;
+            public function __construct(int $age) {}
+        };
+
+        $classMetadata = $this->createClassMetadata($subject);
+        $property = new PropertyMetadata($classMetadata->name, 'age');
+        $classMetadata->addPropertyMetadata($property);
+        $this->configurator->configure($classMetadata);
+        $this->assertEquals('integer', $property->type);
+    }
+
+    /** @test */
+    public function it_should_guess_type_from_constructor_doc_block()
+    {
+        $subject = new class(33) {
+            private $age;
+
+            /**
+             * @param int $age
+             */
+            public function __construct($age) {}
+        };
+
+        $classMetadata = $this->createClassMetadata($subject);
+        $property = new PropertyMetadata($classMetadata->name, 'age');
+        $classMetadata->addPropertyMetadata($property);
+        $this->configurator->configure($classMetadata);
         $this->assertEquals('integer', $property->type);
     }
 }

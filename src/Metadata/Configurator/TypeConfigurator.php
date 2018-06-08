@@ -36,7 +36,7 @@ class TypeConfigurator implements ConfiguratorInterface
                 continue;
             }
 
-            $methodMetadata->type = $this->readTypeFromGetter($methodMetadata->reflection);
+            $methodMetadata->type = $this->guessTypeFromGetter($methodMetadata->reflection);
         }
     }
 
@@ -54,7 +54,7 @@ class TypeConfigurator implements ConfiguratorInterface
         }
 
         // 1. guess type from getter method
-        if (null !== $getter && null !== $type = $this->readTypeFromGetter($getter)) {
+        if (null !== $getter && null !== $type = $this->guessTypeFromGetter($getter)) {
             $propertyMetadata->type = $type;
             return;
         }
@@ -62,7 +62,7 @@ class TypeConfigurator implements ConfiguratorInterface
         // 2. guess type from setter method
         $setter = 'set' . ucfirst($propertyMetadata->name);
         if ($classMetadata->reflection->hasMethod($setter)
-            && null !== $type = $this->readTypeFromSetter($classMetadata->reflection->getMethod($setter), $propertyMetadata))
+            && null !== $type = $this->guessTypeFromSetter($classMetadata->reflection->getMethod($setter), $propertyMetadata))
         {
             $propertyMetadata->type = $this->translate($type);
             return;
@@ -76,8 +76,14 @@ class TypeConfigurator implements ConfiguratorInterface
             return;
         }
 
-        // 4. guess type from property's doc block
-        if (null !== $type = $this->readTypeFromPropertyDocBlock($propertyMetadata->reflection)) {
+        // 4. guess type from constructor
+        if (null !== $type = $this->guessTypeFromConstructor($classMetadata, $propertyMetadata)) {
+            $propertyMetadata->type = $this->translate($type);
+            return;
+        }
+
+        // 5. guess type from property's doc block
+        if (null !== $type = $this->guessTypeFromPropertyDocBlock($propertyMetadata->reflection)) {
             $propertyMetadata->type = $this->translate($type);
             return;
         }
@@ -86,7 +92,7 @@ class TypeConfigurator implements ConfiguratorInterface
         $propertyMetadata->type =  'string';
     }
 
-    private function readTypeFromGetter(\ReflectionMethod $getter): ?string
+    private function guessTypeFromGetter(\ReflectionMethod $getter): ?string
     {
         // try to read from its return type
         if (null !== $returnType = $getter->getReturnType()) {
@@ -98,14 +104,14 @@ class TypeConfigurator implements ConfiguratorInterface
         }
 
         // try to read from its doc-block return type
-        if (null !== $returnType = $this->readTypeFromGetterDocBlock($getter)) {
+        if (null !== $returnType = $this->guessTypeFromGetterDocBlock($getter)) {
             return $this->translate($returnType);
         }
 
         return null;
     }
 
-    private function readTypeFromSetter(\ReflectionMethod $setter, PropertyMetadata $propertyMetadata): ?string
+    private function guessTypeFromSetter(\ReflectionMethod $setter, PropertyMetadata $propertyMetadata): ?string
     {
         $args = $setter->getParameters();
 
@@ -135,29 +141,68 @@ class TypeConfigurator implements ConfiguratorInterface
         return null;
     }
 
-    private function readTypeFromPropertyDocBlock(\ReflectionProperty $property): ?string
+    private function guessTypeFromConstructor(ClassMetadata $classMetadata, PropertyMetadata $propertyMetadata): ?string
+    {
+        $ref = $classMetadata->reflection;
+
+        if (null === $constructor = $ref->getConstructor()) {
+            return null;
+        }
+
+        if (0 === $constructor->getNumberOfParameters()) {
+            return null;
+        }
+
+        $params = $constructor->getParameters();
+
+        foreach ($params as $param) {
+            if ($param->name !== $propertyMetadata->name) {
+                continue;
+            }
+
+            if (null !== $type = $param->getType()) {
+                return $type->getName();
+            }
+        }
+
+        $docBlock = $constructor->getDocComment();
+
+        if (!is_string($docBlock)) {
+            return null;
+        }
+
+        $pattern = '/@param\s+([^\s]+)\s+\$'.$propertyMetadata->name.'/';
+        if (preg_match($pattern, $docBlock, $matches)) {
+            list(,$type) = $matches;
+            return $type;
+        }
+
+        return null;
+    }
+
+    private function guessTypeFromPropertyDocBlock(\ReflectionProperty $property): ?string
     {
         $docBlock = $property->getDocComment();
 
         if (is_string($docBlock)) {
-            return $this->readFromDocComment($docBlock);
+            return $this->guessFromDocComment($docBlock);
         }
 
         return null;
     }
 
-    private function readTypeFromGetterDocBlock(\ReflectionMethod $getter): ?string
+    private function guessTypeFromGetterDocBlock(\ReflectionMethod $getter): ?string
     {
         $docBlock = $getter->getDocComment();
 
         if (is_string($docBlock)) {
-            return $this->readFromDocComment($docBlock);
+            return $this->guessFromDocComment($docBlock);
         }
 
         return null;
     }
 
-    private function readFromDocComment(string $docComment): ?string
+    private function guessFromDocComment(string $docComment): ?string
     {
         if (preg_match('/@(return|var)\s+([^\s]+)/', $docComment, $matches)) {
             list(,,$type) = $matches;
