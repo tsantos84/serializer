@@ -168,14 +168,12 @@ class TypeConfigurator implements ConfiguratorInterface
 
         $docBlock = $constructor->getDocComment();
 
-        if (!is_string($docBlock)) {
-            return null;
-        }
-
-        $pattern = '/@param\s+([^\s]+)\s+\$'.$propertyMetadata->name.'/';
-        if (preg_match($pattern, $docBlock, $matches)) {
-            list(,$type) = $matches;
-            return $type;
+        if (is_string($docBlock)) {
+            $pattern = '/@param\s+([^\s]+)\s+\$'.$propertyMetadata->name.'/';
+            if (preg_match($pattern, $docBlock, $matches)) {
+                list(,$type) = $matches;
+                return $type;
+            }
         }
 
         return null;
