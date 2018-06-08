@@ -128,15 +128,13 @@ class TypeConfigurator implements ConfiguratorInterface
         // 2. guess type from doc block param annotation
         $docComment = $setter->getDocComment();
 
-        if (!$docComment) {
-            return null;
-        }
-
-        $name = $propertyMetadata->name;
-        $pattern = '/@param\s+([^\s]+)\s+\$' . $name . '/';
-        if (preg_match($pattern, $docComment, $matches)) {
-            list(,$type) = $matches;
-            return $type;
+        if (is_string($docComment)) {
+            $name = $propertyMetadata->name;
+            $pattern = '/@param\s+([^\s]+)\s+\$' . $name . '/';
+            if (preg_match($pattern, $docComment, $matches)) {
+                list(,$type) = $matches;
+                return $type;
+            }
         }
 
         return null;
