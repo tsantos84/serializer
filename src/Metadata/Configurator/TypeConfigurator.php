@@ -61,11 +61,12 @@ class TypeConfigurator implements ConfiguratorInterface
 
         // 2. guess type from setter method
         $setter = 'set' . ucfirst($propertyMetadata->name);
-        if ($classMetadata->reflection->hasMethod($setter)
-            && null !== $type = $this->guessTypeFromSetter($classMetadata->reflection->getMethod($setter), $propertyMetadata))
-        {
-            $propertyMetadata->type = $this->translate($type);
-            return;
+        if ($classMetadata->reflection->hasMethod($setter)) {
+            $type = $this->guessTypeFromSetter($classMetadata->reflection->getMethod($setter), $propertyMetadata);
+            if (null !== $type) {
+                $propertyMetadata->type = $this->translate($type);
+                return;
+            }
         }
 
         // 3. guess type from property's default value type
