@@ -90,7 +90,7 @@ class TypeConfigurator implements ConfiguratorInterface
         }
 
         // defaults to 'string'
-        $propertyMetadata->type =  'string';
+        $propertyMetadata->type = 'string';
     }
 
     private function guessTypeFromGetter(\ReflectionMethod $getter): ?string
@@ -133,7 +133,7 @@ class TypeConfigurator implements ConfiguratorInterface
         }
 
         $name = $propertyMetadata->name;
-        $pattern = '/@param\s+([^\s]+)\s+\$'.$name.'/';
+        $pattern = '/@param\s+([^\s]+)\s+\$' . $name . '/';
         if (preg_match($pattern, $docComment, $matches)) {
             list(,$type) = $matches;
             return $type;
@@ -169,7 +169,7 @@ class TypeConfigurator implements ConfiguratorInterface
         $docBlock = $constructor->getDocComment();
 
         if (is_string($docBlock)) {
-            $pattern = '/@param\s+([^\s]+)\s+\$'.$propertyMetadata->name.'/';
+            $pattern = '/@param\s+([^\s]+)\s+\$' . $propertyMetadata->name . '/';
             if (preg_match($pattern, $docBlock, $matches)) {
                 list(,$type) = $matches;
                 return $type;
@@ -204,7 +204,7 @@ class TypeConfigurator implements ConfiguratorInterface
     private function guessFromDocComment(string $docComment): ?string
     {
         if (preg_match('/@(return|var)\s+([^\s]+)/', $docComment, $matches)) {
-            list(,,$type) = $matches;
+            list(,, $type) = $matches;
             return $type;
         }
 

@@ -66,7 +66,7 @@ class XmlDriver extends AbstractFileDriver
             if (count($options = $xmlProperty->xpath('./options/option'))) {
                 $o = [];
                 foreach ($options as $v) {
-                    $o[(string) $v['name']] = (string) $v;
+                    $o[(string)$v['name']] = (string)$v;
                 }
                 $property->options = $o;
             }
@@ -106,7 +106,7 @@ class XmlDriver extends AbstractFileDriver
             if (count($options = $xmlProperty->xpath('./options/option'))) {
                 $o = [];
                 foreach ($options as $v) {
-                    $o[(string) $v['name']] = (string) $v;
+                    $o[(string)$v['name']] = (string)$v;
                 }
                 $property->options = $o;
             }

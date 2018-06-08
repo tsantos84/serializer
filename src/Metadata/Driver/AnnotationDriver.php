@@ -81,7 +81,7 @@ class AnnotationDriver implements DriverInterface
      */
     private function loadPropertyAnnotations(\ReflectionClass $class, ClassMetadata $metadata): void
     {
-        array_map(function (\ReflectionProperty $property) use ($metadata) {
+        array_map(function(\ReflectionProperty $property) use ($metadata) {
 
             $annotations = $this->filterAnnotations($this->reader->getPropertyAnnotations($property));
 
@@ -122,7 +122,7 @@ class AnnotationDriver implements DriverInterface
      */
     private function filterAnnotations(array $annotations): array
     {
-        $annotations = array_filter($annotations, function ($annotation) {
+        $annotations = array_filter($annotations, function($annotation) {
             $ref = new \ReflectionObject($annotation);
             return strpos($ref->getNamespaceName(), 'TSantos\Serializer') === 0;
         });
@@ -132,31 +132,31 @@ class AnnotationDriver implements DriverInterface
     private function configureProperty($property, array $annotations)
     {
         $config = [
-            Type::class => function ($property, Type $annotation) {
+            Type::class => function($property, Type $annotation) {
                 $property->type = $annotation->name;
             },
-            ExposeAs::class => function ($property, ExposeAs $annotation) {
+            ExposeAs::class => function($property, ExposeAs $annotation) {
                 $property->exposeAs = $annotation->name;
             },
-            Groups::class => function ($property, Groups $annotation) {
+            Groups::class => function($property, Groups $annotation) {
                 $property->groups = (array)$annotation->groups;
             },
-            ReadValue::class => function ($property, ReadValue $annotation) {
+            ReadValue::class => function($property, ReadValue $annotation) {
                 $property->readValue = $annotation->name;
             },
-            WriteValue::class => function ($property, WriteValue $annotation) {
+            WriteValue::class => function($property, WriteValue $annotation) {
                 $property->writeValue = $annotation->name;
             },
-            Getter::class => function ($property, Getter $annotation) {
+            Getter::class => function($property, Getter $annotation) {
                 $property->setGetter($annotation->name);
             },
-            Setter::class => function ($property, Setter $annotation) {
+            Setter::class => function($property, Setter $annotation) {
                 $property->setSetter($annotation->name);
             },
-            ReadOnly::class => function ($property) {
+            ReadOnly::class => function($property) {
                 $property->readOnly = true;
             },
-            Options::class => function ($property, Options $annotation) {
+            Options::class => function($property, Options $annotation) {
                 $property->options = $annotation->name;
             },
         ];
