@@ -62,7 +62,7 @@ class TypeConfigurator implements ConfiguratorInterface
         // 2. guess type from setter method
         $setter = 'set' . ucfirst($propertyMetadata->name);
         if ($classMetadata->reflection->hasMethod($setter)
-            && null !== $type = $this->readTypeFromSetter($classMetadata->reflection->getMethod($setter)))
+            && null !== $type = $this->readTypeFromSetter($classMetadata->reflection->getMethod($setter), $propertyMetadata))
         {
             $propertyMetadata->type = $this->translate($type);
             return;
@@ -105,7 +105,7 @@ class TypeConfigurator implements ConfiguratorInterface
         return null;
     }
 
-    private function readTypeFromSetter(\ReflectionMethod $setter): ?string
+    private function readTypeFromSetter(\ReflectionMethod $setter, PropertyMetadata $propertyMetadata): ?string
     {
         $args = $setter->getParameters();
 
@@ -117,6 +117,22 @@ class TypeConfigurator implements ConfiguratorInterface
                 return $firstArg->getType()->getName();
             }
         }
+
+        // 2. guess type from doc block param annotation
+        $docComment = $setter->getDocComment();
+
+        if (!$docComment) {
+            return null;
+        }
+
+        $name = $propertyMetadata->name;
+        $pattern = '/@param\s+([^\s]+)\s+\$'.$name.'/';
+        if (preg_match($pattern, $docComment, $matches)) {
+            list(,$type) = $matches;
+            return $type;
+        }
+
+        return null;
     }
 
     private function readTypeFromPropertyDocBlock(\ReflectionProperty $property): ?string

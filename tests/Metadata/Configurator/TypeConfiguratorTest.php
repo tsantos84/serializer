@@ -185,4 +185,25 @@ class TypeConfiguratorTest extends AbstractConfiguratorTest
 
         $this->assertEquals('integer', $property->type);
     }
+
+    /** @test */
+    public function it_should_guess_type_from_its_setter_method_doc_block_param_annotation()
+    {
+        $subject = new class {
+            private $age;
+
+            /**
+             * @param int $age
+             */
+            public function setAge($age) {}
+        };
+
+        $classMetadata = $this->createClassMetadata($subject);
+        $property = new PropertyMetadata($classMetadata->name, 'age');
+        $classMetadata->addPropertyMetadata($property);
+
+        $this->configurator->configure($classMetadata);
+
+        $this->assertEquals('integer', $property->type);
+    }
 }
