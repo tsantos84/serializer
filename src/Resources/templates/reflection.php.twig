@@ -9,8 +9,8 @@
         }
         if (null !== $value = $propReflection->getValue($object)) {
             {% spaceless %}
-            {% if prop.readValue is not null %}
-                $data['{{ prop.exposeAs }}'] = {{ prop.readValue|raw }};
+            {% if prop.readValueFilter is not null %}
+                $data['{{ prop.exposeAs }}'] = {{ prop.readValueFilter|raw }};
             {% elseif prop.type in ['integer', 'string', 'float', 'boolean', 'array'] %}
                 $data['{{ prop.exposeAs }}'] = ({{ prop.type }}) $value;
             {% else %}
@@ -36,8 +36,8 @@
             }
             if (null !== $value = $data['{{ prop.exposeAs }}']) {
                 {% spaceless %}
-                {% if prop.writeValue is not null %}
-                    $propReflection->setValue($object, {{ prop.writeValue|raw }});
+                {% if prop.writeValueFilter is not null %}
+                    $propReflection->setValue($object, {{ prop.writeValueFilter|raw }});
                 {% elseif prop.type in ['integer', 'string', 'float', 'boolean', 'array'] %}
                     $propReflection->setValue($object, $value);
                 {% else %}
@@ -58,8 +58,8 @@
         // property '{{ prop.name }}'
         if (null !== $value = $object->{{ prop.name }}()) {
             {% spaceless %}
-            {% if prop.readValue is not null %}
-                $data['{{ prop.exposeAs }}'] = {{ prop.readValue|raw }};
+            {% if prop.readValueFilter is not null %}
+                $data['{{ prop.exposeAs }}'] = {{ prop.readValueFilter|raw }};
             {% elseif prop.type in ['integer', 'string', 'float', 'boolean'] %}
                 $data['{{ prop.exposeAs }}'] = ({{ prop.type }}) $value;
             {% else %}

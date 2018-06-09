@@ -40,8 +40,8 @@ class DateTimeConfiguratorTest extends AbstractConfiguratorTest
         $configurator = new DateTimeConfigurator();
         $configurator->configure($classMetadata);
 
-        $this->assertEquals(sprintf('$value->format(\'%s\')',\DateTime::ISO8601), $property->readValue);
-        $this->assertEquals(sprintf('\DateTime::createFromFormat(\'%s\', $value)',\DateTime::ISO8601), $property->writeValue);
+        $this->assertEquals(sprintf('$value->format(\'%s\')',\DateTime::ISO8601), $property->readValueFilter);
+        $this->assertEquals(sprintf('\DateTime::createFromFormat(\'%s\', $value)',\DateTime::ISO8601), $property->writeValueFilter);
     }
 
     /** @test */
@@ -59,8 +59,8 @@ class DateTimeConfiguratorTest extends AbstractConfiguratorTest
 
         $this->configurator->configure($classMetadata);
 
-        $this->assertEquals('$value->format(\'d/m/Y\')', $property->readValue);
-        $this->assertEquals('\DateTime::createFromFormat(\'d/m/Y\', $value)', $property->writeValue);
+        $this->assertEquals('$value->format(\'d/m/Y\')', $property->readValueFilter);
+        $this->assertEquals('\DateTime::createFromFormat(\'d/m/Y\', $value)', $property->writeValueFilter);
     }
 
     /** @test */
@@ -73,14 +73,14 @@ class DateTimeConfiguratorTest extends AbstractConfiguratorTest
         $classMetadata = $this->createClassMetadata($subject);
         $property = new PropertyMetadata($classMetadata->name, 'publishedAt');
         $property->type = \DateTime::class;
-        $property->readValue = 'some_read';
-        $property->writeValue = 'some_write';
+        $property->readValueFilter = 'some_read';
+        $property->writeValueFilter = 'some_write';
         $classMetadata->addPropertyMetadata($property);
 
         $this->configurator->configure($classMetadata);
 
-        $this->assertEquals('some_read', $property->readValue);
-        $this->assertEquals('some_write', $property->writeValue);
+        $this->assertEquals('some_read', $property->readValueFilter);
+        $this->assertEquals('some_write', $property->writeValueFilter);
     }
 
     /** @test */
@@ -97,7 +97,7 @@ class DateTimeConfiguratorTest extends AbstractConfiguratorTest
 
         $this->configurator->configure($classMetadata);
 
-        $this->assertNull($property->readValue);
-        $this->assertNull($property->writeValue);
+        $this->assertNull($property->readValueFilter);
+        $this->assertNull($property->writeValueFilter);
     }
 }

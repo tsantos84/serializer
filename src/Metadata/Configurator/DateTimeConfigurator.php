@@ -41,12 +41,12 @@ class DateTimeConfigurator implements ConfiguratorInterface
 
             $format = $propertyMetadata->options['format'] ?? $this->defaultFormat;
 
-            if (null === $propertyMetadata->readValue) {
-                $propertyMetadata->readValue = sprintf('$value->format(\'%s\')', $format);
+            if (null === $propertyMetadata->readValueFilter) {
+                $propertyMetadata->readValueFilter = sprintf('$value->format(\'%s\')', $format);
             }
 
-            if (null === $propertyMetadata->writeValue) {
-                $propertyMetadata->writeValue = sprintf('\DateTime::createFromFormat(\'%s\', $value)', $format);
+            if (null === $propertyMetadata->writeValueFilter) {
+                $propertyMetadata->writeValueFilter = sprintf('\DateTime::createFromFormat(\'%s\', $value)', $format);
             }
         }
     }

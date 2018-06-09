@@ -61,8 +61,8 @@ class YamlDriver extends AbstractFileDriver
                 $property->exposeAs = $map['exposeAs'];
             }
 
-            $property->readValue = $map['readValue'] ?? null;
-            $property->writeValue = $map['writeValue'] ?? null;
+            $property->readValueFilter = $map['readValue'] ?? null;
+            $property->writeValueFilter = $map['writeValue'] ?? null;
             $property->type = $map['type'] ?? null;
             $property->groups = (array)($map['groups'] ?? ['Default']);
             $property->readOnly = (bool)($map['readOnly'] ?? false);
@@ -77,7 +77,7 @@ class YamlDriver extends AbstractFileDriver
             $property = new VirtualPropertyMetadata($class->name, $method);
             $property->type = $map['type'] ?? null;
             $property->groups = (array)($map['groups'] ?? ['Default']);
-            $property->readValue = $map['readValue'] ?? null;
+            $property->readValueFilter = $map['readValue'] ?? null;
             $property->options = isset($map['options']) ? (array)$map['options'] : [];
             $metadata->addMethodMetadata($property);
 

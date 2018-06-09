@@ -38,7 +38,7 @@ class VirtualPropertyTest extends SerializerTestCase
     public function it_can_serialize_a_virtual_property_with_modifier()
     {
         $serializer = $this->createSerializer($this->createMapping(Person::class, [], [
-            'getBirthday' => ['exposeAs' => 'birthday', 'readValue' => '$value->format("d/m/Y")']
+            'getBirthday' => ['exposeAs' => 'birthday', 'readValueFilter' => '$value->format("d/m/Y")']
         ]));
 
         $person = (new Person(1, 'Tales', true));

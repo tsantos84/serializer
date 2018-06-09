@@ -25,14 +25,13 @@ use TSantos\Serializer\EventDispatcher\EventDispatcher;
 use TSantos\Serializer\EventDispatcher\EventSubscriberInterface;
 use TSantos\Serializer\Metadata\Configurator\DateTimeConfigurator;
 use TSantos\Serializer\Metadata\Configurator\GetterConfigurator;
-use TSantos\Serializer\Metadata\Configurator\TypeConfigurator;
 use TSantos\Serializer\Metadata\Configurator\SetterConfigurator;
+use TSantos\Serializer\Metadata\Configurator\TypeConfigurator;
 use TSantos\Serializer\Metadata\Driver\AnnotationDriver;
 use TSantos\Serializer\Metadata\Driver\ConfiguratorDriver;
 use TSantos\Serializer\Metadata\Driver\XmlDriver;
 use TSantos\Serializer\Metadata\Driver\YamlDriver;
 use TSantos\Serializer\Normalizer\CollectionNormalizer;
-use TSantos\Serializer\Normalizer\DateTimeNormalizer;
 use TSantos\Serializer\Normalizer\JsonNormalizer;
 use TSantos\Serializer\Normalizer\ObjectNormalizer;
 use TSantos\Serializer\Normalizer\ScalarNormalizer;
@@ -139,7 +138,6 @@ class SerializerBuilder
     public function enableBuiltInNormalizers(): SerializerBuilder
     {
         $this->normalizers->add(new CollectionNormalizer());
-        $this->normalizers->add(new DateTimeNormalizer());
         $this->normalizers->add(new JsonNormalizer());
         $this->normalizers->add(new ScalarNormalizer());
         return $this;

@@ -77,8 +77,8 @@ class XmlDriver extends AbstractFileDriver
                 $property->groups = (array)$xmlProperty->groups->value;
             }
 
-            $property->readValue = $attribs['read-value'] ?? null;
-            $property->writeValue = $attribs['write-value'] ?? null;
+            $property->readValueFilter = $attribs['read-value'] ?? null;
+            $property->writeValueFilter = $attribs['write-value'] ?? null;
             $property->type = $attribs['type'] ?? null;
             $property->readOnly = strtolower($attribs['read-only'] ?? '') === 'true' ?? false;
 
@@ -94,7 +94,7 @@ class XmlDriver extends AbstractFileDriver
             $property = new VirtualPropertyMetadata($class->name, $method);
             $property->type = $attribs['type'] ?? null;
             $property->exposeAs = $attribs['expose-as'] ?? $name;
-            $property->readValue = $attribs['read-value'] ?? null;
+            $property->readValueFilter = $attribs['read-value'] ?? null;
 
             if (isset($attribs['groups'])) {
                 $property->groups = preg_split('/\s*,\s*/', trim((string)$attribs['groups']));

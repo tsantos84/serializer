@@ -11,13 +11,13 @@
 namespace TSantos\Serializer\Mapping;
 
 /**
- * Class ReadValue
+ * Class WriteValue
  *
  * @author Tales Santos <tales.augusto.santos@gmail.com>
  *
  * @Annotation
  */
-class ReadValue
+class WriteValueFilter
 {
     /**
      * @var string

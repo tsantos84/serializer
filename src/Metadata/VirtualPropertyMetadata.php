@@ -22,7 +22,7 @@ class VirtualPropertyMetadata extends MethodMetadata
     public $type = 'string';
     public $exposeAs;
     public $groups = ['Default'];
-    public $readValue;
+    public $readValueFilter;
     public $options = [];
 
     public function __construct($class, $name)
@@ -37,7 +37,7 @@ class VirtualPropertyMetadata extends MethodMetadata
             $this->name,
             $this->class,
             $this->type,
-            $this->readValue,
+            $this->readValueFilter,
             $this->exposeAs,
             $this->groups,
             $this->options
@@ -52,7 +52,7 @@ class VirtualPropertyMetadata extends MethodMetadata
             $this->name,
             $this->class,
             $this->type,
-            $this->readValue,
+            $this->readValueFilter,
             $this->exposeAs,
             $this->groups,
             $this->options

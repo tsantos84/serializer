@@ -24,12 +24,12 @@ class PropertyMetadata extends BasePropertyMetadata
     /** @var  \ReflectionMethod */
     public $getterRef;
     public $getter;
-    public $readValue;
+    public $readValueFilter;
 
     /** @var  \ReflectionMethod */
     public $setterRef;
     public $setter;
-    public $writeValue;
+    public $writeValueFilter;
 
     public $exposeAs;
     public $groups = ['Default'];
@@ -65,8 +65,8 @@ class PropertyMetadata extends BasePropertyMetadata
             $this->setter,
             $this->exposeAs,
             $this->groups,
-            $this->readValue,
-            $this->writeValue,
+            $this->readValueFilter,
+            $this->writeValueFilter,
             $this->readOnly,
             $this->options
         ]);
@@ -84,8 +84,8 @@ class PropertyMetadata extends BasePropertyMetadata
             $this->setter,
             $this->exposeAs,
             $this->groups,
-            $this->readValue,
-            $this->writeValue,
+            $this->readValueFilter,
+            $this->writeValueFilter,
             $this->readOnly,
             $this->options
             ) = $unserialized;
