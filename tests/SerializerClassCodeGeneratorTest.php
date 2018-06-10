@@ -396,7 +396,7 @@ CODE;
 
         $birthday = new PropertyMetadata(Person::class, 'birthday');
         $birthday->type = 'DateTime';
-        $birthday->readValue = '$value->format("d/m/Y")';
+        $birthday->readValueFilter = '$value->format("d/m/Y")';
         $birthday->setGetter('getBirthday');
         $birthday->setSetter('setBirthday');
         $metadata->addPropertyMetadata($birthday);
@@ -408,6 +408,7 @@ CODE;
         $metadata->addPropertyMetadata($father);
 
         $fullName = new VirtualPropertyMetadata(Person::class, 'getFullName');
+        $fullName->type = 'string';
         $fullName->exposeAs = 'full_name';
         $metadata->addMethodMetadata($fullName);
 

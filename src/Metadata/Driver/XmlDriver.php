@@ -11,11 +11,9 @@
 namespace TSantos\Serializer\Metadata\Driver;
 
 use Metadata\Driver\AbstractFileDriver;
-use Metadata\Driver\FileLocatorInterface;
 use TSantos\Serializer\Metadata\ClassMetadata;
 use TSantos\Serializer\Metadata\PropertyMetadata;
 use TSantos\Serializer\Metadata\VirtualPropertyMetadata;
-use TSantos\Serializer\TypeGuesser;
 
 /**
  * Class XmlDriver
@@ -24,22 +22,6 @@ use TSantos\Serializer\TypeGuesser;
  */
 class XmlDriver extends AbstractFileDriver
 {
-    /**
-     * @var TypeGuesser
-     */
-    private $typeGuesser;
-
-    /**
-     * XmlDriver constructor.
-     * @param FileLocatorInterface $locator
-     * @param TypeGuesser $typeGuesser
-     */
-    public function __construct(FileLocatorInterface $locator, TypeGuesser $typeGuesser)
-    {
-        $this->typeGuesser = $typeGuesser;
-        parent::__construct($locator);
-    }
-
     protected function loadMetadataFromFile(\ReflectionClass $class, $file)
     {
         $previous = libxml_use_internal_errors(true);
@@ -66,17 +48,27 @@ class XmlDriver extends AbstractFileDriver
         /** @var \SimpleXMLElement $property */
         foreach ($elem->xpath('./property') as $xmlProperty) {
             $attribs = ((array)$xmlProperty->attributes())['@attributes'];
-            $name = (string)$attribs['name'];
-            $property = new PropertyMetadata($class->getName(), $name);
+            $property = new PropertyMetadata($class->getName(), (string)$attribs['name']);
 
-            if ($class->hasMethod($getter = $attribs['getter'] ?? 'get' . ucfirst($name))) {
-                $property->getter = $getter;
-                $property->getterRef = new \ReflectionMethod($class->getName(), $property->getter);
+            if (isset($attribs['expose-as'])) {
+                $property->exposeAs = $attribs['expose-as'];
             }
 
-            if ($class->hasMethod($setter = $attribs['setter'] ?? 'set' . ucfirst($name))) {
-                $property->setter = $setter;
-                $property->setterRef = new \ReflectionMethod($class->getName(), $setter);
+            if (isset($attribs['getter'])) {
+                $property->setGetter($attribs['getter']);
+            }
+
+            if (isset($attribs['setter'])) {
+                $property->setGetter($attribs['setter']);
+            }
+
+            /** @var \SimpleXMLElement[] $options */
+            if (count($options = $xmlProperty->xpath('./options/option'))) {
+                $o = [];
+                foreach ($options as $v) {
+                    $o[(string)$v['name']] = (string)$v;
+                }
+                $property->options = $o;
             }
 
             if (isset($attribs['groups'])) {
@@ -85,10 +77,9 @@ class XmlDriver extends AbstractFileDriver
                 $property->groups = (array)$xmlProperty->groups->value;
             }
 
-            $property->readValue = $attribs['read-value'] ?? null;
-            $property->writeValue = $attribs['write-value'] ?? null;
-            $property->type = $attribs['type'] ?? $this->typeGuesser->guessProperty($property, 'string');
-            $property->exposeAs = $attribs['expose-as'] ?? $name;
+            $property->readValueFilter = $attribs['read-value'] ?? null;
+            $property->writeValueFilter = $attribs['write-value'] ?? null;
+            $property->type = $attribs['type'] ?? null;
             $property->readOnly = strtolower($attribs['read-only'] ?? '') === 'true' ?? false;
 
             $metadata->addPropertyMetadata($property);
@@ -101,14 +92,23 @@ class XmlDriver extends AbstractFileDriver
             $method = $attribs['method'] ?? $name;
 
             $property = new VirtualPropertyMetadata($class->name, $method);
-            $property->type = $attribs['type'] ?? $this->typeGuesser->guessVirtualProperty($property, 'string');
+            $property->type = $attribs['type'] ?? null;
             $property->exposeAs = $attribs['expose-as'] ?? $name;
-            $property->readValue = $attribs['read-value'] ?? null;
+            $property->readValueFilter = $attribs['read-value'] ?? null;
 
             if (isset($attribs['groups'])) {
                 $property->groups = preg_split('/\s*,\s*/', trim((string)$attribs['groups']));
             } elseif (isset($xmlProperty->groups)) {
                 $property->groups = (array)$xmlProperty->groups->value;
+            }
+
+            /** @var \SimpleXMLElement[] $options */
+            if (count($options = $xmlProperty->xpath('./options/option'))) {
+                $o = [];
+                foreach ($options as $v) {
+                    $o[(string)$v['name']] = (string)$v;
+                }
+                $property->options = $o;
             }
 
             $metadata->addMethodMetadata($property);

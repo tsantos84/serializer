@@ -66,16 +66,6 @@ abstract class SerializerTestCase extends TestCase
                 foreach ($properties as $name => $options) {
                     $pm = new PropertyMetadata($class->name, $name);
 
-                    if (!isset($options['getter']) && $class->hasMethod($method = 'get' . ucfirst($name))) {
-                        $options['getter'] = $method;
-                        $options['getterRef'] = new \ReflectionMethod($class->name, $method);
-                    }
-
-                    if (!isset($options['setter']) && $class->hasMethod($method = 'set' . ucfirst($name))) {
-                        $options['setter'] = $method;
-                        $options['setterRef'] = new \ReflectionMethod($class->name, $method);
-                    }
-
                     foreach ($options as $k => $v) {
                         $pm->{$k} = $v;
                     }

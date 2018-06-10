@@ -20,20 +20,22 @@ use Metadata\PropertyMetadata as BasePropertyMetadata;
  */
 class PropertyMetadata extends BasePropertyMetadata
 {
-    public $type = 'string';
+    public $type;
     /** @var  \ReflectionMethod */
     public $getterRef;
     public $getter;
-    public $readValue;
+    public $readValueFilter;
 
     /** @var  \ReflectionMethod */
     public $setterRef;
     public $setter;
-    public $writeValue;
+    public $writeValueFilter;
 
     public $exposeAs;
     public $groups = ['Default'];
     public $readOnly = false;
+
+    public $options = [];
 
     public function __construct($class, $name)
     {
@@ -63,9 +65,10 @@ class PropertyMetadata extends BasePropertyMetadata
             $this->setter,
             $this->exposeAs,
             $this->groups,
-            $this->readValue,
-            $this->writeValue,
-            $this->readOnly
+            $this->readValueFilter,
+            $this->writeValueFilter,
+            $this->readOnly,
+            $this->options
         ]);
     }
 
@@ -81,9 +84,10 @@ class PropertyMetadata extends BasePropertyMetadata
             $this->setter,
             $this->exposeAs,
             $this->groups,
-            $this->readValue,
-            $this->writeValue,
-            $this->readOnly
+            $this->readValueFilter,
+            $this->writeValueFilter,
+            $this->readOnly,
+            $this->options
             ) = $unserialized;
 
         if ($this->getter) {

@@ -19,15 +19,22 @@ use Metadata\Driver\DriverChain;
 use Metadata\Driver\DriverInterface;
 use Metadata\Driver\FileLocator;
 use Metadata\MetadataFactory;
+use Symfony\Component\PropertyInfo\Extractor\PhpDocExtractor;
+use Symfony\Component\PropertyInfo\Extractor\ReflectionExtractor;
+use Symfony\Component\PropertyInfo\PropertyInfoExtractor;
 use TSantos\Serializer\Encoder\EncoderInterface;
 use TSantos\Serializer\Encoder\JsonEncoder;
 use TSantos\Serializer\EventDispatcher\EventDispatcher;
 use TSantos\Serializer\EventDispatcher\EventSubscriberInterface;
+use TSantos\Serializer\Metadata\Configurator\DateTimeConfigurator;
+use TSantos\Serializer\Metadata\Configurator\GetterConfigurator;
+use TSantos\Serializer\Metadata\Configurator\PropertyTypeConfigurator;
+use TSantos\Serializer\Metadata\Configurator\SetterConfigurator;
 use TSantos\Serializer\Metadata\Driver\AnnotationDriver;
+use TSantos\Serializer\Metadata\Driver\ConfiguratorDriver;
 use TSantos\Serializer\Metadata\Driver\XmlDriver;
 use TSantos\Serializer\Metadata\Driver\YamlDriver;
 use TSantos\Serializer\Normalizer\CollectionNormalizer;
-use TSantos\Serializer\Normalizer\DateTimeNormalizer;
 use TSantos\Serializer\Normalizer\JsonNormalizer;
 use TSantos\Serializer\Normalizer\ObjectNormalizer;
 use TSantos\Serializer\Normalizer\ScalarNormalizer;
@@ -134,7 +141,6 @@ class SerializerBuilder
     public function enableBuiltInNormalizers(): SerializerBuilder
     {
         $this->normalizers->add(new CollectionNormalizer());
-        $this->normalizers->add(new DateTimeNormalizer());
         $this->normalizers->add(new JsonNormalizer());
         $this->normalizers->add(new ScalarNormalizer());
         return $this;
@@ -177,7 +183,7 @@ class SerializerBuilder
 
         AnnotationRegistry::registerLoader('class_exists');
 
-        $this->driver = new AnnotationDriver($reader ?? new AnnotationReader(), new TypeGuesser());
+        $this->driver = new AnnotationDriver($reader ?? new AnnotationReader());
         return $this;
     }
 
@@ -244,33 +250,9 @@ class SerializerBuilder
             $this->createDir($classDir = sys_get_temp_dir() . '/serializer/classes');
         }
 
-        if (null === $driver = $this->driver) {
-            $fileLocator = new FileLocator($this->metadataDirs);
-            $typeGuesser = new TypeGuesser();
-            $driver = new DriverChain([
-                new YamlDriver($fileLocator, $typeGuesser),
-                new XmlDriver($fileLocator, $typeGuesser),
-            ]);
-        }
+        $metadataFactory = $this->createMetadataFactory($this->createMetadataDriver());
 
-        $metadataFactory = new MetadataFactory($driver, 'Metadata\ClassHierarchyMetadata', $this->debug);
-        if (null !== $this->metadataCache) {
-            $metadataFactory->setCache($this->metadataCache);
-        }
-
-        $twig = new \Twig_Environment(
-            new \Twig_Loader_Filesystem([__DIR__ . '/Resources/templates']),
-            [
-                'debug' => $this->debug,
-                'strict_variables' => true
-            ]
-        );
-
-        $template = 'accessors.php.twig';
-
-        if ('reflection' === $this->accessStrategy) {
-            $template = 'reflection.php.twig';
-        }
+        list($twig, $template) = $this->createTwig();
 
         $classLoader = new SerializerClassLoader(
             $metadataFactory,
@@ -296,6 +278,60 @@ class SerializerBuilder
             $this->normalizers,
             $this->dispatcher
         );
+    }
+
+    private function createMetadataFactory(DriverInterface $driver): MetadataFactory
+    {
+        $metadataFactory = new MetadataFactory($driver, 'Metadata\ClassHierarchyMetadata', $this->debug);
+        if (null !== $this->metadataCache) {
+            $metadataFactory->setCache($this->metadataCache);
+        }
+
+        return $metadataFactory;
+    }
+
+    private function createMetadataDriver(): DriverInterface
+    {
+        if (null === $driver = $this->driver) {
+            $fileLocator = new FileLocator($this->metadataDirs);
+            $driver = new DriverChain([
+                new YamlDriver($fileLocator),
+                new XmlDriver($fileLocator),
+            ]);
+        }
+
+        $propertyInfo = new PropertyInfoExtractor([], [
+            new ReflectionExtractor(),
+            new PhpDocExtractor(),
+        ]);
+
+        $driver = new ConfiguratorDriver($driver, [
+            new PropertyTypeConfigurator($propertyInfo),
+            new GetterConfigurator(),
+            new SetterConfigurator(),
+            new DateTimeConfigurator()
+        ]);
+
+        return $driver;
+    }
+
+    private function createTwig(): array
+    {
+        $twig = new \Twig_Environment(
+            new \Twig_Loader_Filesystem([__DIR__ . '/Resources/templates']),
+            [
+                'debug' => $this->debug,
+                'strict_variables' => true
+            ]
+        );
+
+        $template = 'accessors.php.twig';
+
+        if ('reflection' === $this->accessStrategy) {
+            $template = 'reflection.php.twig';
+        }
+
+        return [$twig, $template];
     }
 
     private function createDir($dir)

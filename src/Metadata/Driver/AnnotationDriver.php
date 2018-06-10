@@ -16,15 +16,15 @@ use TSantos\Serializer\Mapping\BaseClass;
 use TSantos\Serializer\Mapping\ExposeAs;
 use TSantos\Serializer\Mapping\Getter;
 use TSantos\Serializer\Mapping\Groups;
-use TSantos\Serializer\Mapping\ReadValue;
+use TSantos\Serializer\Mapping\Options;
 use TSantos\Serializer\Mapping\ReadOnly;
+use TSantos\Serializer\Mapping\ReadValueFilter;
 use TSantos\Serializer\Mapping\Setter;
 use TSantos\Serializer\Mapping\Type;
-use TSantos\Serializer\Mapping\WriteValue;
+use TSantos\Serializer\Mapping\WriteValueFilter;
 use TSantos\Serializer\Metadata\ClassMetadata;
 use TSantos\Serializer\Metadata\PropertyMetadata;
 use TSantos\Serializer\Metadata\VirtualPropertyMetadata;
-use TSantos\Serializer\TypeGuesser;
 
 /**
  * Class AnnotationDriver
@@ -39,19 +39,12 @@ class AnnotationDriver implements DriverInterface
     private $reader;
 
     /**
-     * @var TypeGuesser
-     */
-    private $guesser;
-
-    /**
      * AnnotationDriver constructor.
      * @param AnnotationReader $reader
-     * @param TypeGuesser $guesser
      */
-    public function __construct(AnnotationReader $reader, TypeGuesser $guesser)
+    public function __construct(AnnotationReader $reader)
     {
         $this->reader = $reader;
-        $this->guesser = $guesser;
     }
 
     public function loadMetadataForClass(\ReflectionClass $class)
@@ -85,11 +78,10 @@ class AnnotationDriver implements DriverInterface
     /**
      * @param \ReflectionClass $class
      * @param $metadata
-     * @throws \ReflectionException
      */
     private function loadPropertyAnnotations(\ReflectionClass $class, ClassMetadata $metadata): void
     {
-        array_map(function (\ReflectionProperty $property) use ($class, $metadata) {
+        array_map(function (\ReflectionProperty $property) use ($metadata) {
 
             $annotations = $this->filterAnnotations($this->reader->getPropertyAnnotations($property));
 
@@ -98,19 +90,6 @@ class AnnotationDriver implements DriverInterface
             }
 
             $propertyMetadata = new PropertyMetadata($property->class, $property->name);
-            $propertyMetadata->type = $this->guesser->guessProperty($propertyMetadata);
-            $getter = 'get' . ucfirst($property->getName());
-            $setter = 'set' . ucfirst($property->getName());
-
-            if ($class->hasMethod($getter)) {
-                $propertyMetadata->getter = $getter;
-                $propertyMetadata->getterRef = new \ReflectionMethod($propertyMetadata->class, $getter);
-            }
-
-            if ($class->hasMethod($setter)) {
-                $propertyMetadata->setter = $setter;
-                $propertyMetadata->setterRef = new \ReflectionMethod($propertyMetadata->class, $setter);
-            }
 
             $this->configureProperty($propertyMetadata, $annotations);
 
@@ -132,7 +111,6 @@ class AnnotationDriver implements DriverInterface
             }
 
             $property = new VirtualPropertyMetadata($method->class, $method->name);
-            $property->type = $this->guesser->guessVirtualProperty($property);
             $this->configureProperty($property, $annotations);
             $metadata->addMethodMetadata($property);
         }
@@ -163,22 +141,23 @@ class AnnotationDriver implements DriverInterface
             Groups::class => function ($property, Groups $annotation) {
                 $property->groups = (array)$annotation->groups;
             },
-            ReadValue::class => function ($property, ReadValue $annotation) {
-                $property->readValue = $annotation->name;
+            ReadValueFilter::class => function ($property, ReadValueFilter $annotation) {
+                $property->readValueFilter = $annotation->name;
             },
-            WriteValue::class => function ($property, WriteValue $annotation) {
-                $property->writeValue = $annotation->name;
+            WriteValueFilter::class => function ($property, WriteValueFilter $annotation) {
+                $property->writeValueFilter = $annotation->name;
             },
             Getter::class => function ($property, Getter $annotation) {
-                $property->getter = $annotation->name;
-                $property->getterRef = new \ReflectionMethod($property->class, $annotation->name);
+                $property->setGetter($annotation->name);
             },
             Setter::class => function ($property, Setter $annotation) {
-                $property->setter = $annotation->name;
-                $property->setterRef = new \ReflectionMethod($property->class, $annotation->name);
+                $property->setSetter($annotation->name);
             },
             ReadOnly::class => function ($property) {
                 $property->readOnly = true;
+            },
+            Options::class => function ($property, Options $annotation) {
+                $property->options = $annotation->name;
             },
         ];
 

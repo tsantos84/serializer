@@ -11,16 +11,14 @@
 namespace TSantos\Serializer\Mapping;
 
 /**
- * Class ReadValue
- *
- * @author Tales Santos <tales.augusto.santos@gmail.com>
+ * Class Options
  *
  * @Annotation
  */
-class ReadValue
+class Options
 {
     /**
-     * @var string
+     * @var array
      * @Required
      */
     public $name;

@@ -8,14 +8,20 @@
  * file that was distributed with this source code.
  */
 
-namespace Tests\TSantos\Serializer;
+namespace TSantos\Serializer\Mapping;
 
 /**
- * Class AbstractSerializerClass
+ * Class WriteValue
  *
  * @author Tales Santos <tales.augusto.santos@gmail.com>
+ *
+ * @Annotation
  */
-abstract class AbstractSerializerClass extends \TSantos\Serializer\AbstractSerializerClass
+class WriteValueFilter
 {
-
+    /**
+     * @var string
+     * @Required
+     */
+    public $name;
 }
