@@ -44,11 +44,10 @@ Main features currently supported by TSantos Serializer:
 * Virtual properties
 * Properties grouping
 * Event listeners to hook into serialization operations
-*
 
 ## Documentation
 
-Please refer to the (documentation page)[documentation_page] to see all allowed configurations.
+Please refer to the [documentation page](https://tsantos-serializer.readthedocs.io) to see all allowed configurations.
 
 ## Licence
 
