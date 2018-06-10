@@ -55,15 +55,15 @@ class PropertyTypeConfigurator implements ConfiguratorInterface
     private function extract(Type $type): string
     {
         if (!$type->isCollection()) {
-            return $this->phpOrClass($type);
+            return $this->phpBuiltInOrClass($type);
         }
 
         $innerType = $type->getCollectionValueType();
 
-        return $this->phpOrClass($innerType) . '[]';
+        return $this->phpBuiltInOrClass($innerType) . '[]';
     }
 
-    private function phpOrClass(Type $type)
+    private function phpBuiltInOrClass(Type $type): string
     {
         return Type::BUILTIN_TYPE_OBJECT === $type->getBuiltinType()
             ? $type->getClassName()
