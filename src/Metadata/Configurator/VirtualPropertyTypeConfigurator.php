@@ -43,7 +43,7 @@ class VirtualPropertyTypeConfigurator implements ConfiguratorInterface
             return $this->translate($returnType);
         }
 
-        return null;
+        return 'string';
     }
 
     private function extractFromDocBlock(\ReflectionMethod $getter): ?string

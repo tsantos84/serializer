@@ -41,6 +41,20 @@ class VirtualPropertyTypeConfiguratorTest extends AbstractConfiguratorTest
     }
 
     /** @test */
+    public function it_should_defaults_type_to_string()
+    {
+        $subject = new class {
+            public function getFullName() {}
+        };
+
+        $classMetadata = $this->createClassMetadata($subject);
+        $property = new VirtualPropertyMetadata($classMetadata->name, 'getFullName');
+        $classMetadata->addMethodMetadata($property);
+        $this->configurator->configure($classMetadata);
+        $this->assertEquals('string', $property->type);
+    }
+
+    /** @test */
     public function it_should_guess_type_from_the_built_in_return_type()
     {
         $subject = new class {
