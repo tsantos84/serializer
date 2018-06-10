@@ -10,9 +10,7 @@
 
 namespace TSantos\Serializer\Metadata\Configurator;
 
-use Symfony\Component\PropertyInfo\Extractor\PhpDocExtractor;
-use Symfony\Component\PropertyInfo\Extractor\ReflectionExtractor;
-use Symfony\Component\PropertyInfo\PropertyInfoExtractor;
+use Symfony\Component\PropertyInfo\PropertyInfoExtractorInterface;
 use Symfony\Component\PropertyInfo\Type;
 use TSantos\Serializer\Metadata\ClassMetadata;
 use TSantos\Serializer\Metadata\ConfiguratorInterface;
@@ -25,16 +23,13 @@ use TSantos\Serializer\Metadata\ConfiguratorInterface;
 class PropertyTypeConfigurator implements ConfiguratorInterface
 {
     /**
-     * @var PropertyInfoExtractor
+     * @var PropertyInfoExtractorInterface
      */
     private $propertyInfo;
 
-    public function __construct()
+    public function __construct(PropertyInfoExtractorInterface $propertyInfo)
     {
-        $this->propertyInfo = new PropertyInfoExtractor([], [
-            new ReflectionExtractor(),
-            new PhpDocExtractor(),
-        ]);
+        $this->propertyInfo = $propertyInfo;
     }
 
     public function configure(ClassMetadata $classMetadata): void

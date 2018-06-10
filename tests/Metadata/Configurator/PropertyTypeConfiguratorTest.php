@@ -10,6 +10,9 @@
 
 namespace Tests\TSantos\Serializer\Metadata\Configurator;
 
+use Symfony\Component\PropertyInfo\Extractor\PhpDocExtractor;
+use Symfony\Component\PropertyInfo\Extractor\ReflectionExtractor;
+use Symfony\Component\PropertyInfo\PropertyInfoExtractor;
 use Tests\TSantos\Serializer\Fixture\Model\Person;
 use TSantos\Serializer\Metadata\Configurator\PropertyTypeConfigurator;
 use TSantos\Serializer\Metadata\PropertyMetadata;
@@ -23,7 +26,12 @@ class PropertyTypeConfiguratorTest extends AbstractConfiguratorTest
 {
     protected function setUp()
     {
-        $this->configurator = new PropertyTypeConfigurator();
+        $propertyInfo = new PropertyInfoExtractor([], [
+            new ReflectionExtractor(),
+            new PhpDocExtractor(),
+        ]);
+
+        $this->configurator = new PropertyTypeConfigurator($propertyInfo);
     }
 
     /** @test */
