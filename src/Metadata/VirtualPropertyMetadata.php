@@ -19,7 +19,7 @@ use Metadata\MethodMetadata;
  */
 class VirtualPropertyMetadata extends MethodMetadata
 {
-    public $type = 'string';
+    public $type;
     public $exposeAs;
     public $groups = ['Default'];
     public $readValueFilter;
