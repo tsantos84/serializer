@@ -408,6 +408,7 @@ CODE;
         $metadata->addPropertyMetadata($father);
 
         $fullName = new VirtualPropertyMetadata(Person::class, 'getFullName');
+        $fullName->type = 'string';
         $fullName->exposeAs = 'full_name';
         $metadata->addMethodMetadata($fullName);
 
