@@ -9,6 +9,7 @@
  */
 
 namespace TSantos\Serializer;
+
 use TSantos\Serializer\Exception\CircularReferenceException;
 
 /**
