@@ -51,8 +51,8 @@ class SerializationContext extends AbstractContext
             return;
         }
 
-        $from = \spl_object_id($this->currentObject);
-        $to = \spl_object_id($object);
+        $from = \spl_object_hash($this->currentObject);
+        $to = \spl_object_hash($object);
 
         if (!isset($this->graph[$from])) {
             $this->graph[$from] = [$to => true];
