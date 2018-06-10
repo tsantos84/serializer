@@ -18,7 +18,7 @@ use Tests\TSantos\Serializer\SerializerTestCase;
  *
  * @author Tales Santos <tales.augusto.santos@gmail.com>
  *
- * @runTestsInSeparateProcessessssss
+ * @runTestsInSeparateProcess
  */
 class CircularReferencePreventionTest extends SerializerTestCase
 {
