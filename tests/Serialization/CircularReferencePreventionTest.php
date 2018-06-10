@@ -18,21 +18,23 @@ use Tests\TSantos\Serializer\SerializerTestCase;
  *
  * @author Tales Santos <tales.augusto.santos@gmail.com>
  *
- * @runTestsInSeparateProcesses
+ * @runTestsInSeparateProcessessssss
  */
 class CircularReferencePreventionTest extends SerializerTestCase
 {
-    public function testCircularReferencePrevention()
+    /**
+     * @test
+     * @expectedException \TSantos\Serializer\Exception\CircularReferenceException
+     */
+    public function it_should_prevent_circular_reference()
     {
-        $this->markTestSkipped('Needs refactoring');
-        $person = new Person(1,'Tales', true);
+        $person = new Person();
         $person->setFather($person); // forcing circular reference
 
         $serializer = $this->createSerializer($this->createMapping(Person::class, [
-            'name' => [],
-            'father' => ['type' => Person::class]
+            'father' => []
         ]));
 
-        $this->assertEquals('{"name":"Tales","father":[]}', $serializer->serialize($person));
+        $serializer->serialize($person);
     }
 }

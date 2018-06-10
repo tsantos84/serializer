@@ -47,7 +47,7 @@ class ObjectNormalizer implements
     {
         $objectSerializer = $this->classLoader->load(get_class($data), $this->serializer);
 
-        $context->enter();
+        $context->enter($data);
         $array = $objectSerializer->serialize($data, $context);
         $context->left();
 

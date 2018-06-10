@@ -9,6 +9,7 @@
  */
 
 namespace TSantos\Serializer;
+use TSantos\Serializer\Exception\CircularReferenceException;
 
 /**
  * Class SerializationContext
@@ -21,15 +22,9 @@ class SerializationContext extends AbstractContext
     /** @var bool */
     private $serializeNull = false;
 
-    /**
-     * @var \SplObjectStorage
-     */
-    private $instances;
+    private $graph = [];
 
-    public function __construct()
-    {
-        $this->instances = new \SplObjectStorage();
-    }
+    private $currentObject;
 
     public function setSerializeNull(bool $enabled)
     {
@@ -40,5 +35,38 @@ class SerializationContext extends AbstractContext
     public function shouldSerializeNull(): bool
     {
         return $this->serializeNull;
+    }
+
+    public function enter($object = null)
+    {
+        if (!is_object($object)) {
+            parent::enter($object);
+            return;
+        }
+
+        if (null === $this->currentObject) {
+            $this->currentObject = $object;
+            parent::enter($object);
+            return;
+        }
+
+        $from = spl_object_id($this->currentObject);
+        $to = spl_object_id($object);
+
+        if (!isset($this->graph[$from])) {
+            $this->graph[$from] = [$to => true];
+            parent::enter($object);
+            return;
+        }
+
+        $fromGraph = $this->graph[$from];
+
+        if (isset($fromGraph[$to])) {
+            throw new CircularReferenceException(
+                'A circular reference was detected'
+            );
+        }
+
+        parent::enter($object);
     }
 }
