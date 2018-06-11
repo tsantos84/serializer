@@ -74,6 +74,28 @@ Define what class the generated class should extends
 
     <class name="App\Entity\Post" base-class="My\Custom\Class">
 
+ExposeAs
+~~~~~~~~~
+
+The serialized name
+
+.. code-block:: php-annotations
+
+    /**
+     * @ExposeAs("full_name")
+     */
+    private $fullName;
+
+.. code-block:: yaml
+
+    properties:
+        fullName:
+            exposeAs: "full_name"
+
+.. code-block:: xml
+
+    <property name="fullName" type="integer" expose-as="full_name" />
+
 Type
 ~~~~
 
