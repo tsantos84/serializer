@@ -36,6 +36,7 @@ after_success:
 
   - |
     # Installing Benchmark Dependencies
+    composer clear-cache
     composer install -a --no-dev
 
   - |
