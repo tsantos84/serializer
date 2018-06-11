@@ -28,7 +28,6 @@ You can change this behavior by defining custom accessors to your properties:
     class Post
     {
         /**
-         * @Serializer\Type("integer")
          * @Serializer\Getter("getIdentification")
          * @Serializer\Setter("setIdentification")
          */
@@ -50,7 +49,6 @@ You can change this behavior by defining custom accessors to your properties:
     App\Entity\Post:
         properties:
             id:
-                type: "integer"
                 getter: "getIdentification"
                 setter: "setIdentification"
 
@@ -59,7 +57,7 @@ You can change this behavior by defining custom accessors to your properties:
     <?xml version="1.0" encoding="utf-8" ?>
     <serializer>
         <class name="App\Entity\Post">
-            <property name="id" type="integer" getter="getIdentification" setter="setIdentification"/>
+            <property name="id" getter="getIdentification" setter="setIdentification"/>
         </class>
     </serializer>
 
