@@ -217,6 +217,28 @@ The mutator method to write the value
 
     <property name="fullName" getter="setMyCustomFullName" />
 
+ReadValueFilter
+~~~~~~~~~~~~~~~
+
+A filter applied to the property value before encoding
+
+.. code-block:: php-annotations
+
+    /**
+     * @ReadValueFilter("strtolower($value)")
+     */
+    private $username;
+
+.. code-block:: yaml
+
+    properties:
+        username:
+            readValueFilter: "strtolower($value)"
+
+.. code-block:: xml
+
+    <property name="username" read-value-filter="strtolower($value)" />
+
 Type
 ~~~~
 
