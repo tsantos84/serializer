@@ -174,7 +174,7 @@ A key/value used by metadata configurators
     </property>
 
 Read Only
-~~~~~~~
+~~~~~~~~~
 
 The property cannot be deserialized
 
@@ -261,6 +261,30 @@ The data type of mapped property
 .. code-block:: xml
 
     <property name="id" type="integer" />
+
+Virtual Property
+~~~~~~~~~~~~~~~~
+
+Mark a method as a virtual property. Its return will be encoded within the properties data.
+
+.. code-block:: php-annotations
+
+    /**
+     * @VirtualProperty
+     */
+    public function getAge(): int
+    {
+        ...
+    }
+
+.. code-block:: yaml
+
+    virtualProperties:
+        getAge: ~
+
+.. code-block:: xml
+
+    <virtual-property name="getAge" />
 
 Performance
 -----------
