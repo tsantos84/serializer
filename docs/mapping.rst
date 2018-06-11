@@ -37,8 +37,8 @@ mechanism if you want a refined control over the serialization.
 The Serializer Builder
 ----------------------
 
-Before going ahead with mapping formats, lets see how you should use the Serializer Builder to tell it where are your
-mapping information::
+Before going ahead with mapping options, lets see how you should use the Serializer Builder to tell the serialize
+where are your mapping information::
 
     $builder = new SerializerBuilder();
 
