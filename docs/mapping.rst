@@ -195,28 +195,6 @@ The property cannot be deserialized
 
     <property name="id" read-only="true">
 
-Setter
-~~~~~~
-
-The mutator method to write the value
-
-.. code-block:: php-annotations
-
-    /**
-     * @Setter("setMyCustomFullName")
-     */
-    private $fullName;
-
-.. code-block:: yaml
-
-    properties:
-        fullName:
-            getter: "setMyCustomFullName"
-
-.. code-block:: xml
-
-    <property name="fullName" getter="setMyCustomFullName" />
-
 ReadValueFilter
 ~~~~~~~~~~~~~~~
 
@@ -238,6 +216,29 @@ A filter applied to the property value before encoding
 .. code-block:: xml
 
     <property name="username" read-value-filter="strtolower($value)" />
+
+
+Setter
+~~~~~~
+
+The mutator method to write the value
+
+.. code-block:: php-annotations
+
+    /**
+     * @Setter("setMyCustomFullName")
+     */
+    private $fullName;
+
+.. code-block:: yaml
+
+    properties:
+        fullName:
+            getter: "setMyCustomFullName"
+
+.. code-block:: xml
+
+    <property name="fullName" getter="setMyCustomFullName" />
 
 Type
 ~~~~
