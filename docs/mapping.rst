@@ -50,8 +50,8 @@ where are your mapping information::
 .. note::
     Because the builder accepts many metadata directories, you can mix the formats in the same serializer instance.
 
-Reference
----------
+Options Reference
+-----------------
 
 BaseClass
 ~~~~~~~~~
