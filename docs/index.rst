@@ -27,6 +27,6 @@ Summary
 
    installation
    usage
-   how_it_works
-   accessors
    mapping
+   accessors
+   how_it_works
