@@ -22,17 +22,40 @@ use Tests\TSantos\Serializer\SerializerTestCase;
  */
 class CircularReferencePreventionTest extends SerializerTestCase
 {
-    public function testCircularReferencePrevention()
+    /**
+     * @test
+     * @expectedException \TSantos\Serializer\Exception\CircularReferenceException
+     */
+    public function it_should_prevent_circular_reference()
     {
-        $this->markTestSkipped('Needs refactoring');
-        $person = new Person(1,'Tales', true);
+        $person = new Person();
         $person->setFather($person); // forcing circular reference
 
         $serializer = $this->createSerializer($this->createMapping(Person::class, [
-            'name' => [],
-            'father' => ['type' => Person::class]
+            'father' => []
         ]));
 
-        $this->assertEquals('{"name":"Tales","father":[]}', $serializer->serialize($person));
+        $serializer->serialize($person);
+    }
+
+    /**
+     * @test
+     */
+    public function it_should_not_prevent_circular_reference_for_collection_containing_the_same_instance()
+    {
+        $person = new Person();
+        $collection = [];
+
+        for ($i=0; $i < 10; $i++) {
+            $collection[] = $person;
+        }
+
+        $serializer = $this->createSerializer($this->createMapping(Person::class, [
+            'father' => []
+        ]));
+
+        $serializer->serialize($collection);
+
+        $this->assertTrue(true);
     }
 }

@@ -1,4 +1,12 @@
 <?php
+/**
+ * This file is part of the TSantos Serializer package.
+ *
+ * (c) Tales Santos <tales.augusto.santos@gmail.com>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
 
 namespace TSantos\Serializer\Normalizer;
 
@@ -47,9 +55,9 @@ class ObjectNormalizer implements
     {
         $objectSerializer = $this->classLoader->load(get_class($data), $this->serializer);
 
-        $context->enter();
+        $context->enter($data);
         $array = $objectSerializer->serialize($data, $context);
-        $context->left();
+        $context->left($data);
 
         return $array;
     }

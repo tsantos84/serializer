@@ -32,13 +32,12 @@ after_success:
     cd ${BENCHMARK_DIR}
     rm -rf composer.lock
     composer config repositories.serializer path ${TRAVIS_BUILD_DIR}
-    composer require tsantos/serializer:*@dev --no-update
-    cat ${BENCHMARK_DIR}/composer.json
+    cat composer.json
 
   - |
     # Installing Benchmark Dependencies
-    composer install -a --no-dev -d ${BENCHMARK_DIR}
-    composer info tsantos/serializer
+    composer clear-cache
+    composer install -a --no-dev
 
   - |
     # Performing serialization benchmark

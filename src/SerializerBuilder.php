@@ -30,6 +30,7 @@ use TSantos\Serializer\Metadata\Configurator\DateTimeConfigurator;
 use TSantos\Serializer\Metadata\Configurator\GetterConfigurator;
 use TSantos\Serializer\Metadata\Configurator\PropertyTypeConfigurator;
 use TSantos\Serializer\Metadata\Configurator\SetterConfigurator;
+use TSantos\Serializer\Metadata\Configurator\VirtualPropertyTypeConfigurator;
 use TSantos\Serializer\Metadata\Driver\AnnotationDriver;
 use TSantos\Serializer\Metadata\Driver\ConfiguratorDriver;
 use TSantos\Serializer\Metadata\Driver\XmlDriver;
@@ -307,6 +308,7 @@ class SerializerBuilder
 
         $driver = new ConfiguratorDriver($driver, [
             new PropertyTypeConfigurator($propertyInfo),
+            new VirtualPropertyTypeConfigurator(),
             new GetterConfigurator(),
             new SetterConfigurator(),
             new DateTimeConfigurator()
