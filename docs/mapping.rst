@@ -75,7 +75,7 @@ Define what class the generated class should extends
     <class name="App\Entity\Post" base-class="My\Custom\Class">
 
 ExposeAs
-~~~~~~~~~
+~~~~~~~~
 
 The serialized name
 
@@ -195,7 +195,7 @@ The property cannot be deserialized
 
     <property name="id" read-only="true">
 
-ReadValueFilter
+Read Value Filter
 ~~~~~~~~~~~~~~~
 
 A filter applied to the property value before encoding
@@ -285,6 +285,28 @@ Mark a method as a virtual property. Its return will be encoded within the prope
 .. code-block:: xml
 
     <virtual-property name="getAge" />
+
+Write Value Filter
+~~~~~~~~~~~~~~~~
+
+A filter applied to the property value before writing it to objects
+
+.. code-block:: php-annotations
+
+    /**
+     * @WriteValueFilter("\DateTime::createFromFormat('Y-m-d', $value)")
+     */
+    private $birthday;
+
+.. code-block:: yaml
+
+    properties:
+        birthday:
+            writeValueFilter: "\DateTime::createFromFormat('Y-m-d', $value)"
+
+.. code-block:: xml
+
+    <property name="username" write-value-filter="\DateTime::createFromFormat('Y-m-d', $value)" />
 
 Performance
 -----------
