@@ -118,6 +118,37 @@ The accessor method to read the value
 
     <property name="fullName" getter="getMyCustomFullName" />
 
+Groups
+~~~~~~
+
+The list of groups that the property can be serialized
+
+.. code-block:: php-annotations
+
+    /**
+     * @Groups({"web","v1"})
+     */
+    private $fullName;
+
+.. code-block:: yaml
+
+    properties:
+        fullName:
+            groups: ["web", "v1"]
+
+.. code-block:: xml
+
+    <property name="fullName" groups="web,v1" />
+    <!-- or -->
+    <property name="fullName">
+        <groups>
+            <value>web</value>
+            <value>v1</value>
+        </groups>
+    </property>
+
+
+
 Setter
 ~~~~~~
 
