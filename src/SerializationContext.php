@@ -23,51 +23,80 @@ class SerializationContext extends AbstractContext
     /** @var bool */
     private $serializeNull = false;
 
-    private $graph = [];
+    /** @var array  */
+    private $circularReference = [];
 
-    private $currentObject;
+    /** @var int  */
+    private $circularReferenceCount = 1;
 
-    public function setSerializeNull(bool $enabled)
+    /**
+     * @param bool $enabled
+     * @return SerializationContext
+     */
+    public function setSerializeNull(bool $enabled): self
     {
         $this->serializeNull = $enabled;
         return $this;
     }
 
+    /**
+     * @return bool
+     */
     public function shouldSerializeNull(): bool
     {
         return $this->serializeNull;
     }
 
+    /**
+     * @param int $circularReferenceCount
+     * @return SerializationContext
+     */
+    public function setCircularReferenceCount(int $circularReferenceCount): self
+    {
+        $this->circularReferenceCount = $circularReferenceCount;
+        return $this;
+    }
+
+    /**
+     * @param null $object
+     */
     public function enter($object = null)
     {
+        parent::enter();
+
         if (!is_object($object)) {
-            parent::enter($object);
             return;
         }
 
-        if (null === $this->currentObject) {
-            $this->currentObject = $object;
-            parent::enter($object);
+        $hash = \spl_object_hash($object);
+
+        if (!isset($this->circularReference[$hash])) {
+            $this->circularReference[$hash] = 1;
             return;
         }
 
-        $from = \spl_object_hash($this->currentObject);
-        $to = \spl_object_hash($object);
-
-        if (!isset($this->graph[$from])) {
-            $this->graph[$from] = [$to => true];
-            parent::enter($object);
-            return;
-        }
-
-        $fromGraph = $this->graph[$from];
-
-        if (isset($fromGraph[$to])) {
+        if (++$this->circularReference[$hash] > $this->circularReferenceCount) {
             throw new CircularReferenceException(
-                'A circular reference was detected'
+                sprintf('A circular reference for object of class %s was detected', get_class($object))
             );
         }
+    }
 
-        parent::enter($object);
+    /**
+     * @param null $object
+     */
+    public function left($object = null)
+    {
+        parent::left();
+
+        if (!is_object($object)) {
+            return;
+        }
+
+        $hash = \spl_object_hash($object);
+
+        if (isset($this->circularReference)) {
+            $this->circularReference[$hash]--;
+        }
     }
 }

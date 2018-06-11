@@ -37,4 +37,25 @@ class CircularReferencePreventionTest extends SerializerTestCase
 
         $serializer->serialize($person);
     }
+
+    /**
+     * @test
+     */
+    public function it_should_not_prevent_circular_reference_for_collection_containing_the_same_instance()
+    {
+        $person = new Person();
+        $collection = [];
+
+        for ($i=0; $i < 10; $i++) {
+            $collection[] = $person;
+        }
+
+        $serializer = $this->createSerializer($this->createMapping(Person::class, [
+            'father' => []
+        ]));
+
+        $serializer->serialize($collection);
+
+        $this->assertTrue(true);
+    }
 }

@@ -49,7 +49,7 @@ class ObjectNormalizer implements
 
         $context->enter($data);
         $array = $objectSerializer->serialize($data, $context);
-        $context->left();
+        $context->left($data);
 
         return $array;
     }
