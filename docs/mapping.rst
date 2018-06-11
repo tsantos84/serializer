@@ -147,6 +147,31 @@ The list of groups that the property can be serialized
         </groups>
     </property>
 
+Options
+~~~~~~~
+
+A key/value used by metadata configurators
+
+.. code-block:: php-annotations
+
+    /**
+     * @Options({"format":"Y-m-d"})
+     */
+    private $birthday;
+
+.. code-block:: yaml
+
+    properties:
+        birthday:
+            options: {"format":"Y-m-d"}
+
+.. code-block:: xml
+
+    <property name="birthday">
+        <options>
+            <option name="format">Y-m-d</option>
+        </options>
+    </property>
 
 
 Setter
