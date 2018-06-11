@@ -96,6 +96,28 @@ The serialized name
 
     <property name="fullName" type="integer" expose-as="full_name" />
 
+Getter
+~~~~
+
+The accessor method to read the value
+
+.. code-block:: php-annotations
+
+    /**
+     * @Getter("getMyCustomFullName")
+     */
+    private $fullName;
+
+.. code-block:: yaml
+
+    properties:
+        fullName:
+            getter: "getMyCustomFullName"
+
+.. code-block:: xml
+
+    <property name="fullName" getter="getMyCustomFullName" />
+
 Type
 ~~~~
 
