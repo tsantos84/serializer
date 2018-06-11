@@ -30,9 +30,9 @@ will serialize the properties `id`, `title`, `comment` and `Author` casting them
 `Author` respectively.
 
 The previous example is a good start point because you don't need to worry about the boring process of mapping all
-properties of all classes you want to serialize and should be enough in must of time. However, you don't have any
-control of what data should be serialized and when it should be serialized. That's why you can use the mapping mechanism
-to customize the serialization process.
+properties of all classes you want to serialize and will cover the must cases. However, you don't have any
+control of what data should be serialized and when it should be serialized. That's why you should use the mapping
+mechanism if you want a refined control over the serialization.
 
 The Serializer Builder
 ----------------------
@@ -118,6 +118,10 @@ The accessor method to read the value
 
     <property name="fullName" getter="getMyCustomFullName" />
 
+.. tip::
+
+    If you omit the `getter` option, the serializer will try to guess the getter automatically
+
 Groups
 ~~~~~~
 
@@ -173,6 +177,10 @@ A key/value used by metadata configurators
         </options>
     </property>
 
+.. tip::
+
+    Metadata configurators can access the property's options to modify its behavior.
+
 Read Only
 ~~~~~~~~~
 
@@ -196,7 +204,7 @@ The property cannot be deserialized
     <property name="id" read-only="true">
 
 Read Value Filter
-~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~
 
 A filter applied to the property value before encoding
 
@@ -217,6 +225,9 @@ A filter applied to the property value before encoding
 
     <property name="username" read-value-filter="strtolower($value)" />
 
+.. tip::
+
+    Metadata configurators can change the `read-value-filter` to customize the input/output of property's values.
 
 Setter
 ~~~~~~
@@ -240,6 +251,10 @@ The mutator method to write the value
 
     <property name="fullName" getter="setMyCustomFullName" />
 
+.. tip::
+
+    If you omit the `setter` option, the serializer will try to guess the setter automatically.
+
 Type
 ~~~~
 
@@ -261,6 +276,10 @@ The data type of mapped property
 .. code-block:: xml
 
     <property name="id" type="integer" />
+
+.. tip::
+
+    If you omit the type, the serializer will try to guess the type automatically.
 
 Virtual Property
 ~~~~~~~~~~~~~~~~
@@ -286,8 +305,12 @@ Mark a method as a virtual property. Its return will be encoded within the prope
 
     <virtual-property name="getAge" />
 
+.. tip::
+
+    If you omit the type option, the serializer will try to guess the type automatically thanks to metadata configurators.
+
 Write Value Filter
-~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~
 
 A filter applied to the property value before writing it to objects
 
@@ -307,6 +330,10 @@ A filter applied to the property value before writing it to objects
 .. code-block:: xml
 
     <property name="username" write-value-filter="\DateTime::createFromFormat('Y-m-d', $value)" />
+
+.. tip::
+
+    Metadata configurators can change the `write-value-filter` to customize the input/output of property's values.
 
 Performance
 -----------
