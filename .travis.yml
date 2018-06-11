@@ -16,7 +16,6 @@ install:
   - composer install -a
 
 script:
-  - pwd
   - vendor/bin/phpcs .
   - vendor/bin/phpunit -v --coverage-clover=coverage.clover
   - |
@@ -26,7 +25,6 @@ script:
 
 after_success:
   - |
-    ls -la ${TRAVIS_BUILD_DIR}
     # Setting up Benchmark Tool
     phpenv config-rm xdebug.ini;
     export BENCHMARK_DIR=/tmp/serializers-benchmarking
@@ -35,6 +33,7 @@ after_success:
     rm -rf composer.lock
     composer config repositories.serializer path ${TRAVIS_BUILD_DIR}
     composer require tsantos/serializer:*@dev --no-update
+    cat composer.json
 
   - |
     # Installing Benchmark Dependencies
