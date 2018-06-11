@@ -173,6 +173,27 @@ A key/value used by metadata configurators
         </options>
     </property>
 
+Read Only
+~~~~~~~
+
+The property cannot be deserialized
+
+.. code-block:: php-annotations
+
+    /**
+     * @ReadOnly
+     */
+    private $id;
+
+.. code-block:: yaml
+
+    properties:
+        id:
+            readOnly: true
+
+.. code-block:: xml
+
+    <property name="id" read-only="true">
 
 Setter
 ~~~~~~
