@@ -1,155 +1,104 @@
 Mapping
 =======
 
-Annotation
-----------
+Telling to serializer how it should transform your data is a very important step to assert that the transformation will
+not serialize the data with a wrong data type.
 
-.. code-block:: php-annotations
+Zero User Mapping
+-----------------
+
+TSantos Serializer will do its better to extract the must important metadata information from your class by reading
+its structure without the needing to annotate every single property of your class. All you need to do is to write your
+class with good type-hint parameters and proper return types::
 
     namespace App\Entity;
 
-    use TSantos\Serializer\Mapping as Serializer;
-
-    /**
-     * @Serializer\BaseClass("App\Serializer\BaseClass")
-     */
-    class Person
+    class Post
     {
-        /**
-         * @Serializer\Type("integer")
-         */
         private $id;
-
-        /**
-         * @Serializer\Type("string")
-         * @Serializer\Groups({"api"})
-         */
-        private $name;
-
-        /**
-         * @Serializer\Type("string")
-         */
-        private $lastName;
-
-        /**
-         * @Serializer\Getter("isMarried")
-         * @Serializer\ExposeAs("is_married")
-         */
-        private $married;
-
-        /**
-         * @Serializer\Type("DateTime")
-         * @Serializer\Modifier("format('d/m/Y')")
-         */
-        private $birthday;
-
-        /**
-         * @Serializer\ReadOnly
-         */
-        private $address;
-
-        /**
-         * @Serializer\Type(Person::class)
-         */
-        private $father;
-
-        // ... getters and setters
-
-        /**
-         * @Serializer\VirtualProperty
-         * @Serializer\Type("string")
-         * @Serializer\ExposeAs("full_name")
-         * @Serializer\Groups({"api"})
-         */
-        public function getFullName(): string
-        {
-            return trim($this->name . ' ' . $this->lastName);
-        }
-
-        /**
-         * @Serializer\VirtualProperty()
-         */
-        public function getFormattedAddress(): string
-        {
-            if (null === $this->address) {
-                return '';
-            }
-
-            return $this->address->getStreet() . ' ' . $this->address->getCity();
-        }
+        private $title;
+        private $comments;
+        private $author;
+        public function __construct(int $id) { ... } // mutator
+        public function setTitle(string $title): { ... } // mutator
+        public function addComment(Comment $comment) { ... } // mutator
+        public function getAuthor(): Author { ... } // accessor
     }
 
+The serializer is smart enough to extract the data types from the property's mutators and accessors. So, the serializer
+will serialize the properties `id`, `title`, `comment` and `Author` casting them to `integer`, `string`, `Comment` and
+`Author` respectively.
+
+The previous example is a good start point because you don't need to worry about the boring process of mapping all
+properties of all classes you want to serialize and should be enough in must of time. However, you don't have any
+control of what data should be serialized and when it should be serialized. That's why you can use the mapping mechanism
+to customize the serialization process.
+
+The Serializer Builder
+----------------------
+
+Before going ahead with mapping formats, lets see how you should use the Serializer Builder to tell it where are your
+mapping information::
+
+    $builder = new SerializerBuilder();
+
+    $serializer = $builder
+      ->addMetadataDir('App\Document', '/project/config/serializer') // yaml metadata files
+      ->addMetadataDir('App\Entity', '/project/src/Entity') // annotation metadata files
+      ->build();
+
 .. note::
+    Because the builder accepts many metadata directories, you can mix the formats in the same serializer instance.
 
-    The annotation metadata driver is not ready to use by default. You need to require the package `doctrine/annotations`
-    to your project and then enable the driver through the `SerializerBuilder`::
+Reference
+---------
 
-        $builder = new SerializerBuilder();
+BaseClass
+~~~~~~~~~
 
-        $serializer = $builder
-          ->enableAnnotations()
-          ->build();
+Define what class the generated class should extends
 
-YAML
-----
+.. code-block:: php-annotations
+
+    /**
+     * @BaseClass("My\Custom\Class")
+     */
+    class Post {}
 
 .. code-block:: yaml
 
-    App\Entity:
-        baseClass: App\Serializer\BaseClass
-            properties:
-                id:
-                    type: integer
-                name:
-                    type: string
-                    groups: ["api"]
-                lastName:
-                    type: string
-                married:
-                    type: boolean
-                    getter: isMarried
-                    exposeAs: is_married
-                birthday:
-                    type: DateTime
-                    modifier: "format('d/m/Y')"
-                father:
-                    type: App\Entity\Person
-                address:
-                    type: App\Entity\Address
-                    readOnly: true
-            virtualProperties:
-                getFullName:
-                    type: string
-                    exposeAs: full_name
-                    groups: ["api"]
-                getFormattedAddress:
-                    type: string
-
-.. note::
-
-    The yaml metadata driver is not ready to use by default. You must to require the package `symfony/yaml`
-    to your project.
-
-XML
----
+    App\Entity\Post:
+        baseClass: "My\Custom\Class"
 
 .. code-block:: xml
 
-    <?xml version="1.0" encoding="utf-8" ?>
-    <serializer>
-        <class name="App\Entity\Person" base-class="App\Serializer\BaseClass">
-            <property name="id" type="integer" />
-            <property name="name" type="string" expose-as="nome" groups="api" />
-            <property name="lastName" type="string" />
-            <property name="married" type="boolean" getter="isMarried" expose-as="is_married" />
-            <property name="birthday" type="DateTime" modifier="format('d/m/Y')" />
-            <property name="address" read-only="true" />
-            <property name="father" type="App\Entity\Person" />
-            <virtual_property name="getFullName" type="string" expose-as="full_name" >
-                <groups>
-                    <value>api</value>
-                </groups>
-            </virtual_property>
-            <virtual_property name="getFormattedAddress" />
-        </class>
-    </serializer>
+    <class name="App\Entity\Post" base-class="My\Custom\Class">
+
+Type
+~~~~
+
+The data type of mapped property
+
+.. code-block:: php-annotations
+
+    /**
+     * @Type("integer")
+     */
+    private $id;
+
+.. code-block:: yaml
+
+    properties:
+        id:
+            type: "integer"
+
+.. code-block:: xml
+
+    <property name="id" type="integer" />
+
+Performance
+-----------
+
+There is no difference in terms of performance between the mapping formats. In fact, the metadata generated by the
+mapping will be cached and reused in the next serialization operation, so you can choose the most comfortable format
+for you.
