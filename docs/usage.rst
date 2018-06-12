@@ -61,6 +61,38 @@ The deserialization process can populate the data into an existing object::
     $context = (new DeserializationContext())->setTarget($post);
     $post = $serializer->deserialize($json, Post::class, 'json', $post);
 
+Normalizers
+-----------
+
+Normalizers are powerful services that handles a specific data type and returns its handled version.
+
+Built-in Normalizers:
+~~~~~~~~~~~~~~~~~~~~~
+
+ObjectNormalizer:
+    Is the most important normalizer in this library. It can receive the object being serialized and normalize it to
+    array.
+
+CollectionNormalizer:
+    This normalizer iterates over a collection of objects and serializes each of them.
+
+JsonNormalizer:
+    This normalizer checks whether the object being serialized implements the `JsonSerializable` interface and call
+    the method `jsonSerialize` to normalized the data.
+
+Encoders
+--------
+
+Encoders are services that encodes a normalized data into a specific format and vice-versa.
+
+Built-in Encoders:
+~~~~~~~~~~~~~~~~~~
+
+JsonEncoder:
+    Encodes and decode data in JSON format.
+
+
+
 Event Listeners
 ---------------
 
