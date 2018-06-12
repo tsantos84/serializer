@@ -66,8 +66,8 @@ Normalizers
 
 Normalizers are powerful services that handles a specific data type and returns its handled version.
 
-Built-in Normalizers:
-~~~~~~~~~~~~~~~~~~~~~
+Built-in Normalizers
+~~~~~~~~~~~~~~~~~~~~
 
 ObjectNormalizer:
     Is the most important normalizer in this library. It can receive the object being serialized and normalize it to
@@ -85,13 +85,11 @@ Encoders
 
 Encoders are services that encodes a normalized data into a specific format and vice-versa.
 
-Built-in Encoders:
-~~~~~~~~~~~~~~~~~~
+Built-in Encoders
+~~~~~~~~~~~~~~~~~
 
 JsonEncoder:
     Encodes and decode data in JSON format.
-
-
 
 Event Listeners
 ---------------
