@@ -20,11 +20,17 @@ The simplest way to serialize an object is pass a data to `SerializerInterface::
 Collections
 ~~~~~~~~~~~
 
+You can serialize a collection of objects in the same way you serialize a single object::
+
+    $comments = ... ;
+    $encoded = $serializer->serialize($comments);
+    echo $encoded; // [{"content":"Comment 1"}, {"content":"Comment 2"}]
+
 Handling Circular Reference
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Circular references occurs when an object A serializes an object B which in turns serializes the A again. This library
-is able to detect this situation and throws the `CircularReferenceException` exception. In addition you can control
+is able to detect such situation and throws the `CircularReferenceException` exception. In addition you can control
 how many times the same object will be serialized before the exception is thrown::
 
     try {
@@ -38,12 +44,22 @@ how many times the same object will be serialized before the exception is thrown
 Deserialize Objects
 -------------------
 
-The inverse operation (e.g: deserialization) is quite simple as serializing objects. You just need to provide the format
-of the data being deserialized::
+The inverse operation (e.g: deserialization) is quite simple as serializing objects. You just need to provide the type
+and format of the data being deserialized::
 
     $json = '{"id":100, "name":"Post Title"}';
-    $post = $serializer->deserialize($json, 'json');
+    $post = $serializer->deserialize($json, Post::class, 'json');
     echo get_class($post); // App\Entity\Post
+
+Targeting the Deserialization
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+The deserialization process can populate the data into an existing object::
+
+    $json = '{"name":"Post Title"}';
+    $post = ...;
+    $context = (new DeserializationContext())->setTarget($post);
+    $post = $serializer->deserialize($json, Post::class, 'json', $post);
 
 Event Listeners
 ---------------
