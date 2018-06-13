@@ -148,3 +148,55 @@ SerializerEvents::PRE_DESERIALIZATION::
 
 SerializerEvents::POST_DESERIALIZATION::
     Listeners have the opportunity to do some validations after the deserialization finishes.
+
+Caching
+-------
+
+There are two kinds of caching: `class cache` and `metadata cache`:
+
+Class Cache
+~~~~~~~~~~~
+
+You should provide the location where the generated serializer classes will be stored. Defaults to
+`/tmp/serializer/classes`::
+
+    $serializer = (new SerializerBuilder())
+        ->setClassCacheDir(__DIR__ . '/var/cache/serializer/classes')
+        ->build();
+
+Metadata Cache
+~~~~~~~~~~~~~~
+
+To avoid parsing all classes to read its metadata data all the time, the serializer can cache the metadata and use it on
+the subsequent request::
+
+    $serializer = (new SerializerBuilder())
+        ->setMetadataCacheDir(__DIR__ . '/var/cache/serializer/metadata')
+        ->build();
+
+Built-in metadata cache strategies:
+
+FileCache:
+    Will be automatically configured when provide a directory like the bellow example.
+
+DoctrineCacheAdapter:
+    Any class implementing `Cache` interface of Doctrine
+
+    .. code-block:: php-annotations
+
+        $serializer = (new SerializerBuilder())
+            ->setMetadataCache(new DoctrineCacheAdapter(
+                new \Doctrine\Common\Cache\RedisCache(...)
+            ))
+            ->build();
+
+PsrCacheAdapter:
+    Any class implementing `CacheItemPoolInterface` interface.
+
+    .. code-block:: php-annotations
+
+        $serializer = (new SerializerBuilder())
+            ->setMetadataCache(new PsrCacheAdapter(
+                $psrCache
+            ))
+            ->build();
