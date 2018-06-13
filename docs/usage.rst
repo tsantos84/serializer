@@ -105,6 +105,35 @@ the data before and after a serialization process.::
         })
         ->build();
 
+Event Subscribers
+~~~~~~~~~~~~~~~~~
+
+Instead of adding listener through closures, you can add event subscribers to add listeners to serializer::
+
+    class MyEventSubscriber implements EventSubscriberInterface
+    {
+        public static function getListeners(): array
+        {
+            return [
+                SerializerEvents::PRE_SERIALIZATION => 'onPreSerialization',
+                SerializerEvents::POST_SERIALIZATION => 'onPostSerialization',
+                SerializerEvents::PRE_DESERIALIZATION => 'onPreDeserialization',
+                SerializerEvents::POST_DESERIALIZATION => 'onPostDeserialization',
+            ];
+        }
+
+        public function onPreSerialization(PreSerializationEvent $event) {}
+        public function onPostSerialization(PostSerializationEvent $event) {}
+        public function onPreDeserialization(PreDeserializationEvent $event) {}
+        public function onPostDeserialization(PostDeserializationEvent $event) {}
+    }
+
+and then::
+
+    $builder = (new SerializerBuilder())
+        ->addSubscriber(new MyEventSubscriber())
+        ->build();
+
 Events
 ~~~~~~
 
