@@ -51,10 +51,33 @@ and format of the data being deserialized::
     $post = $serializer->deserialize($json, Post::class, 'json');
     echo get_class($post); // App\Entity\Post
 
+Object Instantiator
+~~~~~~~~~~~~~~~~~~~
+
+The serializer will instantiate a new class based on the `type` parameter of the method `SerializerInterface::deserialize.`
+By default it uses the Doctrine Object instantiator to create new instances but you can define your own implementation
+and configure the serializer to use it::
+
+    use TSantos\Serializer\ObjectInstantiator\ObjectInstantiatorInterface;
+
+    class MyObjectInstantiator implements ObjectInstantiatorInterface
+    {
+        public function create(string $type, array $data, DeserializationContext $context)
+        {
+            return new $type();
+        }
+    }
+
+and then::
+
+    $serializer = (new SerializerBuilder())
+        ->setObjectInstantiator(new MyObjectInstantiator())
+        ->build();
+
 Targeting the Deserialization
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-The deserialization process can populate the data into an existing object::
+The serializer can populate the data into an existing object instead of instantiate a fresh instance::
 
     $json = '{"name":"Post Title"}';
     $post = ...;
