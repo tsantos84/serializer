@@ -28,5 +28,4 @@ Summary
    installation
    usage
    mapping
-   accessors
    benchmark
