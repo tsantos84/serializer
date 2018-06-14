@@ -30,3 +30,4 @@ Summary
    mapping
    accessors
    how_it_works
+   benchmark
