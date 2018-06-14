@@ -50,6 +50,28 @@ where are your mapping information::
 .. note::
     Because the builder accepts many metadata directories, you can mix the formats in the same serializer instance.
 
+.. note::
+    You need to require the Symfony Yaml component to map your classes using the YAML format
+
+    .. code-block:: bash
+
+        $ composer require symfony/yaml
+
+
+.. note::
+    You need to require the Doctrine Annotations component to map your classes using annotations syntax
+
+    .. code-block:: bash
+
+        $ composer require doctrine/annotations
+
+    and then enable the annotation reader in the `Serializer Builder`::
+
+        $serializer = $builder
+          ->enableAnnotations()
+          ->build();
+
+
 Options Reference
 -----------------
 
