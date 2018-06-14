@@ -122,10 +122,10 @@ Instead of adding listener through closures, you can add event subscribers to ad
             ];
         }
 
-        public function onPreSerialization(PreSerializationEvent $event) {}
-        public function onPostSerialization(PostSerializationEvent $event) {}
-        public function onPreDeserialization(PreDeserializationEvent $event) {}
-        public function onPostDeserialization(PostDeserializationEvent $event) {}
+        public function onPreSerialization(PreSerializationEvent $event): void {}
+        public function onPostSerialization(PostSerializationEvent $event): void {}
+        public function onPreDeserialization(PreDeserializationEvent $event): void {}
+        public function onPostDeserialization(PostDeserializationEvent $event): void {}
     }
 
 and then::
@@ -152,7 +152,7 @@ SerializerEvents::POST_DESERIALIZATION::
 Caching
 -------
 
-There are two kinds of caching: `class cache` and `metadata cache`:
+The serialize can cache two types of information: a) the generated serializer classes and b) the class metadata.
 
 Class Cache
 ~~~~~~~~~~~
@@ -199,4 +199,39 @@ PsrCacheAdapter:
             ->setMetadataCache(new PsrCacheAdapter(
                 $psrCache
             ))
+            ->build();
+
+Class Generation
+----------------
+
+This library generates PHP classes that will convert the objects to array and vice-versa. Those classes are automatically
+generated based on you class mapping and stored in somewhere defined in your project. Therefore, to avoid unnecessary
+I/O to generate those classes, you can configure the strategy when generating them.
+
+FileNotExists:
+    This strategy will generate the classes only if they don't exist in filesystem. Good for development environments
+
+    .. code-block:: php-annotations
+
+        $serializer = (new SerializerBuilder())
+            ->setSerializerClassGenerateStrategy(SerializerClassLoader::AUTOGENERATE_FILE_NOT_EXISTS)
+            ->build();
+
+Always:
+    The classes will be generated regardless the existence of the classes. Good for debugging
+
+    .. code-block:: php-annotations
+
+        $serializer = (new SerializerBuilder())
+            ->setSerializerClassGenerateStrategy(SerializerClassLoader::AUTOGENERATE_ALWAYS)
+            ->build();
+
+Never:
+    The serializer will never check the classes' existence and never generate them. This strategy can improve the
+    performance in production environment
+
+    .. code-block:: php-annotations
+
+        $serializer = (new SerializerBuilder())
+            ->setSerializerClassGenerateStrategy(SerializerClassLoader::AUTOGENERATE_NEVER)
             ->build();
