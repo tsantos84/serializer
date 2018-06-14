@@ -30,15 +30,15 @@ will serialize the properties `id`, `title`, `comment` and `Author` casting them
 `Author` respectively.
 
 The previous example is a good start point because you don't need to worry about the boring process of mapping all
-properties of all classes you want to serialize and should be enough in must of time. However, you don't have any
-control of what data should be serialized and when it should be serialized. That's why you can use the mapping mechanism
-to customize the serialization process.
+properties of all classes you want to serialize and will cover the must cases. However, you don't have any
+control of what data should be serialized and when it should be serialized. That's why you should use the mapping
+mechanism if you want a refined control over the serialization.
 
 The Serializer Builder
 ----------------------
 
-Before going ahead with mapping formats, lets see how you should use the Serializer Builder to tell it where are your
-mapping information::
+Before going ahead with mapping options, lets see how you should use the Serializer Builder to tell the serialize
+where are your mapping information::
 
     $builder = new SerializerBuilder();
 
@@ -50,8 +50,30 @@ mapping information::
 .. note::
     Because the builder accepts many metadata directories, you can mix the formats in the same serializer instance.
 
-Reference
----------
+.. note::
+    You need to require the Symfony Yaml component to map your classes using the YAML format
+
+    .. code-block:: bash
+
+        $ composer require symfony/yaml
+
+
+.. note::
+    You need to require the Doctrine Annotations component to map your classes using annotations syntax
+
+    .. code-block:: bash
+
+        $ composer require doctrine/annotations
+
+    and then enable the annotation reader in the `Serializer Builder`::
+
+        $serializer = $builder
+          ->enableAnnotations()
+          ->build();
+
+
+Options Reference
+-----------------
 
 BaseClass
 ~~~~~~~~~
@@ -74,6 +96,187 @@ Define what class the generated class should extends
 
     <class name="App\Entity\Post" base-class="My\Custom\Class">
 
+ExposeAs
+~~~~~~~~
+
+The serialized name
+
+.. code-block:: php-annotations
+
+    /**
+     * @ExposeAs("full_name")
+     */
+    private $fullName;
+
+.. code-block:: yaml
+
+    properties:
+        fullName:
+            exposeAs: "full_name"
+
+.. code-block:: xml
+
+    <property name="fullName" type="integer" expose-as="full_name" />
+
+Getter
+~~~~~~
+
+The accessor method to read the value
+
+.. code-block:: php-annotations
+
+    /**
+     * @Getter("getMyCustomFullName")
+     */
+    private $fullName;
+
+.. code-block:: yaml
+
+    properties:
+        fullName:
+            getter: "getMyCustomFullName"
+
+.. code-block:: xml
+
+    <property name="fullName" getter="getMyCustomFullName" />
+
+.. tip::
+
+    If you omit the `getter` option, the serializer will try to guess the getter automatically
+
+Groups
+~~~~~~
+
+The list of groups that the property can be serialized
+
+.. code-block:: php-annotations
+
+    /**
+     * @Groups({"web","v1"})
+     */
+    private $fullName;
+
+.. code-block:: yaml
+
+    properties:
+        fullName:
+            groups: ["web", "v1"]
+
+.. code-block:: xml
+
+    <property name="fullName" groups="web,v1" />
+    <!-- or -->
+    <property name="fullName">
+        <groups>
+            <value>web</value>
+            <value>v1</value>
+        </groups>
+    </property>
+
+Options
+~~~~~~~
+
+A key/value used by metadata configurators
+
+.. code-block:: php-annotations
+
+    /**
+     * @Options({"format":"Y-m-d"})
+     */
+    private $birthday;
+
+.. code-block:: yaml
+
+    properties:
+        birthday:
+            options: {"format":"Y-m-d"}
+
+.. code-block:: xml
+
+    <property name="birthday">
+        <options>
+            <option name="format">Y-m-d</option>
+        </options>
+    </property>
+
+.. tip::
+
+    Metadata configurators can access the property's options to modify its behavior.
+
+Read Only
+~~~~~~~~~
+
+The property cannot be deserialized
+
+.. code-block:: php-annotations
+
+    /**
+     * @ReadOnly
+     */
+    private $id;
+
+.. code-block:: yaml
+
+    properties:
+        id:
+            readOnly: true
+
+.. code-block:: xml
+
+    <property name="id" read-only="true">
+
+Read Value Filter
+~~~~~~~~~~~~~~~~~
+
+A filter applied to the property value before encoding
+
+.. code-block:: php-annotations
+
+    /**
+     * @ReadValueFilter("strtolower($value)")
+     */
+    private $username;
+
+.. code-block:: yaml
+
+    properties:
+        username:
+            readValueFilter: "strtolower($value)"
+
+.. code-block:: xml
+
+    <property name="username" read-value-filter="strtolower($value)" />
+
+.. tip::
+
+    Metadata configurators can change the `read-value-filter` to customize the input/output of property's values.
+
+Setter
+~~~~~~
+
+The mutator method to write the value
+
+.. code-block:: php-annotations
+
+    /**
+     * @Setter("setMyCustomFullName")
+     */
+    private $fullName;
+
+.. code-block:: yaml
+
+    properties:
+        fullName:
+            getter: "setMyCustomFullName"
+
+.. code-block:: xml
+
+    <property name="fullName" getter="setMyCustomFullName" />
+
+.. tip::
+
+    If you omit the `setter` option, the serializer will try to guess the setter automatically.
+
 Type
 ~~~~
 
@@ -95,6 +298,64 @@ The data type of mapped property
 .. code-block:: xml
 
     <property name="id" type="integer" />
+
+.. tip::
+
+    If you omit the type, the serializer will try to guess the type automatically.
+
+Virtual Property
+~~~~~~~~~~~~~~~~
+
+Mark a method as a virtual property. Its return will be encoded within the properties data.
+
+.. code-block:: php-annotations
+
+    /**
+     * @VirtualProperty
+     */
+    public function getAge(): int
+    {
+        ...
+    }
+
+.. code-block:: yaml
+
+    virtualProperties:
+        getAge: ~
+
+.. code-block:: xml
+
+    <virtual-property name="getAge" />
+
+.. tip::
+
+    If you omit the type option, the serializer will try to guess the type automatically thanks to metadata configurators.
+
+Write Value Filter
+~~~~~~~~~~~~~~~~~~
+
+A filter applied to the property value before writing it to objects
+
+.. code-block:: php-annotations
+
+    /**
+     * @WriteValueFilter("\DateTime::createFromFormat('Y-m-d', $value)")
+     */
+    private $birthday;
+
+.. code-block:: yaml
+
+    properties:
+        birthday:
+            writeValueFilter: "\DateTime::createFromFormat('Y-m-d', $value)"
+
+.. code-block:: xml
+
+    <property name="username" write-value-filter="\DateTime::createFromFormat('Y-m-d', $value)" />
+
+.. tip::
+
+    Metadata configurators can change the `write-value-filter` to customize the input/output of property's values.
 
 Performance
 -----------

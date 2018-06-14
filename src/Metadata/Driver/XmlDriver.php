@@ -77,8 +77,8 @@ class XmlDriver extends AbstractFileDriver
                 $property->groups = (array)$xmlProperty->groups->value;
             }
 
-            $property->readValueFilter = $attribs['read-value'] ?? null;
-            $property->writeValueFilter = $attribs['write-value'] ?? null;
+            $property->readValueFilter = $attribs['read-value-filter'] ?? null;
+            $property->writeValueFilter = $attribs['write-value-filter'] ?? null;
             $property->type = $attribs['type'] ?? null;
             $property->readOnly = strtolower($attribs['read-only'] ?? '') === 'true' ?? false;
 
