@@ -103,6 +103,27 @@ JsonNormalizer:
     This normalizer checks whether the object being serialized implements the `JsonSerializable` interface and call
     the method `jsonSerialize` to normalized the data.
 
+Custom normalizers can be easily added to serializer::
+
+    class AuthorNormalizer implements NormalizerInterface
+    {
+        public function normalize($data, SerializationContext $context)
+        {
+            return $data->getUsername();
+        }
+
+        public function supportsNormalization($data, SerializationContext $context): bool
+        {
+            return $data instanceof Author;
+        }
+    }
+
+and then::
+
+    $builder = (new SerializerBuilder())
+        ->addNormalizer(new AuthorNormalizer())
+        ->build();
+
 Encoders
 --------
 
