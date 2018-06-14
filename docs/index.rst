@@ -29,5 +29,4 @@ Summary
    usage
    mapping
    accessors
-   how_it_works
    benchmark
