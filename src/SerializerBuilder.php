@@ -63,7 +63,6 @@ class SerializerBuilder
     private $instantiator;
     private $format = 'json';
     private $dispatcher;
-    private $accessStrategy = 'accessors';
     private $hasListener = false;
 
     /**
@@ -225,18 +224,6 @@ class SerializerBuilder
     public function setFormat(string $format): SerializerBuilder
     {
         $this->format = $format;
-        return $this;
-    }
-
-    public function accessThroughAccessors(): SerializerBuilder
-    {
-        $this->accessStrategy = 'accessors';
-        return $this;
-    }
-
-    public function accessThroughReflection(): SerializerBuilder
-    {
-        $this->accessStrategy = 'reflection';
         return $this;
     }
 
