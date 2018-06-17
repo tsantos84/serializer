@@ -11,9 +11,11 @@
 namespace Tests\TSantos\Serializer\Deserialization;
 
 use Tests\TSantos\Serializer\Fixture\Model\Book;
+use Tests\TSantos\Serializer\Fixture\Model\Dummy;
 use Tests\TSantos\Serializer\Fixture\Model\Person;
 use Tests\TSantos\Serializer\SerializerTestCase;
 use TSantos\Serializer\DeserializationContext;
+use TSantos\Serializer\Metadata\Driver\ReflectionDriver;
 
 /**
  * Class DeserializeObjectTest
@@ -54,6 +56,21 @@ EOF;
         $this->assertInstanceOf(Book::class, $person->getFavouriteBook());
         $this->assertEquals(10, $person->getFavouriteBook()->getId());
         $this->assertEquals('Design Patterns', $person->getFavouriteBook()->getName());
+    }
+
+    /** @test */
+    public function it_can_deserialize_a_simple_object_by_reflection()
+    {
+        $serializer = $this->createSerializer([
+            Dummy::class => new ReflectionDriver()
+        ]);
+
+        $content = '{"foo":"bar"}';
+
+        /** @var Dummy $subject */
+        $subject = $serializer->deserialize($content, Dummy::class);
+
+        $this->assertEquals('bar', $subject->getFoo());
     }
 
     /** @test */

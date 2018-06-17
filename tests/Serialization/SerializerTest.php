@@ -10,8 +10,10 @@
 
 namespace Tests\TSantos\Serializer\Serialization;
 
+use Tests\TSantos\Serializer\Fixture\Model\Dummy;
 use Tests\TSantos\Serializer\Fixture\Model\Person;
 use Tests\TSantos\Serializer\SerializerTestCase;
+use TSantos\Serializer\Metadata\Driver\ReflectionDriver;
 
 /** @runTestsInSeparateProcesses */
 class SerializerTest extends SerializerTestCase
@@ -66,6 +68,16 @@ class SerializerTest extends SerializerTestCase
             'name' => 'Tales',
             'married' => true
         ]), $json);
+    }
+
+    /** @test */
+    public function it_can_serialize_a_simple_object_with_reflection(): void
+    {
+        $serializer = $this->createSerializer([
+            Dummy::class => new ReflectionDriver()
+        ]);
+        $json = $serializer->serialize(new Dummy('bar'));
+        $this->assertEquals('{"foo":"bar"}', $json);
     }
 
     private function createPerson()
