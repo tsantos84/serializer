@@ -92,7 +92,7 @@ class ClassLoader
         $fqn = $this->getClassName($classMetadata);
 
         if (class_exists($fqn, false)) {
-            return $this->instances[$class] = new $fqn($serializer);
+            return $this->instances[$class] = $this->injectSerializer(new $fqn(), $serializer);
         }
 
         $filename = $this->getFilename($classMetadata);
@@ -115,7 +115,7 @@ class ClassLoader
                 break;
         }
 
-        return $this->instances[$class] = new $fqn($serializer);
+        return $this->instances[$class] = $this->injectSerializer(new $fqn(), $serializer);
     }
 
     private function generate(ClassMetadata $classMetadata)
@@ -132,5 +132,14 @@ class ClassLoader
     private function getFilename(ClassMetadata $classMetadata): string
     {
         return $this->writer->getPath() . DIRECTORY_SEPARATOR . $this->getClassName($classMetadata) . '.php';
+    }
+
+    private function injectSerializer(HydratorInterface $hydrator, SerializerInterface $serializer): HydratorInterface
+    {
+        if ($hydrator instanceof SerializerAwareInterface) {
+            $hydrator->setSerializer($serializer);
+        }
+
+        return $hydrator;
     }
 }
