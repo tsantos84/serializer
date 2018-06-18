@@ -13,11 +13,11 @@ namespace TSantos\Serializer;
 use Metadata\ClassMetadata;
 
 /**
- * Class SerializerClassWriter
+ * Class ClassWriter
  *
  * @author Tales Santos <tales.augusto.santos@gmail.com>
  */
-class SerializerClassWriter
+class ClassWriter
 {
     /**
      * @var string

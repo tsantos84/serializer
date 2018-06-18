@@ -247,7 +247,7 @@ class SerializerBuilder
         $classLoader = new ClassLoader(
             $metadataFactory,
             new CodeGenerator($twig, 'serializer_class.php.twig'),
-            new SerializerClassWriter($classDir),
+            new ClassWriter($classDir),
             $this->serializerClassGenerateStrategy
         );
 

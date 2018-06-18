@@ -45,7 +45,7 @@ class ClassLoader
     private $codeGenerator;
 
     /**
-     * @var SerializerClassWriter
+     * @var ClassWriter
      */
     private $writer;
 
@@ -53,13 +53,13 @@ class ClassLoader
      * SerializerClassLoader constructor.
      * @param MetadataFactoryInterface $metadataFactory
      * @param CodeGenerator $codeGenerator
-     * @param SerializerClassWriter $writer
+     * @param ClassWriter $writer
      * @param int $autogenerate
      */
     public function __construct(
         MetadataFactoryInterface $metadataFactory,
         CodeGenerator $codeGenerator,
-        SerializerClassWriter $writer,
+        ClassWriter $writer,
         int $autogenerate
     ) {
         $this->metadataFactory = $metadataFactory;
