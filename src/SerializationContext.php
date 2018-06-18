@@ -85,9 +85,9 @@ class SerializationContext extends AbstractContext
     /**
      * @param null $object
      */
-    public function left($object = null)
+    public function leave($object = null)
     {
-        parent::left();
+        parent::leave();
 
         if (!is_object($object)) {
             return;

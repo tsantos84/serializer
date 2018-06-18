@@ -39,7 +39,7 @@ class CollectionNormalizer implements
             }
             $array[$key] = $this->serializer->normalize($value, $context);
         }
-        $context->left();
+        $context->leave();
 
         return $array;
     }

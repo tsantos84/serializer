@@ -77,7 +77,7 @@ abstract class AbstractContext
         $this->currentDepth++;
     }
 
-    public function left()
+    public function leave()
     {
         $this->currentDepth--;
     }
