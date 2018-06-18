@@ -33,6 +33,7 @@ use TSantos\Serializer\Metadata\Configurator\SetterConfigurator;
 use TSantos\Serializer\Metadata\Configurator\VirtualPropertyTypeConfigurator;
 use TSantos\Serializer\Metadata\Driver\AnnotationDriver;
 use TSantos\Serializer\Metadata\Driver\ConfiguratorDriver;
+use TSantos\Serializer\Metadata\Driver\ReflectionDriver;
 use TSantos\Serializer\Metadata\Driver\XmlDriver;
 use TSantos\Serializer\Metadata\Driver\YamlDriver;
 use TSantos\Serializer\Normalizer\CollectionNormalizer;
@@ -41,6 +42,7 @@ use TSantos\Serializer\Normalizer\ObjectNormalizer;
 use TSantos\Serializer\Normalizer\ScalarNormalizer;
 use TSantos\Serializer\ObjectInstantiator\DoctrineInstantiator;
 use TSantos\Serializer\ObjectInstantiator\ObjectInstantiatorInterface;
+use Twig\Extension\DebugExtension;
 
 /**
  * Class Builder
@@ -61,7 +63,6 @@ class SerializerBuilder
     private $instantiator;
     private $format = 'json';
     private $dispatcher;
-    private $accessStrategy = 'accessors';
     private $hasListener = false;
 
     /**
@@ -226,18 +227,6 @@ class SerializerBuilder
         return $this;
     }
 
-    public function accessThroughAccessors(): SerializerBuilder
-    {
-        $this->accessStrategy = 'accessors';
-        return $this;
-    }
-
-    public function accessThroughReflection(): SerializerBuilder
-    {
-        $this->accessStrategy = 'reflection';
-        return $this;
-    }
-
     /**
      * @return SerializerInterface
      */
@@ -253,11 +242,11 @@ class SerializerBuilder
 
         $metadataFactory = $this->createMetadataFactory($this->createMetadataDriver());
 
-        list($twig, $template) = $this->createTwig();
+        $twig = $this->createTwig();
 
         $classLoader = new SerializerClassLoader(
             $metadataFactory,
-            new SerializerClassCodeGenerator($twig, $template),
+            new SerializerClassCodeGenerator($twig, 'serializer_class.php.twig'),
             new SerializerClassWriter($classDir),
             $this->serializerClassGenerateStrategy
         );
@@ -298,6 +287,7 @@ class SerializerBuilder
             $driver = new DriverChain([
                 new YamlDriver($fileLocator),
                 new XmlDriver($fileLocator),
+                new ReflectionDriver()
             ]);
         }
 
@@ -317,7 +307,7 @@ class SerializerBuilder
         return $driver;
     }
 
-    private function createTwig(): array
+    private function createTwig(): \Twig_Environment
     {
         $twig = new \Twig_Environment(
             new \Twig_Loader_Filesystem([__DIR__ . '/Resources/templates']),
@@ -327,13 +317,11 @@ class SerializerBuilder
             ]
         );
 
-        $template = 'accessors.php.twig';
-
-        if ('reflection' === $this->accessStrategy) {
-            $template = 'reflection.php.twig';
+        if ($this->debug) {
+            $twig->addExtension(new DebugExtension());
         }
 
-        return [$twig, $template];
+        return $twig;
     }
 
     private function createDir($dir)

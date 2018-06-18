@@ -76,6 +76,11 @@ class Person
     private $favouriteBook;
 
     /**
+     * @var string
+     */
+    private $club;
+
+    /**
      * Person constructor.
      * @param int $id
      * @param string $name
@@ -258,5 +263,13 @@ class Person
     {
         $this->birthday = $birthday;
         return $this;
+    }
+
+    /**
+     * @param string $club
+     */
+    public function setClub(string $club): void
+    {
+        $this->club = $club;
     }
 }

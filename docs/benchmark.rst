@@ -14,3 +14,20 @@ benchmark was generated through the `PHPBench <http://phpbench.readthedocs.io/en
 
 The source code of this benchmark is available on `GitHub <https://github.com/tsantos84/serializer-benchmark>`_ so you
 can clone and run it by yourself.
+
+Performance Notes
+-----------------
+
+The serialization process can be separated in two main operations: `compile time` and `runtime`.
+
+Compile time:
+    Operation that compile the class metadata and persist them in some cache implementation. This operation is very slow
+    because it should make some I/O in filesystem. This operation should be always avoided in production environments.
+    A good practice is generate the class metadata before deploying your application to production.
+
+Runtime:
+    Operation that transforms the data. Very fast after the class metadata is already compiled.
+
+Another important topic about performance is how the serializer will read and write data from your objects. By using
+explicit accessors and mutators is slightly faster then using reflection to access private/protected properties. Keep
+this in mind in order to boost your application.
