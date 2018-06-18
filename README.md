@@ -1,6 +1,6 @@
 # TSantos Serializer [![Build Status](https://travis-ci.org/tsantos84/serializer.svg?branch=master)](https://travis-ci.org/tsantos84/serializer)
 
-TSantos Serializer is a library to encode/decode PHP objects to some format. Because of its excluive 
+TSantos Serializer is a library to encode/decode PHP objects to some format. Because of its exclusive 
 serialization strategy, this library is the faster serialization component to PHP.
 
 ## Instalation
