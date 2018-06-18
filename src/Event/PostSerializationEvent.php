@@ -8,21 +8,21 @@
  * file that was distributed with this source code.
  */
 
-namespace TSantos\Serializer\EventDispatcher\Event;
+namespace TSantos\Serializer\Event;
 
 use TSantos\Serializer\SerializationContext;
 
 /**
- * Class PreSerializationEvent
+ * Class PostSerializationEvent
  *
  * @author Tales Santos <tales.augusto.santos@gmail.com>
  */
-class PreSerializationEvent extends Event
+class PostSerializationEvent extends Event
 {
     /**
-     * @var object
+     * @var mixed
      */
-    private $object;
+    private $data;
 
     /**
      * @var SerializationContext
@@ -36,25 +36,25 @@ class PreSerializationEvent extends Event
      */
     public function __construct($data, SerializationContext $context)
     {
-        $this->object = $data;
+        $this->data = $data;
         $this->context = $context;
     }
 
     /**
-     * @return object
+     * @return mixed
      */
-    public function getObject()
+    public function getData()
     {
-        return $this->object;
+        return $this->data;
     }
 
     /**
-     * @param $object
-     * @return PreSerializationEvent
+     * @param mixed $data
+     * @return PostSerializationEvent
      */
-    public function setObject($object): PreSerializationEvent
+    public function setData($data): PostSerializationEvent
     {
-        $this->object = $object;
+        $this->data = $data;
         return $this;
     }
 

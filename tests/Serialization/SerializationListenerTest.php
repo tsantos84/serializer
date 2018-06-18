@@ -12,9 +12,9 @@ namespace Tests\TSantos\Serializer\Serialization;
 
 use Tests\TSantos\Serializer\Fixture\Model\Person;
 use Tests\TSantos\Serializer\SerializerTestCase;
-use TSantos\Serializer\EventDispatcher\Event\PostSerializationEvent;
-use TSantos\Serializer\EventDispatcher\Event\PreSerializationEvent;
-use TSantos\Serializer\EventDispatcher\SerializerEvents;
+use TSantos\Serializer\Event\PostSerializationEvent;
+use TSantos\Serializer\Event\PreSerializationEvent;
+use TSantos\Serializer\Events;
 use TSantos\Serializer\SerializerBuilder;
 
 /**
@@ -44,12 +44,12 @@ class SerializationListenerTest extends SerializerTestCase
     protected function createBuilder()
     {
         return (new SerializerBuilder())
-            ->addListener(SerializerEvents::PRE_SERIALIZATION, function (PreSerializationEvent $event) {
+            ->addListener(Events::PRE_SERIALIZATION, function (PreSerializationEvent $event) {
                 /** @var Person $person */
                 $person = $event->getObject();
                 $person->setLastName('Santos');
             })
-            ->addListener(SerializerEvents::POST_SERIALIZATION, function (PostSerializationEvent $event) {
+            ->addListener(Events::POST_SERIALIZATION, function (PostSerializationEvent $event) {
                 $data = $event->getData();
                 $data['age'] = 33;
                 $event->setData($data);
