@@ -19,5 +19,31 @@ use Metadata\MergeableClassMetadata;
  */
 class ClassMetadata extends MergeableClassMetadata
 {
-    public $baseClass = 'TSantos\Serializer\AbstractHydrator';
+    public $baseClass;
+
+    public function serialize()
+    {
+        return serialize(array(
+            $this->name,
+            $this->methodMetadata,
+            $this->propertyMetadata,
+            $this->fileResources,
+            $this->createdAt,
+            $this->baseClass
+        ));
+    }
+
+    public function unserialize($str)
+    {
+        list(
+            $this->name,
+            $this->methodMetadata,
+            $this->propertyMetadata,
+            $this->fileResources,
+            $this->createdAt,
+            $this->baseClass
+        ) = unserialize($str);
+
+        $this->reflection = new \ReflectionClass($this->name);
+    }
 }
