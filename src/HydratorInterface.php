@@ -11,7 +11,7 @@
 namespace TSantos\Serializer;
 
 /**
- * Interface DataTransformerInterface
+ * Interface HydratorInterface
  *
  * @package Serializer
  * @author Tales Santos <tales.augusto.santos@gmail.com>
