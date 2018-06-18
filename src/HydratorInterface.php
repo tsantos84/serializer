@@ -11,25 +11,30 @@
 namespace TSantos\Serializer;
 
 /**
- * Interface ObjectSerializerInterface
+ * Interface DataTransformerInterface
  *
  * @package Serializer
  * @author Tales Santos <tales.augusto.santos@gmail.com>
  */
-interface SerializerClassInterface
+interface HydratorInterface
 {
     /**
+     * Extract the data from the given object and returns its array
+     * representation.
+     *
      * @param $object
      * @param SerializationContext $context
      * @return array
      */
-    public function serialize($object, SerializationContext $context): array;
+    public function extract($object, SerializationContext $context): array;
 
     /**
+     * Hydrate an object from the given array.
+     *
      * @param $object
      * @param array $data
      * @param DeserializationContext $context
      * @return mixed
      */
-    public function deserialize($object, array $data, DeserializationContext $context);
+    public function hydrate($object, array $data, DeserializationContext $context);
 }

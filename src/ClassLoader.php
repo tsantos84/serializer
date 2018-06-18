@@ -71,9 +71,9 @@ class ClassLoader
     /**
      * @param string $class
      * @param SerializerInterface $serializer
-     * @return SerializerClassInterface
+     * @return HydratorInterface
      */
-    public function load(string $class, SerializerInterface $serializer): SerializerClassInterface
+    public function load(string $class, SerializerInterface $serializer): HydratorInterface
     {
         if (isset($this->instances[$class])) {
             return $this->instances[$class];

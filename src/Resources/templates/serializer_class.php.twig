@@ -21,7 +21,7 @@ final class {{ class_name }} extends {{ base_class_name }}
      * @param SerializationContext $context
      * @return array
      */
-    public function serialize($object, SerializationContext $context): array
+    public function extract($object, SerializationContext $context): array
     {
         if (!$object instanceof {{ target_class_name }}) {
             throw new InvalidArgumentException(sprintf('%s is able to serialize only instances of "%s" only. "%s" given', get_class($this), {{ target_class_name }}::class, is_object($object) ? get_class($object) : gettype($object)));
@@ -100,7 +100,7 @@ final class {{ class_name }} extends {{ base_class_name }}
      * @param DeserializationContext $context
      * @return {{ target_class_name }}
      */
-    public function deserialize($object, array $data, DeserializationContext $context)
+    public function hydrate($object, array $data, DeserializationContext $context)
     {
         if (!$object instanceof {{ target_class_name }}) {
             throw new InvalidArgumentException(sprintf('%s is able to deserialize only instances of "%s" only. "%s" given', get_class($this), {{ target_class_name }}::class, is_object($object) ? get_class($object) : gettype($object)));

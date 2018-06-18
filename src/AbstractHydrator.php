@@ -15,7 +15,7 @@ namespace TSantos\Serializer;
  *
  * @author Tales Santos <tales.augusto.santos@gmail.com>
  */
-abstract class AbstractSerializerClass implements SerializerClassInterface
+abstract class AbstractHydrator implements HydratorInterface
 {
     /**
      * @var SerializerInterface

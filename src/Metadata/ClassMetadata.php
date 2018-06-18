@@ -19,5 +19,5 @@ use Metadata\MergeableClassMetadata;
  */
 class ClassMetadata extends MergeableClassMetadata
 {
-    public $baseClass = 'TSantos\Serializer\AbstractSerializerClass';
+    public $baseClass = 'TSantos\Serializer\AbstractHydrator';
 }

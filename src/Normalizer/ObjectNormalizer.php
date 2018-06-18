@@ -56,7 +56,7 @@ class ObjectNormalizer implements
         $objectSerializer = $this->classLoader->load(get_class($data), $this->serializer);
 
         $context->enter($data);
-        $array = $objectSerializer->serialize($data, $context);
+        $array = $objectSerializer->extract($data, $context);
         $context->left($data);
 
         return $array;
@@ -84,7 +84,7 @@ class ObjectNormalizer implements
 
         $objectSerializer = $this->classLoader->load($type, $this->serializer);
         $context->enter();
-        $object = $objectSerializer->deserialize($object, $data, $context);
+        $object = $objectSerializer->hydrate($object, $data, $context);
         $context->left();
 
         return $object;
