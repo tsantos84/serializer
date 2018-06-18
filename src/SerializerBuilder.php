@@ -45,7 +45,7 @@ use TSantos\Serializer\ObjectInstantiator\ObjectInstantiatorInterface;
 use Twig\Extension\DebugExtension;
 
 /**
- * Class Builder
+ * Class SerializerBuilder
  *
  * @package Serializer
  * @author Tales Santos <tales.augusto.santos@gmail.com>
