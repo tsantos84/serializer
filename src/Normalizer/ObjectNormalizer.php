@@ -15,7 +15,7 @@ use TSantos\Serializer\DeserializationContext;
 use TSantos\Serializer\ObjectInstantiator\ObjectInstantiatorInterface;
 use TSantos\Serializer\SerializationContext;
 use TSantos\Serializer\SerializerAwareInterface;
-use TSantos\Serializer\SerializerClassLoader;
+use TSantos\Serializer\ClassLoader;
 use TSantos\Serializer\Traits\SerializerAwareTrait;
 
 /**
@@ -31,7 +31,7 @@ class ObjectNormalizer implements
     use SerializerAwareTrait;
 
     /**
-     * @var SerializerClassLoader
+     * @var ClassLoader
      */
     private $classLoader;
 
@@ -42,10 +42,10 @@ class ObjectNormalizer implements
 
     /**
      * ObjectNormalizer constructor.
-     * @param SerializerClassLoader $classLoader
+     * @param ClassLoader $classLoader
      * @param ObjectInstantiatorInterface $instantiator
      */
-    public function __construct(SerializerClassLoader $classLoader, ObjectInstantiatorInterface $instantiator)
+    public function __construct(ClassLoader $classLoader, ObjectInstantiatorInterface $instantiator)
     {
         $this->classLoader = $classLoader;
         $this->instantiator = $instantiator;

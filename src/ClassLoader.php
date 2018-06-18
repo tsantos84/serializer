@@ -14,11 +14,11 @@ use Metadata\MetadataFactoryInterface;
 use TSantos\Serializer\Metadata\ClassMetadata;
 
 /**
- * Class SerializerClassLoader
+ * Class ClassLoader
  *
  * @author Tales Santos <tales.augusto.santos@gmail.com>
  */
-class SerializerClassLoader
+class ClassLoader
 {
     const AUTOGENERATE_NEVER = 1;
     const AUTOGENERATE_ALWAYS = 2;

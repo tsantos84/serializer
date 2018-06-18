@@ -74,7 +74,7 @@ class SerializerBuilder
         $this->normalizers = new NormalizerRegistry();
         $this->debug = false;
         $this->metadataDirs = [];
-        $this->serializerClassGenerateStrategy = SerializerClassLoader::AUTOGENERATE_ALWAYS;
+        $this->serializerClassGenerateStrategy = ClassLoader::AUTOGENERATE_ALWAYS;
     }
 
     /**
@@ -244,7 +244,7 @@ class SerializerBuilder
 
         $twig = $this->createTwig();
 
-        $classLoader = new SerializerClassLoader(
+        $classLoader = new ClassLoader(
             $metadataFactory,
             new CodeGenerator($twig, 'serializer_class.php.twig'),
             new SerializerClassWriter($classDir),
