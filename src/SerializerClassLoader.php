@@ -40,7 +40,7 @@ class SerializerClassLoader
     private $autogenerate;
 
     /**
-     * @var SerializerClassCodeGenerator
+     * @var CodeGenerator
      */
     private $codeGenerator;
 
@@ -52,13 +52,13 @@ class SerializerClassLoader
     /**
      * SerializerClassLoader constructor.
      * @param MetadataFactoryInterface $metadataFactory
-     * @param SerializerClassCodeGenerator $codeGenerator
+     * @param CodeGenerator $codeGenerator
      * @param SerializerClassWriter $writer
      * @param int $autogenerate
      */
     public function __construct(
         MetadataFactoryInterface $metadataFactory,
-        SerializerClassCodeGenerator $codeGenerator,
+        CodeGenerator $codeGenerator,
         SerializerClassWriter $writer,
         int $autogenerate
     ) {

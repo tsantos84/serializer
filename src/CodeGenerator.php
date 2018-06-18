@@ -13,11 +13,11 @@ namespace TSantos\Serializer;
 use TSantos\Serializer\Metadata\ClassMetadata;
 
 /**
- * Class SerializerClassCodeGenerator
+ * Class CodeGenerator
  *
  * @author Tales Santos <tales.augusto.santos@gmail.com>
  */
-class SerializerClassCodeGenerator
+class CodeGenerator
 {
     /**
      * @var \Twig_Environment

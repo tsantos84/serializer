@@ -15,14 +15,14 @@ use Tests\TSantos\Serializer\Fixture\Model\Dummy;
 use TSantos\Serializer\Metadata\ClassMetadata;
 use TSantos\Serializer\Metadata\PropertyMetadata;
 use TSantos\Serializer\Metadata\VirtualPropertyMetadata;
-use TSantos\Serializer\SerializerClassCodeGenerator;
+use TSantos\Serializer\CodeGenerator;
 
 /**
- * Class SerializerClassCodeGeneratorTest
+ * Class CodeGeneratorTest
  *
  * @author Tales Santos <tales.augusto.santos@gmail.com>
  */
-class SerializerClassCodeGeneratorTest extends TestCase
+class CodeGeneratorTest extends TestCase
 {
     private $twig;
 
@@ -39,7 +39,7 @@ class SerializerClassCodeGeneratorTest extends TestCase
     /** @test */
     public function it_can_generate_class_code()
     {
-        $generator = new SerializerClassCodeGenerator($this->twig, 'serializer_class.php.twig');
+        $generator = new CodeGenerator($this->twig, 'serializer_class.php.twig');
         $metadata = $this->createMetadata();
         $code = $generator->generate($metadata);
         $expected = <<<'CODE'
