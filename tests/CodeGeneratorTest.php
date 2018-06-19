@@ -39,7 +39,7 @@ class CodeGeneratorTest extends TestCase
     /** @test */
     public function it_can_generate_class_code()
     {
-        $generator = new CodeGenerator($this->twig, 'serializer_class.php.twig');
+        $generator = new CodeGenerator($this->twig);
         $metadata = $this->createMetadata();
         $code = $generator->generate($metadata);
         $expected = <<<'CODE'
@@ -217,6 +217,7 @@ CODE;
     {
         $metadata = new ClassMetadata(Dummy::class);
         $metadata->baseClass = '\stdClass';
+        $metadata->template = 'hydrator.php.twig';
 
         $foo = new PropertyMetadata(Dummy::class, 'foo');
         $foo->type = 'string';

@@ -25,19 +25,12 @@ class CodeGenerator
     private $twig;
 
     /**
-     * @var string
-     */
-    private $template;
-
-    /**
-     * SerializerClassCodeGenerator constructor.
+     * CodeGenerator constructor.
      * @param \Twig_Environment $twig
-     * @param string $template
      */
-    public function __construct(\Twig_Environment $twig, string $template)
+    public function __construct(\Twig_Environment $twig)
     {
         $this->twig = $twig;
-        $this->template = $template;
     }
 
     /**
@@ -67,7 +60,7 @@ class CodeGenerator
             'hierarchy_classes' => $hierarchy
         ];
 
-        return $this->twig->render($this->template, $context);
+        return $this->twig->render($classMetadata->template, $context);
     }
 
     public function getClassName(ClassMetadata $classMetadata): string

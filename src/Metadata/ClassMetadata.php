@@ -21,6 +21,8 @@ class ClassMetadata extends MergeableClassMetadata
 {
     public $baseClass;
 
+    public $template;
+
     public function serialize()
     {
         return serialize(array(
@@ -29,7 +31,8 @@ class ClassMetadata extends MergeableClassMetadata
             $this->propertyMetadata,
             $this->fileResources,
             $this->createdAt,
-            $this->baseClass
+            $this->baseClass,
+            $this->template
         ));
     }
 
@@ -41,7 +44,8 @@ class ClassMetadata extends MergeableClassMetadata
             $this->propertyMetadata,
             $this->fileResources,
             $this->createdAt,
-            $this->baseClass
+            $this->baseClass,
+            $this->template
         ) = unserialize($str);
 
         $this->reflection = new \ReflectionClass($this->name);
