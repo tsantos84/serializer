@@ -21,6 +21,10 @@ final class {{ class_name }} {{ base_class_name ? 'extends ' ~ base_class_name ~
 
     private $exposedGroups = {{ exported_groups|raw }};
 
+{% block class_properties '' %}
+
+{% block constructor '' %}
+
     /**
      * @param {{ target_class_name }} $object
      * @param SerializationContext $context
