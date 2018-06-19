@@ -14,11 +14,11 @@ use Metadata\MetadataFactoryInterface;
 use TSantos\Serializer\Metadata\ClassMetadata;
 
 /**
- * Class ClassLoader
+ * Class HydratorLoader
  *
  * @author Tales Santos <tales.augusto.santos@gmail.com>
  */
-class ClassLoader
+class HydratorLoader
 {
     const AUTOGENERATE_NEVER = 1;
     const AUTOGENERATE_ALWAYS = 2;
@@ -40,26 +40,26 @@ class ClassLoader
     private $autogenerate;
 
     /**
-     * @var CodeGenerator
+     * @var HydratorCodeGenerator
      */
     private $codeGenerator;
 
     /**
-     * @var ClassWriter
+     * @var HydratorCodeWriter
      */
     private $writer;
 
     /**
      * SerializerClassLoader constructor.
      * @param MetadataFactoryInterface $metadataFactory
-     * @param CodeGenerator $codeGenerator
-     * @param ClassWriter $writer
+     * @param HydratorCodeGenerator $codeGenerator
+     * @param HydratorCodeWriter $writer
      * @param int $autogenerate
      */
     public function __construct(
         MetadataFactoryInterface $metadataFactory,
-        CodeGenerator $codeGenerator,
-        ClassWriter $writer,
+        HydratorCodeGenerator $codeGenerator,
+        HydratorCodeWriter $writer,
         int $autogenerate
     ) {
         $this->metadataFactory = $metadataFactory;

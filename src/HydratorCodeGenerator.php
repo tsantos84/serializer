@@ -13,11 +13,11 @@ namespace TSantos\Serializer;
 use TSantos\Serializer\Metadata\ClassMetadata;
 
 /**
- * Class CodeGenerator
+ * Class HydratorCodeGenerator
  *
  * @author Tales Santos <tales.augusto.santos@gmail.com>
  */
-class CodeGenerator
+class HydratorCodeGenerator
 {
     /**
      * @var \Twig_Environment
@@ -65,7 +65,7 @@ class CodeGenerator
 
     public function getClassName(ClassMetadata $classMetadata): string
     {
-        return str_replace('\\', '', $classMetadata->name) . 'Serializer';
+        return str_replace('\\', '', $classMetadata->name) . 'Hydrator';
     }
 
     private function getGroups(ClassMetadata $metadata): array

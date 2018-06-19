@@ -75,7 +75,7 @@ class SerializerBuilder
         $this->normalizers = new NormalizerRegistry();
         $this->debug = false;
         $this->metadataDirs = [];
-        $this->serializerClassGenerateStrategy = ClassLoader::AUTOGENERATE_ALWAYS;
+        $this->serializerClassGenerateStrategy = HydratorLoader::AUTOGENERATE_ALWAYS;
     }
 
     /**
@@ -114,7 +114,7 @@ class SerializerBuilder
         return $this;
     }
 
-    public function setSerializerClassDir(string $dir): SerializerBuilder
+    public function setHydratorDir(string $dir): SerializerBuilder
     {
         if (!is_dir($dir)) {
             $this->createDir($dir);
@@ -238,17 +238,17 @@ class SerializerBuilder
         }
 
         if (null === $classDir = $this->serializerClassDir) {
-            $this->createDir($classDir = sys_get_temp_dir() . '/serializer/classes');
+            $this->createDir($classDir = sys_get_temp_dir() . '/serializer/hydrators');
         }
 
         $metadataFactory = $this->createMetadataFactory($this->createMetadataDriver());
 
         $twig = $this->createTwig();
 
-        $classLoader = new ClassLoader(
+        $classLoader = new HydratorLoader(
             $metadataFactory,
-            new CodeGenerator($twig),
-            new ClassWriter($classDir),
+            new HydratorCodeGenerator($twig),
+            new HydratorCodeWriter($classDir),
             $this->serializerClassGenerateStrategy
         );
 

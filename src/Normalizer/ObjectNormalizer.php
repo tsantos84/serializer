@@ -15,7 +15,7 @@ use TSantos\Serializer\DeserializationContext;
 use TSantos\Serializer\ObjectInstantiator\ObjectInstantiatorInterface;
 use TSantos\Serializer\SerializationContext;
 use TSantos\Serializer\SerializerAwareInterface;
-use TSantos\Serializer\ClassLoader;
+use TSantos\Serializer\HydratorLoader;
 use TSantos\Serializer\Traits\SerializerAwareTrait;
 
 /**
@@ -31,9 +31,9 @@ class ObjectNormalizer implements
     use SerializerAwareTrait;
 
     /**
-     * @var ClassLoader
+     * @var HydratorLoader
      */
-    private $classLoader;
+    private $loader;
 
     /**
      * @var ObjectInstantiatorInterface
@@ -42,21 +42,21 @@ class ObjectNormalizer implements
 
     /**
      * ObjectNormalizer constructor.
-     * @param ClassLoader $classLoader
+     * @param HydratorLoader $classLoader
      * @param ObjectInstantiatorInterface $instantiator
      */
-    public function __construct(ClassLoader $classLoader, ObjectInstantiatorInterface $instantiator)
+    public function __construct(HydratorLoader $classLoader, ObjectInstantiatorInterface $instantiator)
     {
-        $this->classLoader = $classLoader;
+        $this->loader = $classLoader;
         $this->instantiator = $instantiator;
     }
 
     public function normalize($data, SerializationContext $context)
     {
-        $objectSerializer = $this->classLoader->load(get_class($data), $this->serializer);
+        $hydrator = $this->loader->load(get_class($data), $this->serializer);
 
         $context->enter($data);
-        $array = $objectSerializer->extract($data, $context);
+        $array = $hydrator->extract($data, $context);
         $context->leave($data);
 
         return $array;
@@ -82,7 +82,7 @@ class ObjectNormalizer implements
             $object = $this->instantiator->create($type, $data, $context);
         }
 
-        $objectSerializer = $this->classLoader->load($type, $this->serializer);
+        $objectSerializer = $this->loader->load($type, $this->serializer);
         $context->enter();
         $object = $objectSerializer->hydrate($object, $data, $context);
         $context->leave();
