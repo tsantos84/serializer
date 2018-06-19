@@ -196,16 +196,19 @@ Events::POST_DESERIALIZATION::
 Caching
 -------
 
-The serialize can cache two types of information: a) the generated serializer classes and b) the class metadata.
+The serializer can cache two types of information:
 
-Class Cache
-~~~~~~~~~~~
+    a) the generated hydrator classes
+    b) the class metadata.
+
+Hydrator Cache
+~~~~~~~~~~~~~~
 
 You should provide the location where the generated serializer classes will be stored. Defaults to
-`/tmp/serializer/classes`::
+`/tmp/serializer/hydrators`::
 
     $serializer = (new SerializerBuilder())
-        ->setClassCacheDir(__DIR__ . '/var/cache/serializer/classes')
+        ->setHydratorDir(__DIR__ . '/var/cache/serializer/hydrators')
         ->build();
 
 Metadata Cache
