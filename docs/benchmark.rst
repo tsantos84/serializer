@@ -26,7 +26,7 @@ Compile time:
     operations in production environment.
 
 Runtime:
-    Operation that transforms the data. Very fast after the class metadata is already compiled.
+    Operation that transforms the data through the hydrators. Very fast after the class metadata is already compiled.
 
 Another important topic about performance is how the serializer will read and write data from your objects. By using
 explicit accessors and mutators is slightly faster then using reflection to access private/protected properties. Keep
