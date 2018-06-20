@@ -58,9 +58,9 @@ class SerializerBuilder
     private $driver;
     private $metadataCache;
     private $debug;
-    private $serializerClassDir;
+    private $hydratorDir;
     private $metadataDirs;
-    private $serializerClassGenerateStrategy;
+    private $hydratorGenerationStrategy;
     private $instantiator;
     private $format = 'json';
     private $dispatcher;
@@ -75,7 +75,7 @@ class SerializerBuilder
         $this->normalizers = new NormalizerRegistry();
         $this->debug = false;
         $this->metadataDirs = [];
-        $this->serializerClassGenerateStrategy = HydratorLoader::AUTOGENERATE_ALWAYS;
+        $this->hydratorGenerationStrategy = HydratorLoader::AUTOGENERATE_ALWAYS;
     }
 
     /**
@@ -124,7 +124,7 @@ class SerializerBuilder
             throw new \InvalidArgumentException(sprintf('The serializer class directory "%s" is not writable.', $dir));
         }
 
-        $this->serializerClassDir = $dir;
+        $this->hydratorDir = $dir;
 
         return $this;
     }
@@ -171,9 +171,9 @@ class SerializerBuilder
         return $this;
     }
 
-    public function setSerializerClassGenerateStrategy(int $strategy): SerializerBuilder
+    public function setHydratorGenerationStrategy(int $strategy): SerializerBuilder
     {
-        $this->serializerClassGenerateStrategy = $strategy;
+        $this->hydratorGenerationStrategy = $strategy;
         return $this;
     }
 
@@ -237,25 +237,25 @@ class SerializerBuilder
             $this->encoders->add(new JsonEncoder());
         }
 
-        if (null === $classDir = $this->serializerClassDir) {
-            $this->createDir($classDir = sys_get_temp_dir() . '/serializer/hydrators');
+        if (null === $hydratorDir = $this->hydratorDir) {
+            $this->createDir($hydratorDir = sys_get_temp_dir() . '/serializer/hydrators');
         }
 
         $metadataFactory = $this->createMetadataFactory($this->createMetadataDriver());
 
         $twig = $this->createTwig();
 
-        $classLoader = new HydratorLoader(
+        $loader = new HydratorLoader(
             $metadataFactory,
             new HydratorCodeGenerator($twig),
-            new HydratorCodeWriter($classDir),
-            $this->serializerClassGenerateStrategy
+            new HydratorCodeWriter($hydratorDir),
+            $this->hydratorGenerationStrategy
         );
 
         if (null === $this->instantiator) {
             $this->instantiator = new DoctrineInstantiator(new Instantiator());
         }
-        $this->normalizers->unshift(new ObjectNormalizer($classLoader, $this->instantiator));
+        $this->normalizers->unshift(new ObjectNormalizer($loader, $this->instantiator));
 
         if (null === $this->dispatcher) {
             return new Serializer(

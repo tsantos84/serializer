@@ -248,37 +248,37 @@ PsrCacheAdapter:
             ))
             ->build();
 
-Class Generation
-----------------
+Hydrator Generation
+-------------------
 
-This library generates PHP classes that will convert the objects to array and vice-versa. Those classes are automatically
-generated based on you class mapping and stored in somewhere defined in your project. Therefore, to avoid unnecessary
-I/O to generate those classes, you can configure the strategy when generating them.
+This library generates PHP classes (e.g: hydrator) that will convert objects to array representation and vice-versa.
+Those classes are automatically generated based on you class mapping and stored in somewhere defined in your project.
+Therefore, to avoid unnecessary I/O to generate those classes, you can configure the strategy when generating them.
 
 FileNotExists:
-    This strategy will generate the classes only if they don't exist in filesystem. Good for development environments
+    This strategy will generate the hydrators only if they don't exist in filesystem. Good for development environments.
 
     .. code-block:: php-annotations
 
         $serializer = (new SerializerBuilder())
-            ->setSerializerClassGenerateStrategy(SerializerClassLoader::AUTOGENERATE_FILE_NOT_EXISTS)
+            ->setHydratorGenerationStrategy(HydratorLoader::AUTOGENERATE_FILE_NOT_EXISTS)
             ->build();
 
 Always:
-    The classes will be generated regardless the existence of the classes. Good for debugging
+    The hydrators will be generated regardless of its existence. Good for debugging.
 
     .. code-block:: php-annotations
 
         $serializer = (new SerializerBuilder())
-            ->setSerializerClassGenerateStrategy(SerializerClassLoader::AUTOGENERATE_ALWAYS)
+            ->setHydratorGenerationStrategy(HydratorLoader::AUTOGENERATE_ALWAYS)
             ->build();
 
 Never:
-    The serializer will never check the classes' existence and never generate them. This strategy can improve the
-    performance in production environment
+    The serializer will never check the hydrator's existence and will never generate them. This strategy improves the
+    performance in production environment.
 
     .. code-block:: php-annotations
 
         $serializer = (new SerializerBuilder())
-            ->setSerializerClassGenerateStrategy(SerializerClassLoader::AUTOGENERATE_NEVER)
+            ->setHydratorGenerationStrategy(HydratorLoader::AUTOGENERATE_NEVER)
             ->build();
