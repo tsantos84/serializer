@@ -21,9 +21,9 @@ Performance Notes
 The serialization process can be separated in two main operations: `compile time` and `runtime`.
 
 Compile time:
-    Operation that compile the class metadata and persist them in some cache implementation. This operation is very slow
-    because it should make some I/O in filesystem. This operation should be always avoided in production environments.
-    A good practice is generate the class metadata before deploying your application to production.
+    Operation that compiles the class metadata and generate the hydrator classes. The compile time has a considerable
+    number of I/O operations which can reduce the performance of your application and you should :doc:`avoid </usage>`
+    operations in production environment.
 
 Runtime:
     Operation that transforms the data. Very fast after the class metadata is already compiled.
