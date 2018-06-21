@@ -2,12 +2,16 @@ language: php
 
 sudo: false
 
+env:
+    global:
+        - PHPUNIT_FLAGS="-v"
+
 matrix:
   include:
     - php: 7.1
     - php: 7.2
     - php: 7.2
-      env: COVERAGE=true
+      env: COVERAGE=true PHPUNIT_FLAGS="-v --coverage-clover=coverage.clover"
   fast_finish: true
 
 before_install:
@@ -20,7 +24,7 @@ install:
 
 script:
   - vendor/bin/phpcs .
-  - vendor/bin/phpunit -v --coverage-clover=coverage.clover
+  - vendor/bin/phpunit $PHPUNIT_FLAGS
   - |
     # Sending code coverage to Scrutinizer
     if [[ $COVERAGE = true ]]; then
