@@ -28,6 +28,7 @@ use TSantos\Serializer\EventDispatcher\EventDispatcher;
 use TSantos\Serializer\EventDispatcher\EventSubscriberInterface;
 use TSantos\Serializer\Metadata\Configurator\DateTimeConfigurator;
 use TSantos\Serializer\Metadata\Configurator\GetterConfigurator;
+use TSantos\Serializer\Metadata\Configurator\HydratorTemplateConfigurator;
 use TSantos\Serializer\Metadata\Configurator\PropertyTypeConfigurator;
 use TSantos\Serializer\Metadata\Configurator\SetterConfigurator;
 use TSantos\Serializer\Metadata\Configurator\VirtualPropertyTypeConfigurator;
@@ -45,7 +46,7 @@ use TSantos\Serializer\ObjectInstantiator\ObjectInstantiatorInterface;
 use Twig\Extension\DebugExtension;
 
 /**
- * Class Builder
+ * Class SerializerBuilder
  *
  * @package Serializer
  * @author Tales Santos <tales.augusto.santos@gmail.com>
@@ -57,9 +58,9 @@ class SerializerBuilder
     private $driver;
     private $metadataCache;
     private $debug;
-    private $serializerClassDir;
+    private $hydratorDir;
     private $metadataDirs;
-    private $serializerClassGenerateStrategy;
+    private $hydratorGenerationStrategy;
     private $instantiator;
     private $format = 'json';
     private $dispatcher;
@@ -74,7 +75,7 @@ class SerializerBuilder
         $this->normalizers = new NormalizerRegistry();
         $this->debug = false;
         $this->metadataDirs = [];
-        $this->serializerClassGenerateStrategy = SerializerClassLoader::AUTOGENERATE_ALWAYS;
+        $this->hydratorGenerationStrategy = HydratorLoader::AUTOGENERATE_ALWAYS;
     }
 
     /**
@@ -113,7 +114,7 @@ class SerializerBuilder
         return $this;
     }
 
-    public function setSerializerClassDir(string $dir): SerializerBuilder
+    public function setHydratorDir(string $dir): SerializerBuilder
     {
         if (!is_dir($dir)) {
             $this->createDir($dir);
@@ -123,7 +124,7 @@ class SerializerBuilder
             throw new \InvalidArgumentException(sprintf('The serializer class directory "%s" is not writable.', $dir));
         }
 
-        $this->serializerClassDir = $dir;
+        $this->hydratorDir = $dir;
 
         return $this;
     }
@@ -170,9 +171,9 @@ class SerializerBuilder
         return $this;
     }
 
-    public function setSerializerClassGenerateStrategy(int $strategy): SerializerBuilder
+    public function setHydratorGenerationStrategy(int $strategy): SerializerBuilder
     {
-        $this->serializerClassGenerateStrategy = $strategy;
+        $this->hydratorGenerationStrategy = $strategy;
         return $this;
     }
 
@@ -236,25 +237,25 @@ class SerializerBuilder
             $this->encoders->add(new JsonEncoder());
         }
 
-        if (null === $classDir = $this->serializerClassDir) {
-            $this->createDir($classDir = sys_get_temp_dir() . '/serializer/classes');
+        if (null === $hydratorDir = $this->hydratorDir) {
+            $this->createDir($hydratorDir = sys_get_temp_dir() . '/serializer/hydrators');
         }
 
         $metadataFactory = $this->createMetadataFactory($this->createMetadataDriver());
 
         $twig = $this->createTwig();
 
-        $classLoader = new SerializerClassLoader(
+        $loader = new HydratorLoader(
             $metadataFactory,
-            new SerializerClassCodeGenerator($twig, 'serializer_class.php.twig'),
-            new SerializerClassWriter($classDir),
-            $this->serializerClassGenerateStrategy
+            new HydratorCodeGenerator($twig),
+            new HydratorCodeWriter($hydratorDir),
+            $this->hydratorGenerationStrategy
         );
 
         if (null === $this->instantiator) {
             $this->instantiator = new DoctrineInstantiator(new Instantiator());
         }
-        $this->normalizers->unshift(new ObjectNormalizer($classLoader, $this->instantiator));
+        $this->normalizers->unshift(new ObjectNormalizer($loader, $this->instantiator));
 
         if (null === $this->dispatcher) {
             return new Serializer(
@@ -297,6 +298,7 @@ class SerializerBuilder
         ]);
 
         $driver = new ConfiguratorDriver($driver, [
+            new HydratorTemplateConfigurator('hydrator.php.twig'),
             new PropertyTypeConfigurator($propertyInfo),
             new VirtualPropertyTypeConfigurator(),
             new GetterConfigurator(),

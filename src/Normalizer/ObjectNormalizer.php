@@ -15,7 +15,7 @@ use TSantos\Serializer\DeserializationContext;
 use TSantos\Serializer\ObjectInstantiator\ObjectInstantiatorInterface;
 use TSantos\Serializer\SerializationContext;
 use TSantos\Serializer\SerializerAwareInterface;
-use TSantos\Serializer\SerializerClassLoader;
+use TSantos\Serializer\HydratorLoader;
 use TSantos\Serializer\Traits\SerializerAwareTrait;
 
 /**
@@ -31,9 +31,9 @@ class ObjectNormalizer implements
     use SerializerAwareTrait;
 
     /**
-     * @var SerializerClassLoader
+     * @var HydratorLoader
      */
-    private $classLoader;
+    private $loader;
 
     /**
      * @var ObjectInstantiatorInterface
@@ -42,22 +42,22 @@ class ObjectNormalizer implements
 
     /**
      * ObjectNormalizer constructor.
-     * @param SerializerClassLoader $classLoader
+     * @param HydratorLoader $classLoader
      * @param ObjectInstantiatorInterface $instantiator
      */
-    public function __construct(SerializerClassLoader $classLoader, ObjectInstantiatorInterface $instantiator)
+    public function __construct(HydratorLoader $classLoader, ObjectInstantiatorInterface $instantiator)
     {
-        $this->classLoader = $classLoader;
+        $this->loader = $classLoader;
         $this->instantiator = $instantiator;
     }
 
     public function normalize($data, SerializationContext $context)
     {
-        $objectSerializer = $this->classLoader->load(get_class($data), $this->serializer);
+        $hydrator = $this->loader->load(get_class($data), $this->serializer);
 
         $context->enter($data);
-        $array = $objectSerializer->serialize($data, $context);
-        $context->left($data);
+        $array = $hydrator->extract($data, $context);
+        $context->leave($data);
 
         return $array;
     }
@@ -82,10 +82,10 @@ class ObjectNormalizer implements
             $object = $this->instantiator->create($type, $data, $context);
         }
 
-        $objectSerializer = $this->classLoader->load($type, $this->serializer);
+        $objectSerializer = $this->loader->load($type, $this->serializer);
         $context->enter();
-        $object = $objectSerializer->deserialize($object, $data, $context);
-        $context->left();
+        $object = $objectSerializer->hydrate($object, $data, $context);
+        $context->leave();
 
         return $object;
     }

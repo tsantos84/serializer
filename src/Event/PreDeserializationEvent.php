@@ -8,7 +8,7 @@
  * file that was distributed with this source code.
  */
 
-namespace TSantos\Serializer\EventDispatcher\Event;
+namespace TSantos\Serializer\Event;
 
 use TSantos\Serializer\DeserializationContext;
 

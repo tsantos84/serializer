@@ -11,13 +11,11 @@
 namespace TSantos\Serializer;
 
 use TSantos\Serializer\Encoder\EncoderInterface;
-use TSantos\Serializer\EventDispatcher\Event\PostDeserializationEvent;
-use TSantos\Serializer\EventDispatcher\Event\PostSerializationEvent;
-use TSantos\Serializer\EventDispatcher\Event\PreDeserializationEvent;
-use TSantos\Serializer\EventDispatcher\Event\PreSerializationEvent;
+use TSantos\Serializer\Event\PostDeserializationEvent;
+use TSantos\Serializer\Event\PostSerializationEvent;
+use TSantos\Serializer\Event\PreDeserializationEvent;
+use TSantos\Serializer\Event\PreSerializationEvent;
 use TSantos\Serializer\EventDispatcher\EventDispatcherInterface;
-use TSantos\Serializer\EventDispatcher\SerializerEvents;
-use TSantos\Serializer\ObjectInstantiator\ObjectInstantiatorInterface;
 
 /**
  * Class EventEmitterSerializer
@@ -61,12 +59,12 @@ class EventEmitterSerializer extends Serializer
         $type = is_object($data) ? get_class($data) : gettype($data);
 
         $event = new PreSerializationEvent($data, $context);
-        $this->dispatcher->dispatch(SerializerEvents::PRE_SERIALIZATION, $event, $type);
+        $this->dispatcher->dispatch(Events::PRE_SERIALIZATION, $event, $type);
 
         $normalized = parent::normalize($event->getObject(), $context);
 
         $event = new PostSerializationEvent($normalized, $context);
-        $this->dispatcher->dispatch(SerializerEvents::POST_SERIALIZATION, $event, $type);
+        $this->dispatcher->dispatch(Events::POST_SERIALIZATION, $event, $type);
 
         return $event->getData();
     }
@@ -82,12 +80,12 @@ class EventEmitterSerializer extends Serializer
         }
 
         $event = new PreDeserializationEvent($data, $context);
-        $this->dispatcher->dispatch(SerializerEvents::PRE_DESERIALIZATION, $event, $type);
+        $this->dispatcher->dispatch(Events::PRE_DESERIALIZATION, $event, $type);
 
         $denormalized = parent::denormalize($event->getData(), $type, $context);
 
         $event = new PostDeserializationEvent($denormalized, $context);
-        $this->dispatcher->dispatch(SerializerEvents::POST_DESERIALIZATION, $event, $type);
+        $this->dispatcher->dispatch(Events::POST_DESERIALIZATION, $event, $type);
 
         return $event->getObject();
     }

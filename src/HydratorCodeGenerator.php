@@ -13,11 +13,11 @@ namespace TSantos\Serializer;
 use TSantos\Serializer\Metadata\ClassMetadata;
 
 /**
- * Class SerializerClassCodeGenerator
+ * Class HydratorCodeGenerator
  *
  * @author Tales Santos <tales.augusto.santos@gmail.com>
  */
-class SerializerClassCodeGenerator
+class HydratorCodeGenerator
 {
     /**
      * @var \Twig_Environment
@@ -25,19 +25,12 @@ class SerializerClassCodeGenerator
     private $twig;
 
     /**
-     * @var string
-     */
-    private $template;
-
-    /**
-     * SerializerClassCodeGenerator constructor.
+     * CodeGenerator constructor.
      * @param \Twig_Environment $twig
-     * @param string $template
      */
-    public function __construct(\Twig_Environment $twig, string $template)
+    public function __construct(\Twig_Environment $twig)
     {
         $this->twig = $twig;
-        $this->template = $template;
     }
 
     /**
@@ -67,12 +60,12 @@ class SerializerClassCodeGenerator
             'hierarchy_classes' => $hierarchy
         ];
 
-        return $this->twig->render($this->template, $context);
+        return $this->twig->render($classMetadata->template, $context);
     }
 
     public function getClassName(ClassMetadata $classMetadata): string
     {
-        return str_replace('\\', '', $classMetadata->name) . 'Serializer';
+        return str_replace('\\', '', $classMetadata->name) . 'Hydrator';
     }
 
     private function getGroups(ClassMetadata $metadata): array

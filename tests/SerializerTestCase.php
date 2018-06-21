@@ -26,7 +26,7 @@ use TSantos\Serializer\SerializerInterface;
  */
 abstract class SerializerTestCase extends TestCase
 {
-    protected $classCacheDir = __DIR__ . '/../var/classes';
+    protected $classCacheDir = __DIR__ . '/../var/hydrators';
 
     protected $clearCache = true;
 
@@ -51,7 +51,7 @@ abstract class SerializerTestCase extends TestCase
 
         $builder
             ->setMetadataDriver(new TestDriver($mapping))
-            ->setSerializerClassDir($this->classCacheDir)
+            ->setHydratorDir($this->classCacheDir)
             ->enableBuiltInNormalizers()
             ->setDebug(true);
 
