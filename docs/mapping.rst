@@ -8,8 +8,8 @@ Zero User Mapping
 -----------------
 
 TSantos Serializer will do its better to extract the must important metadata information from your class by reading
-its structure without the needing to annotate every single property of your class. All you need to do is to write your
-class with good type-hint parameters and proper return types::
+its structure without the needing add custom annotations on every single property of your class. All you need to do is
+to write classes with good type-hint parameters and proper return types::
 
     namespace App\Entity;
 
@@ -25,14 +25,13 @@ class with good type-hint parameters and proper return types::
         public function getAuthor(): Author { ... } // accessor
     }
 
-The serializer is smart enough to extract the data types from the property's mutators and accessors. So, the serializer
-will serialize the properties `id`, `title`, `comment` and `Author` casting them to `integer`, `string`, `Comment` and
-`Author` respectively.
+The serializer is smart enough to extract the data types from the property's mutators and accessors and will
+(de-)serialize them respecting those types.
 
 The previous example is a good start point because you don't need to worry about the boring process of mapping all
-properties of all classes you want to serialize and will cover the must cases. However, you don't have any
+properties of all classes you want to serialize and is enough to cover the must use cases. However, you don't have any
 control of what data should be serialized and when it should be serialized. That's why you should use the mapping
-mechanism if you want a refined control over the serialization.
+mechanism if you want a refined control over the serialization process.
 
 The Serializer Builder
 ----------------------
@@ -48,7 +47,8 @@ where are your mapping information::
       ->build();
 
 .. note::
-    Because the builder accepts many metadata directories, you can mix the formats in the same serializer instance.
+    Because the builder accepts many metadata directories, you can mix the supported mapping formats in the same
+    serializer instance.
 
 .. note::
     You need to require the Symfony Yaml component to map your classes using the YAML format

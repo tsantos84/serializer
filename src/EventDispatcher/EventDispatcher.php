@@ -10,7 +10,7 @@
 
 namespace TSantos\Serializer\EventDispatcher;
 
-use TSantos\Serializer\EventDispatcher\Event\Event;
+use TSantos\Serializer\Event\Event;
 
 /**
  * Class EventDispatcher

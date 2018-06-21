@@ -14,11 +14,11 @@ use Metadata\MetadataFactoryInterface;
 use TSantos\Serializer\Metadata\ClassMetadata;
 
 /**
- * Class SerializerClassLoader
+ * Class HydratorLoader
  *
  * @author Tales Santos <tales.augusto.santos@gmail.com>
  */
-class SerializerClassLoader
+class HydratorLoader
 {
     const AUTOGENERATE_NEVER = 1;
     const AUTOGENERATE_ALWAYS = 2;
@@ -40,26 +40,26 @@ class SerializerClassLoader
     private $autogenerate;
 
     /**
-     * @var SerializerClassCodeGenerator
+     * @var HydratorCodeGenerator
      */
     private $codeGenerator;
 
     /**
-     * @var SerializerClassWriter
+     * @var HydratorCodeWriter
      */
     private $writer;
 
     /**
      * SerializerClassLoader constructor.
      * @param MetadataFactoryInterface $metadataFactory
-     * @param SerializerClassCodeGenerator $codeGenerator
-     * @param SerializerClassWriter $writer
+     * @param HydratorCodeGenerator $codeGenerator
+     * @param HydratorCodeWriter $writer
      * @param int $autogenerate
      */
     public function __construct(
         MetadataFactoryInterface $metadataFactory,
-        SerializerClassCodeGenerator $codeGenerator,
-        SerializerClassWriter $writer,
+        HydratorCodeGenerator $codeGenerator,
+        HydratorCodeWriter $writer,
         int $autogenerate
     ) {
         $this->metadataFactory = $metadataFactory;
@@ -71,9 +71,9 @@ class SerializerClassLoader
     /**
      * @param string $class
      * @param SerializerInterface $serializer
-     * @return SerializerClassInterface
+     * @return HydratorInterface
      */
-    public function load(string $class, SerializerInterface $serializer): SerializerClassInterface
+    public function load(string $class, SerializerInterface $serializer): HydratorInterface
     {
         if (isset($this->instances[$class])) {
             return $this->instances[$class];
@@ -92,7 +92,7 @@ class SerializerClassLoader
         $fqn = $this->getClassName($classMetadata);
 
         if (class_exists($fqn, false)) {
-            return $this->instances[$class] = new $fqn($serializer);
+            return $this->instances[$class] = $this->injectSerializer(new $fqn(), $serializer);
         }
 
         $filename = $this->getFilename($classMetadata);
@@ -115,7 +115,7 @@ class SerializerClassLoader
                 break;
         }
 
-        return $this->instances[$class] = new $fqn($serializer);
+        return $this->instances[$class] = $this->injectSerializer(new $fqn(), $serializer);
     }
 
     private function generate(ClassMetadata $classMetadata)
@@ -132,5 +132,14 @@ class SerializerClassLoader
     private function getFilename(ClassMetadata $classMetadata): string
     {
         return $this->writer->getPath() . DIRECTORY_SEPARATOR . $this->getClassName($classMetadata) . '.php';
+    }
+
+    private function injectSerializer(HydratorInterface $hydrator, SerializerInterface $serializer): HydratorInterface
+    {
+        if ($hydrator instanceof SerializerAwareInterface) {
+            $hydrator->setSerializer($serializer);
+        }
+
+        return $hydrator;
     }
 }

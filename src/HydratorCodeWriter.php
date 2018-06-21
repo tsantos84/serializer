@@ -13,11 +13,11 @@ namespace TSantos\Serializer;
 use Metadata\ClassMetadata;
 
 /**
- * Class SerializerClassWriter
+ * Class ClassWriter
  *
  * @author Tales Santos <tales.augusto.santos@gmail.com>
  */
-class SerializerClassWriter
+class HydratorCodeWriter
 {
     /**
      * @var string
@@ -28,7 +28,7 @@ class SerializerClassWriter
      * SerializerClassWriter constructor.
      * @param string $path
      */
-    public function __construct($path)
+    public function __construct(string $path)
     {
         $this->path = $path;
     }
@@ -40,7 +40,7 @@ class SerializerClassWriter
      */
     public function write(ClassMetadata $classMetadata, string $code)
     {
-        $filename = sprintf('%s/%sSerializer.php', $this->path, str_replace('\\', '', $classMetadata->name));
+        $filename = sprintf('%s/%sHydrator.php', $this->path, str_replace('\\', '', $classMetadata->name));
         return file_put_contents($filename, $code) > 0;
     }
 

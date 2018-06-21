@@ -12,11 +12,9 @@ namespace Tests\TSantos\Serializer\Serialization;
 
 use Tests\TSantos\Serializer\Fixture\Model\Person;
 use Tests\TSantos\Serializer\SerializerTestCase;
-use TSantos\Serializer\EventDispatcher\Event\PostDeserializationEvent;
-use TSantos\Serializer\EventDispatcher\Event\PostSerializationEvent;
-use TSantos\Serializer\EventDispatcher\Event\PreDeserializationEvent;
-use TSantos\Serializer\EventDispatcher\Event\PreSerializationEvent;
-use TSantos\Serializer\EventDispatcher\SerializerEvents;
+use TSantos\Serializer\Event\PostDeserializationEvent;
+use TSantos\Serializer\Event\PreDeserializationEvent;
+use TSantos\Serializer\Events;
 use TSantos\Serializer\SerializerBuilder;
 
 /**
@@ -49,12 +47,12 @@ class DeserializationListenerTest extends SerializerTestCase
     protected function createBuilder()
     {
         return (new SerializerBuilder())
-            ->addListener(SerializerEvents::PRE_DESERIALIZATION, function (PreDeserializationEvent $event) {
+            ->addListener(Events::PRE_DESERIALIZATION, function (PreDeserializationEvent $event) {
                 $data = $event->getData();
                 $data['lastName'] = 'Santos';
                 $event->setData($data);
             })
-            ->addListener(SerializerEvents::POST_DESERIALIZATION, function (PostDeserializationEvent $event) {
+            ->addListener(Events::POST_DESERIALIZATION, function (PostDeserializationEvent $event) {
                 /** @var Person $person */
                 $person = $event->getObject();
                 $person->setMarried(true);

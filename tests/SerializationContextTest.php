@@ -26,9 +26,9 @@ class SerializationContextTest extends TestCase
         $context = new SerializationContext();
         $subject = new class {};
         $context->enter($subject);
-        $context->left($subject);
+        $context->leave($subject);
         $context->enter($subject);
-        $context->left($subject);
+        $context->leave($subject);
         $this->assertTrue(true);
     }
 
