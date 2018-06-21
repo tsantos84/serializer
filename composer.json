@@ -25,6 +25,7 @@
         "jms/metadata": "^1.6",
         "doctrine/instantiator": "^1.1",
         "symfony/event-dispatcher": "^3.4 || ^4.0",
+        "symfony/property-info": "^3.4 || ^4.0",
         "twig/twig": "^2.4"
     },
     "require-dev": {
@@ -35,11 +36,5 @@
     "suggest": {
         "doctrine/annotations": "Allow to use annotations format to define class metadata",
         "symfony/yaml": "Allow to use Yaml format to define class metadata"
-    },
-    "repositories": [
-        {
-            "type": "path",
-            "url": "../property-info"
-        }
-    ]
+    }
 }
