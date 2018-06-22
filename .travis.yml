@@ -46,7 +46,7 @@ after_success:
   - |
     # Installing Benchmark Dependencies
     composer clear-cache
-    composer install -a --no-dev --prefer-source
+    composer install -a --prefer-source
 
   - |
     # Performing serialization benchmark
