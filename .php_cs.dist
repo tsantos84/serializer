@@ -13,6 +13,8 @@ return PhpCsFixer\Config::create()
         '@Symfony' => true,
         '@Symfony:risky' => true,
         '@PHPUnit60Migration:risky' => true,
+        'php_unit_namespaced' => true,
+        'php_unit_test_annotation' => ['style' => 'annotation'],
         'strict_param' => true,
         'declare_strict_types' => true,
         'final_internal_class' => true,

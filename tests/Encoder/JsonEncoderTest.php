@@ -17,13 +17,19 @@ use TSantos\Serializer\Encoder\JsonEncoder;
 
 class JsonEncoderTest extends TestCase
 {
-    public function testEncode()
+    /**
+     * @test
+     */
+    public function encode()
     {
         $encoder = new JsonEncoder();
         $this->assertEquals('{"foo":"bar"}', $encoder->encode(['foo' => 'bar']));
     }
 
-    public function testGetFormat()
+    /**
+     * @test
+     */
+    public function getFormat()
     {
         $encoder = new JsonEncoder();
         $this->assertEquals('json', $encoder->getFormat());

@@ -23,14 +23,20 @@ use Tests\TSantos\Serializer\SerializerTestCase;
  */
 class ScalarTypesSerializationTest extends SerializerTestCase
 {
-    public function testSerializeWithScalarValue()
+    /**
+     * @test
+     */
+    public function serializeWithScalarValue()
     {
         $serializer = $this->createSerializer([]);
         $json = $serializer->serialize(1);
         $this->assertEquals(1, $json);
     }
 
-    public function testSerializeWithSimpleArray()
+    /**
+     * @test
+     */
+    public function serializeWithSimpleArray()
     {
         $serializer = $this->createSerializer([]);
         $json = $serializer->serialize([1, 2, 3, 'four']);

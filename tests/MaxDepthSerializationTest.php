@@ -27,7 +27,10 @@ use TSantos\Serializer\SerializationContext;
  */
 class MaxDepthSerializationTest extends SerializerTestCase
 {
-    public function testSerializeWithMaxDepth()
+    /**
+     * @test
+     */
+    public function serializeWithMaxDepth()
     {
         $personMapping = $this->createMapping(Person::class, [
             'id' => ['type' => 'integer'],
@@ -68,7 +71,10 @@ class MaxDepthSerializationTest extends SerializerTestCase
         ]), $json);
     }
 
-    public function testSerializeWithMaxDepthOnPlainArray()
+    /**
+     * @test
+     */
+    public function serializeWithMaxDepthOnPlainArray()
     {
         $serializer = $this->createSerializer();
 
@@ -91,7 +97,10 @@ class MaxDepthSerializationTest extends SerializerTestCase
         $this->assertEquals('{"0":1,"1":2,"2":3,"3":"four","five":["six"],"seven":{"eight":[]}}', $json);
     }
 
-    public function testSerializeWithMaxDepthOnJsonSerializableInterface()
+    /**
+     * @test
+     */
+    public function serializeWithMaxDepthOnJsonSerializableInterface()
     {
         $serializer = $this->createSerializer($this->createMapping(Vehicle::class, [
             'color' => [],
