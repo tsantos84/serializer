@@ -21,7 +21,7 @@ install:
   - composer install -a
 
 script:
-  - vendor/bin/php-cs-fix --config=.php_cs.dist --dry-run
+  - vendor/bin/php-cs-fixer --config=.php_cs.dist --dry-run
   - vendor/bin/phpunit $PHPUNIT_FLAGS
   - |
     # Sending code coverage to Scrutinizer
