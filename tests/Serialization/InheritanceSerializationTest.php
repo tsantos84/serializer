@@ -15,9 +15,8 @@ use Tests\TSantos\Serializer\Fixture\Model\Employee;
 use Tests\TSantos\Serializer\SerializerTestCase;
 
 /**
- * Class InheritanceSerializationTest
+ * Class InheritanceSerializationTest.
  *
- * @package Tests\Serializer
  * @author Tales Santos <tales.augusto.santos@gmail.com>
  * @runTestsInSeparateProcesses
  */
@@ -31,10 +30,10 @@ class InheritanceSerializationTest extends SerializerTestCase
 
         $serializer = $this->createSerializer(array_merge(
             $this->createMapping(Person::class, [
-                'name' => []
+                'name' => [],
             ]),
             $this->createMapping(Employee::class, [
-                'position' => []
+                'position' => [],
             ])
         ));
 
@@ -48,10 +47,10 @@ class InheritanceSerializationTest extends SerializerTestCase
     {
         $serializer = $this->createSerializer(array_merge(
             $this->createMapping(Person::class, [
-                'name' => []
+                'name' => [],
             ]),
             $this->createMapping(Employee::class, [
-                'position' => []
+                'position' => [],
             ])
         ));
 

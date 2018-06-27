@@ -15,7 +15,7 @@ use Metadata\Driver\FileLocator;
 use TSantos\Serializer\Metadata\Driver\YamlDriver;
 
 /**
- * Class YamlDriverTest
+ * Class YamlDriverTest.
  *
  * @author Tales Santos <tales.augusto.santos@gmail.com>
  */
@@ -31,8 +31,9 @@ class YamlDriverTest extends AbstractDriverTest
 
     public function createDriver(): DriverInterface
     {
-        return new YamlDriver(new FileLocator([
-            'Tests\TSantos\Serializer\Fixture\Model' => __DIR__ . '/../../Resources/mapping']
+        return new YamlDriver(new FileLocator(
+            [
+            'Tests\TSantos\Serializer\Fixture\Model' => __DIR__.'/../../Resources/mapping', ]
         ));
     }
 }

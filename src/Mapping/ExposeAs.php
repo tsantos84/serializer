@@ -11,7 +11,7 @@
 namespace TSantos\Serializer\Mapping;
 
 /**
- * Class ExposeAs
+ * Class ExposeAs.
  *
  * @author Tales Santos <tales.augusto.santos@gmail.com>
  *

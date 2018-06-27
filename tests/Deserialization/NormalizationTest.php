@@ -14,7 +14,7 @@ use Tests\TSantos\Serializer\Fixture\Model\Person;
 use Tests\TSantos\Serializer\SerializerTestCase;
 
 /**
- * Class NormalizationTest
+ * Class NormalizationTest.
  *
  * @author Tales Santos <tales.augusto.santos@gmail.com>
  *
@@ -29,14 +29,14 @@ class NormalizationTest extends SerializerTestCase
             $this->createMapping(Person::class, [
                 'id' => ['type' => 'integer'],
                 'name' => ['type' => 'string'],
-                'birthday' => ['type' => \DateTime::class]
+                'birthday' => ['type' => \DateTime::class],
             ])
         ));
 
         $json = json_encode([
             'id' => 10,
             'name' => 'Tales Santos',
-            'birthday' => \DateTime::createFromFormat(\DateTime::ATOM, '1984-11-28T10:00:00+00:00')->format(\DateTime::ATOM)
+            'birthday' => \DateTime::createFromFormat(\DateTime::ATOM, '1984-11-28T10:00:00+00:00')->format(\DateTime::ATOM),
         ]);
         /** @var Person $person */
         $person = $serializer->deserialize($json, Person::class);

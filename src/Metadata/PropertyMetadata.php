@@ -13,20 +13,19 @@ namespace TSantos\Serializer\Metadata;
 use Metadata\PropertyMetadata as BasePropertyMetadata;
 
 /**
- * Class PropertyMetadata
+ * Class PropertyMetadata.
  *
- * @package Serializer\Metadata
  * @author Tales Santos <tales.augusto.santos@gmail.com>
  */
 class PropertyMetadata extends BasePropertyMetadata
 {
     public $type;
-    /** @var  \ReflectionMethod */
+    /** @var \ReflectionMethod */
     public $getterRef;
     public $getter;
     public $readValueFilter;
 
-    /** @var  \ReflectionMethod */
+    /** @var \ReflectionMethod */
     public $setterRef;
     public $setter;
     public $writeValueFilter;
@@ -68,7 +67,7 @@ class PropertyMetadata extends BasePropertyMetadata
             $this->readValueFilter,
             $this->writeValueFilter,
             $this->readOnly,
-            $this->options
+            $this->options,
         ]);
     }
 

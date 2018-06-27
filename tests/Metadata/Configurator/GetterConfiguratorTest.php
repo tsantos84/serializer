@@ -14,7 +14,7 @@ use TSantos\Serializer\Metadata\Configurator\GetterConfigurator;
 use TSantos\Serializer\Metadata\PropertyMetadata;
 
 /**
- * Class GetterConfiguratorTest
+ * Class GetterConfiguratorTest.
  *
  * @author Tales Santos <tales.augusto.santos@gmail.com>
  */
@@ -28,7 +28,7 @@ class GetterConfiguratorTest extends AbstractConfiguratorTest
     /** @test */
     public function it_should_not_change_the_getter_if_it_is_already_defined()
     {
-        $subject = new class {
+        $subject = new class() {
             public $id;
         };
 
@@ -42,7 +42,7 @@ class GetterConfiguratorTest extends AbstractConfiguratorTest
     /** @test */
     public function it_can_configure_property_to_read_from_its_own_public_value()
     {
-        $subject = new class {
+        $subject = new class() {
             public $id;
         };
 
@@ -55,9 +55,12 @@ class GetterConfiguratorTest extends AbstractConfiguratorTest
     /** @test */
     public function it_should_configure_property_to_ready_from_getter_method()
     {
-        $subject = new class {
+        $subject = new class() {
             private $id;
-            public function getId() {}
+
+            public function getId()
+            {
+            }
         };
 
         $classMetadata = $this->createClassMetadata($subject);
@@ -69,9 +72,12 @@ class GetterConfiguratorTest extends AbstractConfiguratorTest
     /** @test */
     public function it_should_configure_property_to_ready_from_isser_method()
     {
-        $subject = new class {
+        $subject = new class() {
             private $published;
-            public function isPublished() {}
+
+            public function isPublished()
+            {
+            }
         };
 
         $classMetadata = $this->createClassMetadata($subject);
@@ -83,9 +89,12 @@ class GetterConfiguratorTest extends AbstractConfiguratorTest
     /** @test */
     public function it_should_configure_property_to_ready_from_hasser_method()
     {
-        $subject = new class {
+        $subject = new class() {
             private $address;
-            public function hasAddress() {}
+
+            public function hasAddress()
+            {
+            }
         };
 
         $classMetadata = $this->createClassMetadata($subject);

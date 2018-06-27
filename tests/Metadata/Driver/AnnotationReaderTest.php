@@ -15,7 +15,7 @@ use Metadata\Driver\DriverInterface;
 use TSantos\Serializer\Metadata\Driver\AnnotationDriver;
 
 /**
- * Class AnnotationReaderTest
+ * Class AnnotationReaderTest.
  *
  * @author Tales Santos <tales.augusto.santos@gmail.com>
  */

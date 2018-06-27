@@ -15,9 +15,10 @@ use TSantos\Serializer\Metadata\ClassMetadata;
 use TSantos\Serializer\Metadata\PropertyMetadata;
 
 /**
- * Class ReflectionDriver
+ * Class ReflectionDriver.
  *
  * @author Tales Santos <tales.augusto.santos@gmail.com>
+ *
  * @internal
  */
 class ReflectionDriver implements DriverInterface

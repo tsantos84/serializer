@@ -15,7 +15,7 @@ use Tests\TSantos\Serializer\Fixture\Model\Person;
 use Tests\TSantos\Serializer\SerializerTestCase;
 
 /**
- * Class DeserializeArrayOfObjectTest
+ * Class DeserializeArrayOfObjectTest.
  *
  * @author Tales Santos <tales.augusto.santos@gmail.com>
  * @runTestsInSeparateProcesses
@@ -29,11 +29,11 @@ class DeserializeCollectionsTest extends SerializerTestCase
             $this->createMapping(Person::class, [
                 'name' => ['type' => 'string'],
                 'colors' => ['type' => 'array'],
-                'favouriteBook' => ['type' => Book::class]
+                'favouriteBook' => ['type' => Book::class],
             ]),
             $this->createMapping(Book::class, [
                 'id' => ['type' => 'integer'],
-                'name' => ['type' => 'string']
+                'name' => ['type' => 'string'],
             ])
         ));
 
@@ -86,7 +86,7 @@ EOF;
         $serializer = $this->createSerializer();
         $content = '[1,2,3,4,5,6,7,8,9,10]';
         $collection = $serializer->deserialize($content, 'integer[]');
-        $this->assertSame([1,2,3,4,5,6,7,8,9,10], $collection);
+        $this->assertSame([1, 2, 3, 4, 5, 6, 7, 8, 9, 10], $collection);
     }
 
     /** @test */
@@ -95,7 +95,7 @@ EOF;
         $serializer = $this->createSerializer();
         $content = '[1,2,"3",4,5,6,7,8,9,10]';
         $collection = $serializer->deserialize($content, 'array');
-        $this->assertSame([1,2,'3',4,5,6,7,8,9,10], $collection);
+        $this->assertSame([1, 2, '3', 4, 5, 6, 7, 8, 9, 10], $collection);
     }
 
     /** @test */
@@ -104,7 +104,7 @@ EOF;
         $serializer = $this->createSerializer();
         $content = '[1,2,3,4,5,6,7,8,9,10]';
         $collection = $serializer->deserialize($content, 'string[]');
-        $this->assertSame(["1", "2", "3", "4", "5", "6", "7", "8", "9", "10"], $collection);
+        $this->assertSame(['1', '2', '3', '4', '5', '6', '7', '8', '9', '10'], $collection);
     }
 
     /** @test */
@@ -113,6 +113,6 @@ EOF;
         $serializer = $this->createSerializer();
         $content = '[1.1,2.2,3.3,4.4,5.5,6.6,7.7,8.8,9.9,10.11]';
         $collection = $serializer->deserialize($content, 'float[]');
-        $this->assertSame([1.1,2.2,3.3,4.4,5.5,6.6,7.7,8.8,9.9,10.11], $collection);
+        $this->assertSame([1.1, 2.2, 3.3, 4.4, 5.5, 6.6, 7.7, 8.8, 9.9, 10.11], $collection);
     }
 }

@@ -14,7 +14,7 @@ use TSantos\Serializer\Normalizer\DenormalizerInterface;
 use TSantos\Serializer\Normalizer\NormalizerInterface;
 
 /**
- * Class NormalizerRegistry
+ * Class NormalizerRegistry.
  *
  * @author Tales Santos <tales.augusto.santos@gmail.com>
  */
@@ -30,27 +30,30 @@ class NormalizerRegistry implements NormalizerRegistryInterface
      */
     private $cachedNormalizers = [
         'normalizer' => [],
-        'denormalizer' => []
+        'denormalizer' => [],
     ];
 
     /**
      * @param $normalizer
+     *
      * @return $this
      */
     public function add($normalizer)
     {
         $this->normalizers[] = $normalizer;
+
         return $this;
     }
 
     public function unshift($normalizer)
     {
         array_unshift($this->normalizers, $normalizer);
+
         return $this;
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function getNormalizer($data, SerializationContext $context): ?NormalizerInterface
     {
@@ -65,6 +68,7 @@ class NormalizerRegistry implements NormalizerRegistryInterface
                 if ($normalizer instanceof CacheableNormalizerInterface && $normalizer->canBeCachedByType()) {
                     $this->cachedNormalizers['normalizer'][$type] = $normalizer;
                 }
+
                 return $normalizer;
             }
         }
@@ -73,7 +77,7 @@ class NormalizerRegistry implements NormalizerRegistryInterface
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function getDenormalizer($data, string $type, DeserializationContext $context): ?DenormalizerInterface
     {
@@ -87,6 +91,7 @@ class NormalizerRegistry implements NormalizerRegistryInterface
                 if ($denormalizer instanceof CacheableNormalizerInterface && $denormalizer->canBeCachedByType()) {
                     $this->cachedNormalizers['denormalizer'][$type] = $denormalizer;
                 }
+
                 return $denormalizer;
             }
         }

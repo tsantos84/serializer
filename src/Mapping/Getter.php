@@ -11,7 +11,7 @@
 namespace TSantos\Serializer\Mapping;
 
 /**
- * Class Getter
+ * Class Getter.
  *
  * @author Tales Santos <tales.augusto.santos@gmail.com>
  *

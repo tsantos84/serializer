@@ -15,7 +15,7 @@ use TSantos\Serializer\Metadata\ClassMetadata;
 use TSantos\Serializer\Metadata\ConfiguratorInterface;
 
 /**
- * Class AbstractConfiguratorTest
+ * Class AbstractConfiguratorTest.
  *
  * @author Tales Santos <tales.augusto.santos@gmail.com>
  */

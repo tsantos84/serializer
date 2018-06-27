@@ -11,7 +11,7 @@
 namespace TSantos\Serializer\Exception;
 
 /**
- * Class InvalidArgumentException
+ * Class InvalidArgumentException.
  *
  * @author Tales Santos <tales.augusto.santos@gmail.com>
  */

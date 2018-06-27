@@ -15,16 +15,16 @@ use TSantos\Serializer\SerializerAwareInterface;
 use TSantos\Serializer\Traits\SerializerAwareTrait;
 
 /**
- * Class JsonNormalizer
- * @package TSantos\Serializer\Normalizer
+ * Class JsonNormalizer.
  */
 class JsonNormalizer implements NormalizerInterface, SerializerAwareInterface
 {
     use SerializerAwareTrait;
 
     /**
-     * @param \JsonSerializable $data
+     * @param \JsonSerializable    $data
      * @param SerializationContext $context
+     *
      * @return mixed
      */
     public function normalize($data, SerializationContext $context)

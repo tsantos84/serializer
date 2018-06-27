@@ -14,7 +14,7 @@ use Metadata\MetadataFactoryInterface;
 use TSantos\Serializer\Metadata\ClassMetadata;
 
 /**
- * Class HydratorLoader
+ * Class HydratorLoader.
  *
  * @author Tales Santos <tales.augusto.santos@gmail.com>
  */
@@ -51,10 +51,11 @@ class HydratorLoader
 
     /**
      * SerializerClassLoader constructor.
+     *
      * @param MetadataFactoryInterface $metadataFactory
-     * @param HydratorCodeGenerator $codeGenerator
-     * @param HydratorCodeWriter $writer
-     * @param int $autogenerate
+     * @param HydratorCodeGenerator    $codeGenerator
+     * @param HydratorCodeWriter       $writer
+     * @param int                      $autogenerate
      */
     public function __construct(
         MetadataFactoryInterface $metadataFactory,
@@ -69,8 +70,9 @@ class HydratorLoader
     }
 
     /**
-     * @param string $class
+     * @param string              $class
      * @param SerializerInterface $serializer
+     *
      * @return HydratorInterface
      */
     public function load(string $class, SerializerInterface $serializer): HydratorInterface
@@ -84,7 +86,7 @@ class HydratorLoader
 
         if (null === $classMetadata) {
             throw new \RuntimeException(
-                'No mapping file was found for class ' . $class .
+                'No mapping file was found for class '.$class.
                 '. Did you configure the correct paths for serializer?'
             );
         }
@@ -131,7 +133,7 @@ class HydratorLoader
 
     private function getFilename(ClassMetadata $classMetadata): string
     {
-        return $this->writer->getPath() . DIRECTORY_SEPARATOR . $this->getClassName($classMetadata) . '.php';
+        return $this->writer->getPath().DIRECTORY_SEPARATOR.$this->getClassName($classMetadata).'.php';
     }
 
     private function injectSerializer(HydratorInterface $hydrator, SerializerInterface $serializer): HydratorInterface

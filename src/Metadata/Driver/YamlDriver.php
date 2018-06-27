@@ -18,7 +18,7 @@ use TSantos\Serializer\Metadata\PropertyMetadata;
 use TSantos\Serializer\Metadata\VirtualPropertyMetadata;
 
 /**
- * Class YamlDriver
+ * Class YamlDriver.
  *
  * @author Tales Santos <tales.augusto.santos@gmail.com>
  */
@@ -35,7 +35,7 @@ class YamlDriver extends AbstractFileDriver
         $config = Yaml::parse(file_get_contents($file));
 
         if (!isset($config[$class->name])) {
-            throw new MappingException('There is no mapping for class ' . $class->name);
+            throw new MappingException('There is no mapping for class '.$class->name);
         }
 
         $mapping = $config[$class->name];
@@ -64,9 +64,9 @@ class YamlDriver extends AbstractFileDriver
             $property->readValueFilter = $map['readValue'] ?? null;
             $property->writeValueFilter = $map['writeValue'] ?? null;
             $property->type = $map['type'] ?? null;
-            $property->groups = (array)($map['groups'] ?? ['Default']);
-            $property->readOnly = (bool)($map['readOnly'] ?? false);
-            $property->options = isset($map['options']) ? (array)$map['options'] : [];
+            $property->groups = (array) ($map['groups'] ?? ['Default']);
+            $property->readOnly = (bool) ($map['readOnly'] ?? false);
+            $property->options = isset($map['options']) ? (array) $map['options'] : [];
 
             $metadata->addPropertyMetadata($property);
         }
@@ -76,9 +76,9 @@ class YamlDriver extends AbstractFileDriver
 
             $property = new VirtualPropertyMetadata($class->name, $method);
             $property->type = $map['type'] ?? null;
-            $property->groups = (array)($map['groups'] ?? ['Default']);
+            $property->groups = (array) ($map['groups'] ?? ['Default']);
             $property->readValueFilter = $map['readValue'] ?? null;
-            $property->options = isset($map['options']) ? (array)$map['options'] : [];
+            $property->options = isset($map['options']) ? (array) $map['options'] : [];
             $metadata->addMethodMetadata($property);
 
             if (isset($map['exposeAs'])) {

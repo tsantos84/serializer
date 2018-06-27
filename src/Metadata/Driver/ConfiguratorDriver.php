@@ -15,9 +15,10 @@ use TSantos\Serializer\Metadata\ClassMetadata;
 use TSantos\Serializer\Metadata\ConfiguratorInterface;
 
 /**
- * Class ConfiguratorDriver
+ * Class ConfiguratorDriver.
  *
  * @author Tales Santos <tales.augusto.santos@gmail.com>
+ *
  * @internal
  */
 class ConfiguratorDriver implements DriverInterface
@@ -34,8 +35,9 @@ class ConfiguratorDriver implements DriverInterface
 
     /**
      * ConfiguratorDriver constructor.
+     *
      * @param DriverInterface $driver
-     * @param array $configurators
+     * @param array           $configurators
      */
     public function __construct(DriverInterface $driver, array $configurators)
     {

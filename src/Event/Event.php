@@ -11,11 +11,10 @@
 namespace TSantos\Serializer\Event;
 
 /**
- * Class Event
+ * Class Event.
  *
  * @author Tales Santos <tales.augusto.santos@gmail.com>
  */
 class Event extends \Symfony\Component\EventDispatcher\Event
 {
-
 }

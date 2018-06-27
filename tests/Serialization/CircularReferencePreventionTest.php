@@ -14,7 +14,7 @@ use Tests\TSantos\Serializer\Fixture\Model\Person;
 use Tests\TSantos\Serializer\SerializerTestCase;
 
 /**
- * Class CircularReferencePreventionTest
+ * Class CircularReferencePreventionTest.
  *
  * @author Tales Santos <tales.augusto.santos@gmail.com>
  *
@@ -32,7 +32,7 @@ class CircularReferencePreventionTest extends SerializerTestCase
         $person->setFather($person); // forcing circular reference
 
         $serializer = $this->createSerializer($this->createMapping(Person::class, [
-            'father' => []
+            'father' => [],
         ]));
 
         $serializer->serialize($person);
@@ -46,12 +46,12 @@ class CircularReferencePreventionTest extends SerializerTestCase
         $person = new Person();
         $collection = [];
 
-        for ($i=0; $i < 10; $i++) {
+        for ($i = 0; $i < 10; ++$i) {
             $collection[] = $person;
         }
 
         $serializer = $this->createSerializer($this->createMapping(Person::class, [
-            'father' => []
+            'father' => [],
         ]));
 
         $serializer->serialize($collection);

@@ -13,7 +13,7 @@ namespace TSantos\Serializer\Event;
 use TSantos\Serializer\SerializationContext;
 
 /**
- * Class PreSerializationEvent
+ * Class PreSerializationEvent.
  *
  * @author Tales Santos <tales.augusto.santos@gmail.com>
  */
@@ -31,7 +31,8 @@ class PreSerializationEvent extends Event
 
     /**
      * PreSerializationEvent constructor.
-     * @param mixed $data
+     *
+     * @param mixed                $data
      * @param SerializationContext $context
      */
     public function __construct($data, SerializationContext $context)
@@ -50,11 +51,13 @@ class PreSerializationEvent extends Event
 
     /**
      * @param $object
+     *
      * @return PreSerializationEvent
      */
     public function setObject($object): PreSerializationEvent
     {
         $this->object = $object;
+
         return $this;
     }
 

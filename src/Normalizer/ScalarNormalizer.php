@@ -15,8 +15,7 @@ use TSantos\Serializer\DeserializationContext;
 use TSantos\Serializer\SerializationContext;
 
 /**
- * Class ScalarNormalizer
- * @package TSantos\Serializer\Normalizer
+ * Class ScalarNormalizer.
  */
 class ScalarNormalizer implements NormalizerInterface, DenormalizerInterface, CacheableNormalizerInterface
 {

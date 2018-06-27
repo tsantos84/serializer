@@ -17,7 +17,7 @@ use TSantos\Serializer\Metadata\Driver\CallbackDriver;
 use TSantos\Serializer\Metadata\PropertyMetadata;
 
 /**
- * Class CallbackDriverTest
+ * Class CallbackDriverTest.
  *
  * @author Tales Santos <tales.augusto.santos@gmail.com>
  */
@@ -29,6 +29,7 @@ class CallbackDriverTest extends TestCase
         $callback = function (\ReflectionClass $class) {
             $metadata = new ClassMetadata($class->name);
             $metadata->addPropertyMetadata(new PropertyMetadata(Person::class, 'id'));
+
             return $metadata;
         };
 

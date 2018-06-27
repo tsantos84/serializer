@@ -17,14 +17,9 @@ use TSantos\Serializer\SerializerAwareInterface;
 use TSantos\Serializer\Traits\SerializerAwareTrait;
 
 /**
- * Class CollectionNormalizer
- * @package TSantos\Serializer\Normalizer
+ * Class CollectionNormalizer.
  */
-class CollectionNormalizer implements
-    NormalizerInterface,
-    DenormalizerInterface,
-    SerializerAwareInterface,
-    CacheableNormalizerInterface
+class CollectionNormalizer implements NormalizerInterface, DenormalizerInterface, SerializerAwareInterface, CacheableNormalizerInterface
 {
     use SerializerAwareTrait;
 
@@ -58,32 +53,33 @@ class CollectionNormalizer implements
             'string' => true,
             'float' => true,
             'double' => true,
-            'boolean' => true
+            'boolean' => true,
         ];
 
         if (isset($scalarTypes[$type])) {
             foreach ($data as $key => $val) {
-                if ($val === null) {
+                if (null === $val) {
                     continue;
                 }
                 switch ($type) {
                     case 'string':
-                        $data[$key] = (string)$val;
+                        $data[$key] = (string) $val;
                         continue;
                     case 'integer':
-                        $data[$key] = (integer)$val;
+                        $data[$key] = (int) $val;
                         continue;
                     case 'float':
-                        $data[$key] = (float)$val;
+                        $data[$key] = (float) $val;
                         continue;
                     case 'double':
-                        $data[$key] = (double)$val;
+                        $data[$key] = (float) $val;
                         continue;
                     case 'boolean':
-                        $data[$key] = (boolean)$val;
+                        $data[$key] = (bool) $val;
                         continue;
                 }
             }
+
             return $data;
         }
 

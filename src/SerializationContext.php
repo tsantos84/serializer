@@ -13,9 +13,8 @@ namespace TSantos\Serializer;
 use TSantos\Serializer\Exception\CircularReferenceException;
 
 /**
- * Class SerializationContext
+ * Class SerializationContext.
  *
- * @package Serializer
  * @author Tales Santos <tales.augusto.santos@gmail.com>
  */
 class SerializationContext extends AbstractContext
@@ -23,19 +22,21 @@ class SerializationContext extends AbstractContext
     /** @var bool */
     private $serializeNull = false;
 
-    /** @var array  */
+    /** @var array */
     private $circularReference = [];
 
-    /** @var int  */
+    /** @var int */
     private $circularReferenceCount = 1;
 
     /**
      * @param bool $enabled
+     *
      * @return SerializationContext
      */
     public function setSerializeNull(bool $enabled): self
     {
         $this->serializeNull = $enabled;
+
         return $this;
     }
 
@@ -49,11 +50,13 @@ class SerializationContext extends AbstractContext
 
     /**
      * @param int $circularReferenceCount
+     *
      * @return SerializationContext
      */
     public function setCircularReferenceCount(int $circularReferenceCount): self
     {
         $this->circularReferenceCount = $circularReferenceCount;
+
         return $this;
     }
 
@@ -72,6 +75,7 @@ class SerializationContext extends AbstractContext
 
         if (!isset($this->circularReference[$hash])) {
             $this->circularReference[$hash] = 1;
+
             return;
         }
 
@@ -96,7 +100,7 @@ class SerializationContext extends AbstractContext
         $hash = \spl_object_hash($object);
 
         if (isset($this->circularReference)) {
-            $this->circularReference[$hash]--;
+            --$this->circularReference[$hash];
         }
     }
 }

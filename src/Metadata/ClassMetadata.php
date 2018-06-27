@@ -13,7 +13,7 @@ namespace TSantos\Serializer\Metadata;
 use Metadata\MergeableClassMetadata;
 
 /**
- * Class ClassMetadata
+ * Class ClassMetadata.
  *
  * @author Tales Santos <tales.augusto.santos@gmail.com>
  */
@@ -25,15 +25,15 @@ class ClassMetadata extends MergeableClassMetadata
 
     public function serialize()
     {
-        return serialize(array(
+        return serialize([
             $this->name,
             $this->methodMetadata,
             $this->propertyMetadata,
             $this->fileResources,
             $this->createdAt,
             $this->baseClass,
-            $this->template
-        ));
+            $this->template,
+        ]);
     }
 
     public function unserialize($str)

@@ -11,7 +11,7 @@
 namespace TSantos\Serializer\Mapping;
 
 /**
- * Class Options
+ * Class Options.
  *
  * @Annotation
  */

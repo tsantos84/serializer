@@ -11,9 +11,8 @@
 namespace TSantos\Serializer;
 
 /**
- * Class Serializer
+ * Class Serializer.
  *
- * @package Serializer
  * @author Tales Santos <tales.augusto.santos@gmail.com>
  */
 interface SerializerInterface
@@ -21,8 +20,9 @@ interface SerializerInterface
     /**
      * Converts any value to the given format.
      *
-     * @param mixed $data
+     * @param mixed                $data
      * @param SerializationContext $context
+     *
      * @return string
      */
     public function serialize($data, SerializationContext $context = null): string;
@@ -32,8 +32,9 @@ interface SerializerInterface
      *
      * This operation is like a "toArray" conversion.
      *
-     * @param mixed $data
+     * @param mixed                     $data
      * @param SerializationContext|null $context
+     *
      * @return mixed
      */
     public function normalize($data, SerializationContext $context = null);
@@ -41,9 +42,10 @@ interface SerializerInterface
     /**
      * Deserialize the given in object of type $type.
      *
-     * @param string $content
-     * @param string $type
+     * @param string                      $content
+     * @param string                      $type
      * @param DeserializationContext|null $context
+     *
      * @return mixed
      */
     public function deserialize(string $content, string $type, DeserializationContext $context = null);
@@ -53,9 +55,10 @@ interface SerializerInterface
      *
      * This operation is like a "fromArray" conversion.
      *
-     * @param array $data
-     * @param string $type
+     * @param array                       $data
+     * @param string                      $type
      * @param DeserializationContext|null $context
+     *
      * @return mixed
      */
     public function denormalize($data, string $type, DeserializationContext $context = null);

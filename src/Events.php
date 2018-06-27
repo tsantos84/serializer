@@ -11,7 +11,7 @@
 namespace TSantos\Serializer;
 
 /**
- * Class SerializerEvents
+ * Class SerializerEvents.
  *
  * @author Tales Santos <tales.augusto.santos@gmail.com>
  */

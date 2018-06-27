@@ -20,20 +20,20 @@ use TSantos\Serializer\SerializerBuilder;
 use TSantos\Serializer\SerializerInterface;
 
 /**
- * Class SerializerTestCase
+ * Class SerializerTestCase.
  *
  * @author Tales Santos <tales.augusto.santos@gmail.com>
  */
 abstract class SerializerTestCase extends TestCase
 {
-    protected $classCacheDir = __DIR__ . '/../var/hydrators';
+    protected $classCacheDir = __DIR__.'/../var/hydrators';
 
     protected $clearCache = true;
 
     protected function tearDown()
     {
-        if ($this->clearCache && is_dir($dir = __DIR__ . '/../var')) {
-            system('rm -rf ' . escapeshellarg($dir), $retval);
+        if ($this->clearCache && is_dir($dir = __DIR__.'/../var')) {
+            system('rm -rf '.escapeshellarg($dir), $retval);
         }
     }
 
@@ -80,8 +80,9 @@ abstract class SerializerTestCase extends TestCase
                     }
                     $metadata->addMethodMetadata($m);
                 }
+
                 return $metadata;
-            })
+            }),
         ];
     }
 }

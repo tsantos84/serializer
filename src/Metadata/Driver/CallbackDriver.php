@@ -14,7 +14,7 @@ use Metadata\Driver\DriverInterface;
 use TSantos\Serializer\Metadata\ClassMetadata;
 
 /**
- * Class CallbackDriver
+ * Class CallbackDriver.
  *
  * @author Tales Santos <tales.augusto.santos@gmail.com>
  */
@@ -27,6 +27,7 @@ class CallbackDriver implements DriverInterface
 
     /**
      * CallbackDriver constructor.
+     *
      * @param callable $callback
      */
     public function __construct(callable $callback)

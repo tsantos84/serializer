@@ -11,7 +11,7 @@
 namespace TSantos\Serializer\EventDispatcher;
 
 /**
- * Class EventSubscriberInterface
+ * Class EventSubscriberInterface.
  *
  * @author Tales Santos <tales.augusto.santos@gmail.com>
  */

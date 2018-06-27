@@ -18,7 +18,7 @@ use TSantos\Serializer\Event\PreSerializationEvent;
 use TSantos\Serializer\EventDispatcher\EventDispatcherInterface;
 
 /**
- * Class EventEmitterSerializer
+ * Class EventEmitterSerializer.
  *
  * Dispatches some events in serialization and deserialization operations
  *
@@ -33,9 +33,10 @@ class EventEmitterSerializer extends Serializer
 
     /**
      * EventEmitterSerializer constructor.
-     * @param EncoderInterface $encoder
+     *
+     * @param EncoderInterface            $encoder
      * @param NormalizerRegistryInterface $normalizers
-     * @param EventDispatcherInterface $dispatcher
+     * @param EventDispatcherInterface    $dispatcher
      */
     public function __construct(
         EncoderInterface $encoder,

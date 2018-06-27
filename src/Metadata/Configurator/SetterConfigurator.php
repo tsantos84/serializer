@@ -15,7 +15,7 @@ use TSantos\Serializer\Metadata\ConfiguratorInterface;
 use TSantos\Serializer\Metadata\PropertyMetadata;
 
 /**
- * Class SetterConfigurator
+ * Class SetterConfigurator.
  *
  * @author Tales Santos <tales.augusto.santos@gmail.com>
  */
@@ -36,8 +36,9 @@ class SetterConfigurator implements ConfiguratorInterface
     {
         $ucName = ucfirst($propertyMetadata->name);
 
-        if ($classMetadata->reflection->hasMethod($setter = 'set' . $ucName)) {
+        if ($classMetadata->reflection->hasMethod($setter = 'set'.$ucName)) {
             $propertyMetadata->setSetter($setter);
+
             return;
         }
 

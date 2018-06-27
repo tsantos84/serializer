@@ -1,0 +1,18 @@
+<?php
+
+$finder = PhpCsFixer\Finder::create()
+    ->in(['src', 'tests'])
+    ->exclude('src/Resources')
+;
+
+return PhpCsFixer\Config::create()
+    ->setRiskyAllowed(true)
+    ->setUsingCache(false)
+    ->setRules([
+        '@PSR2' => true,
+        '@Symfony' => true,
+        'strict_param' => true,
+        'array_syntax' => ['syntax' => 'short'],
+    ])
+    ->setFinder($finder)
+;

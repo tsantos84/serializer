@@ -13,7 +13,7 @@ namespace TSantos\Serializer\EventDispatcher;
 use TSantos\Serializer\Event\Event;
 
 /**
- * Class EventDispatcher
+ * Class EventDispatcher.
  *
  * @author Tales Santos <tales.augusto.santos@gmail.com>
  */
@@ -26,6 +26,7 @@ class EventDispatcher implements EventDispatcherInterface
 
     /**
      * EventDispatcher constructor.
+     *
      * @param \Symfony\Component\EventDispatcher\EventDispatcherInterface $dispatcher
      */
     public function __construct(\Symfony\Component\EventDispatcher\EventDispatcherInterface $dispatcher = null)
@@ -35,7 +36,7 @@ class EventDispatcher implements EventDispatcherInterface
 
     public function dispatch(string $eventName, Event $event, string $type = null): Event
     {
-        if (null !== $type && $this->dispatcher->hasListeners($typeEventName = $eventName . '.' . $type)) {
+        if (null !== $type && $this->dispatcher->hasListeners($typeEventName = $eventName.'.'.$type)) {
             $this->dispatcher->dispatch($typeEventName, $event);
         }
 
@@ -49,7 +50,7 @@ class EventDispatcher implements EventDispatcherInterface
     public function addListener(string $eventName, callable $listener, int $priority = 0, string $type = null)
     {
         if (null !== $type) {
-            $eventName .= '.' . $type;
+            $eventName .= '.'.$type;
         }
 
         $this->dispatcher->addListener($eventName, $listener, $priority);

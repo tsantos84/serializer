@@ -11,9 +11,8 @@
 namespace Tests\TSantos\Serializer\Fixture\Model;
 
 /**
- * Class Employee
+ * Class Employee.
  *
- * @package Tests\TSantos\Serializer\Fixture
  * @author Tales Santos <tales.augusto.santos@gmail.com>
  */
 class Employee extends Person
@@ -33,11 +32,13 @@ class Employee extends Person
 
     /**
      * @param string $position
+     *
      * @return Employee
      */
     public function setPosition(string $position): Employee
     {
         $this->position = $position;
+
         return $this;
     }
 }

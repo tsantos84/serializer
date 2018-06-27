@@ -18,7 +18,7 @@ use TSantos\Serializer\DeserializationContext;
 use TSantos\Serializer\Metadata\Driver\ReflectionDriver;
 
 /**
- * Class DeserializeObjectTest
+ * Class DeserializeObjectTest.
  *
  * @author Tales Santos <tales.augusto.santos@gmail.com>
  * @runTestsInSeparateProcesses
@@ -31,11 +31,11 @@ class DeserializeSimpleObjectTest extends SerializerTestCase
         $serializer = $this->createSerializer(array_merge(
             $this->createMapping(Person::class, [
                 'name' => ['type' => 'string'],
-                'favouriteBook' => ['type' => Book::class]
+                'favouriteBook' => ['type' => Book::class],
             ]),
             $this->createMapping(Book::class, [
                 'id' => ['type' => 'integer'],
-                'name' => ['type' => 'string']
+                'name' => ['type' => 'string'],
             ])
         ));
 
@@ -62,7 +62,7 @@ EOF;
     public function it_can_deserialize_a_simple_object_by_reflection()
     {
         $serializer = $this->createSerializer([
-            Dummy::class => new ReflectionDriver()
+            Dummy::class => new ReflectionDriver(),
         ]);
 
         $content = '{"foo":"bar"}';

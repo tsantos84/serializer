@@ -11,7 +11,7 @@
 namespace Tests\TSantos\Serializer\Fixture\Model;
 
 /**
- * Class Coordinates
+ * Class Coordinates.
  *
  * @author Tales Santos <tales.augusto.santos@gmail.com>
  */
@@ -25,6 +25,7 @@ class Coordinates
 
     /**
      * Coordinates constructor.
+     *
      * @param float $x
      * @param float $y
      */
@@ -44,11 +45,13 @@ class Coordinates
 
     /**
      * @param float $x
+     *
      * @return Coordinates
      */
     public function setX(float $x): Coordinates
     {
         $this->x = $x;
+
         return $this;
     }
 
@@ -62,11 +65,13 @@ class Coordinates
 
     /**
      * @param float $y
+     *
      * @return Coordinates
      */
     public function setY(float $y): Coordinates
     {
         $this->y = $y;
+
         return $this;
     }
 }

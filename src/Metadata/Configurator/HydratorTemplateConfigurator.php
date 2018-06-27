@@ -14,7 +14,7 @@ use TSantos\Serializer\Metadata\ClassMetadata;
 use TSantos\Serializer\Metadata\ConfiguratorInterface;
 
 /**
- * Class HydratorTemplateConfigurator
+ * Class HydratorTemplateConfigurator.
  *
  * @author Tales Santos <tales.augusto.santos@gmail.com>
  */
@@ -27,6 +27,7 @@ class HydratorTemplateConfigurator implements ConfiguratorInterface
 
     /**
      * HydratorTemplateConfigurator constructor.
+     *
      * @param string $defaultTemplate
      */
     public function __construct(string $defaultTemplate)

@@ -11,7 +11,7 @@
 namespace TSantos\Serializer\Mapping;
 
 /**
- * Class Groups
+ * Class Groups.
  *
  * @author Tales Santos <tales.augusto.santos@gmail.com>
  *

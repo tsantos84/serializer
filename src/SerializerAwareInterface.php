@@ -11,13 +11,13 @@
 namespace TSantos\Serializer;
 
 /**
- * Interface SerializerAwareInterface
- * @package TSantos\Serializer
+ * Interface SerializerAwareInterface.
  */
 interface SerializerAwareInterface
 {
     /**
      * @param SerializerInterface $serializer
+     *
      * @return mixed
      */
     public function setSerializer(SerializerInterface $serializer): void;

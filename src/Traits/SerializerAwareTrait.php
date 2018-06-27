@@ -13,8 +13,7 @@ namespace TSantos\Serializer\Traits;
 use TSantos\Serializer\SerializerInterface;
 
 /**
- * Trait SerializerAwareTrait
- * @package TSantos\Serializer\Traits
+ * Trait SerializerAwareTrait.
  */
 trait SerializerAwareTrait
 {

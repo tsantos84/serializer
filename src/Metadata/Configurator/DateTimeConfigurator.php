@@ -15,7 +15,7 @@ use TSantos\Serializer\Metadata\ConfiguratorInterface;
 use TSantos\Serializer\Metadata\PropertyMetadata;
 
 /**
- * Class DateTimeConfigurator
+ * Class DateTimeConfigurator.
  *
  * @author Tales Santos <tales.augusto.santos@gmail.com>
  */

@@ -15,7 +15,7 @@ use TSantos\Serializer\Metadata\ConfiguratorInterface;
 use TSantos\Serializer\Metadata\PropertyMetadata;
 
 /**
- * Class ReadValueConfigurator
+ * Class ReadValueConfigurator.
  *
  * @author Tales Santos <tales.augusto.santos@gmail.com>
  */
@@ -35,7 +35,7 @@ class GetterConfigurator implements ConfiguratorInterface
     private function doConfigure(ClassMetadata $classMetadata, PropertyMetadata $propertyMetadata): void
     {
         $ucName = ucfirst($propertyMetadata->name);
-        $getters = ['get' . $ucName, 'is' . $ucName, 'has' . $ucName];
+        $getters = ['get'.$ucName, 'is'.$ucName, 'has'.$ucName];
         $hasGetter = false;
 
         foreach ($getters as $getter) {

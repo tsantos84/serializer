@@ -11,7 +11,7 @@
 namespace TSantos\Serializer\Mapping;
 
 /**
- * Class WriteValue
+ * Class WriteValue.
  *
  * @author Tales Santos <tales.augusto.santos@gmail.com>
  *

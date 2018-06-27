@@ -18,7 +18,7 @@ use TSantos\Serializer\Events;
 use TSantos\Serializer\SerializerBuilder;
 
 /**
- * Class SerializationListenerTest
+ * Class SerializationListenerTest.
  *
  * @author Tales Santos <tales.augusto.santos@gmail.com>
  * @runTestsInSeparateProcesses
@@ -33,7 +33,7 @@ class SerializationListenerTest extends SerializerTestCase
         $serializer = $this->createSerializer($this->createMapping(Person::class, [
             'id' => ['type' => 'integer'],
             'name' => [],
-            'lastName' => []
+            'lastName' => [],
         ]));
 
         $expected = '{"id":10,"name":"Tales","lastName":"Santos","age":33}';

@@ -18,7 +18,7 @@ use TSantos\Serializer\Metadata\VirtualPropertyMetadata;
 use TSantos\Serializer\HydratorCodeGenerator;
 
 /**
- * Class CodeGeneratorTest
+ * Class CodeGeneratorTest.
  *
  * @author Tales Santos <tales.augusto.santos@gmail.com>
  */
@@ -28,11 +28,11 @@ class CodeGeneratorTest extends TestCase
 
     public function setUp()
     {
-        $loader = new \Twig_Loader_Filesystem([__DIR__ . '/../src/Resources/templates']);
+        $loader = new \Twig_Loader_Filesystem([__DIR__.'/../src/Resources/templates']);
 
         $this->twig = new \Twig_Environment($loader, [
             'debug' => true,
-            'strict_variables' => true
+            'strict_variables' => true,
         ]);
     }
 
@@ -242,5 +242,4 @@ CODE;
 
         return $metadata;
     }
-
 }

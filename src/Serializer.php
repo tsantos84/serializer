@@ -11,12 +11,10 @@
 namespace TSantos\Serializer;
 
 use TSantos\Serializer\Encoder\EncoderInterface;
-use TSantos\Serializer\ObjectInstantiator\ObjectInstantiatorInterface;
 
 /**
- * Class Serializer
+ * Class Serializer.
  *
- * @package Serializer
  * @author Tales Santos <tales.augusto.santos@gmail.com>
  */
 class Serializer implements SerializerInterface
@@ -33,7 +31,8 @@ class Serializer implements SerializerInterface
 
     /**
      * Serializer constructor.
-     * @param EncoderInterface $encoder
+     *
+     * @param EncoderInterface            $encoder
      * @param NormalizerRegistryInterface $normalizers
      */
     public function __construct(
@@ -52,7 +51,7 @@ class Serializer implements SerializerInterface
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function serialize($data, SerializationContext $context = null): string
     {
@@ -64,7 +63,7 @@ class Serializer implements SerializerInterface
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function normalize($data, SerializationContext $context = null)
     {
@@ -93,16 +92,17 @@ class Serializer implements SerializerInterface
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function deserialize(string $content, string $type, DeserializationContext $context = null)
     {
         $data = $this->encoder->decode($content);
+
         return $this->denormalize($data, $type, $context);
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function denormalize($data, string $type, DeserializationContext $context = null)
     {
@@ -118,6 +118,6 @@ class Serializer implements SerializerInterface
             return $normalizer->denormalize($data, $type, $context);
         }
 
-        throw new \RuntimeException('There is no denormalizer able to denormalize data of type ' . $type);
+        throw new \RuntimeException('There is no denormalizer able to denormalize data of type '.$type);
     }
 }

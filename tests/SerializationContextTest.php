@@ -14,7 +14,7 @@ use PHPUnit\Framework\TestCase;
 use TSantos\Serializer\SerializationContext;
 
 /**
- * Class SerializationContextTest
+ * Class SerializationContextTest.
  *
  * @author Tales Santos <tales.augusto.santos@gmail.com>
  */
@@ -24,7 +24,8 @@ class SerializationContextTest extends TestCase
     public function it_should_not_throw_circular_reference_exception()
     {
         $context = new SerializationContext();
-        $subject = new class {};
+        $subject = new class() {
+        };
         $context->enter($subject);
         $context->leave($subject);
         $context->enter($subject);
@@ -39,7 +40,8 @@ class SerializationContextTest extends TestCase
     public function it_should_throw_circular_reference_exception()
     {
         $context = new SerializationContext();
-        $subject = new class {};
+        $subject = new class() {
+        };
         $context->enter($subject);
         $context->enter($subject);
     }

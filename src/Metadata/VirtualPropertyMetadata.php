@@ -13,7 +13,7 @@ namespace TSantos\Serializer\Metadata;
 use Metadata\MethodMetadata;
 
 /**
- * Class VirtualPropertyMetadata
+ * Class VirtualPropertyMetadata.
  *
  * @author Tales Santos <tales.augusto.santos@gmail.com>
  */
@@ -40,7 +40,7 @@ class VirtualPropertyMetadata extends MethodMetadata
             $this->readValueFilter,
             $this->exposeAs,
             $this->groups,
-            $this->options
+            $this->options,
         ]);
     }
 

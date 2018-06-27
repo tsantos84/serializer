@@ -27,7 +27,7 @@ use TSantos\Serializer\Metadata\PropertyMetadata;
 use TSantos\Serializer\Metadata\VirtualPropertyMetadata;
 
 /**
- * Class AnnotationDriver
+ * Class AnnotationDriver.
  *
  * @author Tales Santos <tales.augusto.santos@gmail.com>
  */
@@ -40,6 +40,7 @@ class AnnotationDriver implements DriverInterface
 
     /**
      * AnnotationDriver constructor.
+     *
      * @param AnnotationReader $reader
      */
     public function __construct(AnnotationReader $reader)
@@ -62,7 +63,7 @@ class AnnotationDriver implements DriverInterface
 
     /**
      * @param \ReflectionClass $class
-     * @param ClassMetadata $metadata
+     * @param ClassMetadata    $metadata
      */
     private function loadClassAnnotations(\ReflectionClass $class, ClassMetadata $metadata): void
     {
@@ -82,7 +83,6 @@ class AnnotationDriver implements DriverInterface
     private function loadPropertyAnnotations(\ReflectionClass $class, ClassMetadata $metadata): void
     {
         array_map(function (\ReflectionProperty $property) use ($metadata) {
-
             $annotations = $this->filterAnnotations($this->reader->getPropertyAnnotations($property));
 
             if (empty($annotations)) {
@@ -118,14 +118,17 @@ class AnnotationDriver implements DriverInterface
 
     /**
      * @param array $annotations
+     *
      * @return array
      */
     private function filterAnnotations(array $annotations): array
     {
         $annotations = array_filter($annotations, function ($annotation) {
             $ref = new \ReflectionObject($annotation);
-            return strpos($ref->getNamespaceName(), 'TSantos\Serializer') === 0;
+
+            return 0 === strpos($ref->getNamespaceName(), 'TSantos\Serializer');
         });
+
         return $annotations;
     }
 
@@ -139,7 +142,7 @@ class AnnotationDriver implements DriverInterface
                 $property->exposeAs = $annotation->name;
             },
             Groups::class => function ($property, Groups $annotation) {
-                $property->groups = (array)$annotation->groups;
+                $property->groups = (array) $annotation->groups;
             },
             ReadValueFilter::class => function ($property, ReadValueFilter $annotation) {
                 $property->readValueFilter = $annotation->name;

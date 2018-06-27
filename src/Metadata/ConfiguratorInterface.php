@@ -11,7 +11,7 @@
 namespace TSantos\Serializer\Metadata;
 
 /**
- * Interface ConfiguratorInterface
+ * Interface ConfiguratorInterface.
  *
  * @author Tales Santos <tales.augusto.santos@gmail.com>
  */

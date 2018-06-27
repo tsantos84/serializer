@@ -24,7 +24,7 @@ class SerializerTest extends SerializerTestCase
         $serializer = $this->createSerializer($this->createMapping(Person::class, [
             'id' => ['type' => 'integer'],
             'name' => [],
-            'married' => ['type'=>'boolean', 'getter' => 'isMarried']
+            'married' => ['type' => 'boolean', 'getter' => 'isMarried'],
         ]));
 
         $persons = [$this->createPerson(), $this->createPerson(), $this->createPerson()];
@@ -35,18 +35,18 @@ class SerializerTest extends SerializerTestCase
             [
                 'id' => 1,
                 'name' => 'Tales',
-                'married' => true
+                'married' => true,
             ],
             [
                 'id' => 1,
                 'name' => 'Tales',
-                'married' => true
+                'married' => true,
             ],
             [
                 'id' => 1,
                 'name' => 'Tales',
-                'married' => true
-            ]
+                'married' => true,
+            ],
         ]), $json);
     }
 
@@ -56,7 +56,7 @@ class SerializerTest extends SerializerTestCase
         $serializer = $this->createSerializer($this->createMapping(Person::class, [
             'id' => ['type' => 'integer'],
             'name' => [],
-            'married' => ['type' => 'boolean', 'getter' => 'isMarried']
+            'married' => ['type' => 'boolean', 'getter' => 'isMarried'],
         ]));
 
         $person = $this->createPerson();
@@ -66,7 +66,7 @@ class SerializerTest extends SerializerTestCase
         $this->assertEquals(json_encode([
             'id' => 1,
             'name' => 'Tales',
-            'married' => true
+            'married' => true,
         ]), $json);
     }
 
@@ -74,7 +74,7 @@ class SerializerTest extends SerializerTestCase
     public function it_can_serialize_a_simple_object_with_reflection(): void
     {
         $serializer = $this->createSerializer([
-            Dummy::class => new ReflectionDriver()
+            Dummy::class => new ReflectionDriver(),
         ]);
         $json = $serializer->serialize(new Dummy('bar'));
         $this->assertEquals('{"foo":"bar"}', $json);

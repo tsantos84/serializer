@@ -11,7 +11,7 @@
 namespace TSantos\Serializer\Mapping;
 
 /**
- * Class BaseClass
+ * Class BaseClass.
  *
  * @author Tales Santos <tales.augusto.santos@gmail.com>
  * @Annotation
@@ -20,6 +20,7 @@ class BaseClass
 {
     /**
      * @Required
+     *
      * @var string
      */
     public $name;

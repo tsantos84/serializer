@@ -11,7 +11,7 @@
 namespace TSantos\Serializer;
 
 /**
- * Interface CacheableNormalizerInterface
+ * Interface CacheableNormalizerInterface.
  *
  * @author Tales Santos <tales.augusto.santos@gmail.com>
  */

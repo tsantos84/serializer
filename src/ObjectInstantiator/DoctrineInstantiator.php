@@ -14,7 +14,7 @@ use Doctrine\Instantiator\InstantiatorInterface;
 use TSantos\Serializer\DeserializationContext;
 
 /**
- * Class DoctrineInstantiatorFactory
+ * Class DoctrineInstantiatorFactory.
  *
  * @author Tales Santos <tales.augusto.santos@gmail.com>
  */
@@ -27,6 +27,7 @@ class DoctrineInstantiator implements ObjectInstantiatorInterface
 
     /**
      * DoctrineInstantiatorFactory constructor.
+     *
      * @param InstantiatorInterface $instantiator
      */
     public function __construct(InstantiatorInterface $instantiator)
@@ -35,7 +36,7 @@ class DoctrineInstantiator implements ObjectInstantiatorInterface
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function create(string $type, array $data, DeserializationContext $context)
     {

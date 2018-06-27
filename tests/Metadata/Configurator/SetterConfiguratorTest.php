@@ -23,7 +23,7 @@ class SetterConfiguratorTest extends AbstractConfiguratorTest
     /** @test */
     public function it_should_not_change_the_setter_if_it_already_is_defined()
     {
-        $subject = new class {
+        $subject = new class() {
             public $name;
         };
 
@@ -37,7 +37,7 @@ class SetterConfiguratorTest extends AbstractConfiguratorTest
     /** @test */
     public function it_should_configure_the_setter_directly_on_property()
     {
-        $subject = new class {
+        $subject = new class() {
             public $name;
         };
 
@@ -50,9 +50,12 @@ class SetterConfiguratorTest extends AbstractConfiguratorTest
     /** @test */
     public function it_should_configure_property_to_write_from_setter_method()
     {
-        $subject = new class {
+        $subject = new class() {
             private $name;
-            public function setName() {}
+
+            public function setName()
+            {
+            }
         };
 
         $classMetadata = $this->createClassMetadata($subject);

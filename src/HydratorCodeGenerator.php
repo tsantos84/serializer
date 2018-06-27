@@ -13,7 +13,7 @@ namespace TSantos\Serializer;
 use TSantos\Serializer\Metadata\ClassMetadata;
 
 /**
- * Class HydratorCodeGenerator
+ * Class HydratorCodeGenerator.
  *
  * @author Tales Santos <tales.augusto.santos@gmail.com>
  */
@@ -26,6 +26,7 @@ class HydratorCodeGenerator
 
     /**
      * CodeGenerator constructor.
+     *
      * @param \Twig_Environment $twig
      */
     public function __construct(\Twig_Environment $twig)
@@ -35,6 +36,7 @@ class HydratorCodeGenerator
 
     /**
      * @param ClassMetadata $classMetadata
+     *
      * @return string
      */
     public function generate(ClassMetadata $classMetadata): string
@@ -57,7 +59,7 @@ class HydratorCodeGenerator
             'target_class_name' => $classMetadata->reflection->getShortName(),
             'properties' => $classMetadata->propertyMetadata,
             'virtual_properties' => $classMetadata->methodMetadata,
-            'hierarchy_classes' => $hierarchy
+            'hierarchy_classes' => $hierarchy,
         ];
 
         return $this->twig->render($classMetadata->template, $context);
@@ -65,7 +67,7 @@ class HydratorCodeGenerator
 
     public function getClassName(ClassMetadata $classMetadata): string
     {
-        return str_replace('\\', '', $classMetadata->name) . 'Hydrator';
+        return str_replace('\\', '', $classMetadata->name).'Hydrator';
     }
 
     private function getGroups(ClassMetadata $metadata): array

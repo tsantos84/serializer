@@ -13,7 +13,7 @@ namespace TSantos\Serializer\Normalizer;
 use TSantos\Serializer\DeserializationContext;
 
 /**
- * Class DenormalizerInterface
+ * Class DenormalizerInterface.
  *
  * @author Tales Santos <tales.augusto.santos@gmail.com>
  */
@@ -24,6 +24,7 @@ interface DenormalizerInterface
      *
      * @param $data
      * @param DeserializationContext $context
+     *
      * @return mixed
      */
     public function denormalize($data, string $type, DeserializationContext $context);
@@ -34,6 +35,7 @@ interface DenormalizerInterface
      * @param string $type
      * @param $data
      * @param DeserializationContext $context
+     *
      * @return bool
      */
     public function supportsDenormalization(string $type, $data, DeserializationContext $context): bool;

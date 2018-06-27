@@ -19,14 +19,9 @@ use TSantos\Serializer\HydratorLoader;
 use TSantos\Serializer\Traits\SerializerAwareTrait;
 
 /**
- * Class ObjectNormalizer
- * @package TSantos\Serializer\Normalizer
+ * Class ObjectNormalizer.
  */
-class ObjectNormalizer implements
-    NormalizerInterface,
-    DenormalizerInterface,
-    SerializerAwareInterface,
-    CacheableNormalizerInterface
+class ObjectNormalizer implements NormalizerInterface, DenormalizerInterface, SerializerAwareInterface, CacheableNormalizerInterface
 {
     use SerializerAwareTrait;
 
@@ -42,7 +37,8 @@ class ObjectNormalizer implements
 
     /**
      * ObjectNormalizer constructor.
-     * @param HydratorLoader $classLoader
+     *
+     * @param HydratorLoader              $classLoader
      * @param ObjectInstantiatorInterface $instantiator
      */
     public function __construct(HydratorLoader $classLoader, ObjectInstantiatorInterface $instantiator)
@@ -92,6 +88,6 @@ class ObjectNormalizer implements
 
     public function supportsDenormalization(string $type, $data, DeserializationContext $context): bool
     {
-        return class_exists($type) && $type !== \DateTime::class;
+        return class_exists($type) && \DateTime::class !== $type;
     }
 }
