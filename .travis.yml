@@ -15,8 +15,6 @@ matrix:
   fast_finish: true
 
 before_install:
-    - composer require --no-update symfony/yaml:^3.4||^4.0
-    - composer require --no-update doctrine/annotations:^1.5
     - if [[ $COVERAGE != true ]]; then phpenv config-rm xdebug.ini || true; fi
 
 install:
