@@ -28,7 +28,7 @@ class ScalarNormalizer implements NormalizerInterface, DenormalizerInterface, Ca
 
     public function supportsNormalization($data, SerializationContext $context): bool
     {
-        return is_scalar($data) || is_null($data);
+        return is_scalar($data) || null === $data;
     }
 
     public function denormalize($data, string $type, DeserializationContext $context)
@@ -38,7 +38,7 @@ class ScalarNormalizer implements NormalizerInterface, DenormalizerInterface, Ca
 
     public function supportsDenormalization(string $type, $data, DeserializationContext $context): bool
     {
-        return is_scalar($data) || is_null($data);
+        return is_scalar($data) || null === $data;
     }
 
     public function canBeCachedByType(): bool

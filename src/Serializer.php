@@ -57,7 +57,7 @@ class Serializer implements SerializerInterface
      */
     public function serialize($data, SerializationContext $context = null)
     {
-        if (is_null($data) || is_scalar($data)) {
+        if (null === $data || is_scalar($data)) {
             return $data;
         }
 

@@ -14,6 +14,9 @@ return PhpCsFixer\Config::create()
         'strict_param' => true,
         'declare_strict_types' => true,
         'final_internal_class' => true,
+        'fully_qualified_strict_types' => true,
+        'is_null' => true,
+        'native_function_invocation' => true,
         'array_syntax' => ['syntax' => 'short'],
     ])
     ->setFinder($finder)
