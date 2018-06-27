@@ -117,7 +117,7 @@ class Person
      *
      * @return Person
      */
-    public function setName(string $name): Person
+    public function setName(string $name): self
     {
         $this->name = $name;
 
@@ -137,7 +137,7 @@ class Person
      *
      * @return Person
      */
-    public function setLastName(string $lastName): Person
+    public function setLastName(string $lastName): self
     {
         $this->lastName = $lastName;
 
@@ -169,7 +169,7 @@ class Person
      *
      * @return Person
      */
-    public function setMarried(bool $isMarried): Person
+    public function setMarried(bool $isMarried): self
     {
         $this->married = $isMarried;
 
@@ -216,7 +216,7 @@ class Person
      *
      * @return Person
      */
-    public function setAddress(Address $address): Person
+    public function setAddress(Address $address): self
     {
         $this->address = $address;
 
@@ -226,7 +226,7 @@ class Person
     /**
      * @return Person
      */
-    public function getFather(): ?Person
+    public function getFather(): ?self
     {
         return $this->father;
     }
@@ -236,7 +236,7 @@ class Person
      *
      * @return Person
      */
-    public function setFather(Person $father): Person
+    public function setFather(self $father): self
     {
         $this->father = $father;
 
@@ -256,7 +256,7 @@ class Person
      *
      * @return Person
      */
-    public function setFavouriteBook(Book $favouriteBook): Person
+    public function setFavouriteBook(Book $favouriteBook): self
     {
         $this->favouriteBook = $favouriteBook;
 
@@ -276,7 +276,7 @@ class Person
      *
      * @return Person
      */
-    public function setBirthday(\DateTimeInterface $birthday): Person
+    public function setBirthday(\DateTimeInterface $birthday): self
     {
         $this->birthday = $birthday;
 

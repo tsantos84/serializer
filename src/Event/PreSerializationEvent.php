@@ -56,7 +56,7 @@ class PreSerializationEvent extends Event
      *
      * @return PreSerializationEvent
      */
-    public function setObject($object): PreSerializationEvent
+    public function setObject($object): self
     {
         $this->object = $object;
 

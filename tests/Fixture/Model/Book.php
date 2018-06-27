@@ -50,7 +50,7 @@ class Book
      *
      * @return Book
      */
-    public function setId(int $id): Book
+    public function setId(int $id): self
     {
         $this->id = $id;
 
@@ -70,7 +70,7 @@ class Book
      *
      * @return Book
      */
-    public function setName(string $name): Book
+    public function setName(string $name): self
     {
         $this->name = $name;
 

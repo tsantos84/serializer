@@ -56,7 +56,7 @@ class PostSerializationEvent extends Event
      *
      * @return PostSerializationEvent
      */
-    public function setData($data): PostSerializationEvent
+    public function setData($data): self
     {
         $this->data = $data;
 

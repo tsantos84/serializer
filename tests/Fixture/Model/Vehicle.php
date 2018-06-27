@@ -50,7 +50,7 @@ class Vehicle implements \JsonSerializable
      *
      * @return Vehicle
      */
-    public function setColor(string $color): Vehicle
+    public function setColor(string $color): self
     {
         $this->color = $color;
 
@@ -70,7 +70,7 @@ class Vehicle implements \JsonSerializable
      *
      * @return Vehicle
      */
-    public function setPorts(int $ports): Vehicle
+    public function setPorts(int $ports): self
     {
         $this->ports = $ports;
 

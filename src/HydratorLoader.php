@@ -135,7 +135,7 @@ class HydratorLoader
 
     private function getFilename(ClassMetadata $classMetadata): string
     {
-        return $this->writer->getPath().DIRECTORY_SEPARATOR.$this->getClassName($classMetadata).'.php';
+        return $this->writer->getPath().\DIRECTORY_SEPARATOR.$this->getClassName($classMetadata).'.php';
     }
 
     private function injectSerializer(HydratorInterface $hydrator, SerializerInterface $serializer): HydratorInterface

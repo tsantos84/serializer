@@ -84,14 +84,14 @@ class SerializerBuilder
      *
      * @return SerializerBuilder
      */
-    public function setMetadataDriver(DriverInterface $driver): SerializerBuilder
+    public function setMetadataDriver(DriverInterface $driver): self
     {
         $this->driver = $driver;
 
         return $this;
     }
 
-    public function setMetadataDirs(array $dirs): SerializerBuilder
+    public function setMetadataDirs(array $dirs): self
     {
         $this->metadataDirs = [];
         $this->addMetadataDirs($dirs);
@@ -99,7 +99,7 @@ class SerializerBuilder
         return $this;
     }
 
-    public function addMetadataDirs(array $dirs): SerializerBuilder
+    public function addMetadataDirs(array $dirs): self
     {
         foreach ($dirs as $namespace => $dir) {
             $this->addMetadataDir($namespace, $dir);
@@ -108,7 +108,7 @@ class SerializerBuilder
         return $this;
     }
 
-    public function addMetadataDir(string $namespace, string $dir): SerializerBuilder
+    public function addMetadataDir(string $namespace, string $dir): self
     {
         if (!\is_dir($dir)) {
             throw new \InvalidArgumentException('The metadata directory "'.$dir.'" does not exist');
@@ -119,7 +119,7 @@ class SerializerBuilder
         return $this;
     }
 
-    public function setHydratorDir(string $dir): SerializerBuilder
+    public function setHydratorDir(string $dir): self
     {
         if (!\is_dir($dir)) {
             $this->createDir($dir);
@@ -134,21 +134,21 @@ class SerializerBuilder
         return $this;
     }
 
-    public function setDebug(bool $debug): SerializerBuilder
+    public function setDebug(bool $debug): self
     {
         $this->debug = $debug;
 
         return $this;
     }
 
-    public function addNormalizer($normalizer): SerializerBuilder
+    public function addNormalizer($normalizer): self
     {
         $this->normalizers->add($normalizer);
 
         return $this;
     }
 
-    public function enableBuiltInNormalizers(): SerializerBuilder
+    public function enableBuiltInNormalizers(): self
     {
         $this->normalizers->add(new CollectionNormalizer());
         $this->normalizers->add(new JsonNormalizer());
@@ -157,14 +157,14 @@ class SerializerBuilder
         return $this;
     }
 
-    public function addEncoder(EncoderInterface $encoder): SerializerBuilder
+    public function addEncoder(EncoderInterface $encoder): self
     {
         $this->encoders->add($encoder);
 
         return $this;
     }
 
-    public function setMetadataCacheDir(string $dir): SerializerBuilder
+    public function setMetadataCacheDir(string $dir): self
     {
         if (!\is_dir($dir)) {
             throw new \InvalidArgumentException('The metadata cache directory "'.$dir.'" does not exist');
@@ -175,14 +175,14 @@ class SerializerBuilder
         return $this;
     }
 
-    public function setMetadataCache(CacheInterface $cache): SerializerBuilder
+    public function setMetadataCache(CacheInterface $cache): self
     {
         $this->metadataCache = $cache;
 
         return $this;
     }
 
-    public function setHydratorGenerationStrategy(int $strategy): SerializerBuilder
+    public function setHydratorGenerationStrategy(int $strategy): self
     {
         $this->hydratorGenerationStrategy = $strategy;
 
@@ -203,7 +203,7 @@ class SerializerBuilder
         return $this;
     }
 
-    public function setObjectInstantiator(ObjectInstantiatorInterface $instantiator): SerializerBuilder
+    public function setObjectInstantiator(ObjectInstantiatorInterface $instantiator): self
     {
         $this->instantiator = $instantiator;
 
@@ -239,7 +239,7 @@ class SerializerBuilder
      *
      * @return SerializerBuilder
      */
-    public function setFormat(string $format): SerializerBuilder
+    public function setFormat(string $format): self
     {
         $this->format = $format;
 

@@ -11,6 +11,7 @@ return PhpCsFixer\Config::create()
     ->setRules([
         '@PSR2' => true,
         '@Symfony' => true,
+        '@Symfony:risky' => true,
         '@PHPUnit60Migration:risky' => true,
         'strict_param' => true,
         'declare_strict_types' => true,

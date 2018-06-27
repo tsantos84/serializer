@@ -41,7 +41,7 @@ class Address
      *
      * @return Address
      */
-    public function setStreet(string $street): Address
+    public function setStreet(string $street): self
     {
         $this->street = $street;
 
@@ -61,7 +61,7 @@ class Address
      *
      * @return Address
      */
-    public function setCity(string $city): Address
+    public function setCity(string $city): self
     {
         $this->city = $city;
 
@@ -81,7 +81,7 @@ class Address
      *
      * @return Address
      */
-    public function setCoordinates(Coordinates $coordinates): Address
+    public function setCoordinates(Coordinates $coordinates): self
     {
         $this->coordinates = $coordinates;
 

@@ -37,7 +37,7 @@ class Employee extends Person
      *
      * @return Employee
      */
-    public function setPosition(string $position): Employee
+    public function setPosition(string $position): self
     {
         $this->position = $position;
 

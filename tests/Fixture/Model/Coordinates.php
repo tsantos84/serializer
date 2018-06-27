@@ -50,7 +50,7 @@ class Coordinates
      *
      * @return Coordinates
      */
-    public function setX(float $x): Coordinates
+    public function setX(float $x): self
     {
         $this->x = $x;
 
@@ -70,7 +70,7 @@ class Coordinates
      *
      * @return Coordinates
      */
-    public function setY(float $y): Coordinates
+    public function setY(float $y): self
     {
         $this->y = $y;
 
