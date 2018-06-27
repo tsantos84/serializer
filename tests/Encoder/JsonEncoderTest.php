@@ -12,8 +12,8 @@ declare(strict_types=1);
 
 namespace Tests\TSantos\Serializer\Encoder;
 
-use TSantos\Serializer\Encoder\JsonEncoder;
 use PHPUnit\Framework\TestCase;
+use TSantos\Serializer\Encoder\JsonEncoder;
 
 class JsonEncoderTest extends TestCase
 {

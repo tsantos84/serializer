@@ -14,10 +14,10 @@ namespace TSantos\Serializer\Normalizer;
 
 use TSantos\Serializer\CacheableNormalizerInterface;
 use TSantos\Serializer\DeserializationContext;
+use TSantos\Serializer\HydratorLoader;
 use TSantos\Serializer\ObjectInstantiator\ObjectInstantiatorInterface;
 use TSantos\Serializer\SerializationContext;
 use TSantos\Serializer\SerializerAwareInterface;
-use TSantos\Serializer\HydratorLoader;
 use TSantos\Serializer\Traits\SerializerAwareTrait;
 
 /**

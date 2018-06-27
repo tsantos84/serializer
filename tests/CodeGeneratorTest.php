@@ -14,10 +14,10 @@ namespace Tests\TSantos\Serializer;
 
 use PHPUnit\Framework\TestCase;
 use Tests\TSantos\Serializer\Fixture\Model\Dummy;
+use TSantos\Serializer\HydratorCodeGenerator;
 use TSantos\Serializer\Metadata\ClassMetadata;
 use TSantos\Serializer\Metadata\PropertyMetadata;
 use TSantos\Serializer\Metadata\VirtualPropertyMetadata;
-use TSantos\Serializer\HydratorCodeGenerator;
 
 /**
  * Class CodeGeneratorTest.

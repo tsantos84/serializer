@@ -12,8 +12,8 @@ declare(strict_types=1);
 
 namespace Tests\Serializer;
 
-use Tests\TSantos\Serializer\Fixture\Model\Person;
 use Tests\TSantos\Serializer\Fixture\Model\Employee;
+use Tests\TSantos\Serializer\Fixture\Model\Person;
 use Tests\TSantos\Serializer\SerializerTestCase;
 
 /**
