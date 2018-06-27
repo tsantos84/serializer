@@ -26,10 +26,11 @@ class CircularReferencePreventionTest extends SerializerTestCase
 {
     /**
      * @test
-     * @expectedException \TSantos\Serializer\Exception\CircularReferenceException
      */
     public function it_should_prevent_circular_reference()
     {
+        $this->expectException(\TSantos\Serializer\Exception\CircularReferenceException::class);
+
         $person = new Person();
         $person->setFather($person); // forcing circular reference
 

@@ -46,10 +46,11 @@ class CallbackDriverTest extends TestCase
 
     /**
      * @test
-     * @expectedException \BadMethodCallException
      */
     public function it_should_not_allow_invalid_metadata_callback_return()
     {
+        $this->expectException(\BadMethodCallException::class);
+
         $callback = function (\ReflectionClass $class) {
             $metadata = new ClassMetadata($class->name);
             $metadata->addPropertyMetadata(new PropertyMetadata(Person::class, 'id'));

@@ -37,10 +37,11 @@ class SerializationContextTest extends TestCase
 
     /**
      * @test
-     * @expectedException \TSantos\Serializer\Exception\CircularReferenceException
      */
     public function it_should_throw_circular_reference_exception()
     {
+        $this->expectException(\TSantos\Serializer\Exception\CircularReferenceException::class);
+
         $context = new SerializationContext();
         $subject = new class() {
         };
