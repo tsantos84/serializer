@@ -1,4 +1,6 @@
 <?php
+
+declare(strict_types=1);
 /**
  * This file is part of the TSantos Serializer package.
  *
@@ -77,6 +79,9 @@ class CollectionNormalizer implements NormalizerInterface, DenormalizerInterface
                     case 'boolean':
                         $data[$key] = (bool) $val;
                         continue;
+                    case 'mixed':
+                        $data[$key] = $val;
+                        continue;
                 }
             }
 
@@ -93,7 +98,7 @@ class CollectionNormalizer implements NormalizerInterface, DenormalizerInterface
 
     public function supportsDenormalization(string $type, $data, DeserializationContext $context): bool
     {
-        return strpos($type, '[]') > 0 || 'array' === $type;
+        return strpos($type, '[]') > 0;
     }
 
     public function canBeCachedByType(): bool

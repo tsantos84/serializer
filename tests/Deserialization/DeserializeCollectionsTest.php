@@ -1,4 +1,6 @@
 <?php
+
+declare(strict_types=1);
 /**
  * This file is part of the TSantos Serializer package.
  *
@@ -94,7 +96,7 @@ EOF;
     {
         $serializer = $this->createSerializer();
         $content = '[1,2,"3",4,5,6,7,8,9,10]';
-        $collection = $serializer->deserialize($content, 'array');
+        $collection = $serializer->deserialize($content, 'mixed[]');
         $this->assertSame([1, 2, '3', 4, 5, 6, 7, 8, 9, 10], $collection);
     }
 

@@ -1,4 +1,6 @@
 <?php
+
+declare(strict_types=1);
 /**
  * This file is part of the TSantos Serializer package.
  *
@@ -53,10 +55,10 @@ class Serializer implements SerializerInterface
     /**
      * {@inheritdoc}
      */
-    public function serialize($data, SerializationContext $context = null): string
+    public function serialize($data, SerializationContext $context = null)
     {
         if (is_null($data) || is_scalar($data)) {
-            return $this->normalize($data, $context);
+            return $data;
         }
 
         return $this->encoder->encode($this->normalize($data, $context));

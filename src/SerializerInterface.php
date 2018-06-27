@@ -1,4 +1,6 @@
 <?php
+
+declare(strict_types=1);
 /**
  * This file is part of the TSantos Serializer package.
  *
@@ -23,9 +25,9 @@ interface SerializerInterface
      * @param mixed                $data
      * @param SerializationContext $context
      *
-     * @return string
+     * @return mixed
      */
-    public function serialize($data, SerializationContext $context = null): string;
+    public function serialize($data, SerializationContext $context = null);
 
     /**
      * Normalize a data by converting it from some type to array.
