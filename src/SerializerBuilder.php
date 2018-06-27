@@ -110,7 +110,7 @@ class SerializerBuilder
 
     public function addMetadataDir(string $namespace, string $dir): SerializerBuilder
     {
-        if (!is_dir($dir)) {
+        if (!\is_dir($dir)) {
             throw new \InvalidArgumentException('The metadata directory "'.$dir.'" does not exist');
         }
 
@@ -121,12 +121,12 @@ class SerializerBuilder
 
     public function setHydratorDir(string $dir): SerializerBuilder
     {
-        if (!is_dir($dir)) {
+        if (!\is_dir($dir)) {
             $this->createDir($dir);
         }
 
-        if (!is_writable($dir)) {
-            throw new \InvalidArgumentException(sprintf('The serializer class directory "%s" is not writable.', $dir));
+        if (!\is_writable($dir)) {
+            throw new \InvalidArgumentException(\sprintf('The serializer class directory "%s" is not writable.', $dir));
         }
 
         $this->hydratorDir = $dir;
@@ -166,7 +166,7 @@ class SerializerBuilder
 
     public function setMetadataCacheDir(string $dir): SerializerBuilder
     {
-        if (!is_dir($dir)) {
+        if (!\is_dir($dir)) {
             throw new \InvalidArgumentException('The metadata cache directory "'.$dir.'" does not exist');
         }
 
@@ -191,7 +191,7 @@ class SerializerBuilder
 
     public function enableAnnotations(AnnotationReader $reader = null)
     {
-        if (!class_exists(AnnotationReader::class)) {
+        if (!\class_exists(AnnotationReader::class)) {
             throw new \RuntimeException('The annotation reader was not loaded. '.
                 'You must include the package doctrine/annotations as your composer dependency.');
         }
@@ -256,7 +256,7 @@ class SerializerBuilder
         }
 
         if (null === $hydratorDir = $this->hydratorDir) {
-            $this->createDir($hydratorDir = sys_get_temp_dir().'/serializer/hydrators');
+            $this->createDir($hydratorDir = \sys_get_temp_dir().'/serializer/hydrators');
         }
 
         $metadataFactory = $this->createMetadataFactory($this->createMetadataDriver());
@@ -346,11 +346,11 @@ class SerializerBuilder
 
     private function createDir($dir)
     {
-        if (is_dir($dir)) {
+        if (\is_dir($dir)) {
             return;
         }
-        if (false === @mkdir($dir, 0777, true) && false === is_dir($dir)) {
-            throw new \RuntimeException(sprintf('Could not create directory "%s".', $dir));
+        if (false === @\mkdir($dir, 0777, true) && false === \is_dir($dir)) {
+            throw new \RuntimeException(\sprintf('Could not create directory "%s".', $dir));
         }
     }
 }

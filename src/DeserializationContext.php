@@ -37,8 +37,8 @@ class DeserializationContext extends AbstractContext
      */
     public function setTarget($target): void
     {
-        if (!is_object($target)) {
-            throw new \InvalidArgumentException('The $target should be an object, '.gettype($target).' given');
+        if (!\is_object($target)) {
+            throw new \InvalidArgumentException('The $target should be an object, '.\gettype($target).' given');
         }
 
         $this->target = $target;

@@ -153,7 +153,7 @@ class Person
      */
     public function getFullName(): string
     {
-        return trim($this->name.' '.$this->lastName);
+        return \trim($this->name.' '.$this->lastName);
     }
 
     /**

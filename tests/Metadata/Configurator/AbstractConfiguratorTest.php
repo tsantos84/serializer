@@ -30,6 +30,6 @@ abstract class AbstractConfiguratorTest extends TestCase
 
     protected function createClassMetadata($subject): ClassMetadata
     {
-        return new ClassMetadata(get_class($subject));
+        return new ClassMetadata(\get_class($subject));
     }
 }

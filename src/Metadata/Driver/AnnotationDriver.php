@@ -84,7 +84,7 @@ class AnnotationDriver implements DriverInterface
      */
     private function loadPropertyAnnotations(\ReflectionClass $class, ClassMetadata $metadata): void
     {
-        array_map(function (\ReflectionProperty $property) use ($metadata) {
+        \array_map(function (\ReflectionProperty $property) use ($metadata) {
             $annotations = $this->filterAnnotations($this->reader->getPropertyAnnotations($property));
 
             if (empty($annotations)) {
@@ -125,10 +125,10 @@ class AnnotationDriver implements DriverInterface
      */
     private function filterAnnotations(array $annotations): array
     {
-        $annotations = array_filter($annotations, function ($annotation) {
+        $annotations = \array_filter($annotations, function ($annotation) {
             $ref = new \ReflectionObject($annotation);
 
-            return 0 === strpos($ref->getNamespaceName(), 'TSantos\Serializer');
+            return 0 === \strpos($ref->getNamespaceName(), 'TSantos\Serializer');
         });
 
         return $annotations;
@@ -167,12 +167,12 @@ class AnnotationDriver implements DriverInterface
         ];
 
         foreach ($annotations as $annotation) {
-            $annotationClass = get_class($annotation);
+            $annotationClass = \get_class($annotation);
             if (!isset($config[$annotationClass])) {
                 continue;
             }
 
-            call_user_func($config[$annotationClass], $property, $annotation);
+            \call_user_func($config[$annotationClass], $property, $annotation);
         }
     }
 }

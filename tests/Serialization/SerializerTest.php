@@ -33,7 +33,7 @@ class SerializerTest extends SerializerTestCase
 
         $json = $serializer->serialize($persons);
 
-        $this->assertEquals(json_encode([
+        $this->assertEquals(\json_encode([
             [
                 'id' => 1,
                 'name' => 'Tales',
@@ -65,7 +65,7 @@ class SerializerTest extends SerializerTestCase
 
         $json = $serializer->serialize($person);
 
-        $this->assertEquals(json_encode([
+        $this->assertEquals(\json_encode([
             'id' => 1,
             'name' => 'Tales',
             'married' => true,

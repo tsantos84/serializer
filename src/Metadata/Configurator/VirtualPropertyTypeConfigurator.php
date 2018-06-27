@@ -52,7 +52,7 @@ class VirtualPropertyTypeConfigurator implements ConfiguratorInterface
     {
         $docBlock = $getter->getDocComment();
 
-        if (is_string($docBlock)) {
+        if (\is_string($docBlock)) {
             return $this->extractFromDocComment($docBlock);
         }
 
@@ -61,7 +61,7 @@ class VirtualPropertyTypeConfigurator implements ConfiguratorInterface
 
     private function extractFromDocComment(string $docComment): ?string
     {
-        if (preg_match('/@(return|var)\s+([^\s]+)/', $docComment, $matches)) {
+        if (\preg_match('/@(return|var)\s+([^\s]+)/', $docComment, $matches)) {
             list(, , $type) = $matches;
 
             return $type;

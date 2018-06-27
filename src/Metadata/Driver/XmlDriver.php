@@ -26,22 +26,22 @@ class XmlDriver extends AbstractFileDriver
 {
     protected function loadMetadataFromFile(\ReflectionClass $class, $file)
     {
-        $previous = libxml_use_internal_errors(true);
-        libxml_clear_errors();
-        $elem = simplexml_load_file($file);
-        libxml_use_internal_errors($previous);
+        $previous = \libxml_use_internal_errors(true);
+        \libxml_clear_errors();
+        $elem = \simplexml_load_file($file);
+        \libxml_use_internal_errors($previous);
         if (false === $elem) {
-            throw new \RuntimeException(libxml_get_last_error());
+            throw new \RuntimeException(\libxml_get_last_error());
         }
 
         $metadata = new ClassMetadata($name = $class->name);
 
         if (!$elems = $elem->xpath("./class[@name = '".$name."']")) {
-            throw new \RuntimeException(sprintf('Could not find class %s inside XML element.', $name));
+            throw new \RuntimeException(\sprintf('Could not find class %s inside XML element.', $name));
         }
 
         /** @var \SimpleXMLElement $elem */
-        $elem = reset($elems);
+        $elem = \reset($elems);
 
         if (null !== $baseClass = $elem->attributes()->{'base-class'}) {
             $metadata->baseClass = $baseClass;
@@ -65,7 +65,7 @@ class XmlDriver extends AbstractFileDriver
             }
 
             /** @var \SimpleXMLElement[] $options */
-            if (count($options = $xmlProperty->xpath('./options/option'))) {
+            if (\count($options = $xmlProperty->xpath('./options/option'))) {
                 $o = [];
                 foreach ($options as $v) {
                     $o[(string) $v['name']] = (string) $v;
@@ -74,7 +74,7 @@ class XmlDriver extends AbstractFileDriver
             }
 
             if (isset($attribs['groups'])) {
-                $property->groups = preg_split('/\s*,\s*/', trim((string) $attribs['groups']));
+                $property->groups = \preg_split('/\s*,\s*/', \trim((string) $attribs['groups']));
             } elseif (isset($xmlProperty->groups)) {
                 $property->groups = (array) $xmlProperty->groups->value;
             }
@@ -82,7 +82,7 @@ class XmlDriver extends AbstractFileDriver
             $property->readValueFilter = $attribs['read-value-filter'] ?? null;
             $property->writeValueFilter = $attribs['write-value-filter'] ?? null;
             $property->type = $attribs['type'] ?? null;
-            $property->readOnly = 'true' === strtolower($attribs['read-only'] ?? '') ?? false;
+            $property->readOnly = 'true' === \strtolower($attribs['read-only'] ?? '') ?? false;
 
             $metadata->addPropertyMetadata($property);
         }
@@ -99,13 +99,13 @@ class XmlDriver extends AbstractFileDriver
             $property->readValueFilter = $attribs['read-value'] ?? null;
 
             if (isset($attribs['groups'])) {
-                $property->groups = preg_split('/\s*,\s*/', trim((string) $attribs['groups']));
+                $property->groups = \preg_split('/\s*,\s*/', \trim((string) $attribs['groups']));
             } elseif (isset($xmlProperty->groups)) {
                 $property->groups = (array) $xmlProperty->groups->value;
             }
 
             /** @var \SimpleXMLElement[] $options */
-            if (count($options = $xmlProperty->xpath('./options/option'))) {
+            if (\count($options = $xmlProperty->xpath('./options/option'))) {
                 $o = [];
                 foreach ($options as $v) {
                     $o[(string) $v['name']] = (string) $v;

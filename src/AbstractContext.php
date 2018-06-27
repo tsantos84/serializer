@@ -41,7 +41,7 @@ abstract class AbstractContext
      */
     public function setGroups(array $groups): self
     {
-        $this->groups = array_flip($groups);
+        $this->groups = \array_flip($groups);
 
         return $this;
     }

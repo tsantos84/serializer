@@ -34,6 +34,6 @@ class ScalarTypesSerializationTest extends SerializerTestCase
     {
         $serializer = $this->createSerializer([]);
         $json = $serializer->serialize([1, 2, 3, 'four']);
-        $this->assertEquals(json_encode([1, 2, 3, 'four']), $json);
+        $this->assertEquals(\json_encode([1, 2, 3, 'four']), $json);
     }
 }

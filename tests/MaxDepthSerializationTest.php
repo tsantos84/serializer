@@ -46,7 +46,7 @@ class MaxDepthSerializationTest extends SerializerTestCase
             'y' => ['type' => 'float'],
         ]);
 
-        $mappings = array_merge($personMapping, $addressMapping, $coordinateMapping);
+        $mappings = \array_merge($personMapping, $addressMapping, $coordinateMapping);
 
         $serializer = $this->createSerializer($mappings);
 
@@ -57,7 +57,7 @@ class MaxDepthSerializationTest extends SerializerTestCase
 
         $json = $serializer->serialize($person, SerializationContext::create()->setMaxDepth(2));
 
-        $this->assertEquals(json_encode([
+        $this->assertEquals(\json_encode([
             'id' => 1,
             'name' => 'Tales',
             'address' => [

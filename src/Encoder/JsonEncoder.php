@@ -26,12 +26,12 @@ class JsonEncoder implements EncoderInterface
      */
     public function encode(array $data): string
     {
-        return json_encode($data);
+        return \json_encode($data);
     }
 
     public function decode(string $content): array
     {
-        return json_decode($content, true);
+        return \json_decode($content, true);
     }
 
     /**

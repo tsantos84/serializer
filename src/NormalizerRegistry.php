@@ -49,7 +49,7 @@ class NormalizerRegistry implements NormalizerRegistryInterface
 
     public function unshift($normalizer)
     {
-        array_unshift($this->normalizers, $normalizer);
+        \array_unshift($this->normalizers, $normalizer);
 
         return $this;
     }
@@ -59,7 +59,7 @@ class NormalizerRegistry implements NormalizerRegistryInterface
      */
     public function getNormalizer($data, SerializationContext $context): ?NormalizerInterface
     {
-        $type = is_object($data) ? get_class($data) : gettype($data);
+        $type = \is_object($data) ? \get_class($data) : \gettype($data);
 
         if (isset($this->cachedNormalizers['normalizer'][$type])) {
             return $this->cachedNormalizers['normalizer'][$type];

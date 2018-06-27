@@ -26,7 +26,7 @@ class AnnotationReaderTest extends AbstractDriverTest
     public function setUp()
     {
         parent::setUp();
-        if (!class_exists('Doctrine\Common\Annotations\AnnotationReader')) {
+        if (!\class_exists('Doctrine\Common\Annotations\AnnotationReader')) {
             $this->markTestSkipped('Skipping test as doctrine/annotation component is not installed');
         }
     }

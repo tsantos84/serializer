@@ -28,13 +28,13 @@ class YamlDriver extends AbstractFileDriver
 {
     protected function loadMetadataFromFile(\ReflectionClass $class, $file)
     {
-        if (!class_exists('Symfony\Component\Yaml\Yaml')) {
+        if (!\class_exists('Symfony\Component\Yaml\Yaml')) {
             throw new \RuntimeException(
                 'Yaml parser was not found. Did you added `symfony/yaml` to your project dependency?'
             );
         }
 
-        $config = Yaml::parse(file_get_contents($file));
+        $config = Yaml::parse(\file_get_contents($file));
 
         if (!isset($config[$class->name])) {
             throw new MappingException('There is no mapping for class '.$class->name);

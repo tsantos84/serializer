@@ -49,7 +49,7 @@ class PropertyTypeConfigurator implements ConfiguratorInterface
             }
 
             /** @var Type $propertyType */
-            $propertyType = current($types);
+            $propertyType = \current($types);
             $propertyMetadata->type = $this->extract($propertyType);
         }
     }

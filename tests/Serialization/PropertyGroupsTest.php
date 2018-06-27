@@ -36,7 +36,7 @@ class PropertyGroupsTest extends SerializerTestCase
 
         $person = new Person(1, 'Tales', true);
 
-        $expected = json_encode(['id' => 1, 'married' => true]);
+        $expected = \json_encode(['id' => 1, 'married' => true]);
 
         $this->assertEquals($expected, $serializer->serialize($person, SerializationContext::create()->setGroups(['web', 'Default'])));
     }

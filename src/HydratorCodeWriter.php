@@ -44,9 +44,9 @@ class HydratorCodeWriter
      */
     public function write(ClassMetadata $classMetadata, string $code)
     {
-        $filename = sprintf('%s/%sHydrator.php', $this->path, str_replace('\\', '', $classMetadata->name));
+        $filename = \sprintf('%s/%sHydrator.php', $this->path, \str_replace('\\', '', $classMetadata->name));
 
-        return file_put_contents($filename, $code) > 0;
+        return \file_put_contents($filename, $code) > 0;
     }
 
     /**

@@ -51,7 +51,7 @@ class ObjectNormalizer implements NormalizerInterface, DenormalizerInterface, Se
 
     public function normalize($data, SerializationContext $context)
     {
-        $hydrator = $this->loader->load(get_class($data), $this->serializer);
+        $hydrator = $this->loader->load(\get_class($data), $this->serializer);
 
         $context->enter($data);
         $array = $hydrator->extract($data, $context);
@@ -67,7 +67,7 @@ class ObjectNormalizer implements NormalizerInterface, DenormalizerInterface, Se
 
     public function supportsNormalization($data, SerializationContext $context): bool
     {
-        return is_object($data) && !is_iterable($data) && !$data instanceof \DateTimeInterface;
+        return \is_object($data) && !\is_iterable($data) && !$data instanceof \DateTimeInterface;
     }
 
     public function denormalize($data, string $type, DeserializationContext $context)
@@ -90,6 +90,6 @@ class ObjectNormalizer implements NormalizerInterface, DenormalizerInterface, Se
 
     public function supportsDenormalization(string $type, $data, DeserializationContext $context): bool
     {
-        return class_exists($type) && \DateTime::class !== $type;
+        return \class_exists($type) && \DateTime::class !== $type;
     }
 }

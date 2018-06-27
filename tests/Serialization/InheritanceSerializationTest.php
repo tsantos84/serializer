@@ -30,7 +30,7 @@ class InheritanceSerializationTest extends SerializerTestCase
         $employee = new Employee(1, 'Tales', true);
         $employee->setPosition('Developer');
 
-        $serializer = $this->createSerializer(array_merge(
+        $serializer = $this->createSerializer(\array_merge(
             $this->createMapping(Person::class, [
                 'name' => [],
             ]),
@@ -47,7 +47,7 @@ class InheritanceSerializationTest extends SerializerTestCase
     /** @test */
     public function it_can_deserialize_an_employee_which_inherits_from_person()
     {
-        $serializer = $this->createSerializer(array_merge(
+        $serializer = $this->createSerializer(\array_merge(
             $this->createMapping(Person::class, [
                 'name' => [],
             ]),

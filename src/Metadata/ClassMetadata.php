@@ -27,7 +27,7 @@ class ClassMetadata extends MergeableClassMetadata
 
     public function serialize()
     {
-        return serialize([
+        return \serialize([
             $this->name,
             $this->methodMetadata,
             $this->propertyMetadata,
@@ -48,7 +48,7 @@ class ClassMetadata extends MergeableClassMetadata
             $this->createdAt,
             $this->baseClass,
             $this->template
-        ) = unserialize($str);
+        ) = \unserialize($str);
 
         $this->reflection = new \ReflectionClass($this->name);
     }

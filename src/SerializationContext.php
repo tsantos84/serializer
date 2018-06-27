@@ -69,7 +69,7 @@ class SerializationContext extends AbstractContext
     {
         parent::enter();
 
-        if (!is_object($object)) {
+        if (!\is_object($object)) {
             return;
         }
 
@@ -83,7 +83,7 @@ class SerializationContext extends AbstractContext
 
         if (++$this->circularReference[$hash] > $this->circularReferenceCount) {
             throw new CircularReferenceException(
-                sprintf('A circular reference for object of class %s was detected', get_class($object))
+                \sprintf('A circular reference for object of class %s was detected', \get_class($object))
             );
         }
     }
@@ -95,7 +95,7 @@ class SerializationContext extends AbstractContext
     {
         parent::leave();
 
-        if (!is_object($object)) {
+        if (!\is_object($object)) {
             return;
         }
 

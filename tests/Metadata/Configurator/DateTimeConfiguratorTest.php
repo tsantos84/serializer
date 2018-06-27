@@ -42,8 +42,8 @@ class DateTimeConfiguratorTest extends AbstractConfiguratorTest
         $configurator = new DateTimeConfigurator();
         $configurator->configure($classMetadata);
 
-        $this->assertEquals(sprintf('$value->format(\'%s\')', \DateTime::ISO8601), $property->readValueFilter);
-        $this->assertEquals(sprintf('\DateTime::createFromFormat(\'%s\', $value)', \DateTime::ISO8601), $property->writeValueFilter);
+        $this->assertEquals(\sprintf('$value->format(\'%s\')', \DateTime::ISO8601), $property->readValueFilter);
+        $this->assertEquals(\sprintf('\DateTime::createFromFormat(\'%s\', $value)', \DateTime::ISO8601), $property->writeValueFilter);
     }
 
     /** @test */

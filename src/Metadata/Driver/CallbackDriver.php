@@ -39,14 +39,14 @@ class CallbackDriver implements DriverInterface
 
     public function loadMetadataForClass(\ReflectionClass $class)
     {
-        $metadata = call_user_func($this->callback, $class);
+        $metadata = \call_user_func($this->callback, $class);
 
         if (!$metadata instanceof ClassMetadata) {
             throw new \BadMethodCallException(
-                sprintf(
+                \sprintf(
                     'The metadata callback should return an instance of %s, %s given',
                     ClassMetadata::class,
-                    is_object($metadata) ? get_class($metadata) : gettype($metadata)
+                    \is_object($metadata) ? \get_class($metadata) : \gettype($metadata)
                 )
             );
         }

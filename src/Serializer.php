@@ -57,7 +57,7 @@ class Serializer implements SerializerInterface
      */
     public function serialize($data, SerializationContext $context = null)
     {
-        if (null === $data || is_scalar($data)) {
+        if (null === $data || \is_scalar($data)) {
             return $data;
         }
 
@@ -86,9 +86,9 @@ class Serializer implements SerializerInterface
         }
 
         throw new \RuntimeException(
-            sprintf(
+            \sprintf(
                 'There is no normalizer able to normalize the data of type %s',
-                is_object($data) ? get_class($data) : gettype($data)
+                \is_object($data) ? \get_class($data) : \gettype($data)
             )
         );
     }

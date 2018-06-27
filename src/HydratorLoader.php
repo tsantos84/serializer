@@ -95,7 +95,7 @@ class HydratorLoader
 
         $fqn = $this->getClassName($classMetadata);
 
-        if (class_exists($fqn, false)) {
+        if (\class_exists($fqn, false)) {
             return $this->instances[$class] = $this->injectSerializer(new $fqn(), $serializer);
         }
 
@@ -112,7 +112,7 @@ class HydratorLoader
                 break;
 
             case self::AUTOGENERATE_FILE_NOT_EXISTS:
-                if (!file_exists($filename)) {
+                if (!\file_exists($filename)) {
                     $this->generate($classMetadata);
                 }
                 require_once $filename;

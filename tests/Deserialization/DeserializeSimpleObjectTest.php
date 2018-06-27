@@ -30,7 +30,7 @@ class DeserializeSimpleObjectTest extends SerializerTestCase
     /** @test */
     public function it_can_deserialize_a_simple_object()
     {
-        $serializer = $this->createSerializer(array_merge(
+        $serializer = $this->createSerializer(\array_merge(
             $this->createMapping(Person::class, [
                 'name' => ['type' => 'string'],
                 'favouriteBook' => ['type' => Book::class],
@@ -78,7 +78,7 @@ EOF;
     /** @test */
     public function it_cannot_deserialize_read_only_attributes()
     {
-        $serializer = $this->createSerializer(array_merge(
+        $serializer = $this->createSerializer(\array_merge(
             $this->createMapping(Person::class, [
                 'id' => ['type' => 'integer', 'readOnly' => true],
                 'name' => ['type' => 'string'],

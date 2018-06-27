@@ -27,7 +27,7 @@ class NormalizationTest extends SerializerTestCase
     /** @test */
     public function it_can_deserialize_an_object_containing_an_instance_of_datetime()
     {
-        $serializer = $this->createSerializer(array_merge(
+        $serializer = $this->createSerializer(\array_merge(
             $this->createMapping(Person::class, [
                 'id' => ['type' => 'integer'],
                 'name' => ['type' => 'string'],
@@ -35,7 +35,7 @@ class NormalizationTest extends SerializerTestCase
             ])
         ));
 
-        $json = json_encode([
+        $json = \json_encode([
             'id' => 10,
             'name' => 'Tales Santos',
             'birthday' => \DateTime::createFromFormat(\DateTime::ATOM, '1984-11-28T10:00:00+00:00')->format(\DateTime::ATOM),

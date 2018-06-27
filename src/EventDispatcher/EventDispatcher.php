@@ -61,9 +61,9 @@ class EventDispatcher implements EventDispatcherInterface
     public function addSubscriber(EventSubscriberInterface $subscriber)
     {
         foreach ($subscriber->getListeners() as $event => $params) {
-            if (is_string($params)) {
+            if (\is_string($params)) {
                 $this->addListener($event, [$subscriber, $params]);
-            } elseif (is_array($params)) {
+            } elseif (\is_array($params)) {
                 $this->addListener(
                     $event,
                     [$subscriber, $params['method']],

@@ -30,7 +30,7 @@ class CollectionNormalizer implements NormalizerInterface, DenormalizerInterface
         $context->enter();
         $array = [];
         foreach ($data as $key => $value) {
-            if (is_scalar($value)) {
+            if (\is_scalar($value)) {
                 $array[$key] = $value;
                 continue;
             }
@@ -43,12 +43,12 @@ class CollectionNormalizer implements NormalizerInterface, DenormalizerInterface
 
     public function supportsNormalization($data, SerializationContext $context): bool
     {
-        return is_iterable($data);
+        return \is_iterable($data);
     }
 
     public function denormalize($data, string $type, DeserializationContext $context)
     {
-        $type = substr($type, 0, strpos($type, '[]'));
+        $type = \substr($type, 0, \strpos($type, '[]'));
 
         $scalarTypes = [
             'integer' => true,
@@ -98,7 +98,7 @@ class CollectionNormalizer implements NormalizerInterface, DenormalizerInterface
 
     public function supportsDenormalization(string $type, $data, DeserializationContext $context): bool
     {
-        return strpos($type, '[]') > 0;
+        return \strpos($type, '[]') > 0;
     }
 
     public function canBeCachedByType(): bool

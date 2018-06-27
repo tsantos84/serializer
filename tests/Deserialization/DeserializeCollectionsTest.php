@@ -27,7 +27,7 @@ class DeserializeCollectionsTest extends SerializerTestCase
     /** @test */
     public function it_can_deserialize_an_array_of_persons()
     {
-        $serializer = $this->createSerializer(array_merge(
+        $serializer = $this->createSerializer(\array_merge(
             $this->createMapping(Person::class, [
                 'name' => ['type' => 'string'],
                 'colors' => ['type' => 'array'],
@@ -69,7 +69,7 @@ class DeserializeCollectionsTest extends SerializerTestCase
 EOF;
 
         /** @var Person[] $persons */
-        $persons = $serializer->deserialize($content, sprintf('%s[]', Person::class));
+        $persons = $serializer->deserialize($content, \sprintf('%s[]', Person::class));
 
         $this->assertCount(3, $persons);
 

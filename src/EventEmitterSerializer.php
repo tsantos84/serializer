@@ -59,7 +59,7 @@ class EventEmitterSerializer extends Serializer
             $context->start();
         }
 
-        $type = is_object($data) ? get_class($data) : gettype($data);
+        $type = \is_object($data) ? \get_class($data) : \gettype($data);
 
         $event = new PreSerializationEvent($data, $context);
         $this->dispatcher->dispatch(Events::PRE_SERIALIZATION, $event, $type);
