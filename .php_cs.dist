@@ -13,6 +13,7 @@ return PhpCsFixer\Config::create()
         '@Symfony' => true,
         'strict_param' => true,
         'declare_strict_types' => true,
+        'final_internal_class' => true,
         'array_syntax' => ['syntax' => 'short'],
     ])
     ->setFinder($finder)

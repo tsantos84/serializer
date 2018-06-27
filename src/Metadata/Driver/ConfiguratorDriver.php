@@ -23,7 +23,7 @@ use TSantos\Serializer\Metadata\ConfiguratorInterface;
  *
  * @internal
  */
-class ConfiguratorDriver implements DriverInterface
+final class ConfiguratorDriver implements DriverInterface
 {
     /**
      * @var DriverInterface

@@ -23,7 +23,7 @@ use TSantos\Serializer\Metadata\PropertyMetadata;
  *
  * @internal
  */
-class ReflectionDriver implements DriverInterface
+final class ReflectionDriver implements DriverInterface
 {
     public function loadMetadataForClass(\ReflectionClass $class)
     {
