@@ -1,4 +1,6 @@
 <?php
+
+declare(strict_types=1);
 /**
  * This file is part of the TSantos Serializer package.
  *
@@ -14,7 +16,7 @@ use PHPUnit\Framework\TestCase;
 use TSantos\Serializer\SerializationContext;
 
 /**
- * Class SerializationContextTest
+ * Class SerializationContextTest.
  *
  * @author Tales Santos <tales.augusto.santos@gmail.com>
  */
@@ -24,7 +26,8 @@ class SerializationContextTest extends TestCase
     public function it_should_not_throw_circular_reference_exception()
     {
         $context = new SerializationContext();
-        $subject = new class {};
+        $subject = new class() {
+        };
         $context->enter($subject);
         $context->leave($subject);
         $context->enter($subject);
@@ -34,12 +37,14 @@ class SerializationContextTest extends TestCase
 
     /**
      * @test
-     * @expectedException \TSantos\Serializer\Exception\CircularReferenceException
      */
     public function it_should_throw_circular_reference_exception()
     {
+        $this->expectException(\TSantos\Serializer\Exception\CircularReferenceException::class);
+
         $context = new SerializationContext();
-        $subject = new class {};
+        $subject = new class() {
+        };
         $context->enter($subject);
         $context->enter($subject);
     }

@@ -1,4 +1,6 @@
 <?php
+
+declare(strict_types=1);
 /**
  * This file is part of the TSantos Serializer package.
  *
@@ -18,7 +20,7 @@ use TSantos\Serializer\DeserializationContext;
 use TSantos\Serializer\Metadata\Driver\ReflectionDriver;
 
 /**
- * Class DeserializeObjectTest
+ * Class DeserializeObjectTest.
  *
  * @author Tales Santos <tales.augusto.santos@gmail.com>
  * @runTestsInSeparateProcesses
@@ -28,14 +30,14 @@ class DeserializeSimpleObjectTest extends SerializerTestCase
     /** @test */
     public function it_can_deserialize_a_simple_object()
     {
-        $serializer = $this->createSerializer(array_merge(
+        $serializer = $this->createSerializer(\array_merge(
             $this->createMapping(Person::class, [
                 'name' => ['type' => 'string'],
-                'favouriteBook' => ['type' => Book::class]
+                'favouriteBook' => ['type' => Book::class],
             ]),
             $this->createMapping(Book::class, [
                 'id' => ['type' => 'integer'],
-                'name' => ['type' => 'string']
+                'name' => ['type' => 'string'],
             ])
         ));
 
@@ -62,7 +64,7 @@ EOF;
     public function it_can_deserialize_a_simple_object_by_reflection()
     {
         $serializer = $this->createSerializer([
-            Dummy::class => new ReflectionDriver()
+            Dummy::class => new ReflectionDriver(),
         ]);
 
         $content = '{"foo":"bar"}';
@@ -76,7 +78,7 @@ EOF;
     /** @test */
     public function it_cannot_deserialize_read_only_attributes()
     {
-        $serializer = $this->createSerializer(array_merge(
+        $serializer = $this->createSerializer(\array_merge(
             $this->createMapping(Person::class, [
                 'id' => ['type' => 'integer', 'readOnly' => true],
                 'name' => ['type' => 'string'],

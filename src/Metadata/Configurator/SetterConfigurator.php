@@ -1,4 +1,6 @@
 <?php
+
+declare(strict_types=1);
 /**
  * This file is part of the TSantos Serializer package.
  *
@@ -15,7 +17,7 @@ use TSantos\Serializer\Metadata\ConfiguratorInterface;
 use TSantos\Serializer\Metadata\PropertyMetadata;
 
 /**
- * Class SetterConfigurator
+ * Class SetterConfigurator.
  *
  * @author Tales Santos <tales.augusto.santos@gmail.com>
  */
@@ -34,10 +36,11 @@ class SetterConfigurator implements ConfiguratorInterface
 
     private function doConfigure(ClassMetadata $classMetadata, PropertyMetadata $propertyMetadata): void
     {
-        $ucName = ucfirst($propertyMetadata->name);
+        $ucName = \ucfirst($propertyMetadata->name);
 
-        if ($classMetadata->reflection->hasMethod($setter = 'set' . $ucName)) {
+        if ($classMetadata->reflection->hasMethod($setter = 'set'.$ucName)) {
             $propertyMetadata->setSetter($setter);
+
             return;
         }
 

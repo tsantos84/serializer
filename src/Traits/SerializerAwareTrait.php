@@ -1,4 +1,6 @@
 <?php
+
+declare(strict_types=1);
 /**
  * This file is part of the TSantos Serializer package.
  *
@@ -13,8 +15,7 @@ namespace TSantos\Serializer\Traits;
 use TSantos\Serializer\SerializerInterface;
 
 /**
- * Trait SerializerAwareTrait
- * @package TSantos\Serializer\Traits
+ * Trait SerializerAwareTrait.
  */
 trait SerializerAwareTrait
 {

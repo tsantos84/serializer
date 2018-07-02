@@ -1,4 +1,6 @@
 <?php
+
+declare(strict_types=1);
 /**
  * This file is part of the TSantos Serializer package.
  *
@@ -13,7 +15,7 @@ namespace TSantos\Serializer;
 use Metadata\ClassMetadata;
 
 /**
- * Class ClassWriter
+ * Class ClassWriter.
  *
  * @author Tales Santos <tales.augusto.santos@gmail.com>
  */
@@ -26,6 +28,7 @@ class HydratorCodeWriter
 
     /**
      * SerializerClassWriter constructor.
+     *
      * @param string $path
      */
     public function __construct(string $path)
@@ -35,13 +38,15 @@ class HydratorCodeWriter
 
     /**
      * @param ClassMetadata $classMetadata
-     * @param string $code
+     * @param string        $code
+     *
      * @return bool
      */
     public function write(ClassMetadata $classMetadata, string $code)
     {
-        $filename = sprintf('%s/%sHydrator.php', $this->path, str_replace('\\', '', $classMetadata->name));
-        return file_put_contents($filename, $code) > 0;
+        $filename = \sprintf('%s/%sHydrator.php', $this->path, \str_replace('\\', '', $classMetadata->name));
+
+        return \file_put_contents($filename, $code) > 0;
     }
 
     /**

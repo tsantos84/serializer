@@ -1,4 +1,6 @@
 <?php
+
+declare(strict_types=1);
 /**
  * This file is part of the TSantos Serializer package.
  *
@@ -13,17 +15,17 @@ namespace TSantos\Serializer\ObjectInstantiator;
 use TSantos\Serializer\DeserializationContext;
 
 /**
- * Interface ObjectInstantiatorInterface
+ * Interface ObjectInstantiatorInterface.
  *
  * @author Tales Santos <tales.augusto.santos@gmail.com>
  */
 interface ObjectInstantiatorInterface
 {
     /**
-     * Creates a new instance of $type
+     * Creates a new instance of $type.
      *
-     * @param string $type
-     * @param array $data
+     * @param string                 $type
+     * @param array                  $data
      * @param DeserializationContext $context
      *
      * @return object

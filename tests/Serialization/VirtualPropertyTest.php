@@ -1,4 +1,6 @@
 <?php
+
+declare(strict_types=1);
 /**
  * This file is part of the TSantos Serializer package.
  *
@@ -14,7 +16,7 @@ use Tests\TSantos\Serializer\Fixture\Model\Person;
 use Tests\TSantos\Serializer\SerializerTestCase;
 
 /**
- * Class VirtualPropertyTest
+ * Class VirtualPropertyTest.
  *
  * @author Tales Santos <tales.augusto.santos@gmail.com>
  *
@@ -26,7 +28,7 @@ class VirtualPropertyTest extends SerializerTestCase
     public function it_can_serialize_a_virtual_property()
     {
         $serializer = $this->createSerializer($this->createMapping(Person::class, [], [
-            'getFullName' => ['exposeAs' => 'fullName']
+            'getFullName' => ['exposeAs' => 'fullName'],
         ]));
 
         $person = (new Person(1, 'Tales', true))->setLastName('Santos');
@@ -38,7 +40,7 @@ class VirtualPropertyTest extends SerializerTestCase
     public function it_can_serialize_a_virtual_property_with_modifier()
     {
         $serializer = $this->createSerializer($this->createMapping(Person::class, [], [
-            'getBirthday' => ['exposeAs' => 'birthday', 'readValueFilter' => '$value->format("d/m/Y")']
+            'getBirthday' => ['exposeAs' => 'birthday', 'readValueFilter' => '$value->format("d/m/Y")'],
         ]));
 
         $person = (new Person(1, 'Tales', true));

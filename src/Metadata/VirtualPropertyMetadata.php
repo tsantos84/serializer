@@ -1,4 +1,6 @@
 <?php
+
+declare(strict_types=1);
 /**
  * This file is part of the TSantos Serializer package.
  *
@@ -13,7 +15,7 @@ namespace TSantos\Serializer\Metadata;
 use Metadata\MethodMetadata;
 
 /**
- * Class VirtualPropertyMetadata
+ * Class VirtualPropertyMetadata.
  *
  * @author Tales Santos <tales.augusto.santos@gmail.com>
  */
@@ -33,20 +35,20 @@ class VirtualPropertyMetadata extends MethodMetadata
 
     public function serialize()
     {
-        return serialize([
+        return \serialize([
             $this->name,
             $this->class,
             $this->type,
             $this->readValueFilter,
             $this->exposeAs,
             $this->groups,
-            $this->options
+            $this->options,
         ]);
     }
 
     public function unserialize($str)
     {
-        $unserialized = unserialize($str);
+        $unserialized = \unserialize($str);
 
         list(
             $this->name,

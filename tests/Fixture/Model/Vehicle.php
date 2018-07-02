@@ -1,4 +1,6 @@
 <?php
+
+declare(strict_types=1);
 /**
  * This file is part of the TSantos Serializer package.
  *
@@ -11,23 +13,23 @@
 namespace Tests\TSantos\Serializer\Fixture\Model;
 
 /**
- * Class Veihcle
+ * Class Veihcle.
  *
- * @package Tests\Serializer\Fixture
  * @author Tales Santos <tales.maxmilhas@gmail.com>
  */
 class Vehicle implements \JsonSerializable
 {
-    /** @var  string */
+    /** @var string */
     private $color;
 
-    /** @var  integer */
+    /** @var int */
     private $ports;
 
     /**
      * Veihcle constructor.
+     *
      * @param string $color
-     * @param int $ports
+     * @param int    $ports
      */
     public function __construct(string $color, int $ports)
     {
@@ -45,11 +47,13 @@ class Vehicle implements \JsonSerializable
 
     /**
      * @param string $color
+     *
      * @return Vehicle
      */
-    public function setColor(string $color): Vehicle
+    public function setColor(string $color): self
     {
         $this->color = $color;
+
         return $this;
     }
 
@@ -63,11 +67,13 @@ class Vehicle implements \JsonSerializable
 
     /**
      * @param int $ports
+     *
      * @return Vehicle
      */
-    public function setPorts(int $ports): Vehicle
+    public function setPorts(int $ports): self
     {
         $this->ports = $ports;
+
         return $this;
     }
 
@@ -81,8 +87,8 @@ class Vehicle implements \JsonSerializable
                 'FL' => 'good',
                 'FR' => 'medium',
                 'BL' => 'good',
-                'BR' => 'bad'
-            ]
+                'BR' => 'bad',
+            ],
         ];
     }
 }

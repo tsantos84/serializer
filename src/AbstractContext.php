@@ -1,4 +1,6 @@
 <?php
+
+declare(strict_types=1);
 /**
  * This file is part of the TSantos Serializer package.
  *
@@ -11,18 +13,17 @@
 namespace TSantos\Serializer;
 
 /**
- * Class AbstractContext
- * @package TSantos\Serializer
+ * Class AbstractContext.
  */
 abstract class AbstractContext
 {
     /** @var array */
     private $groups = ['Default' => true];
 
-    /** @var integer */
+    /** @var int */
     private $maxDepth;
 
-    /** @var integer */
+    /** @var int */
     private $currentDepth;
 
     /**
@@ -35,11 +36,13 @@ abstract class AbstractContext
 
     /**
      * @param array $groups
+     *
      * @return self
      */
     public function setGroups(array $groups): self
     {
-        $this->groups = array_flip($groups);
+        $this->groups = \array_flip($groups);
+
         return $this;
     }
 
@@ -50,11 +53,13 @@ abstract class AbstractContext
 
     /**
      * @param $maxDepth
+     *
      * @return self
      */
     public function setMaxDepth($maxDepth): self
     {
         $this->maxDepth = $maxDepth;
+
         return $this;
     }
 
@@ -74,12 +79,12 @@ abstract class AbstractContext
 
     public function enter()
     {
-        $this->currentDepth++;
+        ++$this->currentDepth;
     }
 
     public function leave()
     {
-        $this->currentDepth--;
+        --$this->currentDepth;
     }
 
     public function isMaxDeepAchieve(): bool

@@ -1,4 +1,6 @@
 <?php
+
+declare(strict_types=1);
 /**
  * This file is part of the TSantos Serializer package.
  *
@@ -18,7 +20,7 @@ use TSantos\Serializer\Event\PreSerializationEvent;
 use TSantos\Serializer\EventDispatcher\EventDispatcherInterface;
 
 /**
- * Class EventEmitterSerializer
+ * Class EventEmitterSerializer.
  *
  * Dispatches some events in serialization and deserialization operations
  *
@@ -33,9 +35,10 @@ class EventEmitterSerializer extends Serializer
 
     /**
      * EventEmitterSerializer constructor.
-     * @param EncoderInterface $encoder
+     *
+     * @param EncoderInterface            $encoder
      * @param NormalizerRegistryInterface $normalizers
-     * @param EventDispatcherInterface $dispatcher
+     * @param EventDispatcherInterface    $dispatcher
      */
     public function __construct(
         EncoderInterface $encoder,
@@ -56,7 +59,7 @@ class EventEmitterSerializer extends Serializer
             $context->start();
         }
 
-        $type = is_object($data) ? get_class($data) : gettype($data);
+        $type = \is_object($data) ? \get_class($data) : \gettype($data);
 
         $event = new PreSerializationEvent($data, $context);
         $this->dispatcher->dispatch(Events::PRE_SERIALIZATION, $event, $type);

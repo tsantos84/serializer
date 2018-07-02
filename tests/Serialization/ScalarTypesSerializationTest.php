@@ -1,4 +1,6 @@
 <?php
+
+declare(strict_types=1);
 /**
  * This file is part of the TSantos Serializer package.
  *
@@ -13,7 +15,7 @@ namespace Tests\TSantos\Serializer\Serialization;
 use Tests\TSantos\Serializer\SerializerTestCase;
 
 /**
- * Class ScalarTypesSerializationTest
+ * Class ScalarTypesSerializationTest.
  *
  * @author Tales Santos <tales.augusto.santos@gmail.com>
  *
@@ -21,17 +23,23 @@ use Tests\TSantos\Serializer\SerializerTestCase;
  */
 class ScalarTypesSerializationTest extends SerializerTestCase
 {
-    public function testSerializeWithScalarValue()
+    /**
+     * @test
+     */
+    public function serializeWithScalarValue()
     {
         $serializer = $this->createSerializer([]);
         $json = $serializer->serialize(1);
         $this->assertEquals(1, $json);
     }
 
-    public function testSerializeWithSimpleArray()
+    /**
+     * @test
+     */
+    public function serializeWithSimpleArray()
     {
         $serializer = $this->createSerializer([]);
-        $json = $serializer->serialize([1, 2, 3, "four"]);
-        $this->assertEquals(json_encode([1, 2, 3, "four"]), $json);
+        $json = $serializer->serialize([1, 2, 3, 'four']);
+        $this->assertEquals(\json_encode([1, 2, 3, 'four']), $json);
     }
 }

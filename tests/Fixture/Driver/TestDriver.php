@@ -1,4 +1,6 @@
 <?php
+
+declare(strict_types=1);
 /**
  * This file is part of the TSantos Serializer package.
  *
@@ -12,9 +14,8 @@ namespace Tests\TSantos\Serializer\Fixture\Driver;
 
 use Metadata\Driver\DriverInterface;
 
-
 /**
- * Class TestDriver
+ * Class TestDriver.
  *
  * @author Tales Santos <tales.augusto.santos@gmail.com>
  */
@@ -27,6 +28,7 @@ class TestDriver implements DriverInterface
 
     /**
      * TestDriver constructor.
+     *
      * @param array $drivers
      */
     public function __construct(array $drivers)

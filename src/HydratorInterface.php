@@ -1,4 +1,6 @@
 <?php
+
+declare(strict_types=1);
 /**
  * This file is part of the TSantos Serializer package.
  *
@@ -11,9 +13,8 @@
 namespace TSantos\Serializer;
 
 /**
- * Interface HydratorInterface
+ * Interface HydratorInterface.
  *
- * @package Serializer
  * @author Tales Santos <tales.augusto.santos@gmail.com>
  */
 interface HydratorInterface
@@ -24,6 +25,7 @@ interface HydratorInterface
      *
      * @param $object
      * @param SerializationContext $context
+     *
      * @return array
      */
     public function extract($object, SerializationContext $context): array;
@@ -32,8 +34,9 @@ interface HydratorInterface
      * Hydrate an object from the given array.
      *
      * @param $object
-     * @param array $data
+     * @param array                  $data
      * @param DeserializationContext $context
+     *
      * @return mixed
      */
     public function hydrate($object, array $data, DeserializationContext $context);

@@ -1,4 +1,6 @@
 <?php
+
+declare(strict_types=1);
 /**
  * This file is part of the TSantos Serializer package.
  *
@@ -13,7 +15,7 @@ namespace TSantos\Serializer\Metadata;
 use Metadata\MergeableClassMetadata;
 
 /**
- * Class ClassMetadata
+ * Class ClassMetadata.
  *
  * @author Tales Santos <tales.augusto.santos@gmail.com>
  */
@@ -25,15 +27,15 @@ class ClassMetadata extends MergeableClassMetadata
 
     public function serialize()
     {
-        return serialize(array(
+        return \serialize([
             $this->name,
             $this->methodMetadata,
             $this->propertyMetadata,
             $this->fileResources,
             $this->createdAt,
             $this->baseClass,
-            $this->template
-        ));
+            $this->template,
+        ]);
     }
 
     public function unserialize($str)
@@ -46,7 +48,7 @@ class ClassMetadata extends MergeableClassMetadata
             $this->createdAt,
             $this->baseClass,
             $this->template
-        ) = unserialize($str);
+        ) = \unserialize($str);
 
         $this->reflection = new \ReflectionClass($this->name);
     }

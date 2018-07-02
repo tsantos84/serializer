@@ -1,4 +1,6 @@
 <?php
+
+declare(strict_types=1);
 /**
  * This file is part of the TSantos Serializer package.
  *
@@ -13,7 +15,7 @@ namespace Tests\TSantos\Serializer\Fixture\Model;
 use TSantos\Serializer\Mapping as Serializer;
 
 /**
- * Class Person
+ * Class Person.
  *
  * @author Tales Santos <tales.augusto.santos@gmail.com>
  * @Serializer\BaseClass("Tests\TSantos\Serializer\AbstractSerializerClass")
@@ -82,9 +84,10 @@ class Person
 
     /**
      * Person constructor.
-     * @param int $id
+     *
+     * @param int    $id
      * @param string $name
-     * @param bool $married
+     * @param bool   $married
      */
     public function __construct(int $id = null, string $name = null, bool $married = null)
     {
@@ -111,11 +114,13 @@ class Person
 
     /**
      * @param string $name
+     *
      * @return Person
      */
-    public function setName(string $name): Person
+    public function setName(string $name): self
     {
         $this->name = $name;
+
         return $this;
     }
 
@@ -129,11 +134,13 @@ class Person
 
     /**
      * @param string $lastName
+     *
      * @return Person
      */
-    public function setLastName(string $lastName): Person
+    public function setLastName(string $lastName): self
     {
         $this->lastName = $lastName;
+
         return $this;
     }
 
@@ -146,7 +153,7 @@ class Person
      */
     public function getFullName(): string
     {
-        return trim($this->name . ' ' . $this->lastName);
+        return \trim($this->name.' '.$this->lastName);
     }
 
     /**
@@ -159,11 +166,13 @@ class Person
 
     /**
      * @param bool $isMarried
+     *
      * @return Person
      */
-    public function setMarried(bool $isMarried): Person
+    public function setMarried(bool $isMarried): self
     {
         $this->married = $isMarried;
+
         return $this;
     }
 
@@ -190,6 +199,7 @@ class Person
 
     /**
      * @Serializer\VirtualProperty()
+     *
      * @return string
      */
     public function getFormattedAddress(): string
@@ -198,34 +208,38 @@ class Person
             return '';
         }
 
-        return $this->address->getStreet() . ' ' . $this->address->getCity();
+        return $this->address->getStreet().' '.$this->address->getCity();
     }
 
     /**
      * @param Address $address
+     *
      * @return Person
      */
-    public function setAddress(Address $address): Person
+    public function setAddress(Address $address): self
     {
         $this->address = $address;
+
         return $this;
     }
 
     /**
      * @return Person
      */
-    public function getFather(): ?Person
+    public function getFather(): ?self
     {
         return $this->father;
     }
 
     /**
      * @param Person $father
+     *
      * @return Person
      */
-    public function setFather(Person $father): Person
+    public function setFather(self $father): self
     {
         $this->father = $father;
+
         return $this;
     }
 
@@ -239,11 +253,13 @@ class Person
 
     /**
      * @param Book $favouriteBook
+     *
      * @return Person
      */
-    public function setFavouriteBook(Book $favouriteBook): Person
+    public function setFavouriteBook(Book $favouriteBook): self
     {
         $this->favouriteBook = $favouriteBook;
+
         return $this;
     }
 
@@ -257,11 +273,13 @@ class Person
 
     /**
      * @param \DateTimeInterface $birthday
+     *
      * @return Person
      */
-    public function setBirthday(\DateTimeInterface $birthday): Person
+    public function setBirthday(\DateTimeInterface $birthday): self
     {
         $this->birthday = $birthday;
+
         return $this;
     }
 

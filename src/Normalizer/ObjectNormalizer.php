@@ -1,4 +1,6 @@
 <?php
+
+declare(strict_types=1);
 /**
  * This file is part of the TSantos Serializer package.
  *
@@ -12,21 +14,16 @@ namespace TSantos\Serializer\Normalizer;
 
 use TSantos\Serializer\CacheableNormalizerInterface;
 use TSantos\Serializer\DeserializationContext;
+use TSantos\Serializer\HydratorLoader;
 use TSantos\Serializer\ObjectInstantiator\ObjectInstantiatorInterface;
 use TSantos\Serializer\SerializationContext;
 use TSantos\Serializer\SerializerAwareInterface;
-use TSantos\Serializer\HydratorLoader;
 use TSantos\Serializer\Traits\SerializerAwareTrait;
 
 /**
- * Class ObjectNormalizer
- * @package TSantos\Serializer\Normalizer
+ * Class ObjectNormalizer.
  */
-class ObjectNormalizer implements
-    NormalizerInterface,
-    DenormalizerInterface,
-    SerializerAwareInterface,
-    CacheableNormalizerInterface
+class ObjectNormalizer implements NormalizerInterface, DenormalizerInterface, SerializerAwareInterface, CacheableNormalizerInterface
 {
     use SerializerAwareTrait;
 
@@ -42,7 +39,8 @@ class ObjectNormalizer implements
 
     /**
      * ObjectNormalizer constructor.
-     * @param HydratorLoader $classLoader
+     *
+     * @param HydratorLoader              $classLoader
      * @param ObjectInstantiatorInterface $instantiator
      */
     public function __construct(HydratorLoader $classLoader, ObjectInstantiatorInterface $instantiator)
@@ -53,7 +51,7 @@ class ObjectNormalizer implements
 
     public function normalize($data, SerializationContext $context)
     {
-        $hydrator = $this->loader->load(get_class($data), $this->serializer);
+        $hydrator = $this->loader->load(\get_class($data), $this->serializer);
 
         $context->enter($data);
         $array = $hydrator->extract($data, $context);
@@ -69,7 +67,7 @@ class ObjectNormalizer implements
 
     public function supportsNormalization($data, SerializationContext $context): bool
     {
-        return is_object($data) && !is_iterable($data) && !$data instanceof \DateTimeInterface;
+        return \is_object($data) && !\is_iterable($data) && !$data instanceof \DateTimeInterface;
     }
 
     public function denormalize($data, string $type, DeserializationContext $context)
@@ -92,6 +90,6 @@ class ObjectNormalizer implements
 
     public function supportsDenormalization(string $type, $data, DeserializationContext $context): bool
     {
-        return class_exists($type) && $type !== \DateTime::class;
+        return \class_exists($type) && \DateTime::class !== $type;
     }
 }

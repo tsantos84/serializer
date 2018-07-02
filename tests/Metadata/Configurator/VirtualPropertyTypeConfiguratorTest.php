@@ -1,4 +1,6 @@
 <?php
+
+declare(strict_types=1);
 /**
  * This file is part of the TSantos Serializer package.
  *
@@ -14,7 +16,7 @@ use TSantos\Serializer\Metadata\Configurator\VirtualPropertyTypeConfigurator;
 use TSantos\Serializer\Metadata\VirtualPropertyMetadata;
 
 /**
- * Class VirtualPropertyTypeConfiguratorTest
+ * Class VirtualPropertyTypeConfiguratorTest.
  *
  * @author Tales Santos <tales.augusto.santos@gmail.com>
  */
@@ -28,8 +30,10 @@ class VirtualPropertyTypeConfiguratorTest extends AbstractConfiguratorTest
     /** @test */
     public function it_should_not_configure_type_if_it_is_already_defined()
     {
-        $subject = new class {
-            public function getBirthday(): string {}
+        $subject = new class() {
+            public function getBirthday(): string
+            {
+            }
         };
 
         $classMetadata = $this->createClassMetadata($subject);
@@ -43,8 +47,10 @@ class VirtualPropertyTypeConfiguratorTest extends AbstractConfiguratorTest
     /** @test */
     public function it_should_defaults_type_to_string()
     {
-        $subject = new class {
-            public function getFullName() {}
+        $subject = new class() {
+            public function getFullName()
+            {
+            }
         };
 
         $classMetadata = $this->createClassMetadata($subject);
@@ -57,8 +63,10 @@ class VirtualPropertyTypeConfiguratorTest extends AbstractConfiguratorTest
     /** @test */
     public function it_should_guess_type_from_the_built_in_return_type()
     {
-        $subject = new class {
-            public function getAge(): int {}
+        $subject = new class() {
+            public function getAge(): int
+            {
+            }
         };
 
         $classMetadata = $this->createClassMetadata($subject);
@@ -71,9 +79,11 @@ class VirtualPropertyTypeConfiguratorTest extends AbstractConfiguratorTest
     /** @test */
     public function it_should_guess_type_from_the_dock_block()
     {
-        $subject = new class {
+        $subject = new class() {
             /** @return int */
-            public function getAge() {}
+            public function getAge()
+            {
+            }
         };
 
         $classMetadata = $this->createClassMetadata($subject);

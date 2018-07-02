@@ -1,4 +1,6 @@
 <?php
+
+declare(strict_types=1);
 /**
  * This file is part of the TSantos Serializer package.
  *
@@ -14,7 +16,7 @@ use TSantos\Serializer\Metadata\Configurator\DateTimeConfigurator;
 use TSantos\Serializer\Metadata\PropertyMetadata;
 
 /**
- * Class DateTimeConfiguratorTest
+ * Class DateTimeConfiguratorTest.
  *
  * @author Tales Santos <tales.augusto.santos@gmail.com>
  */
@@ -28,7 +30,7 @@ class DateTimeConfiguratorTest extends AbstractConfiguratorTest
     /** @test */
     public function it_should_configure_the_accessors_with_default_date_format()
     {
-        $subject = new class {
+        $subject = new class() {
             private $publishedAt;
         };
 
@@ -40,14 +42,14 @@ class DateTimeConfiguratorTest extends AbstractConfiguratorTest
         $configurator = new DateTimeConfigurator();
         $configurator->configure($classMetadata);
 
-        $this->assertEquals(sprintf('$value->format(\'%s\')',\DateTime::ISO8601), $property->readValueFilter);
-        $this->assertEquals(sprintf('\DateTime::createFromFormat(\'%s\', $value)',\DateTime::ISO8601), $property->writeValueFilter);
+        $this->assertEquals(\sprintf('$value->format(\'%s\')', \DateTime::ISO8601), $property->readValueFilter);
+        $this->assertEquals(\sprintf('\DateTime::createFromFormat(\'%s\', $value)', \DateTime::ISO8601), $property->writeValueFilter);
     }
 
     /** @test */
     public function it_should_configure_the_accessors_with_date_format_defined_on_metadata()
     {
-        $subject = new class {
+        $subject = new class() {
             private $publishedAt;
         };
 
@@ -66,7 +68,7 @@ class DateTimeConfiguratorTest extends AbstractConfiguratorTest
     /** @test */
     public function it_should_not_change_the_accessors_if_they_already_are_defined()
     {
-        $subject = new class {
+        $subject = new class() {
             private $publishedAt;
         };
 
@@ -86,7 +88,7 @@ class DateTimeConfiguratorTest extends AbstractConfiguratorTest
     /** @test */
     public function it_configure_only_properties_typed_with_datetime()
     {
-        $subject = new class {
+        $subject = new class() {
             private $id;
         };
 

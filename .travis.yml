@@ -15,15 +15,13 @@ matrix:
   fast_finish: true
 
 before_install:
-    - composer require --no-update symfony/yaml:^3.4||^4.0
-    - composer require --no-update doctrine/annotations:^1.5
     - if [[ $COVERAGE != true ]]; then phpenv config-rm xdebug.ini || true; fi
 
 install:
   - composer install -a
 
 script:
-  - vendor/bin/phpcs .
+  - vendor/bin/php-cs-fixer fix --config=.php_cs.dist --dry-run
   - vendor/bin/phpunit $PHPUNIT_FLAGS
   - |
     # Sending code coverage to Scrutinizer

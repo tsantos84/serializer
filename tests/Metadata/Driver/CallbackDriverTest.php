@@ -1,4 +1,6 @@
 <?php
+
+declare(strict_types=1);
 /**
  * This file is part of the TSantos Serializer package.
  *
@@ -17,7 +19,7 @@ use TSantos\Serializer\Metadata\Driver\CallbackDriver;
 use TSantos\Serializer\Metadata\PropertyMetadata;
 
 /**
- * Class CallbackDriverTest
+ * Class CallbackDriverTest.
  *
  * @author Tales Santos <tales.augusto.santos@gmail.com>
  */
@@ -29,6 +31,7 @@ class CallbackDriverTest extends TestCase
         $callback = function (\ReflectionClass $class) {
             $metadata = new ClassMetadata($class->name);
             $metadata->addPropertyMetadata(new PropertyMetadata(Person::class, 'id'));
+
             return $metadata;
         };
 
@@ -43,10 +46,11 @@ class CallbackDriverTest extends TestCase
 
     /**
      * @test
-     * @expectedException \BadMethodCallException
      */
     public function it_should_not_allow_invalid_metadata_callback_return()
     {
+        $this->expectException(\BadMethodCallException::class);
+
         $callback = function (\ReflectionClass $class) {
             $metadata = new ClassMetadata($class->name);
             $metadata->addPropertyMetadata(new PropertyMetadata(Person::class, 'id'));

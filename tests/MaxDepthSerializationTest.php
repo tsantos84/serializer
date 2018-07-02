@@ -1,4 +1,6 @@
 <?php
+
+declare(strict_types=1);
 /**
  * This file is part of the TSantos Serializer package.
  *
@@ -17,7 +19,7 @@ use Tests\TSantos\Serializer\Fixture\Model\Vehicle;
 use TSantos\Serializer\SerializationContext;
 
 /**
- * Class MaxDepthSerializationTest
+ * Class MaxDepthSerializationTest.
  *
  * @author Tales Santos <tales.augusto.santos@gmail.com>
  *
@@ -25,18 +27,21 @@ use TSantos\Serializer\SerializationContext;
  */
 class MaxDepthSerializationTest extends SerializerTestCase
 {
-    public function testSerializeWithMaxDepth()
+    /**
+     * @test
+     */
+    public function serializeWithMaxDepth()
     {
         $personMapping = $this->createMapping(Person::class, [
             'id' => ['type' => 'integer'],
             'name' => [],
             'address' => ['type' => Address::class],
-            'married' => ['type' => 'boolean', 'getter' => 'isMarried']
+            'married' => ['type' => 'boolean', 'getter' => 'isMarried'],
         ]);
 
         $addressMapping = $this->createMapping(Address::class, [
             'city' => [],
-            'coordinates' => ['type' => Coordinates::class]
+            'coordinates' => ['type' => Coordinates::class],
         ]);
 
         $coordinateMapping = $this->createMapping(Coordinates::class, [
@@ -44,7 +49,7 @@ class MaxDepthSerializationTest extends SerializerTestCase
             'y' => ['type' => 'float'],
         ]);
 
-        $mappings = array_merge($personMapping, $addressMapping, $coordinateMapping);
+        $mappings = \array_merge($personMapping, $addressMapping, $coordinateMapping);
 
         $serializer = $this->createSerializer($mappings);
 
@@ -55,18 +60,21 @@ class MaxDepthSerializationTest extends SerializerTestCase
 
         $json = $serializer->serialize($person, SerializationContext::create()->setMaxDepth(2));
 
-        $this->assertEquals(json_encode([
+        $this->assertEquals(\json_encode([
             'id' => 1,
             'name' => 'Tales',
             'address' => [
                 'city' => 'Belo Horizonte',
-                'coordinates' => []
+                'coordinates' => [],
             ],
-            'married' => true
+            'married' => true,
         ]), $json);
     }
 
-    public function testSerializeWithMaxDepthOnPlainArray()
+    /**
+     * @test
+     */
+    public function serializeWithMaxDepthOnPlainArray()
     {
         $serializer = $this->createSerializer();
 
@@ -74,26 +82,29 @@ class MaxDepthSerializationTest extends SerializerTestCase
             1,
             2,
             3,
-            "four",
-            "five" => [
-                'six'
+            'four',
+            'five' => [
+                'six',
             ],
-            "seven" => [
-                "eight" => [
-                    "nine"
-                ]
-            ]
+            'seven' => [
+                'eight' => [
+                    'nine',
+                ],
+            ],
         ];
 
         $json = $serializer->serialize($data, SerializationContext::create()->setMaxDepth(2));
         $this->assertEquals('{"0":1,"1":2,"2":3,"3":"four","five":["six"],"seven":{"eight":[]}}', $json);
     }
 
-    public function testSerializeWithMaxDepthOnJsonSerializableInterface()
+    /**
+     * @test
+     */
+    public function serializeWithMaxDepthOnJsonSerializableInterface()
     {
         $serializer = $this->createSerializer($this->createMapping(Vehicle::class, [
             'color' => [],
-            'ports' => ['type'=>'integer']
+            'ports' => ['type' => 'integer'],
         ]));
 
         $person = new Vehicle('white', 4);

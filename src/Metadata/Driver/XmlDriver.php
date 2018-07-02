@@ -1,4 +1,6 @@
 <?php
+
+declare(strict_types=1);
 /**
  * This file is part of the TSantos Serializer package.
  *
@@ -16,7 +18,7 @@ use TSantos\Serializer\Metadata\PropertyMetadata;
 use TSantos\Serializer\Metadata\VirtualPropertyMetadata;
 
 /**
- * Class XmlDriver
+ * Class XmlDriver.
  *
  * @author Tales Santos <tales.augusto.santos@gmail.com>
  */
@@ -24,31 +26,31 @@ class XmlDriver extends AbstractFileDriver
 {
     protected function loadMetadataFromFile(\ReflectionClass $class, $file)
     {
-        $previous = libxml_use_internal_errors(true);
-        libxml_clear_errors();
-        $elem = simplexml_load_file($file);
-        libxml_use_internal_errors($previous);
+        $previous = \libxml_use_internal_errors(true);
+        \libxml_clear_errors();
+        $elem = \simplexml_load_file($file);
+        \libxml_use_internal_errors($previous);
         if (false === $elem) {
-            throw new \RuntimeException(libxml_get_last_error());
+            throw new \RuntimeException(\libxml_get_last_error());
         }
 
         $metadata = new ClassMetadata($name = $class->name);
 
-        if (!$elems = $elem->xpath("./class[@name = '" . $name . "']")) {
-            throw new \RuntimeException(sprintf('Could not find class %s inside XML element.', $name));
+        if (!$elems = $elem->xpath("./class[@name = '".$name."']")) {
+            throw new \RuntimeException(\sprintf('Could not find class %s inside XML element.', $name));
         }
 
         /** @var \SimpleXMLElement $elem */
-        $elem = reset($elems);
+        $elem = \reset($elems);
 
         if (null !== $baseClass = $elem->attributes()->{'base-class'}) {
             $metadata->baseClass = $baseClass;
         }
 
-        /** @var \SimpleXMLElement $property */
+        /* @var \SimpleXMLElement $property */
         foreach ($elem->xpath('./property') as $xmlProperty) {
-            $attribs = ((array)$xmlProperty->attributes())['@attributes'];
-            $property = new PropertyMetadata($class->getName(), (string)$attribs['name']);
+            $attribs = ((array) $xmlProperty->attributes())['@attributes'];
+            $property = new PropertyMetadata($class->getName(), (string) $attribs['name']);
 
             if (isset($attribs['expose-as'])) {
                 $property->exposeAs = $attribs['expose-as'];
@@ -63,31 +65,31 @@ class XmlDriver extends AbstractFileDriver
             }
 
             /** @var \SimpleXMLElement[] $options */
-            if (count($options = $xmlProperty->xpath('./options/option'))) {
+            if (\count($options = $xmlProperty->xpath('./options/option'))) {
                 $o = [];
                 foreach ($options as $v) {
-                    $o[(string)$v['name']] = (string)$v;
+                    $o[(string) $v['name']] = (string) $v;
                 }
                 $property->options = $o;
             }
 
             if (isset($attribs['groups'])) {
-                $property->groups = preg_split('/\s*,\s*/', trim((string)$attribs['groups']));
+                $property->groups = \preg_split('/\s*,\s*/', \trim((string) $attribs['groups']));
             } elseif (isset($xmlProperty->groups)) {
-                $property->groups = (array)$xmlProperty->groups->value;
+                $property->groups = (array) $xmlProperty->groups->value;
             }
 
             $property->readValueFilter = $attribs['read-value-filter'] ?? null;
             $property->writeValueFilter = $attribs['write-value-filter'] ?? null;
             $property->type = $attribs['type'] ?? null;
-            $property->readOnly = strtolower($attribs['read-only'] ?? '') === 'true' ?? false;
+            $property->readOnly = 'true' === \strtolower($attribs['read-only'] ?? '') ?? false;
 
             $metadata->addPropertyMetadata($property);
         }
 
-        /** @var \SimpleXMLElement $property */
+        /* @var \SimpleXMLElement $property */
         foreach ($elem->xpath('./virtual_property') ?? [] as $xmlProperty) {
-            $attribs = ((array)$xmlProperty->attributes())['@attributes'];
+            $attribs = ((array) $xmlProperty->attributes())['@attributes'];
             $name = $attribs['name'];
             $method = $attribs['method'] ?? $name;
 
@@ -97,16 +99,16 @@ class XmlDriver extends AbstractFileDriver
             $property->readValueFilter = $attribs['read-value'] ?? null;
 
             if (isset($attribs['groups'])) {
-                $property->groups = preg_split('/\s*,\s*/', trim((string)$attribs['groups']));
+                $property->groups = \preg_split('/\s*,\s*/', \trim((string) $attribs['groups']));
             } elseif (isset($xmlProperty->groups)) {
-                $property->groups = (array)$xmlProperty->groups->value;
+                $property->groups = (array) $xmlProperty->groups->value;
             }
 
             /** @var \SimpleXMLElement[] $options */
-            if (count($options = $xmlProperty->xpath('./options/option'))) {
+            if (\count($options = $xmlProperty->xpath('./options/option'))) {
                 $o = [];
                 foreach ($options as $v) {
-                    $o[(string)$v['name']] = (string)$v;
+                    $o[(string) $v['name']] = (string) $v;
                 }
                 $property->options = $o;
             }

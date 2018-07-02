@@ -1,4 +1,6 @@
 <?php
+
+declare(strict_types=1);
 /**
  * This file is part of the TSantos Serializer package.
  *
@@ -13,7 +15,7 @@ namespace TSantos\Serializer\Event;
 use TSantos\Serializer\SerializationContext;
 
 /**
- * Class PostSerializationEvent
+ * Class PostSerializationEvent.
  *
  * @author Tales Santos <tales.augusto.santos@gmail.com>
  */
@@ -31,7 +33,8 @@ class PostSerializationEvent extends Event
 
     /**
      * PreSerializationEvent constructor.
-     * @param mixed $data
+     *
+     * @param mixed                $data
      * @param SerializationContext $context
      */
     public function __construct($data, SerializationContext $context)
@@ -50,11 +53,13 @@ class PostSerializationEvent extends Event
 
     /**
      * @param mixed $data
+     *
      * @return PostSerializationEvent
      */
-    public function setData($data): PostSerializationEvent
+    public function setData($data): self
     {
         $this->data = $data;
+
         return $this;
     }
 

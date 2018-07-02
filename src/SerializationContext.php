@@ -1,4 +1,6 @@
 <?php
+
+declare(strict_types=1);
 /**
  * This file is part of the TSantos Serializer package.
  *
@@ -13,9 +15,8 @@ namespace TSantos\Serializer;
 use TSantos\Serializer\Exception\CircularReferenceException;
 
 /**
- * Class SerializationContext
+ * Class SerializationContext.
  *
- * @package Serializer
  * @author Tales Santos <tales.augusto.santos@gmail.com>
  */
 class SerializationContext extends AbstractContext
@@ -23,19 +24,21 @@ class SerializationContext extends AbstractContext
     /** @var bool */
     private $serializeNull = false;
 
-    /** @var array  */
+    /** @var array */
     private $circularReference = [];
 
-    /** @var int  */
+    /** @var int */
     private $circularReferenceCount = 1;
 
     /**
      * @param bool $enabled
+     *
      * @return SerializationContext
      */
     public function setSerializeNull(bool $enabled): self
     {
         $this->serializeNull = $enabled;
+
         return $this;
     }
 
@@ -49,11 +52,13 @@ class SerializationContext extends AbstractContext
 
     /**
      * @param int $circularReferenceCount
+     *
      * @return SerializationContext
      */
     public function setCircularReferenceCount(int $circularReferenceCount): self
     {
         $this->circularReferenceCount = $circularReferenceCount;
+
         return $this;
     }
 
@@ -64,7 +69,7 @@ class SerializationContext extends AbstractContext
     {
         parent::enter();
 
-        if (!is_object($object)) {
+        if (!\is_object($object)) {
             return;
         }
 
@@ -72,12 +77,13 @@ class SerializationContext extends AbstractContext
 
         if (!isset($this->circularReference[$hash])) {
             $this->circularReference[$hash] = 1;
+
             return;
         }
 
         if (++$this->circularReference[$hash] > $this->circularReferenceCount) {
             throw new CircularReferenceException(
-                sprintf('A circular reference for object of class %s was detected', get_class($object))
+                \sprintf('A circular reference for object of class %s was detected', \get_class($object))
             );
         }
     }
@@ -89,14 +95,14 @@ class SerializationContext extends AbstractContext
     {
         parent::leave();
 
-        if (!is_object($object)) {
+        if (!\is_object($object)) {
             return;
         }
 
         $hash = \spl_object_hash($object);
 
         if (isset($this->circularReference)) {
-            $this->circularReference[$hash]--;
+            --$this->circularReference[$hash];
         }
     }
 }

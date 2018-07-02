@@ -1,4 +1,6 @@
 <?php
+
+declare(strict_types=1);
 /**
  * This file is part of the TSantos Serializer package.
  *
@@ -11,25 +13,25 @@
 namespace TSantos\Serializer\Encoder;
 
 /**
- * Class JsonEncoder
+ * Class JsonEncoder.
  *
- * @package Serializer\Encoder
  * @author Tales Santos <tales.augusto.santos@gmail.com>
  */
 class JsonEncoder implements EncoderInterface
 {
     /**
      * @param array $data
+     *
      * @return string
      */
     public function encode(array $data): string
     {
-        return json_encode($data);
+        return \json_encode($data);
     }
 
     public function decode(string $content): array
     {
-        return json_decode($content, true);
+        return \json_decode($content, true);
     }
 
     /**

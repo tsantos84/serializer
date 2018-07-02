@@ -1,4 +1,6 @@
 <?php
+
+declare(strict_types=1);
 /**
  * This file is part of the TSantos Serializer package.
  *
@@ -11,7 +13,7 @@
 namespace Tests\TSantos\Serializer\Fixture\Model;
 
 /**
- * Class Address
+ * Class Address.
  *
  * @author Tales Santos <tales.augusto.santos@gmail.com>
  */
@@ -23,7 +25,7 @@ class Address
     /** @var string */
     private $city;
 
-    /** @var  Coordinates */
+    /** @var Coordinates */
     private $coordinates;
 
     /**
@@ -36,11 +38,13 @@ class Address
 
     /**
      * @param string $street
+     *
      * @return Address
      */
-    public function setStreet(string $street): Address
+    public function setStreet(string $street): self
     {
         $this->street = $street;
+
         return $this;
     }
 
@@ -54,11 +58,13 @@ class Address
 
     /**
      * @param string $city
+     *
      * @return Address
      */
-    public function setCity(string $city): Address
+    public function setCity(string $city): self
     {
         $this->city = $city;
+
         return $this;
     }
 
@@ -72,16 +78,18 @@ class Address
 
     /**
      * @param Coordinates $coordinates
+     *
      * @return Address
      */
-    public function setCoordinates(Coordinates $coordinates): Address
+    public function setCoordinates(Coordinates $coordinates): self
     {
         $this->coordinates = $coordinates;
+
         return $this;
     }
 
     public function getPoint(): string
     {
-        return $this->coordinates->getX() . ',' . $this->coordinates->getY();
+        return $this->coordinates->getX().','.$this->coordinates->getY();
     }
 }

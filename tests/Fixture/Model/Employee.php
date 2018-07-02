@@ -1,4 +1,6 @@
 <?php
+
+declare(strict_types=1);
 /**
  * This file is part of the TSantos Serializer package.
  *
@@ -11,9 +13,8 @@
 namespace Tests\TSantos\Serializer\Fixture\Model;
 
 /**
- * Class Employee
+ * Class Employee.
  *
- * @package Tests\TSantos\Serializer\Fixture
  * @author Tales Santos <tales.augusto.santos@gmail.com>
  */
 class Employee extends Person
@@ -33,11 +34,13 @@ class Employee extends Person
 
     /**
      * @param string $position
+     *
      * @return Employee
      */
-    public function setPosition(string $position): Employee
+    public function setPosition(string $position): self
     {
         $this->position = $position;
+
         return $this;
     }
 }

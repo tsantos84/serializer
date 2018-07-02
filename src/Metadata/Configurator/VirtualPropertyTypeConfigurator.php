@@ -1,4 +1,6 @@
 <?php
+
+declare(strict_types=1);
 /**
  * This file is part of the TSantos Serializer package.
  *
@@ -14,7 +16,7 @@ use TSantos\Serializer\Metadata\ClassMetadata;
 use TSantos\Serializer\Metadata\ConfiguratorInterface;
 
 /**
- * Class VirtualPropertyTypeConfigurator
+ * Class VirtualPropertyTypeConfigurator.
  *
  * @author Tales Santos <tales.augusto.santos@gmail.com>
  */
@@ -50,7 +52,7 @@ class VirtualPropertyTypeConfigurator implements ConfiguratorInterface
     {
         $docBlock = $getter->getDocComment();
 
-        if (is_string($docBlock)) {
+        if (\is_string($docBlock)) {
             return $this->extractFromDocComment($docBlock);
         }
 
@@ -59,8 +61,9 @@ class VirtualPropertyTypeConfigurator implements ConfiguratorInterface
 
     private function extractFromDocComment(string $docComment): ?string
     {
-        if (preg_match('/@(return|var)\s+([^\s]+)/', $docComment, $matches)) {
-            list(,, $type) = $matches;
+        if (\preg_match('/@(return|var)\s+([^\s]+)/', $docComment, $matches)) {
+            list(, , $type) = $matches;
+
             return $type;
         }
 

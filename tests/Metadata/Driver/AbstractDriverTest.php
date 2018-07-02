@@ -1,4 +1,6 @@
 <?php
+
+declare(strict_types=1);
 /**
  * This file is part of the TSantos Serializer package.
  *
@@ -16,7 +18,7 @@ use Tests\TSantos\Serializer\Fixture\Model\Person;
 use TSantos\Serializer\Metadata\ClassMetadata;
 
 /**
- * Class AbstractDriverTest
+ * Class AbstractDriverTest.
  *
  * @author Tales Santos <tales.augusto.santos@gmail.com>
  */
@@ -55,7 +57,7 @@ abstract class AbstractDriverTest extends TestCase
         $this->assertEquals(Person::class, $pm['father']->type);
 
         // field 'birthday'
-        $this->assertEquals("DateTime", $pm['birthday']->type);
+        $this->assertEquals('DateTime', $pm['birthday']->type);
         $this->assertEquals(['format' => 'd/m/Y'], $pm['birthday']->options);
 
         // field 'address'
@@ -78,5 +80,5 @@ abstract class AbstractDriverTest extends TestCase
         $this->assertEquals(['Default'], $m->methodMetadata['getFormattedAddress']->groups);
     }
 
-    public abstract function createDriver(): DriverInterface;
+    abstract public function createDriver(): DriverInterface;
 }

@@ -1,4 +1,6 @@
 <?php
+
+declare(strict_types=1);
 /**
  * This file is part of the TSantos Serializer package.
  *
@@ -17,7 +19,7 @@ use TSantos\Serializer\Metadata\ConfiguratorInterface;
 use TSantos\Serializer\Metadata\Driver\ConfiguratorDriver;
 
 /**
- * Class ConfiguratorDriverTest
+ * Class ConfiguratorDriverTest.
  *
  * @author Tales Santos <tales.augusto.santos@gmail.com>
  */

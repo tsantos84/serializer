@@ -1,4 +1,6 @@
 <?php
+
+declare(strict_types=1);
 /**
  * This file is part of the TSantos Serializer package.
  *
@@ -18,7 +20,7 @@ use TSantos\Serializer\Events;
 use TSantos\Serializer\SerializerBuilder;
 
 /**
- * Class DeserializationListenerTest
+ * Class DeserializationListenerTest.
  *
  * @author Tales Santos <tales.augusto.santos@gmail.com>
  */
@@ -33,7 +35,7 @@ class DeserializationListenerTest extends SerializerTestCase
             'id' => ['type' => 'integer'],
             'name' => [],
             'lastName' => [],
-            'married' => ['type' => 'boolean', 'getter' => 'isMarried']
+            'married' => ['type' => 'boolean', 'getter' => 'isMarried'],
         ]));
 
         /** @var Person $person */

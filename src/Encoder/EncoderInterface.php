@@ -1,4 +1,6 @@
 <?php
+
+declare(strict_types=1);
 /**
  * This file is part of the TSantos Serializer package.
  *
@@ -11,21 +13,22 @@
 namespace TSantos\Serializer\Encoder;
 
 /**
- * Interface EncoderInterface
+ * Interface EncoderInterface.
  *
- * @package Serializer\Encoder
  * @author Tales Santos <tales.augusto.santos@gmail.com>
  */
 interface EncoderInterface
 {
     /**
      * @param array $data
+     *
      * @return string
      */
     public function encode(array $data): string;
 
     /**
      * @param string $content
+     *
      * @return array
      */
     public function decode(string $content): array;

@@ -1,4 +1,6 @@
 <?php
+
+declare(strict_types=1);
 /**
  * This file is part of the TSantos Serializer package.
  *
@@ -14,7 +16,7 @@ use Metadata\Driver\DriverInterface;
 use TSantos\Serializer\Metadata\ClassMetadata;
 
 /**
- * Class CallbackDriver
+ * Class CallbackDriver.
  *
  * @author Tales Santos <tales.augusto.santos@gmail.com>
  */
@@ -27,6 +29,7 @@ class CallbackDriver implements DriverInterface
 
     /**
      * CallbackDriver constructor.
+     *
      * @param callable $callback
      */
     public function __construct(callable $callback)
@@ -36,14 +39,14 @@ class CallbackDriver implements DriverInterface
 
     public function loadMetadataForClass(\ReflectionClass $class)
     {
-        $metadata = call_user_func($this->callback, $class);
+        $metadata = \call_user_func($this->callback, $class);
 
         if (!$metadata instanceof ClassMetadata) {
             throw new \BadMethodCallException(
-                sprintf(
+                \sprintf(
                     'The metadata callback should return an instance of %s, %s given',
                     ClassMetadata::class,
-                    is_object($metadata) ? get_class($metadata) : gettype($metadata)
+                    \is_object($metadata) ? \get_class($metadata) : \gettype($metadata)
                 )
             );
         }

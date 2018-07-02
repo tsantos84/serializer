@@ -1,4 +1,6 @@
 <?php
+
+declare(strict_types=1);
 /**
  * This file is part of the TSantos Serializer package.
  *
@@ -11,13 +13,13 @@
 namespace TSantos\Serializer;
 
 /**
- * Interface SerializerAwareInterface
- * @package TSantos\Serializer
+ * Interface SerializerAwareInterface.
  */
 interface SerializerAwareInterface
 {
     /**
      * @param SerializerInterface $serializer
+     *
      * @return mixed
      */
     public function setSerializer(SerializerInterface $serializer): void;

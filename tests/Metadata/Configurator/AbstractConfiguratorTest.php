@@ -1,4 +1,6 @@
 <?php
+
+declare(strict_types=1);
 /**
  * This file is part of the TSantos Serializer package.
  *
@@ -15,7 +17,7 @@ use TSantos\Serializer\Metadata\ClassMetadata;
 use TSantos\Serializer\Metadata\ConfiguratorInterface;
 
 /**
- * Class AbstractConfiguratorTest
+ * Class AbstractConfiguratorTest.
  *
  * @author Tales Santos <tales.augusto.santos@gmail.com>
  */
@@ -28,6 +30,6 @@ abstract class AbstractConfiguratorTest extends TestCase
 
     protected function createClassMetadata($subject): ClassMetadata
     {
-        return new ClassMetadata(get_class($subject));
+        return new ClassMetadata(\get_class($subject));
     }
 }

@@ -1,4 +1,6 @@
 <?php
+
+declare(strict_types=1);
 /**
  * This file is part of the TSantos Serializer package.
  *
@@ -13,7 +15,7 @@ namespace TSantos\Serializer\Event;
 use TSantos\Serializer\DeserializationContext;
 
 /**
- * Class PostDeserializationEvent
+ * Class PostDeserializationEvent.
  *
  * @author Tales Santos <tales.augusto.santos@gmail.com>
  */
@@ -31,7 +33,8 @@ class PostDeserializationEvent extends Event
 
     /**
      * PostDeserializationEvent constructor.
-     * @param mixed $object
+     *
+     * @param mixed                  $object
      * @param DeserializationContext $context
      */
     public function __construct($object, DeserializationContext $context)

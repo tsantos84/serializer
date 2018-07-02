@@ -1,4 +1,6 @@
 <?php
+
+declare(strict_types=1);
 /**
  * This file is part of the TSantos Serializer package.
  *
@@ -16,7 +18,7 @@ use TSantos\Serializer\Metadata\ClassMetadata;
 use TSantos\Serializer\Metadata\ConfiguratorInterface;
 
 /**
- * Class PropertyTypeConfigurator
+ * Class PropertyTypeConfigurator.
  *
  * @author Tales Santos <tales.augusto.santos@gmail.com>
  */
@@ -47,7 +49,7 @@ class PropertyTypeConfigurator implements ConfiguratorInterface
             }
 
             /** @var Type $propertyType */
-            $propertyType = current($types);
+            $propertyType = \current($types);
             $propertyMetadata->type = $this->extract($propertyType);
         }
     }
@@ -60,7 +62,7 @@ class PropertyTypeConfigurator implements ConfiguratorInterface
 
         $innerType = $type->getCollectionValueType();
 
-        return $this->phpBuiltInOrClass($innerType) . '[]';
+        return $this->phpBuiltInOrClass($innerType).'[]';
     }
 
     private function phpBuiltInOrClass(Type $type): string

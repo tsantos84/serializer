@@ -1,4 +1,6 @@
 <?php
+
+declare(strict_types=1);
 /**
  * This file is part of the TSantos Serializer package.
  *
@@ -11,13 +13,13 @@
 namespace Tests\TSantos\Serializer\Fixture\Model;
 
 /**
- * Class Book
+ * Class Book.
  *
  * @author Tales Santos <tales.augusto.santos@gmail.com>
  */
 class Book
 {
-    /** @var integer */
+    /** @var int */
     private $id;
 
     /** @var string */
@@ -25,7 +27,8 @@ class Book
 
     /**
      * Book constructor.
-     * @param int $id
+     *
+     * @param int    $id
      * @param string $name
      */
     public function __construct(int $id = null, string $name = null)
@@ -44,11 +47,13 @@ class Book
 
     /**
      * @param int $id
+     *
      * @return Book
      */
-    public function setId(int $id): Book
+    public function setId(int $id): self
     {
         $this->id = $id;
+
         return $this;
     }
 
@@ -62,11 +67,13 @@ class Book
 
     /**
      * @param string $name
+     *
      * @return Book
      */
-    public function setName(string $name): Book
+    public function setName(string $name): self
     {
         $this->name = $name;
+
         return $this;
     }
 }

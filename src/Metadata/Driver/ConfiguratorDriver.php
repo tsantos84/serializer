@@ -1,4 +1,6 @@
 <?php
+
+declare(strict_types=1);
 /**
  * This file is part of the TSantos Serializer package.
  *
@@ -15,12 +17,13 @@ use TSantos\Serializer\Metadata\ClassMetadata;
 use TSantos\Serializer\Metadata\ConfiguratorInterface;
 
 /**
- * Class ConfiguratorDriver
+ * Class ConfiguratorDriver.
  *
  * @author Tales Santos <tales.augusto.santos@gmail.com>
+ *
  * @internal
  */
-class ConfiguratorDriver implements DriverInterface
+final class ConfiguratorDriver implements DriverInterface
 {
     /**
      * @var DriverInterface
@@ -34,8 +37,9 @@ class ConfiguratorDriver implements DriverInterface
 
     /**
      * ConfiguratorDriver constructor.
+     *
      * @param DriverInterface $driver
-     * @param array $configurators
+     * @param array           $configurators
      */
     public function __construct(DriverInterface $driver, array $configurators)
     {

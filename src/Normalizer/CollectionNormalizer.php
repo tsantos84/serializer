@@ -1,4 +1,6 @@
 <?php
+
+declare(strict_types=1);
 /**
  * This file is part of the TSantos Serializer package.
  *
@@ -17,14 +19,9 @@ use TSantos\Serializer\SerializerAwareInterface;
 use TSantos\Serializer\Traits\SerializerAwareTrait;
 
 /**
- * Class CollectionNormalizer
- * @package TSantos\Serializer\Normalizer
+ * Class CollectionNormalizer.
  */
-class CollectionNormalizer implements
-    NormalizerInterface,
-    DenormalizerInterface,
-    SerializerAwareInterface,
-    CacheableNormalizerInterface
+class CollectionNormalizer implements NormalizerInterface, DenormalizerInterface, SerializerAwareInterface, CacheableNormalizerInterface
 {
     use SerializerAwareTrait;
 
@@ -33,7 +30,7 @@ class CollectionNormalizer implements
         $context->enter();
         $array = [];
         foreach ($data as $key => $value) {
-            if (is_scalar($value)) {
+            if (\is_scalar($value)) {
                 $array[$key] = $value;
                 continue;
             }
@@ -46,44 +43,49 @@ class CollectionNormalizer implements
 
     public function supportsNormalization($data, SerializationContext $context): bool
     {
-        return is_iterable($data);
+        return \is_iterable($data);
     }
 
     public function denormalize($data, string $type, DeserializationContext $context)
     {
-        $type = substr($type, 0, strpos($type, '[]'));
+        $type = \substr($type, 0, \strpos($type, '[]'));
 
         $scalarTypes = [
             'integer' => true,
             'string' => true,
             'float' => true,
             'double' => true,
-            'boolean' => true
+            'boolean' => true,
+            'mixed' => true,
         ];
 
         if (isset($scalarTypes[$type])) {
             foreach ($data as $key => $val) {
-                if ($val === null) {
+                if (null === $val) {
                     continue;
                 }
                 switch ($type) {
                     case 'string':
-                        $data[$key] = (string)$val;
+                        $data[$key] = (string) $val;
                         continue;
                     case 'integer':
-                        $data[$key] = (integer)$val;
+                        $data[$key] = (int) $val;
                         continue;
                     case 'float':
-                        $data[$key] = (float)$val;
+                        $data[$key] = (float) $val;
                         continue;
                     case 'double':
-                        $data[$key] = (double)$val;
+                        $data[$key] = (float) $val;
                         continue;
                     case 'boolean':
-                        $data[$key] = (boolean)$val;
+                        $data[$key] = (bool) $val;
+                        continue;
+                    case 'mixed':
+                        $data[$key] = $val;
                         continue;
                 }
             }
+
             return $data;
         }
 
@@ -97,7 +99,7 @@ class CollectionNormalizer implements
 
     public function supportsDenormalization(string $type, $data, DeserializationContext $context): bool
     {
-        return strpos($type, '[]') > 0 || 'array' === $type;
+        return \strpos($type, '[]') > 0;
     }
 
     public function canBeCachedByType(): bool

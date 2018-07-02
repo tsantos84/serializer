@@ -1,4 +1,6 @@
 <?php
+
+declare(strict_types=1);
 /**
  * This file is part of the TSantos Serializer package.
  *
@@ -15,12 +17,13 @@ use TSantos\Serializer\Metadata\ClassMetadata;
 use TSantos\Serializer\Metadata\PropertyMetadata;
 
 /**
- * Class ReflectionDriver
+ * Class ReflectionDriver.
  *
  * @author Tales Santos <tales.augusto.santos@gmail.com>
+ *
  * @internal
  */
-class ReflectionDriver implements DriverInterface
+final class ReflectionDriver implements DriverInterface
 {
     public function loadMetadataForClass(\ReflectionClass $class)
     {

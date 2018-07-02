@@ -1,4 +1,6 @@
 <?php
+
+declare(strict_types=1);
 /**
  * This file is part of the TSantos Serializer package.
  *
@@ -12,13 +14,13 @@ namespace Tests\TSantos\Serializer;
 
 use PHPUnit\Framework\TestCase;
 use Tests\TSantos\Serializer\Fixture\Model\Dummy;
+use TSantos\Serializer\HydratorCodeGenerator;
 use TSantos\Serializer\Metadata\ClassMetadata;
 use TSantos\Serializer\Metadata\PropertyMetadata;
 use TSantos\Serializer\Metadata\VirtualPropertyMetadata;
-use TSantos\Serializer\HydratorCodeGenerator;
 
 /**
- * Class CodeGeneratorTest
+ * Class CodeGeneratorTest.
  *
  * @author Tales Santos <tales.augusto.santos@gmail.com>
  */
@@ -28,11 +30,11 @@ class CodeGeneratorTest extends TestCase
 
     public function setUp()
     {
-        $loader = new \Twig_Loader_Filesystem([__DIR__ . '/../src/Resources/templates']);
+        $loader = new \Twig_Loader_Filesystem([__DIR__.'/../src/Resources/templates']);
 
         $this->twig = new \Twig_Environment($loader, [
             'debug' => true,
-            'strict_variables' => true
+            'strict_variables' => true,
         ]);
     }
 
@@ -242,5 +244,4 @@ CODE;
 
         return $metadata;
     }
-
 }

@@ -1,4 +1,6 @@
 <?php
+
+declare(strict_types=1);
 /**
  * This file is part of the TSantos Serializer package.
  *
@@ -11,9 +13,8 @@
 namespace TSantos\Serializer;
 
 /**
- * Class SerializationContext
+ * Class SerializationContext.
  *
- * @package Serializer
  * @author Tales Santos <tales.augusto.santos@gmail.com>
  */
 class DeserializationContext extends AbstractContext
@@ -36,8 +37,8 @@ class DeserializationContext extends AbstractContext
      */
     public function setTarget($target): void
     {
-        if (!is_object($target)) {
-            throw new \InvalidArgumentException('The $target should be an object, ' . gettype($target) . ' given');
+        if (!\is_object($target)) {
+            throw new \InvalidArgumentException('The $target should be an object, '.\gettype($target).' given');
         }
 
         $this->target = $target;

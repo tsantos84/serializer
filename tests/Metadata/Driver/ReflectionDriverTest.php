@@ -1,4 +1,6 @@
 <?php
+
+declare(strict_types=1);
 /**
  * This file is part of the TSantos Serializer package.
  *
@@ -18,7 +20,7 @@ class ReflectionDriverTest extends TestCase
     /** @test */
     public function it_should_add_all_properties_to_class_metadata()
     {
-        $subject = new class {
+        $subject = new class() {
             private $id;
             private $name;
         };

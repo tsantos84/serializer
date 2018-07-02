@@ -1,4 +1,6 @@
 <?php
+
+declare(strict_types=1);
 /**
  * This file is part of the TSantos Serializer package.
  *
@@ -11,7 +13,7 @@
 namespace Tests\TSantos\Serializer\Fixture\Model;
 
 /**
- * Class Coordinates
+ * Class Coordinates.
  *
  * @author Tales Santos <tales.augusto.santos@gmail.com>
  */
@@ -25,6 +27,7 @@ class Coordinates
 
     /**
      * Coordinates constructor.
+     *
      * @param float $x
      * @param float $y
      */
@@ -44,11 +47,13 @@ class Coordinates
 
     /**
      * @param float $x
+     *
      * @return Coordinates
      */
-    public function setX(float $x): Coordinates
+    public function setX(float $x): self
     {
         $this->x = $x;
+
         return $this;
     }
 
@@ -62,11 +67,13 @@ class Coordinates
 
     /**
      * @param float $y
+     *
      * @return Coordinates
      */
-    public function setY(float $y): Coordinates
+    public function setY(float $y): self
     {
         $this->y = $y;
+
         return $this;
     }
 }

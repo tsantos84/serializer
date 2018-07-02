@@ -1,4 +1,6 @@
 <?php
+
+declare(strict_types=1);
 /**
  * This file is part of the TSantos Serializer package.
  *
@@ -11,7 +13,7 @@
 namespace Tests\TSantos\Serializer\Fixture\Model;
 
 /**
- * Class Dummy
+ * Class Dummy.
  *
  * @author Tales Santos <tales.augusto.santos@gmail.com>
  */
@@ -39,6 +41,7 @@ class Dummy
 
     /**
      * ClassWithoutAccessor constructor.
+     *
      * @param string $foo
      */
     public function __construct(string $foo)
@@ -80,6 +83,6 @@ class Dummy
 
     public function getFooBar(): string
     {
-        return $this->foo . $this->bar;
+        return $this->foo.$this->bar;
     }
 }

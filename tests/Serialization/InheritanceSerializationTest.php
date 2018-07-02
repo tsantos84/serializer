@@ -1,4 +1,6 @@
 <?php
+
+declare(strict_types=1);
 /**
  * This file is part of the TSantos Serializer package.
  *
@@ -10,14 +12,13 @@
 
 namespace Tests\Serializer;
 
-use Tests\TSantos\Serializer\Fixture\Model\Person;
 use Tests\TSantos\Serializer\Fixture\Model\Employee;
+use Tests\TSantos\Serializer\Fixture\Model\Person;
 use Tests\TSantos\Serializer\SerializerTestCase;
 
 /**
- * Class InheritanceSerializationTest
+ * Class InheritanceSerializationTest.
  *
- * @package Tests\Serializer
  * @author Tales Santos <tales.augusto.santos@gmail.com>
  * @runTestsInSeparateProcesses
  */
@@ -29,12 +30,12 @@ class InheritanceSerializationTest extends SerializerTestCase
         $employee = new Employee(1, 'Tales', true);
         $employee->setPosition('Developer');
 
-        $serializer = $this->createSerializer(array_merge(
+        $serializer = $this->createSerializer(\array_merge(
             $this->createMapping(Person::class, [
-                'name' => []
+                'name' => [],
             ]),
             $this->createMapping(Employee::class, [
-                'position' => []
+                'position' => [],
             ])
         ));
 
@@ -46,12 +47,12 @@ class InheritanceSerializationTest extends SerializerTestCase
     /** @test */
     public function it_can_deserialize_an_employee_which_inherits_from_person()
     {
-        $serializer = $this->createSerializer(array_merge(
+        $serializer = $this->createSerializer(\array_merge(
             $this->createMapping(Person::class, [
-                'name' => []
+                'name' => [],
             ]),
             $this->createMapping(Employee::class, [
-                'position' => []
+                'position' => [],
             ])
         ));
 

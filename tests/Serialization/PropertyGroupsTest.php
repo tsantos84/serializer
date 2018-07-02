@@ -1,4 +1,6 @@
 <?php
+
+declare(strict_types=1);
 /**
  * This file is part of the TSantos Serializer package.
  *
@@ -15,7 +17,7 @@ use Tests\TSantos\Serializer\SerializerTestCase;
 use TSantos\Serializer\SerializationContext;
 
 /**
- * Class PropertyGroupsTest
+ * Class PropertyGroupsTest.
  *
  * @author Tales Santos <tales.augusto.santos@gmail.com>
  *
@@ -34,7 +36,7 @@ class PropertyGroupsTest extends SerializerTestCase
 
         $person = new Person(1, 'Tales', true);
 
-        $expected = json_encode(['id'=>1, 'married' => true]);
+        $expected = \json_encode(['id' => 1, 'married' => true]);
 
         $this->assertEquals($expected, $serializer->serialize($person, SerializationContext::create()->setGroups(['web', 'Default'])));
     }

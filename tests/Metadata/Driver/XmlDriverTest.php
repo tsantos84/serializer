@@ -1,4 +1,6 @@
 <?php
+
+declare(strict_types=1);
 /**
  * This file is part of the TSantos Serializer package.
  *
@@ -15,7 +17,7 @@ use Metadata\Driver\FileLocator;
 use TSantos\Serializer\Metadata\Driver\XmlDriver;
 
 /**
- * Class XmlDriverTest
+ * Class XmlDriverTest.
  *
  * @author Tales Santos <tales.augusto.santos@gmail.com>
  */
@@ -23,8 +25,9 @@ class XmlDriverTest extends AbstractDriverTest
 {
     public function createDriver(): DriverInterface
     {
-        return new XmlDriver(new FileLocator([
-            'Tests\TSantos\Serializer\Fixture\Model' => __DIR__ . '/../../Resources/mapping']
+        return new XmlDriver(new FileLocator(
+            [
+            'Tests\TSantos\Serializer\Fixture\Model' => __DIR__.'/../../Resources/mapping', ]
         ));
     }
 }

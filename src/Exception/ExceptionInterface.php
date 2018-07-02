@@ -1,4 +1,6 @@
 <?php
+
+declare(strict_types=1);
 /**
  * This file is part of the TSantos Serializer package.
  *
@@ -11,11 +13,10 @@
 namespace TSantos\Serializer\Exception;
 
 /**
- * Interface ExceptionInterface
+ * Interface ExceptionInterface.
  *
  * @author Tales Santos <tales.augusto.santos@gmail.com>
  */
 interface ExceptionInterface
 {
-
 }
