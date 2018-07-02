@@ -56,6 +56,7 @@ class CollectionNormalizer implements NormalizerInterface, DenormalizerInterface
             'float' => true,
             'double' => true,
             'boolean' => true,
+            'mixed' => true,
         ];
 
         if (isset($scalarTypes[$type])) {

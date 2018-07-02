@@ -42,7 +42,6 @@ use TSantos\Serializer\Metadata\Driver\YamlDriver;
 use TSantos\Serializer\Normalizer\CollectionNormalizer;
 use TSantos\Serializer\Normalizer\JsonNormalizer;
 use TSantos\Serializer\Normalizer\ObjectNormalizer;
-use TSantos\Serializer\Normalizer\ScalarNormalizer;
 use TSantos\Serializer\ObjectInstantiator\DoctrineInstantiator;
 use TSantos\Serializer\ObjectInstantiator\ObjectInstantiatorInterface;
 use Twig\Extension\DebugExtension;
@@ -152,7 +151,6 @@ class SerializerBuilder
     {
         $this->normalizers->add(new CollectionNormalizer());
         $this->normalizers->add(new JsonNormalizer());
-        $this->normalizers->add(new ScalarNormalizer());
 
         return $this;
     }
