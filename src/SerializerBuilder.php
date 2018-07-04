@@ -65,6 +65,7 @@ class SerializerBuilder
     private $format = 'json';
     private $dispatcher;
     private $hasListener = false;
+    private $circularReferenceHandler;
 
     /**
      * Builder constructor.
@@ -245,6 +246,18 @@ class SerializerBuilder
     }
 
     /**
+     * @param callable $circularReferenceHandler
+     *
+     * @return SerializerBuilder
+     */
+    public function setCircularReferenceHandler(callable $circularReferenceHandler): self
+    {
+        $this->circularReferenceHandler = $circularReferenceHandler;
+
+        return $this;
+    }
+
+    /**
      * @return SerializerInterface
      */
     public function build(): SerializerInterface
@@ -271,7 +284,7 @@ class SerializerBuilder
         if (null === $this->instantiator) {
             $this->instantiator = new DoctrineInstantiator(new Instantiator());
         }
-        $this->normalizers->unshift(new ObjectNormalizer($loader, $this->instantiator));
+        $this->normalizers->unshift(new ObjectNormalizer($loader, $this->instantiator, $this->circularReferenceHandler));
 
         if (null === $this->dispatcher) {
             return new Serializer(

@@ -82,7 +82,7 @@ class SerializationContext extends AbstractContext
         }
 
         if (++$this->circularReference[$hash] > $this->circularReferenceCount) {
-            $objectName = method_exists($object, '__toString') ? $object->__toString() : $hash;
+            $objectName = \method_exists($object, '__toString') ? $object->__toString() : $hash;
             throw new CircularReferenceException(
                 \sprintf(
                     'A circular reference for object "%s" of class "%s" was detected',
