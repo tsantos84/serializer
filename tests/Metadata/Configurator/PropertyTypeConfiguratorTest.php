@@ -292,4 +292,21 @@ class PropertyTypeConfiguratorTest extends AbstractConfiguratorTest
         $this->configurator->configure($classMetadata);
         $this->assertEquals(Person::class.'[]', $property->type);
     }
+
+    /** @test */
+    public function it_should_extract_type_for_a_collection_of_unknown_type()
+    {
+        $subject = new class() {
+            /**
+             * @var array
+             */
+            private $roles;
+        };
+
+        $classMetadata = $this->createClassMetadata($subject);
+        $property = new PropertyMetadata($classMetadata->name, 'roles');
+        $classMetadata->addPropertyMetadata($property);
+        $this->configurator->configure($classMetadata);
+        $this->assertEquals('mixed[]', $property->type);
+    }
 }
