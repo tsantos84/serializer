@@ -60,9 +60,11 @@ class PropertyTypeConfigurator implements ConfiguratorInterface
             return $this->phpBuiltInOrClass($type);
         }
 
-        $innerType = $type->getCollectionValueType();
+        if (null !== $innerType = $type->getCollectionValueType()) {
+            return $this->phpBuiltInOrClass($innerType).'[]';
+        }
 
-        return $this->phpBuiltInOrClass($innerType).'[]';
+        return 'mixed[]';
     }
 
     private function phpBuiltInOrClass(Type $type): string

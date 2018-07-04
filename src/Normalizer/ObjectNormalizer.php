@@ -12,8 +12,10 @@ declare(strict_types=1);
 
 namespace TSantos\Serializer\Normalizer;
 
+use Doctrine\Common\Persistence\Proxy;
 use TSantos\Serializer\CacheableNormalizerInterface;
 use TSantos\Serializer\DeserializationContext;
+use TSantos\Serializer\Exception\CircularReferenceException;
 use TSantos\Serializer\HydratorLoader;
 use TSantos\Serializer\ObjectInstantiator\ObjectInstantiatorInterface;
 use TSantos\Serializer\SerializationContext;
@@ -38,24 +40,46 @@ class ObjectNormalizer implements NormalizerInterface, DenormalizerInterface, Se
     private $instantiator;
 
     /**
+     * @var callable|null
+     */
+    private $circularReferenceHandler;
+
+    /**
      * ObjectNormalizer constructor.
      *
      * @param HydratorLoader              $classLoader
      * @param ObjectInstantiatorInterface $instantiator
+     * @param callable|null               $circularReferenceHandler
      */
-    public function __construct(HydratorLoader $classLoader, ObjectInstantiatorInterface $instantiator)
+    public function __construct(HydratorLoader $classLoader, ObjectInstantiatorInterface $instantiator, callable $circularReferenceHandler = null)
     {
         $this->loader = $classLoader;
         $this->instantiator = $instantiator;
+        $this->circularReferenceHandler = $circularReferenceHandler;
     }
 
     public function normalize($data, SerializationContext $context)
     {
-        $hydrator = $this->loader->load(\get_class($data), $this->serializer);
+        $class = \get_class($data);
 
-        $context->enter($data);
-        $array = $hydrator->extract($data, $context);
-        $context->leave($data);
+        // fetches the real hydrator for Doctrine Proxies
+        if ($data instanceof Proxy) {
+            !$data->__isInitialized() && $data->__load();
+            $class = \get_parent_class($class);
+        }
+
+        $hydrator = $this->loader->load($class, $this->serializer);
+
+        try {
+            $context->enter($data);
+            $array = $hydrator->extract($data, $context);
+            $context->leave($data);
+        } catch (CircularReferenceException $circularReferenceException) {
+            if (null === $this->circularReferenceHandler) {
+                throw $circularReferenceException;
+            }
+            $array = \call_user_func($this->circularReferenceHandler, $data, $circularReferenceException);
+        }
 
         return $array;
     }
