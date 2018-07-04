@@ -83,8 +83,8 @@ class AnnotationDriver implements DriverInterface
 
     /**
      * @param \ReflectionClass $class
-     * @param ClassMetadata $metadata
-     * @param bool $configured
+     * @param ClassMetadata    $metadata
+     * @param bool             $configured
      */
     private function loadPropertyAnnotations(\ReflectionClass $class, ClassMetadata $metadata, bool &$configured): void
     {
@@ -104,8 +104,8 @@ class AnnotationDriver implements DriverInterface
 
     /**
      * @param \ReflectionClass $class
-     * @param ClassMetadata $metadata
-     * @param bool $configured
+     * @param ClassMetadata    $metadata
+     * @param bool             $configured
      */
     private function loadVirtualPropertyAnnotations(\ReflectionClass $class, ClassMetadata $metadata, bool &$configured): void
     {
