@@ -52,27 +52,30 @@ class AnnotationDriver implements DriverInterface
 
     public function loadMetadataForClass(\ReflectionClass $class)
     {
+        $configured = false;
         $metadata = new ClassMetadata($class->name);
+        $this->loadClassAnnotations($class, $metadata, $configured);
+        $this->loadPropertyAnnotations($class, $metadata, $configured);
+        $this->loadVirtualPropertyAnnotations($class, $metadata, $configured);
 
-        $this->loadClassAnnotations($class, $metadata);
+        if (true === $configured) {
+            return $metadata;
+        }
 
-        $this->loadPropertyAnnotations($class, $metadata);
-
-        $this->loadVirtualPropertyAnnotations($class, $metadata);
-
-        return $metadata;
+        return null;
     }
 
     /**
      * @param \ReflectionClass $class
      * @param ClassMetadata    $metadata
      */
-    private function loadClassAnnotations(\ReflectionClass $class, ClassMetadata $metadata): void
+    private function loadClassAnnotations(\ReflectionClass $class, ClassMetadata $metadata, bool &$configured): void
     {
         foreach ($this->reader->getClassAnnotations($class) as $annotation) {
             switch (true) {
                 case $annotation instanceof BaseClass:
                     $metadata->baseClass = $annotation->name;
+                    $configured = true;
                     break;
             }
         }
@@ -80,30 +83,31 @@ class AnnotationDriver implements DriverInterface
 
     /**
      * @param \ReflectionClass $class
-     * @param $metadata
+     * @param ClassMetadata $metadata
+     * @param bool $configured
      */
-    private function loadPropertyAnnotations(\ReflectionClass $class, ClassMetadata $metadata): void
+    private function loadPropertyAnnotations(\ReflectionClass $class, ClassMetadata $metadata, bool &$configured): void
     {
-        \array_map(function (\ReflectionProperty $property) use ($metadata) {
+        \array_map(function (\ReflectionProperty $property) use ($metadata, &$configured) {
             $annotations = $this->filterAnnotations($this->reader->getPropertyAnnotations($property));
 
             if (empty($annotations)) {
                 return;
             }
 
+            $configured = true;
             $propertyMetadata = new PropertyMetadata($property->class, $property->name);
-
             $this->configureProperty($propertyMetadata, $annotations);
-
             $metadata->addPropertyMetadata($propertyMetadata);
         }, $class->getProperties());
     }
 
     /**
      * @param \ReflectionClass $class
-     * @param $metadata
+     * @param ClassMetadata $metadata
+     * @param bool $configured
      */
-    private function loadVirtualPropertyAnnotations(\ReflectionClass $class, ClassMetadata $metadata): void
+    private function loadVirtualPropertyAnnotations(\ReflectionClass $class, ClassMetadata $metadata, bool &$configured): void
     {
         foreach ($class->getMethods(\ReflectionMethod::IS_PUBLIC) as $method) {
             $annotations = $this->filterAnnotations($this->reader->getMethodAnnotations($method));
@@ -111,7 +115,7 @@ class AnnotationDriver implements DriverInterface
             if (empty($annotations)) {
                 continue;
             }
-
+            $configured = true;
             $property = new VirtualPropertyMetadata($method->class, $method->name);
             $this->configureProperty($property, $annotations);
             $metadata->addMethodMetadata($property);
