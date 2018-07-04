@@ -12,6 +12,7 @@ declare(strict_types=1);
 
 namespace TSantos\Serializer\Normalizer;
 
+use Doctrine\Common\Persistence\Proxy;
 use TSantos\Serializer\CacheableNormalizerInterface;
 use TSantos\Serializer\DeserializationContext;
 use TSantos\Serializer\HydratorLoader;
@@ -51,7 +52,15 @@ class ObjectNormalizer implements NormalizerInterface, DenormalizerInterface, Se
 
     public function normalize($data, SerializationContext $context)
     {
-        $hydrator = $this->loader->load(\get_class($data), $this->serializer);
+        $class = \get_class($data);
+
+        // fetches the real hydrator for Doctrine Proxies
+        if ($data instanceof Proxy) {
+            !$data->__isInitialized() && $data->__load();
+            $class = \get_parent_class($class);
+        }
+
+        $hydrator = $this->loader->load($class, $this->serializer);
 
         $context->enter($data);
         $array = $hydrator->extract($data, $context);
