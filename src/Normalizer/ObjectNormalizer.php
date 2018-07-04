@@ -47,9 +47,9 @@ class ObjectNormalizer implements NormalizerInterface, DenormalizerInterface, Se
     /**
      * ObjectNormalizer constructor.
      *
-     * @param HydratorLoader $classLoader
+     * @param HydratorLoader              $classLoader
      * @param ObjectInstantiatorInterface $instantiator
-     * @param callable|null $circularReferenceHandler
+     * @param callable|null               $circularReferenceHandler
      */
     public function __construct(HydratorLoader $classLoader, ObjectInstantiatorInterface $instantiator, callable $circularReferenceHandler = null)
     {
@@ -78,7 +78,7 @@ class ObjectNormalizer implements NormalizerInterface, DenormalizerInterface, Se
             if (null === $this->circularReferenceHandler) {
                 throw $circularReferenceException;
             }
-            $array = call_user_func($this->circularReferenceHandler, $data);
+            $array = \call_user_func($this->circularReferenceHandler, $data, $circularReferenceException);
         }
 
         return $array;
