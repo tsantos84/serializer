@@ -30,6 +30,9 @@ final class ReflectionDriver implements DriverInterface
         $metadata = new ClassMetadata($class->name);
 
         foreach ($class->getProperties() as $property) {
+            if ($property->isStatic()) {
+                continue;
+            }
             $metadata->addPropertyMetadata(new PropertyMetadata($class->name, $property->name));
         }
 

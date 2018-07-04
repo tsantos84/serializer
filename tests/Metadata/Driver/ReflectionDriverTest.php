@@ -23,6 +23,7 @@ class ReflectionDriverTest extends TestCase
         $subject = new class() {
             private $id;
             private $name;
+            private static $static;
         };
 
         $reflection = new \ReflectionClass($subject);
