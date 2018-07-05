@@ -49,4 +49,29 @@ class ConfiguratorDriverTest extends TestCase
         $configuratorDriver = new ConfiguratorDriver($driver, $configurators);
         $configuratorDriver->loadMetadataForClass($reflection);
     }
+
+    /** @test */
+    public function it_should_not_pass_null_driver_to_configurators_chain()
+    {
+        $reflection = $this->createMock(\ReflectionClass::class);
+        $metadata = $this->createMock(ClassMetadata::class);
+
+        $driver = $this->createMock(DriverInterface::class);
+        $driver
+            ->expects($this->once())
+            ->method('loadMetadataForClass')
+            ->with($reflection)
+            ->willReturn(null);
+
+        $configurator = $this->createMock(ConfiguratorInterface::class);
+        $configurator
+            ->expects($this->never())
+            ->method('configure')
+            ->with($metadata);
+
+        $configurators = [$configurator];
+
+        $configuratorDriver = new ConfiguratorDriver($driver, $configurators);
+        $configuratorDriver->loadMetadataForClass($reflection);
+    }
 }

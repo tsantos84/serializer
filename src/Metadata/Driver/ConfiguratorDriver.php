@@ -52,6 +52,10 @@ final class ConfiguratorDriver implements DriverInterface
         /** @var ClassMetadata $metadata */
         $metadata = $this->driver->loadMetadataForClass($class);
 
+        if (null === $metadata) {
+            return null;
+        }
+
         foreach ($this->configurators as $configurator) {
             $configurator->configure($metadata);
         }
