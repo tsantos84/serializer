@@ -195,7 +195,7 @@ STRING;
     {
         $exposeAs = $property->exposeAs;
         $code = <<<STRING
-\$propReflection = \$this->getReflectionProperty({$property->reflection->getDeclaringClass()->getShortName()}::class, '{$property->name}');
+\$propReflection = \$this->getReflectionProperty('{$property->reflection->getDeclaringClass()->getName()}', '{$property->name}');
 \$propReflection->setAccessible(true);
 if (null !== \$value = \$propReflection->getValue(\$object)) {
 

@@ -60,4 +60,9 @@ class VirtualPropertyMetadata extends MethodMetadata
             $this->options
             ) = $unserialized;
     }
+
+    public function isScalarType(): bool
+    {
+        return in_array($this->type, ['integer', 'string', 'float', 'boolean']);
+    }
 }
