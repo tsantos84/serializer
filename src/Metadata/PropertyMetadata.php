@@ -99,4 +99,9 @@ class PropertyMetadata extends BasePropertyMetadata
             $this->setterRef = new \ReflectionMethod($this->class, $this->setter);
         }
     }
+
+    public function isScalarType(): bool
+    {
+        return in_array($this->type, ['integer', 'string', 'float', 'boolean']);
+    }
 }

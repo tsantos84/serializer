@@ -52,4 +52,9 @@ class ClassMetadata extends MergeableClassMetadata
 
         $this->reflection = new \ReflectionClass($this->name);
     }
+
+    public function hasProperties(): bool
+    {
+        return count($this->propertyMetadata) > 0 || count($this->methodMetadata) > 0;
+    }
 }
