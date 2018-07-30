@@ -74,7 +74,7 @@ class HydratorCodeGenerator
         $class
             ->addProperty('exposedGroups')
             ->setVisibility('private')
-            ->setValue(\var_export($groups, true));
+            ->setValue($groups);
 
         $class->addTrait(SerializerAwareTrait::class);
 
@@ -144,7 +144,18 @@ STRING;
             $body .= $this->createReadCodeFromAccessor($property, $property->name);
         }
 
-        $body .= 'return $data;';
+        $body .= <<<STRING
+static \$contextKeys = [];
+\$contextId = spl_object_hash(\$context);
+
+if (!isset(\$contextKeys[\$contextId])) {
+    \$contextKeys[\$contextId] = \$this->getExposedKeys(\$context);
+}
+
+\$data = array_intersect_key(\$data, \$contextKeys[\$contextId]);
+
+return \$data;
+STRING;
 
         return $body;
     }
