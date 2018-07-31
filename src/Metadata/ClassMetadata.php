@@ -57,4 +57,11 @@ class ClassMetadata extends MergeableClassMetadata
     {
         return count($this->propertyMetadata) > 0 || count($this->methodMetadata) > 0;
     }
+
+    public function getWritableProperties(): array
+    {
+        return array_filter($this->propertyMetadata, function (PropertyMetadata $propertyMetadata) {
+            return !$propertyMetadata->readOnly;
+        });
+    }
 }

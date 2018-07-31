@@ -82,6 +82,8 @@ class HydratorCodeGenerator
         $extract->setBody($this->createExtractMethodBody($classMetadata));
 
         $hydrate = $this->createHydrateMethodSignature();
+        $hydrate->setBody($this->createHydrateMethodBody($classMetadata));
+
         $exposedKeys = $this->createExposedKeysMethod();
         $reflectionProperty = $this->createReflectionPropertyMethod($hierarchy);
 
@@ -115,7 +117,7 @@ class HydratorCodeGenerator
     {
         $body = <<<STRING
 if (!\$object instanceof {$classMetadata->name}) {
-    throw new \InvalidArgumentException(sprintf('%s is able to serialize only instances of "%s" only. "%s" given', get_class(\$this), {$classMetadata->name}::class, is_object(\$object) ? get_class(\$object) : gettype(\$object)));
+    throw new \InvalidArgumentException(sprintf('%s is able to serialize only instances of "%s" only. "%s" given', get_class(\$this), '{$classMetadata->name}', is_object(\$object) ? get_class(\$object) : gettype(\$object)));
 }
 
 STRING;
@@ -222,7 +224,6 @@ STRING;
     private function createHydrateMethodSignature(): Method
     {
         $hydrate = (new Method('hydrate'))
-            ->setReturnType('void')
             ->setVisibility('public');
 
         $hydrate
@@ -237,6 +238,115 @@ STRING;
             ->setTypeHint(DeserializationContext::class);
 
         return $hydrate;
+    }
+
+    private function createHydrateMethodBody(ClassMetadata $classMetadata): string
+    {
+        $body = <<<STRING
+if (!\$object instanceof {$classMetadata->name}) {
+    throw new \InvalidArgumentException(sprintf('%s is able to deserialize only instances of "%s" only. "%s" given', get_class(\$this), '{$classMetadata->name}', is_object(\$object) ? get_class(\$object) : gettype(\$object)));
+}
+
+STRING;
+
+        if ($classMetadata->hasProperties()) {
+            $body .= <<<STRING
+static \$contextKeys = [];
+\$contextId = spl_object_hash(\$context);
+
+if (!isset(\$contextKeys[\$contextId])) {
+    \$contextKeys[\$contextId] = \$this->getExposedKeys(\$context);
+}
+
+\$data = array_intersect_key(\$data, \$contextKeys[\$contextId]);
+
+STRING;
+            /** @var PropertyMetadata[] $properties */
+            $properties = $classMetadata->getWritableProperties();
+
+            foreach ($properties as $property) {
+                if ($property->setter) {
+                    $body .= $this->createHydrateMutatorBody($property);
+                    continue;
+                }
+                $body .= $this->createHydrateReflectionBody($property);
+            }
+        }
+
+        $body .= <<<STRING
+return \$object;
+STRING;
+
+        return $body;
+
+    }
+
+    private function createHydrateMutatorBody(PropertyMetadata $property): string
+    {
+        $body = <<<STRING
+if (isset(\$data['{$property->exposeAs}'])) {
+    if (null !== \$value = \$data['{$property->exposeAs}']) {
+
+STRING;
+        if ($property->writeValueFilter) {
+            $body .= <<<STRING
+        \$object->{$property->setter}({$property->writeValueFilter});
+
+STRING;
+        } elseif ($property->isScalarType()) {
+            $body .= <<<STRING
+        \$object->{$property->setter}(({$property->type}) \$value);
+
+STRING;
+        } else {
+            $body .= <<<STRING
+        \$object->{$property->setter}(\$this->serializer->denormalize(\$value, '{$property->type}', \$context));
+
+STRING;
+        }
+        $body .= <<<STRING
+    } else {
+        \$object->{$property->setter}(null);
+    }
+}
+
+STRING;
+        return $body;
+    }
+
+    private function createHydrateReflectionBody(PropertyMetadata $property): string
+    {
+        $body = <<<STRING
+if (isset(\$data['{$property->exposeAs}'])) {
+    \$propReflection = \$this->getReflectionProperty('{$property->reflection->getDeclaringClass()->name}', '{$property->name}');
+    \$propReflection->setAccessible(true);
+    if (null !== \$value = \$data['{$property->exposeAs}']) {
+
+STRING;
+        if ($property->writeValueFilter) {
+            $body .= <<<STRING
+        \$propReflection->setValue(\$object, {$property->writeValueFilter});
+
+STRING;
+        } elseif ($property->isScalarType()) {
+            $body .= <<<STRING
+        \$propReflection->setValue(\$object, \$value);
+
+STRING;
+        } else {
+            $body .= <<<STRING
+        \$propReflection->setValue(\$object, \$this->serializer->denormalize(\$value, '{$property->type}', \$context));
+
+STRING;
+        }
+        $body .= <<<STRING
+    } else {
+        \$propReflection->setValue(\$object, null);
+    }
+}
+
+STRING;
+        return $body;
     }
 
     private function createExposedKeysMethod(): Method
