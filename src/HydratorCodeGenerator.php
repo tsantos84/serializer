@@ -12,6 +12,7 @@ declare(strict_types=1);
 
 namespace TSantos\Serializer;
 
+use Nette\PhpGenerator\Helpers;
 use Nette\PhpGenerator\Method;
 use Nette\PhpGenerator\PhpFile;
 use TSantos\Serializer\Metadata\ClassMetadata;
@@ -89,7 +90,7 @@ class HydratorCodeGenerator
 
         $class->setMethods([$extract, $hydrate, $exposedKeys, $reflectionProperty]);
 
-        return (string) $phpFile;
+        return Helpers::tabsToSpaces((string) $phpFile, 4);
     }
 
     public function getClassName(ClassMetadata $classMetadata): string
