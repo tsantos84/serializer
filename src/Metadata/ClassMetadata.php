@@ -55,12 +55,12 @@ class ClassMetadata extends MergeableClassMetadata
 
     public function hasProperties(): bool
     {
-        return count($this->propertyMetadata) > 0 || count($this->methodMetadata) > 0;
+        return \count($this->propertyMetadata) > 0 || \count($this->methodMetadata) > 0;
     }
 
     public function getWritableProperties(): array
     {
-        return array_filter($this->propertyMetadata, function (PropertyMetadata $propertyMetadata) {
+        return \array_filter($this->propertyMetadata, function (PropertyMetadata $propertyMetadata) {
             return !$propertyMetadata->readOnly;
         });
     }

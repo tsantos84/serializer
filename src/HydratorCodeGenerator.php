@@ -28,21 +28,6 @@ use TSantos\Serializer\Traits\SerializerAwareTrait;
 class HydratorCodeGenerator
 {
     /**
-     * @var \Twig_Environment
-     */
-    private $twig;
-
-    /**
-     * CodeGenerator constructor.
-     *
-     * @param \Twig_Environment $twig
-     */
-    public function __construct(\Twig_Environment $twig)
-    {
-        $this->twig = $twig;
-    }
-
-    /**
      * @param ClassMetadata $classMetadata
      *
      * @return string
@@ -125,29 +110,14 @@ STRING;
 
         if (!$classMetadata->hasProperties()) {
             $body .= 'return [];';
+
+            return $body;
         }
 
         $body .= <<<STRING
 \$data = [];
 \$shouldSerializeNull = \$context->shouldSerializeNull();
-
-STRING;
-
-        /** @var PropertyMetadata $property */
-        foreach ($classMetadata->propertyMetadata as $property) {
-            if ($property->getter) {
-                $body .= $this->createReadCodeFromAccessor($property, $property->getter);
-                continue;
-            }
-            $body .= $this->createReadCodeFromReflection($property);
-        }
-
-        /** @var VirtualPropertyMetadata $property */
-        foreach ($classMetadata->methodMetadata as $property) {
-            $body .= $this->createReadCodeFromAccessor($property, $property->name);
-        }
-
-        $body .= <<<STRING
+{accessors}
 static \$contextKeys = [];
 \$contextId = spl_object_hash(\$context);
 
@@ -159,8 +129,34 @@ if (!isset(\$contextKeys[\$contextId])) {
 
 return \$data;
 STRING;
+        $accessors = '';
 
-        return $body;
+        /** @var PropertyMetadata $property */
+        foreach ($classMetadata->propertyMetadata as $property) {
+            if ($property->getter) {
+                $accessors .= $this->createAccessorCode($property, '$object->'.$property->getter.'()');
+                continue;
+            }
+
+            $propCode = <<<STRING
+\$propReflection = \$this->getReflectionProperty('{declaringClass}', '{propertyName}');
+\$propReflection->setAccessible(true);
+
+STRING;
+            $propCode .= $this->createAccessorCode($property, '$propReflection->getValue($object)');
+
+            $accessors .= \strtr($propCode, [
+                '{declaringClass}' => $property->reflection->getDeclaringClass()->name,
+                '{propertyName}' => $property->name,
+            ]);
+        }
+
+        /** @var VirtualPropertyMetadata $property */
+        foreach ($classMetadata->methodMetadata as $property) {
+            $accessors .= $this->createAccessorCode($property, '$object->'.$property->name.'()');
+        }
+
+        return \strtr($body, ['{accessors}' => $accessors]);
     }
 
     /**
@@ -168,58 +164,35 @@ STRING;
      * @param string $accessor
      * @return string
      */
-    private function createReadCodeFromAccessor($property, string $accessor): string
+    private function createAccessorCode($property, string $accessor): string
     {
-        $exposeAs = $property->exposeAs;
         $code = <<<STRING
-if (null !== \$value = \$object->{$accessor}()) {
 
-STRING;
-        if ($property->readValueFilter) {
-            $code .= sprintf('    $data[\'%s\'] = %s;', $exposeAs, $property->readValueFilter);
-        } elseif ($property->isScalarType()) {
-            $code .= sprintf('    $data[\'%s\'] = (%s) $value;', $exposeAs, $property->type);
-        } else {
-            $code .= sprintf('    $data[\'%s\'] = $this->serializer->normalize($value, $context);', $exposeAs);
-        }
-
-        $code .= <<<STRING
-
+// property {propertyName}
+if (null !== \$value = {accessor}) {
+    \$data['{exposeAs}'] = {formatter}; 
 } elseif (\$shouldSerializeNull) {
-    \$data['$exposeAs'] = null;
+    \$data['{exposeAs}'] = null;
 }
 
 STRING;
 
-        return $code;
-    }
-
-    private function createReadCodeFromReflection(PropertyMetadata $property): string
-    {
-        $exposeAs = $property->exposeAs;
-        $code = <<<STRING
-\$propReflection = \$this->getReflectionProperty('{$property->reflection->getDeclaringClass()->getName()}', '{$property->name}');
-\$propReflection->setAccessible(true);
-if (null !== \$value = \$propReflection->getValue(\$object)) {
-
-STRING;
         if ($property->readValueFilter) {
-            $code .= sprintf('    $data[\'%s\'] = %s;', $exposeAs, $property->readValueFilter);
+            $formatter = $property->readValueFilter;
         } elseif ($property->isScalarType()) {
-            $code .= sprintf('    $data[\'%s\'] = (%s) $value;', $exposeAs, $property->type);
+            $formatter = \sprintf('(%s) $value;', $property->type);
         } else {
-            $code .= sprintf('    $data[\'%s\'] = $this->serializer->normalize($value, $context);', $exposeAs);
+            $formatter = '$this->serializer->normalize($value, $context);';
         }
 
-        $code .= <<<STRING
+        $replaces = [
+            '{exposeAs}' => $property->exposeAs,
+            '{propertyName}' => $property->name,
+            '{formatter}' => $formatter,
+            '{accessor}' => $accessor,
+        ];
 
-} elseif (\$shouldSerializeNull) {
-    \$data['$exposeAs'] = null;
-}
-
-STRING;
-
-        return $code;
+        return \strtr($code, $replaces);
     }
 
     private function createHydrateMethodSignature(): Method
@@ -250,8 +223,11 @@ if (!\$object instanceof {$classMetadata->name}) {
 
 STRING;
 
-        if ($classMetadata->hasProperties()) {
-            $body .= <<<STRING
+        if (!$classMetadata->hasProperties()) {
+            return $body . 'return $object;';
+        }
+
+        $body .= <<<STRING
 static \$contextKeys = [];
 \$contextId = spl_object_hash(\$context);
 
@@ -260,94 +236,88 @@ if (!isset(\$contextKeys[\$contextId])) {
 }
 
 \$data = array_intersect_key(\$data, \$contextKeys[\$contextId]);
-
-STRING;
-            /** @var PropertyMetadata[] $properties */
-            $properties = $classMetadata->getWritableProperties();
-
-            foreach ($properties as $property) {
-                if ($property->setter) {
-                    $body .= $this->createHydrateMutatorBody($property);
-                    continue;
-                }
-                $body .= $this->createHydrateReflectionBody($property);
-            }
-        }
-
-        $body .= <<<STRING
+{mutatorBody}
 return \$object;
 STRING;
 
-        return $body;
+        $mutatorBody = '';
 
+        /** @var PropertyMetadata[] $properties */
+        $properties = $classMetadata->getWritableProperties();
+
+        foreach ($properties as $property) {
+            if ($property->setter) {
+                $mutatorBody .= $this->createHydrateMutatorBody($property);
+                continue;
+            }
+            $mutatorBody .= $this->createHydrateReflectionBody($property);
+        }
+
+        return strtr($body, ['{mutatorBody}' => $mutatorBody]);
     }
 
     private function createHydrateMutatorBody(PropertyMetadata $property): string
     {
         $body = <<<STRING
-if (isset(\$data['{$property->exposeAs}'])) {
-    if (null !== \$value = \$data['{$property->exposeAs}']) {
-
-STRING;
-        if ($property->writeValueFilter) {
-            $body .= <<<STRING
-        \$object->{$property->setter}({$property->writeValueFilter});
-
-STRING;
-        } elseif ($property->isScalarType()) {
-            $body .= <<<STRING
-        \$object->{$property->setter}(({$property->type}) \$value);
-
-STRING;
-        } else {
-            $body .= <<<STRING
-        \$object->{$property->setter}(\$this->serializer->denormalize(\$value, '{$property->type}', \$context));
-
-STRING;
-        }
-        $body .= <<<STRING
+        
+// property {propertyName}
+if (isset(\$data['{exposeAs}'])) {
+    if (null !== \$value = \$data['{exposeAs}']) {
+        \$object->{setter}({value});
     } else {
-        \$object->{$property->setter}(null);
+        \$object->{setter}(null);
     }
 }
 
 STRING;
-        return $body;
+
+        if ($property->writeValueFilter) {
+            $mutator = $property->writeValueFilter;
+        } elseif ($property->isScalarType()) {
+            $mutator = sprintf('((%s) $value)', $property->type);
+        } else {
+            $mutator = sprintf('$this->serializer->denormalize($value, \'%s\', $context)', $property->type);
+        }
+
+        return strtr($body, [
+            '{exposeAs}' => $property->exposeAs,
+            '{propertyName}' => $property->name,
+            '{setter}' => $property->setter,
+            '{type}' => $property->type,
+            '{value}' => $mutator
+        ]);
     }
 
     private function createHydrateReflectionBody(PropertyMetadata $property): string
     {
         $body = <<<STRING
-if (isset(\$data['{$property->exposeAs}'])) {
-    \$propReflection = \$this->getReflectionProperty('{$property->reflection->getDeclaringClass()->name}', '{$property->name}');
+        
+// property {propertyName}
+if (isset(\$data['{exposeAs}'])) {
+    \$propReflection = \$this->getReflectionProperty('{declaringClass}', '{propertyName}');
     \$propReflection->setAccessible(true);
-    if (null !== \$value = \$data['{$property->exposeAs}']) {
-
-STRING;
-        if ($property->writeValueFilter) {
-            $body .= <<<STRING
-        \$propReflection->setValue(\$object, {$property->writeValueFilter});
-
-STRING;
-        } elseif ($property->isScalarType()) {
-            $body .= <<<STRING
-        \$propReflection->setValue(\$object, \$value);
-
-STRING;
-        } else {
-            $body .= <<<STRING
-        \$propReflection->setValue(\$object, \$this->serializer->denormalize(\$value, '{$property->type}', \$context));
-
-STRING;
-        }
-        $body .= <<<STRING
+    if (null !== \$value = \$data['{exposeAs}']) {
+        \$propReflection->setValue(\$object, {value});
     } else {
         \$propReflection->setValue(\$object, null);
     }
 }
 
 STRING;
-        return $body;
+        if ($property->writeValueFilter) {
+            $value = $property->writeValueFilter;
+        } elseif ($property->isScalarType()) {
+            $value = '$value';
+        } else {
+            $value = '$this->serializer->denormalize(\$value, ' . $property->type . ', \$context))';
+        }
+
+        return strtr($body, [
+            '{exposeAs}' => $property->exposeAs,
+            '{declaringClass}' => $property->reflection->getDeclaringClass()->name,
+            '{propertyName}' => $property->name,
+            '{value}' => $value
+        ]);
     }
 
     private function createExposedKeysMethod(): Method
@@ -376,8 +346,8 @@ STRING
 
     private function createReflectionPropertyMethod(array $hierarchyClasses): Method
     {
-        $classes = join(',', array_map(function (string $class): string {
-            return sprintf("'%s' => new \ReflectionClass('%s')\n", $class, $class);
+        $classes = \implode(',', \array_map(function (string $class): string {
+            return \sprintf("'%s' => new \ReflectionClass('%s')\n", $class, $class);
         }, $hierarchyClasses));
 
         $method = (new Method('getReflectionProperty'))
