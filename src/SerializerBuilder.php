@@ -44,7 +44,6 @@ use TSantos\Serializer\Normalizer\JsonNormalizer;
 use TSantos\Serializer\Normalizer\ObjectNormalizer;
 use TSantos\Serializer\ObjectInstantiator\DoctrineInstantiator;
 use TSantos\Serializer\ObjectInstantiator\ObjectInstantiatorInterface;
-use Twig\Extension\DebugExtension;
 
 /**
  * Class SerializerBuilder.
@@ -272,11 +271,9 @@ class SerializerBuilder
 
         $metadataFactory = $this->createMetadataFactory($this->createMetadataDriver());
 
-        $twig = $this->createTwig();
-
         $loader = new HydratorLoader(
             $metadataFactory,
-            new HydratorCodeGenerator($twig),
+            new HydratorCodeGenerator(),
             new HydratorCodeWriter($hydratorDir),
             $this->hydratorGenerationStrategy
         );
@@ -336,23 +333,6 @@ class SerializerBuilder
         ]);
 
         return $driver;
-    }
-
-    private function createTwig(): \Twig_Environment
-    {
-        $twig = new \Twig_Environment(
-            new \Twig_Loader_Filesystem([__DIR__.'/Resources/templates']),
-            [
-                'debug' => $this->debug,
-                'strict_variables' => true,
-            ]
-        );
-
-        if ($this->debug) {
-            $twig->addExtension(new DebugExtension());
-        }
-
-        return $twig;
     }
 
     private function createDir($dir)

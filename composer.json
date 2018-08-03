@@ -26,7 +26,6 @@
         "doctrine/instantiator": "^1.1",
         "symfony/event-dispatcher": "^3.4 || ^4.0",
         "symfony/property-info": "^3.4 || ^4.0",
-        "twig/twig": "^2.4",
         "phpdocumentor/reflection-docblock": "^4.3",
         "nette/php-generator": "^3.1"
     },
