@@ -43,8 +43,7 @@ class ClassMetadata extends MergeableClassMetadata
             $this->propertyMetadata,
             $this->fileResources,
             $this->createdAt,
-            $this->baseClass,
-        ) = \unserialize($str);
+            $this->baseClass) = \unserialize($str);
 
         $this->reflection = new \ReflectionClass($this->name);
     }
