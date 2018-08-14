@@ -39,9 +39,9 @@ class PreDeserializationEvent extends Event
     /**
      * PreDeserializationEvent constructor.
      *
-     * @param array $data
+     * @param array                  $data
      * @param DeserializationContext $context
-     * @param string $type
+     * @param string                 $type
      */
     public function __construct(array $data, DeserializationContext $context, string $type)
     {

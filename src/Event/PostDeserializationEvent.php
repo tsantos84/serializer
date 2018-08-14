@@ -39,9 +39,9 @@ class PostDeserializationEvent extends Event
     /**
      * PostDeserializationEvent constructor.
      *
-     * @param mixed $object
+     * @param mixed                  $object
      * @param DeserializationContext $context
-     * @param string $type
+     * @param string                 $type
      */
     public function __construct($object, DeserializationContext $context, string $type)
     {

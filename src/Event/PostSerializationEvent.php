@@ -39,9 +39,9 @@ class PostSerializationEvent extends Event
     /**
      * PreSerializationEvent constructor.
      *
-     * @param mixed $data
+     * @param mixed                $data
      * @param SerializationContext $context
-     * @param string $type
+     * @param string               $type
      */
     public function __construct($data, SerializationContext $context, string $type)
     {
