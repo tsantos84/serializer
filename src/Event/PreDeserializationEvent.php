@@ -45,6 +45,7 @@ class PreDeserializationEvent extends Event
 
     /**
      * @return array
+     * @codeCoverageIgnore
      */
     public function getData(): array
     {
@@ -53,6 +54,7 @@ class PreDeserializationEvent extends Event
 
     /**
      * @param array $data
+     * @codeCoverageIgnore
      */
     public function setData(array $data): void
     {
@@ -61,6 +63,7 @@ class PreDeserializationEvent extends Event
 
     /**
      * @return DeserializationContext
+     * @codeCoverageIgnore
      */
     public function getContext(): DeserializationContext
     {

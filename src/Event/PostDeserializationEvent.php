@@ -45,6 +45,7 @@ class PostDeserializationEvent extends Event
 
     /**
      * @return mixed
+     * @codeCoverageIgnore
      */
     public function getObject()
     {
@@ -53,6 +54,7 @@ class PostDeserializationEvent extends Event
 
     /**
      * @param mixed $object
+     * @codeCoverageIgnore
      */
     public function setObject($object): void
     {
@@ -61,6 +63,7 @@ class PostDeserializationEvent extends Event
 
     /**
      * @return DeserializationContext
+     * @codeCoverageIgnore
      */
     public function getContext(): DeserializationContext
     {

@@ -23,8 +23,6 @@ class ClassMetadata extends MergeableClassMetadata
 {
     public $baseClass;
 
-    public $template;
-
     public function serialize()
     {
         return \serialize([
@@ -34,7 +32,6 @@ class ClassMetadata extends MergeableClassMetadata
             $this->fileResources,
             $this->createdAt,
             $this->baseClass,
-            $this->template,
         ]);
     }
 
@@ -46,10 +43,20 @@ class ClassMetadata extends MergeableClassMetadata
             $this->propertyMetadata,
             $this->fileResources,
             $this->createdAt,
-            $this->baseClass,
-            $this->template
-        ) = \unserialize($str);
+            $this->baseClass) = \unserialize($str);
 
         $this->reflection = new \ReflectionClass($this->name);
+    }
+
+    public function hasProperties(): bool
+    {
+        return \count($this->propertyMetadata) > 0 || \count($this->methodMetadata) > 0;
+    }
+
+    public function getWritableProperties(): array
+    {
+        return \array_filter($this->propertyMetadata, function (PropertyMetadata $propertyMetadata) {
+            return !$propertyMetadata->readOnly;
+        });
     }
 }

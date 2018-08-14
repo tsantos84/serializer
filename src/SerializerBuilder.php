@@ -30,7 +30,6 @@ use TSantos\Serializer\EventDispatcher\EventDispatcher;
 use TSantos\Serializer\EventDispatcher\EventSubscriberInterface;
 use TSantos\Serializer\Metadata\Configurator\DateTimeConfigurator;
 use TSantos\Serializer\Metadata\Configurator\GetterConfigurator;
-use TSantos\Serializer\Metadata\Configurator\HydratorTemplateConfigurator;
 use TSantos\Serializer\Metadata\Configurator\PropertyTypeConfigurator;
 use TSantos\Serializer\Metadata\Configurator\SetterConfigurator;
 use TSantos\Serializer\Metadata\Configurator\VirtualPropertyTypeConfigurator;
@@ -44,7 +43,6 @@ use TSantos\Serializer\Normalizer\JsonNormalizer;
 use TSantos\Serializer\Normalizer\ObjectNormalizer;
 use TSantos\Serializer\ObjectInstantiator\DoctrineInstantiator;
 use TSantos\Serializer\ObjectInstantiator\ObjectInstantiatorInterface;
-use Twig\Extension\DebugExtension;
 
 /**
  * Class SerializerBuilder.
@@ -272,11 +270,9 @@ class SerializerBuilder
 
         $metadataFactory = $this->createMetadataFactory($this->createMetadataDriver());
 
-        $twig = $this->createTwig();
-
         $loader = new HydratorLoader(
             $metadataFactory,
-            new HydratorCodeGenerator($twig),
+            new HydratorCodeGenerator(),
             new HydratorCodeWriter($hydratorDir),
             $this->hydratorGenerationStrategy
         );
@@ -327,7 +323,6 @@ class SerializerBuilder
         ]);
 
         $driver = new ConfiguratorDriver($driver, [
-            new HydratorTemplateConfigurator('hydrator.php.twig'),
             new PropertyTypeConfigurator($propertyInfo),
             new VirtualPropertyTypeConfigurator(),
             new GetterConfigurator(),
@@ -336,23 +331,6 @@ class SerializerBuilder
         ]);
 
         return $driver;
-    }
-
-    private function createTwig(): \Twig_Environment
-    {
-        $twig = new \Twig_Environment(
-            new \Twig_Loader_Filesystem([__DIR__.'/Resources/templates']),
-            [
-                'debug' => $this->debug,
-                'strict_variables' => true,
-            ]
-        );
-
-        if ($this->debug) {
-            $twig->addExtension(new DebugExtension());
-        }
-
-        return $twig;
     }
 
     private function createDir($dir)
