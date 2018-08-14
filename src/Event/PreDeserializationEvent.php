@@ -32,15 +32,22 @@ class PreDeserializationEvent extends Event
     private $context;
 
     /**
+     * @var string
+     */
+    private $type;
+
+    /**
      * PreDeserializationEvent constructor.
      *
-     * @param array                  $data
+     * @param array $data
      * @param DeserializationContext $context
+     * @param string $type
      */
-    public function __construct(array $data, DeserializationContext $context)
+    public function __construct(array $data, DeserializationContext $context, string $type)
     {
         $this->data = $data;
         $this->context = $context;
+        $this->type = $type;
     }
 
     /**
@@ -68,5 +75,14 @@ class PreDeserializationEvent extends Event
     public function getContext(): DeserializationContext
     {
         return $this->context;
+    }
+
+    /**
+     * @return string
+     * @codeCoverageIgnore
+     */
+    public function getType(): string
+    {
+        return $this->type;
     }
 }
