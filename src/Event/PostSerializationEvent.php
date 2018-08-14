@@ -45,6 +45,7 @@ class PostSerializationEvent extends Event
 
     /**
      * @return mixed
+     * @codeCoverageIgnore
      */
     public function getData()
     {
@@ -55,6 +56,7 @@ class PostSerializationEvent extends Event
      * @param mixed $data
      *
      * @return PostSerializationEvent
+     * @codeCoverageIgnore
      */
     public function setData($data): self
     {
@@ -65,6 +67,7 @@ class PostSerializationEvent extends Event
 
     /**
      * @return SerializationContext
+     * @codeCoverageIgnore
      */
     public function getContext(): SerializationContext
     {

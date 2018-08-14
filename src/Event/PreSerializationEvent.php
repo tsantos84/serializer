@@ -45,6 +45,7 @@ class PreSerializationEvent extends Event
 
     /**
      * @return object
+     * @codeCoverageIgnore
      */
     public function getObject()
     {
@@ -55,6 +56,7 @@ class PreSerializationEvent extends Event
      * @param $object
      *
      * @return PreSerializationEvent
+     * @codeCoverageIgnore
      */
     public function setObject($object): self
     {
@@ -65,6 +67,7 @@ class PreSerializationEvent extends Event
 
     /**
      * @return SerializationContext
+     * @codeCoverageIgnore
      */
     public function getContext(): SerializationContext
     {
