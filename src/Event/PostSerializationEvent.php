@@ -32,15 +32,22 @@ class PostSerializationEvent extends Event
     private $context;
 
     /**
+     * @var string
+     */
+    private $type;
+
+    /**
      * PreSerializationEvent constructor.
      *
      * @param mixed                $data
      * @param SerializationContext $context
+     * @param string               $type
      */
-    public function __construct($data, SerializationContext $context)
+    public function __construct($data, SerializationContext $context, string $type)
     {
         $this->data = $data;
         $this->context = $context;
+        $this->type = $type;
     }
 
     /**
@@ -72,5 +79,14 @@ class PostSerializationEvent extends Event
     public function getContext(): SerializationContext
     {
         return $this->context;
+    }
+
+    /**
+     * @return string
+     * @codeCoverageIgnore
+     */
+    public function getType(): string
+    {
+        return $this->type;
     }
 }

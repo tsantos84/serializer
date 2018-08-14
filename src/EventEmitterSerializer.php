@@ -61,12 +61,12 @@ class EventEmitterSerializer extends Serializer
 
         $type = \is_object($data) ? \get_class($data) : \gettype($data);
 
-        $event = new PreSerializationEvent($data, $context);
+        $event = new PreSerializationEvent($data, $context, $type);
         $this->dispatcher->dispatch(Events::PRE_SERIALIZATION, $event, $type);
 
         $normalized = parent::normalize($event->getObject(), $context);
 
-        $event = new PostSerializationEvent($normalized, $context);
+        $event = new PostSerializationEvent($normalized, $context, $type);
         $this->dispatcher->dispatch(Events::POST_SERIALIZATION, $event, $type);
 
         return $event->getData();
@@ -82,12 +82,12 @@ class EventEmitterSerializer extends Serializer
             $context->start();
         }
 
-        $event = new PreDeserializationEvent($data, $context);
+        $event = new PreDeserializationEvent($data, $context, $type);
         $this->dispatcher->dispatch(Events::PRE_DESERIALIZATION, $event, $type);
 
         $denormalized = parent::denormalize($event->getData(), $type, $context);
 
-        $event = new PostDeserializationEvent($denormalized, $context);
+        $event = new PostDeserializationEvent($denormalized, $context, $type);
         $this->dispatcher->dispatch(Events::POST_DESERIALIZATION, $event, $type);
 
         return $event->getObject();

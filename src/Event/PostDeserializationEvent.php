@@ -32,15 +32,22 @@ class PostDeserializationEvent extends Event
     private $context;
 
     /**
+     * @var string
+     */
+    private $type;
+
+    /**
      * PostDeserializationEvent constructor.
      *
      * @param mixed                  $object
      * @param DeserializationContext $context
+     * @param string                 $type
      */
-    public function __construct($object, DeserializationContext $context)
+    public function __construct($object, DeserializationContext $context, string $type)
     {
         $this->object = $object;
         $this->context = $context;
+        $this->type = $type;
     }
 
     /**
@@ -68,5 +75,14 @@ class PostDeserializationEvent extends Event
     public function getContext(): DeserializationContext
     {
         return $this->context;
+    }
+
+    /**
+     * @return string
+     * @codeCoverageIgnore
+     */
+    public function getType(): string
+    {
+        return $this->type;
     }
 }
