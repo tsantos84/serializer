@@ -161,7 +161,8 @@ STRING;
 
     /**
      * @param PropertyMetadata|VirtualPropertyMetadata $property
-     * @param string $accessor
+     * @param string                                   $accessor
+     *
      * @return string
      */
     private function createAccessorCode($property, string $accessor): string
@@ -224,7 +225,7 @@ if (!\$object instanceof {$classMetadata->name}) {
 STRING;
 
         if (!$classMetadata->hasProperties()) {
-            return $body . 'return $object;';
+            return $body.'return $object;';
         }
 
         $body .= <<<STRING
@@ -253,7 +254,7 @@ STRING;
             $mutatorBody .= $this->createHydrateReflectionBody($property);
         }
 
-        return strtr($body, ['{mutatorBody}' => $mutatorBody]);
+        return \strtr($body, ['{mutatorBody}' => $mutatorBody]);
     }
 
     private function createHydrateMutatorBody(PropertyMetadata $property): string
@@ -274,17 +275,17 @@ STRING;
         if ($property->writeValueFilter) {
             $mutator = $property->writeValueFilter;
         } elseif ($property->isScalarType()) {
-            $mutator = sprintf('((%s) $value)', $property->type);
+            $mutator = \sprintf('((%s) $value)', $property->type);
         } else {
-            $mutator = sprintf('$this->serializer->denormalize($value, \'%s\', $context)', $property->type);
+            $mutator = \sprintf('$this->serializer->denormalize($value, \'%s\', $context)', $property->type);
         }
 
-        return strtr($body, [
+        return \strtr($body, [
             '{exposeAs}' => $property->exposeAs,
             '{propertyName}' => $property->name,
             '{setter}' => $property->setter,
             '{type}' => $property->type,
-            '{value}' => $mutator
+            '{value}' => $mutator,
         ]);
     }
 
@@ -309,14 +310,14 @@ STRING;
         } elseif ($property->isScalarType()) {
             $value = '$value';
         } else {
-            $value = '$this->serializer->denormalize(\$value, ' . $property->type . ', \$context))';
+            $value = '$this->serializer->denormalize($value, '.$property->type.', $context)';
         }
 
-        return strtr($body, [
+        return \strtr($body, [
             '{exposeAs}' => $property->exposeAs,
             '{declaringClass}' => $property->reflection->getDeclaringClass()->name,
             '{propertyName}' => $property->name,
-            '{value}' => $value
+            '{value}' => $value,
         ]);
     }
 
