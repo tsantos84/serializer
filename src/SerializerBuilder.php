@@ -30,7 +30,6 @@ use TSantos\Serializer\EventDispatcher\EventDispatcher;
 use TSantos\Serializer\EventDispatcher\EventSubscriberInterface;
 use TSantos\Serializer\Metadata\Configurator\DateTimeConfigurator;
 use TSantos\Serializer\Metadata\Configurator\GetterConfigurator;
-use TSantos\Serializer\Metadata\Configurator\HydratorTemplateConfigurator;
 use TSantos\Serializer\Metadata\Configurator\PropertyTypeConfigurator;
 use TSantos\Serializer\Metadata\Configurator\SetterConfigurator;
 use TSantos\Serializer\Metadata\Configurator\VirtualPropertyTypeConfigurator;
@@ -324,7 +323,6 @@ class SerializerBuilder
         ]);
 
         $driver = new ConfiguratorDriver($driver, [
-            new HydratorTemplateConfigurator('hydrator.php.twig'),
             new PropertyTypeConfigurator($propertyInfo),
             new VirtualPropertyTypeConfigurator(),
             new GetterConfigurator(),
