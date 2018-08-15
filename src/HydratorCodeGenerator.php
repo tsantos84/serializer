@@ -185,7 +185,7 @@ if (null !== \$value = {accessor}) {
 STRING;
 
         if ($property->readValueFilter) {
-            $formatter = sprintf('$data[\'%s\'] = %s', $property->exposeAs, $property->readValueFilter);
+            $formatter = sprintf('$data[\'%s\'] = %s;', $property->exposeAs, $property->readValueFilter);
         } elseif ($property->isScalarType()) {
             $formatter = sprintf('$data[\'%s\'] = (%s) $value;', $property->exposeAs, $property->type);
         } elseif ($property->isScalarCollectionType()) {
@@ -216,6 +216,82 @@ STRING;
         ];
 
         return \strtr($code, $replaces);
+    }
+
+    private function createArgResolverMethodSignature(ClassMetadata $classMetadata): Method
+    {
+        $method = (new Method('resolveConstructorArgs'))
+            ->setReturnType('array')
+            ->setVisibility('public');
+
+        $method
+            ->addParameter('data')
+            ->setTypeHint('array');
+
+        $method
+            ->addParameter('context')
+            ->setTypeHint(DeserializationContext::class);
+
+        $body = <<<STRING
+    \$args = [];
+
+STRING;
+
+        $template = <<<STRING
+
+if (isset(\$data['{exposeAs}'])) {
+    \$args['{name}'] = [
+        'name' => '{name}',
+        'position' => {position},
+        'value' => {mutator}
+    ];
+} else {
+    \$args['{name}'] = [
+        'name' => '{name}',
+        'position' => {position},
+        'value' => null
+    ];
+}
+
+
+STRING;
+
+        /** @var PropertyMetadata $property */
+        foreach ($classMetadata->getPropertiesDefinedInConstructor() as $position => $property) {
+            if (\is_string($property)) {
+                $body .= <<<STRING
+\$args['$property'] = [
+    'name' => '$property',
+    'position' => $position,
+    'value' => null
+];
+
+STRING;
+
+                continue;
+            }
+
+            if ($property->writeValueFilter) {
+                $mutator = $property->writeValueFilter;
+            } elseif ($property->isScalarType()) {
+                $mutator = \sprintf('(%s) $data[\'%s\']', $property->type, $property->exposeAs);
+            } else {
+                $mutator = \sprintf('$this->serializer->denormalize($data[\'%s\'], \'%s\', $context)', $property->name, $property->type);
+            }
+
+            $body .= \strtr($template, [
+                '{exposeAs}' => $property->exposeAs,
+                '{name}' => $property->name,
+                '{mutator}' => $mutator,
+                '{position}' => $position,
+            ]);
+        }
+
+        $body .= 'return $args;';
+
+        $method->setBody($body);
+
+        return $method;
     }
 
     private function createHydrateMethodSignature(): Method
