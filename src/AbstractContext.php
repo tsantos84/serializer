@@ -17,6 +17,11 @@ namespace TSantos\Serializer;
  */
 abstract class AbstractContext
 {
+    /**
+     * @var string
+     */
+    private $id;
+
     /** @var array */
     private $groups = ['Default' => true];
 
@@ -27,11 +32,27 @@ abstract class AbstractContext
     private $currentDepth;
 
     /**
+     * AbstractContext constructor.
+     */
+    public function __construct()
+    {
+        $this->id = \spl_object_hash($this);
+    }
+
+    /**
      * @return self
      */
     public static function create(): self
     {
         return new static();
+    }
+
+    /**
+     * @return string
+     */
+    public function getId(): string
+    {
+        return $this->id;
     }
 
     /**
