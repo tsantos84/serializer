@@ -69,11 +69,12 @@ class ObjectNormalizer implements NormalizerInterface, DenormalizerInterface, Se
         }
 
         $hydrator = $this->loader->load($class, $this->serializer);
+        $objectId = \spl_object_hash($data);
 
         try {
-            $context->enter($data);
+            $context->enter($data, $objectId);
             $array = $hydrator->extract($data, $context);
-            $context->leave($data);
+            $context->leave($data, $objectId);
         } catch (CircularReferenceException $circularReferenceException) {
             if (null === $this->circularReferenceHandler) {
                 throw $circularReferenceException;
