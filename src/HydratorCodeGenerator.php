@@ -185,9 +185,9 @@ if (null !== \$value = {accessor}) {
 STRING;
 
         if ($property->readValueFilter) {
-            $formatter = sprintf('$data[\'%s\'] = %s;', $property->exposeAs, $property->readValueFilter);
+            $formatter = \sprintf('$data[\'%s\'] = %s;', $property->exposeAs, $property->readValueFilter);
         } elseif ($property->isScalarType()) {
-            $formatter = sprintf('$data[\'%s\'] = (%s) $value;', $property->exposeAs, $property->type);
+            $formatter = \sprintf('$data[\'%s\'] = (%s) $value;', $property->exposeAs, $property->type);
         } elseif ($property->isScalarCollectionType()) {
             $formatter = <<<STRING
 
@@ -202,17 +202,16 @@ STRING;
     }
     \$context->leave();
 STRING;
-            $formatter = sprintf($formatter, $property->exposeAs, $property->getTypeOfCollection(), $property->exposeAs);
-
+            $formatter = \sprintf($formatter, $property->exposeAs, $property->getTypeOfCollection(), $property->exposeAs);
         } else {
-            $formatter = sprintf('$data[\'%s\'] = $this->serializer->normalize($value, $context);', $property->exposeAs);
+            $formatter = \sprintf('$data[\'%s\'] = $this->serializer->normalize($value, $context);', $property->exposeAs);
         }
 
         $replaces = [
             '{exposeAs}' => $property->exposeAs,
             '{propertyName}' => $property->name,
             '{formatter}' => $formatter,
-            '{accessor}' => $accessor
+            '{accessor}' => $accessor,
         ];
 
         return \strtr($code, $replaces);
