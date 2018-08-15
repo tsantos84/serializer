@@ -177,7 +177,7 @@ STRING;
 
 // property {propertyName}
 if (null !== \$value = {accessor}) {
-    \$data['{exposeAs}'] = {formatter}; 
+    {formatter} 
 } elseif (\$shouldSerializeNull) {
     \$data['{exposeAs}'] = null;
 }
@@ -185,18 +185,34 @@ if (null !== \$value = {accessor}) {
 STRING;
 
         if ($property->readValueFilter) {
-            $formatter = $property->readValueFilter;
+            $formatter = sprintf('$data[\'%s\'] = %s', $property->exposeAs, $property->readValueFilter);
         } elseif ($property->isScalarType()) {
-            $formatter = \sprintf('(%s) $value;', $property->type);
+            $formatter = sprintf('$data[\'%s\'] = (%s) $value;', $property->exposeAs, $property->type);
+        } elseif ($property->isScalarCollectionType()) {
+            $formatter = <<<STRING
+
+    \$context->enter();
+    if (\$context->isMaxDeepAchieve()) {
+        \$data['%s'] = [];
+    } else {
+        foreach (\$value as \$key => \$val) {
+            \$value[\$key] = (%s) \$val;
+        }
+        \$data['%s'] = \$value;
+    }
+    \$context->leave();
+STRING;
+            $formatter = sprintf($formatter, $property->exposeAs, $property->getTypeOfCollection(), $property->exposeAs);
+
         } else {
-            $formatter = '$this->serializer->normalize($value, $context);';
+            $formatter = sprintf('$data[\'%s\'] = $this->serializer->normalize($value, $context);', $property->exposeAs);
         }
 
         $replaces = [
             '{exposeAs}' => $property->exposeAs,
             '{propertyName}' => $property->name,
             '{formatter}' => $formatter,
-            '{accessor}' => $accessor,
+            '{accessor}' => $accessor
         ];
 
         return \strtr($code, $replaces);

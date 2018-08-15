@@ -104,4 +104,24 @@ class PropertyMetadata extends BasePropertyMetadata
     {
         return \in_array($this->type, ['integer', 'string', 'float', 'boolean'], true);
     }
+
+    public function isScalarCollectionType(): bool
+    {
+        if (false === $pos = \strpos($this->type, '[]')) {
+            return false;
+        }
+
+        $type = \substr($this->type, 0, $pos);
+
+        return \in_array($type, ['integer', 'string', 'float', 'boolean'], true);
+    }
+
+    public function getTypeOfCollection(): ?string
+    {
+        if (false === $pos = \strpos($this->type, '[]')) {
+            return null;
+        }
+
+        return \substr($this->type, 0, $pos);
+    }
 }
