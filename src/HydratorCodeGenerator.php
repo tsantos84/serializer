@@ -60,7 +60,14 @@ class HydratorCodeGenerator
         $class
             ->addProperty('exposedGroups')
             ->setVisibility('private')
+            ->setStatic(true)
             ->setValue($groups);
+
+        $class
+            ->addProperty('exposedPropertiesForContext')
+            ->setVisibility('private')
+            ->setStatic(true)
+            ->setValue([]);
 
         $class->addTrait(SerializerAwareTrait::class);
 
@@ -118,14 +125,13 @@ STRING;
 \$data = [];
 \$shouldSerializeNull = \$context->shouldSerializeNull();
 {accessors}
-static \$contextKeys = [];
-\$contextId = spl_object_hash(\$context);
+\$contextId = \$context->getId();
 
-if (!isset(\$contextKeys[\$contextId])) {
-    \$contextKeys[\$contextId] = \$this->getExposedKeys(\$context);
+if (!isset(self::\$exposedPropertiesForContext[\$contextId])) {
+    self::\$exposedPropertiesForContext[\$contextId] = \$this->getExposedKeys(\$context);
 }
 
-\$data = array_intersect_key(\$data, \$contextKeys[\$contextId]);
+\$data = array_intersect_key(\$data, self::\$exposedPropertiesForContext[\$contextId]);
 
 return \$data;
 STRING;
@@ -230,7 +236,7 @@ STRING;
 
         $body .= <<<STRING
 static \$contextKeys = [];
-\$contextId = spl_object_hash(\$context);
+\$contextId = \$context->getId();
 
 if (!isset(\$contextKeys[\$contextId])) {
     \$contextKeys[\$contextId] = \$this->getExposedKeys(\$context);
@@ -327,14 +333,16 @@ STRING;
             ->setVisibility('private')
             ->setReturnType('array')
             ->setBody(<<<STRING
+\$exposedKeys = [];
 \$contextGroups = \$context->getGroups();
-\$exposedGroups = array_intersect_key(\$this->exposedGroups, \$contextGroups);
-\$exposedKeys = array_reduce(\$exposedGroups, function (\$keys, \$groupKeys) {
-    array_push(\$keys, ...(array_keys(\$groupKeys)));
-    return \$keys;
-}, []);
 
-return array_flip(\$exposedKeys);
+foreach (\$contextGroups as \$group => \$val) {
+    if (isset(static::\$exposedGroups[\$group])) {
+        \$exposedKeys = \array_merge(\$exposedKeys, static::\$exposedGroups[\$group]);
+    }
+}
+
+return \$exposedKeys;
 STRING
             );
 
