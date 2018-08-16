@@ -24,6 +24,11 @@ use Metadata\MetadataFactory;
 use Symfony\Component\PropertyInfo\Extractor\PhpDocExtractor;
 use Symfony\Component\PropertyInfo\Extractor\ReflectionExtractor;
 use Symfony\Component\PropertyInfo\PropertyInfoExtractor;
+use TSantos\Serializer\CodeDecorator\ExposedKeysMethodDecorator;
+use TSantos\Serializer\CodeDecorator\ExtractionDecorator;
+use TSantos\Serializer\CodeDecorator\HydrationDecorator;
+use TSantos\Serializer\CodeDecorator\PropertiesDecorator;
+use TSantos\Serializer\CodeDecorator\ReflectionPropertyMethodDecorator;
 use TSantos\Serializer\Encoder\EncoderInterface;
 use TSantos\Serializer\Encoder\JsonEncoder;
 use TSantos\Serializer\EventDispatcher\EventDispatcher;
@@ -272,7 +277,13 @@ class SerializerBuilder
 
         $loader = new HydratorLoader(
             $metadataFactory,
-            new HydratorCodeGenerator(),
+            new HydratorCodeGenerator([
+                new ExposedKeysMethodDecorator(),
+                new ExtractionDecorator(),
+                new HydrationDecorator(),
+                new PropertiesDecorator(),
+                new ReflectionPropertyMethodDecorator(),
+            ]),
             new HydratorCodeWriter($hydratorDir),
             $this->hydratorGenerationStrategy
         );
