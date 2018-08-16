@@ -21,22 +21,18 @@ use Metadata\PropertyMetadata as BasePropertyMetadata;
  */
 class PropertyMetadata extends BasePropertyMetadata
 {
-    public $type;
+    use PropertyTrait;
+
     /** @var \ReflectionMethod */
     public $getterRef;
     public $getter;
-    public $readValueFilter;
 
     /** @var \ReflectionMethod */
     public $setterRef;
     public $setter;
     public $writeValueFilter;
 
-    public $exposeAs;
-    public $groups = ['Default'];
     public $readOnly = false;
-
-    public $options = [];
 
     public function __construct($class, $name)
     {
@@ -98,10 +94,5 @@ class PropertyMetadata extends BasePropertyMetadata
         if ($this->setter) {
             $this->setterRef = new \ReflectionMethod($this->class, $this->setter);
         }
-    }
-
-    public function isScalarType(): bool
-    {
-        return \in_array($this->type, ['integer', 'string', 'float', 'boolean'], true);
     }
 }

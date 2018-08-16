@@ -65,7 +65,7 @@ class SerializationContext extends AbstractContext
     /**
      * @param null $object
      */
-    public function enter($object = null)
+    public function enter($object = null, string $id = null)
     {
         parent::enter();
 
@@ -73,16 +73,14 @@ class SerializationContext extends AbstractContext
             return;
         }
 
-        $hash = \spl_object_hash($object);
-
-        if (!isset($this->circularReference[$hash])) {
-            $this->circularReference[$hash] = 1;
+        if (!isset($this->circularReference[$id])) {
+            $this->circularReference[$id] = 1;
 
             return;
         }
 
-        if (++$this->circularReference[$hash] > $this->circularReferenceCount) {
-            $objectName = \method_exists($object, '__toString') ? $object->__toString() : $hash;
+        if (++$this->circularReference[$id] > $this->circularReferenceCount) {
+            $objectName = \method_exists($object, '__toString') ? $object->__toString() : $id;
             throw new CircularReferenceException(
                 \sprintf(
                     'A circular reference for object "%s" of class "%s" was detected',
@@ -96,7 +94,7 @@ class SerializationContext extends AbstractContext
     /**
      * @param null $object
      */
-    public function leave($object = null)
+    public function leave($object = null, string $id = null)
     {
         parent::leave();
 
@@ -104,10 +102,8 @@ class SerializationContext extends AbstractContext
             return;
         }
 
-        $hash = \spl_object_hash($object);
-
         if (isset($this->circularReference)) {
-            --$this->circularReference[$hash];
+            --$this->circularReference[$id];
         }
     }
 }

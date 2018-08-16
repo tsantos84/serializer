@@ -21,11 +21,7 @@ use Metadata\MethodMetadata;
  */
 class VirtualPropertyMetadata extends MethodMetadata
 {
-    public $type;
-    public $exposeAs;
-    public $groups = ['Default'];
-    public $readValueFilter;
-    public $options = [];
+    use PropertyTrait;
 
     public function __construct($class, $name)
     {
@@ -59,10 +55,5 @@ class VirtualPropertyMetadata extends MethodMetadata
             $this->groups,
             $this->options
             ) = $unserialized;
-    }
-
-    public function isScalarType(): bool
-    {
-        return \in_array($this->type, ['integer', 'string', 'float', 'boolean'], true);
     }
 }

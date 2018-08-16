@@ -13,11 +13,8 @@ declare(strict_types=1);
 namespace TSantos\Serializer;
 
 use Nette\PhpGenerator\Helpers;
-use Nette\PhpGenerator\Method;
 use Nette\PhpGenerator\PhpFile;
 use TSantos\Serializer\Metadata\ClassMetadata;
-use TSantos\Serializer\Metadata\PropertyMetadata;
-use TSantos\Serializer\Metadata\VirtualPropertyMetadata;
 use TSantos\Serializer\Traits\SerializerAwareTrait;
 
 /**
@@ -28,21 +25,34 @@ use TSantos\Serializer\Traits\SerializerAwareTrait;
 class HydratorCodeGenerator
 {
     /**
+     * @var CodeDecoratorInterface[]
+     */
+    private $decorators = [];
+
+    /**
+     * ChainDecorator constructor.
+     *
+     * @param CodeDecoratorInterface[] $decorators
+     */
+    public function __construct(array $decorators = [])
+    {
+        $this->decorators = $decorators;
+    }
+
+    public function addDecorator(CodeDecoratorInterface $decorator): self
+    {
+        $this->decorators[] = $decorator;
+
+        return $this;
+    }
+
+    /**
      * @param ClassMetadata $classMetadata
      *
      * @return string
      */
     public function generate(ClassMetadata $classMetadata): string
     {
-        $groups = $this->getGroups($classMetadata);
-
-        $hierarchy = [];
-
-        $ref = $classMetadata->reflection;
-        do {
-            $hierarchy[] = $ref->getName();
-        } while ($ref = $ref->getParentClass());
-
         $phpFile = new PhpFile();
 
         $namespace = $phpFile->addNamespace('');
@@ -57,23 +67,11 @@ class HydratorCodeGenerator
             $class->addExtend($classMetadata->baseClass);
         }
 
-        $class
-            ->addProperty('exposedGroups')
-            ->setVisibility('private')
-            ->setValue($groups);
-
         $class->addTrait(SerializerAwareTrait::class);
 
-        $extract = $this->createExtractMethodSignature();
-        $extract->setBody($this->createExtractMethodBody($classMetadata));
-
-        $hydrate = $this->createHydrateMethodSignature();
-        $hydrate->setBody($this->createHydrateMethodBody($classMetadata));
-
-        $exposedKeys = $this->createExposedKeysMethod();
-        $reflectionProperty = $this->createReflectionPropertyMethod($hierarchy);
-
-        $class->setMethods([$extract, $hydrate, $exposedKeys, $reflectionProperty]);
+        foreach ($this->decorators as $decorator) {
+            $decorator->decorate($phpFile, $namespace, $class, $classMetadata);
+        }
 
         return Helpers::tabsToSpaces((string) $phpFile, 4);
     }
@@ -81,318 +79,5 @@ class HydratorCodeGenerator
     public function getClassName(ClassMetadata $classMetadata): string
     {
         return \str_replace('\\', '', $classMetadata->name).'Hydrator';
-    }
-
-    private function createExtractMethodSignature(): Method
-    {
-        $extract = (new Method('extract'))
-            ->setReturnType('array')
-            ->setVisibility('public');
-
-        $extract
-            ->addParameter('object');
-
-        $extract
-            ->addParameter('context')
-            ->setTypeHint(SerializationContext::class);
-
-        return $extract;
-    }
-
-    private function createExtractMethodBody(ClassMetadata $classMetadata): string
-    {
-        $body = <<<STRING
-if (!\$object instanceof {$classMetadata->name}) {
-    throw new \InvalidArgumentException(sprintf('%s is able to serialize only instances of "%s" only. "%s" given', get_class(\$this), '{$classMetadata->name}', is_object(\$object) ? get_class(\$object) : gettype(\$object)));
-}
-
-STRING;
-
-        if (!$classMetadata->hasProperties()) {
-            $body .= 'return [];';
-
-            return $body;
-        }
-
-        $body .= <<<STRING
-\$data = [];
-\$shouldSerializeNull = \$context->shouldSerializeNull();
-{accessors}
-static \$contextKeys = [];
-\$contextId = spl_object_hash(\$context);
-
-if (!isset(\$contextKeys[\$contextId])) {
-    \$contextKeys[\$contextId] = \$this->getExposedKeys(\$context);
-}
-
-\$data = array_intersect_key(\$data, \$contextKeys[\$contextId]);
-
-return \$data;
-STRING;
-        $accessors = '';
-
-        /** @var PropertyMetadata $property */
-        foreach ($classMetadata->propertyMetadata as $property) {
-            if ($property->getter) {
-                $accessors .= $this->createAccessorCode($property, '$object->'.$property->getter.'()');
-                continue;
-            }
-
-            $propCode = <<<STRING
-\$propReflection = \$this->getReflectionProperty('{declaringClass}', '{propertyName}');
-\$propReflection->setAccessible(true);
-
-STRING;
-            $propCode .= $this->createAccessorCode($property, '$propReflection->getValue($object)');
-
-            $accessors .= \strtr($propCode, [
-                '{declaringClass}' => $property->reflection->getDeclaringClass()->name,
-                '{propertyName}' => $property->name,
-            ]);
-        }
-
-        /** @var VirtualPropertyMetadata $property */
-        foreach ($classMetadata->methodMetadata as $property) {
-            $accessors .= $this->createAccessorCode($property, '$object->'.$property->name.'()');
-        }
-
-        return \strtr($body, ['{accessors}' => $accessors]);
-    }
-
-    /**
-     * @param PropertyMetadata|VirtualPropertyMetadata $property
-     * @param string                                   $accessor
-     *
-     * @return string
-     */
-    private function createAccessorCode($property, string $accessor): string
-    {
-        $code = <<<STRING
-
-// property {propertyName}
-if (null !== \$value = {accessor}) {
-    \$data['{exposeAs}'] = {formatter}; 
-} elseif (\$shouldSerializeNull) {
-    \$data['{exposeAs}'] = null;
-}
-
-STRING;
-
-        if ($property->readValueFilter) {
-            $formatter = $property->readValueFilter;
-        } elseif ($property->isScalarType()) {
-            $formatter = \sprintf('(%s) $value;', $property->type);
-        } else {
-            $formatter = '$this->serializer->normalize($value, $context);';
-        }
-
-        $replaces = [
-            '{exposeAs}' => $property->exposeAs,
-            '{propertyName}' => $property->name,
-            '{formatter}' => $formatter,
-            '{accessor}' => $accessor,
-        ];
-
-        return \strtr($code, $replaces);
-    }
-
-    private function createHydrateMethodSignature(): Method
-    {
-        $hydrate = (new Method('hydrate'))
-            ->setVisibility('public');
-
-        $hydrate
-            ->addParameter('object');
-
-        $hydrate
-            ->addParameter('data')
-            ->setTypeHint('array');
-
-        $hydrate
-            ->addParameter('context')
-            ->setTypeHint(DeserializationContext::class);
-
-        return $hydrate;
-    }
-
-    private function createHydrateMethodBody(ClassMetadata $classMetadata): string
-    {
-        $body = <<<STRING
-if (!\$object instanceof {$classMetadata->name}) {
-    throw new \InvalidArgumentException(sprintf('%s is able to deserialize only instances of "%s" only. "%s" given', get_class(\$this), '{$classMetadata->name}', is_object(\$object) ? get_class(\$object) : gettype(\$object)));
-}
-
-STRING;
-
-        if (!$classMetadata->hasProperties()) {
-            return $body.'return $object;';
-        }
-
-        $body .= <<<STRING
-static \$contextKeys = [];
-\$contextId = spl_object_hash(\$context);
-
-if (!isset(\$contextKeys[\$contextId])) {
-    \$contextKeys[\$contextId] = \$this->getExposedKeys(\$context);
-}
-
-\$data = array_intersect_key(\$data, \$contextKeys[\$contextId]);
-{mutatorBody}
-return \$object;
-STRING;
-
-        $mutatorBody = '';
-
-        /** @var PropertyMetadata[] $properties */
-        $properties = $classMetadata->getWritableProperties();
-
-        foreach ($properties as $property) {
-            if ($property->setter) {
-                $mutatorBody .= $this->createHydrateMutatorBody($property);
-                continue;
-            }
-            $mutatorBody .= $this->createHydrateReflectionBody($property);
-        }
-
-        return \strtr($body, ['{mutatorBody}' => $mutatorBody]);
-    }
-
-    private function createHydrateMutatorBody(PropertyMetadata $property): string
-    {
-        $body = <<<STRING
-        
-// property {propertyName}
-if (isset(\$data['{exposeAs}'])) {
-    if (null !== \$value = \$data['{exposeAs}']) {
-        \$object->{setter}({value});
-    } else {
-        \$object->{setter}(null);
-    }
-}
-
-STRING;
-
-        if ($property->writeValueFilter) {
-            $mutator = $property->writeValueFilter;
-        } elseif ($property->isScalarType()) {
-            $mutator = \sprintf('((%s) $value)', $property->type);
-        } else {
-            $mutator = \sprintf('$this->serializer->denormalize($value, \'%s\', $context)', $property->type);
-        }
-
-        return \strtr($body, [
-            '{exposeAs}' => $property->exposeAs,
-            '{propertyName}' => $property->name,
-            '{setter}' => $property->setter,
-            '{type}' => $property->type,
-            '{value}' => $mutator,
-        ]);
-    }
-
-    private function createHydrateReflectionBody(PropertyMetadata $property): string
-    {
-        $body = <<<STRING
-        
-// property {propertyName}
-if (isset(\$data['{exposeAs}'])) {
-    \$propReflection = \$this->getReflectionProperty('{declaringClass}', '{propertyName}');
-    \$propReflection->setAccessible(true);
-    if (null !== \$value = \$data['{exposeAs}']) {
-        \$propReflection->setValue(\$object, {value});
-    } else {
-        \$propReflection->setValue(\$object, null);
-    }
-}
-
-STRING;
-        if ($property->writeValueFilter) {
-            $value = $property->writeValueFilter;
-        } elseif ($property->isScalarType()) {
-            $value = '$value';
-        } else {
-            $value = '$this->serializer->denormalize($value, '.$property->type.', $context)';
-        }
-
-        return \strtr($body, [
-            '{exposeAs}' => $property->exposeAs,
-            '{declaringClass}' => $property->reflection->getDeclaringClass()->name,
-            '{propertyName}' => $property->name,
-            '{value}' => $value,
-        ]);
-    }
-
-    private function createExposedKeysMethod(): Method
-    {
-        $method = (new Method('getExposedKeys'))
-            ->setVisibility('private')
-            ->setReturnType('array')
-            ->setBody(<<<STRING
-\$contextGroups = \$context->getGroups();
-\$exposedGroups = array_intersect_key(\$this->exposedGroups, \$contextGroups);
-\$exposedKeys = array_reduce(\$exposedGroups, function (\$keys, \$groupKeys) {
-    array_push(\$keys, ...(array_keys(\$groupKeys)));
-    return \$keys;
-}, []);
-
-return array_flip(\$exposedKeys);
-STRING
-            );
-
-        $method
-            ->addParameter('context')
-            ->setTypeHint(AbstractContext::class);
-
-        return $method;
-    }
-
-    private function createReflectionPropertyMethod(array $hierarchyClasses): Method
-    {
-        $classes = \implode(',', \array_map(function (string $class): string {
-            return \sprintf("'%s' => new \ReflectionClass('%s')\n", $class, $class);
-        }, $hierarchyClasses));
-
-        $method = (new Method('getReflectionProperty'))
-            ->setVisibility('private')
-            ->setReturnType('\ReflectionProperty')
-            ->setBody(<<<STRING
-static \$reflections;
-
-if (null === \$reflections) {
-    \$reflections = [
-        $classes
-    ];
-}
-
-return \$reflections[\$class]->getProperty(\$property);
-STRING
-            );
-
-        $method
-            ->addParameter('class')
-            ->setTypeHint('string');
-
-        $method
-            ->addParameter('property')
-            ->setTypeHint('string');
-
-        return $method;
-    }
-
-    private function getGroups(ClassMetadata $metadata): array
-    {
-        $groups = [];
-        foreach ($metadata->propertyMetadata as $property) {
-            foreach ($property->groups as $group) {
-                $groups[$group][$property->exposeAs] = true;
-            }
-        }
-
-        foreach ($metadata->methodMetadata as $method) {
-            foreach ($method->groups as $group) {
-                $groups[$group][$method->exposeAs] = true;
-            }
-        }
-
-        return $groups;
     }
 }

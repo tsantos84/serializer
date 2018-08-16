@@ -27,7 +27,6 @@ class CollectionNormalizer implements NormalizerInterface, DenormalizerInterface
 
     public function normalize($data, SerializationContext $context)
     {
-        $context->enter();
         $array = [];
         foreach ($data as $key => $value) {
             if (\is_scalar($value)) {
@@ -36,7 +35,6 @@ class CollectionNormalizer implements NormalizerInterface, DenormalizerInterface
             }
             $array[$key] = $this->serializer->normalize($value, $context);
         }
-        $context->leave();
 
         return $array;
     }

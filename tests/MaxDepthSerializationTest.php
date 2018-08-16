@@ -94,7 +94,7 @@ class MaxDepthSerializationTest extends SerializerTestCase
         ];
 
         $json = $serializer->serialize($data, SerializationContext::create()->setMaxDepth(2));
-        $this->assertEquals('{"0":1,"1":2,"2":3,"3":"four","five":["six"],"seven":{"eight":[]}}', $json);
+        $this->assertEquals('{"0":1,"1":2,"2":3,"3":"four","five":["six"],"seven":{"eight":["nine"]}}', $json);
     }
 
     /**
