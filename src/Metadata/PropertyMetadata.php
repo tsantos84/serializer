@@ -116,6 +116,16 @@ class PropertyMetadata extends BasePropertyMetadata
         return \in_array($type, ['integer', 'string', 'float', 'boolean'], true);
     }
 
+    public function isMixedCollectionType(): bool
+    {
+        return 'mixed' === $this->getTypeOfCollection() || '[]' === $this->type;
+    }
+
+    public function isCollection(): bool
+    {
+        return false !== \strpos($this->type, '[]');
+    }
+
     public function getTypeOfCollection(): ?string
     {
         if (false === $pos = \strpos($this->type, '[]')) {

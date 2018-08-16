@@ -188,21 +188,25 @@ STRING;
             $formatter = \sprintf('$data[\'%s\'] = %s;', $property->exposeAs, $property->readValueFilter);
         } elseif ($property->isScalarType()) {
             $formatter = \sprintf('$data[\'%s\'] = (%s) $value;', $property->exposeAs, $property->type);
-        } elseif ($property->isScalarCollectionType()) {
-            $formatter = <<<STRING
-
-    \$context->enter();
-    if (\$context->isMaxDeepAchieve()) {
-        \$data['%s'] = [];
-    } else {
-        foreach (\$value as \$key => \$val) {
-            \$value[\$key] = (%s) \$val;
-        }
-        \$data['%s'] = \$value;
+        } elseif ($property->isCollection()) {
+            $template = <<<STRING
+foreach (\$value as \$key => \$val) {
+        \$value[\$key] = {reader};
     }
-    \$context->leave();
+    \$data['{exposeAs}'] = \$value;
 STRING;
-            $formatter = \sprintf($formatter, $property->exposeAs, $property->getTypeOfCollection(), $property->exposeAs);
+            if ($property->isScalarCollectionType()) {
+                $reader = \sprintf('(%s) $val', $property->getTypeOfCollection());
+            } elseif ($property->isMixedCollectionType()) {
+                $reader = '$val';
+            } else {
+                $reader = '$this->serializer->normalize($val, $context);';
+            }
+
+            $formatter = \strtr($template, [
+                '{reader}' => $reader,
+                '{exposeAs}' => $property->exposeAs,
+            ]);
         } else {
             $formatter = \sprintf('$data[\'%s\'] = $this->serializer->normalize($value, $context);', $property->exposeAs);
         }
