@@ -24,10 +24,16 @@ use TSantos\Serializer\Metadata\ClassMetadata;
  *
  * @author Tales Santos <tales.augusto.santos@gmail.com>
  */
-class ExposedKeysMethodDecorator implements CodeDecoratorInterface
+class ExposedKeysDecorator implements CodeDecoratorInterface
 {
     public function decorate(PhpFile $file, PhpNamespace $namespace, ClassType $class, ClassMetadata $classMetadata): void
     {
+        $class
+            ->addProperty('exposedGroups')
+            ->setVisibility('private')
+            ->setStatic(true)
+            ->setValue($this->getGroups($classMetadata));
+
         $method = $class->addMethod('getExposedKeys')
             ->setVisibility('private')
             ->setReturnType('array')
@@ -48,5 +54,23 @@ STRING
         $method
             ->addParameter('context')
             ->setTypeHint(AbstractContext::class);
+    }
+
+    private function getGroups(ClassMetadata $metadata): array
+    {
+        $groups = [];
+        foreach ($metadata->propertyMetadata as $property) {
+            foreach ($property->groups as $group) {
+                $groups[$group][$property->exposeAs] = true;
+            }
+        }
+
+        foreach ($metadata->methodMetadata as $method) {
+            foreach ($method->groups as $group) {
+                $groups[$group][$method->exposeAs] = true;
+            }
+        }
+
+        return $groups;
     }
 }

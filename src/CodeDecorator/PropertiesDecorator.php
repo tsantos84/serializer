@@ -28,33 +28,9 @@ class PropertiesDecorator implements CodeDecoratorInterface
     public function decorate(PhpFile $file, PhpNamespace $namespace, ClassType $class, ClassMetadata $classMetadata): void
     {
         $class
-            ->addProperty('exposedGroups')
-            ->setVisibility('private')
-            ->setStatic(true)
-            ->setValue($this->getGroups($classMetadata));
-
-        $class
             ->addProperty('exposedPropertiesForContext')
             ->setVisibility('private')
             ->setStatic(true)
             ->setValue([]);
-    }
-
-    private function getGroups(ClassMetadata $metadata): array
-    {
-        $groups = [];
-        foreach ($metadata->propertyMetadata as $property) {
-            foreach ($property->groups as $group) {
-                $groups[$group][$property->exposeAs] = true;
-            }
-        }
-
-        foreach ($metadata->methodMetadata as $method) {
-            foreach ($method->groups as $group) {
-                $groups[$group][$method->exposeAs] = true;
-            }
-        }
-
-        return $groups;
     }
 }
