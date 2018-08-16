@@ -103,19 +103,19 @@ class HydratorLoader
 
         switch ($this->autogenerate) {
             case self::AUTOGENERATE_NEVER:
-                require_once $filename;
+                requireHydrator($filename);
                 break;
 
             case self::AUTOGENERATE_ALWAYS:
                 $this->generate($classMetadata);
-                require_once $filename;
+                requireHydrator($filename);
                 break;
 
             case self::AUTOGENERATE_FILE_NOT_EXISTS:
                 if (!\file_exists($filename)) {
                     $this->generate($classMetadata);
                 }
-                require_once $filename;
+                requireHydrator($filename);
                 break;
         }
 
@@ -146,4 +146,10 @@ class HydratorLoader
 
         return $hydrator;
     }
+}
+
+function requireHydrator(string $filename): void
+{
+    /** @noinspection PhpIncludeInspection */
+    require_once $filename;
 }
