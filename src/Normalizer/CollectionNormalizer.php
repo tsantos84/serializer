@@ -29,7 +29,7 @@ class CollectionNormalizer implements NormalizerInterface, DenormalizerInterface
     {
         $array = [];
         foreach ($data as $key => $value) {
-            if (\is_scalar($value) ) {
+            if (\is_scalar($value)) {
                 $array[$key] = $value;
                 continue;
             }
