@@ -105,9 +105,9 @@ class ObjectNormalizer implements NormalizerInterface, DenormalizerInterface, Se
             $object = $this->instantiator->create($type, $data, $context);
         }
 
-        $objectSerializer = $this->loader->load($type, $this->serializer);
+        $hydrator = $this->loader->load($type, $this->serializer);
         $context->enter();
-        $object = $objectSerializer->hydrate($object, $data, $context);
+        $object = $hydrator->hydrate($object, $data, $context);
         $context->leave();
 
         return $object;

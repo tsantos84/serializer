@@ -29,7 +29,7 @@ class HydratorLoader
     /**
      * @var array
      */
-    private $instances = [];
+    private $hydrators = [];
 
     /**
      * @var MetadataFactoryInterface
@@ -79,8 +79,8 @@ class HydratorLoader
      */
     public function load(string $class, SerializerInterface $serializer): HydratorInterface
     {
-        if (isset($this->instances[$class])) {
-            return $this->instances[$class];
+        if (isset($this->hydrators[$class])) {
+            return $this->hydrators[$class];
         }
 
         /** @var ClassMetadata $classMetadata */
@@ -96,7 +96,7 @@ class HydratorLoader
         $fqn = $this->getClassName($classMetadata);
 
         if (\class_exists($fqn, false)) {
-            return $this->instances[$class] = $this->injectSerializer(new $fqn(), $serializer);
+            return $this->hydrators[$class] = $this->injectSerializer(new $fqn(), $serializer);
         }
 
         $filename = $this->getFilename($classMetadata);
@@ -119,7 +119,7 @@ class HydratorLoader
                 break;
         }
 
-        return $this->instances[$class] = $this->injectSerializer(new $fqn(), $serializer);
+        return $this->hydrators[$class] = $this->injectSerializer(new $fqn(), $serializer);
     }
 
     private function generate(ClassMetadata $classMetadata)
