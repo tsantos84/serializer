@@ -79,7 +79,7 @@ class SerializerTest extends SerializerTestCase
             Dummy::class => new ReflectionDriver(),
         ]);
         $json = $serializer->serialize(new Dummy('bar'));
-        $this->assertEquals('{"foo":"bar"}', $json);
+        $this->assertEquals('{"foo":"bar","bar":null,"baz":null,"innerDummy":null}', $json);
     }
 
     private function createPerson()

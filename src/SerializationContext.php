@@ -21,34 +21,11 @@ use TSantos\Serializer\Exception\CircularReferenceException;
  */
 class SerializationContext extends AbstractContext
 {
-    /** @var bool */
-    private $serializeNull = false;
-
     /** @var array */
     private $circularReference = [];
 
     /** @var int */
     private $circularReferenceCount = 1;
-
-    /**
-     * @param bool $enabled
-     *
-     * @return SerializationContext
-     */
-    public function setSerializeNull(bool $enabled): self
-    {
-        $this->serializeNull = $enabled;
-
-        return $this;
-    }
-
-    /**
-     * @return bool
-     */
-    public function shouldSerializeNull(): bool
-    {
-        return $this->serializeNull;
-    }
 
     /**
      * @param int $circularReferenceCount

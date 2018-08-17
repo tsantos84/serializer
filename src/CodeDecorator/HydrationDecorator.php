@@ -30,7 +30,12 @@ class HydrationDecorator implements CodeDecoratorInterface
     public function decorate(PhpFile $file, PhpNamespace $namespace, ClassType $class, ClassMetadata $classMetadata): void
     {
         $hydrate = $class->addMethod('hydrate')
-            ->setVisibility('public');
+            ->setVisibility('public')
+            ->addComment('@param '.$classMetadata->name.' $object')
+            ->addComment('@param array $data')
+            ->addComment('@param '.DeserializationContext::class.' $context')
+            ->addComment('@return mixed')
+        ;
 
         $hydrate
             ->addParameter('object');
@@ -48,26 +53,22 @@ class HydrationDecorator implements CodeDecoratorInterface
 
     private function createHydrateMethodBody(ClassMetadata $classMetadata): string
     {
-        $body = <<<STRING
-if (!\$object instanceof {$classMetadata->name}) {
-    throw new \InvalidArgumentException(sprintf('%s is able to deserialize only instances of "%s" only. "%s" given', get_class(\$this), '{$classMetadata->name}', is_object(\$object) ? get_class(\$object) : gettype(\$object)));
-}
-
-STRING;
-
         if (!$classMetadata->hasProperties()) {
-            return $body.'return $object;';
+            return 'return $object;';
         }
 
-        $body .= <<<STRING
-static \$contextKeys = [];
-\$contextId = \$context->getId();
+        $body = <<<STRING
+if (null !== \$context->getGroups()) {
 
-if (!isset(\$contextKeys[\$contextId])) {
-    \$contextKeys[\$contextId] = \$this->getExposedKeys(\$context);
+    \$contextId = \$context->getId();
+
+    if (!isset(self::\$exposedPropertiesForContext[\$contextId])) {
+        self::\$exposedPropertiesForContext[\$contextId] = \$this->getExposedKeys(\$context);
+    }
+    
+    \$data = \array_intersect_key(\$data, self::\$exposedPropertiesForContext[\$contextId]);
 }
 
-\$data = array_intersect_key(\$data, \$contextKeys[\$contextId]);
 {mutatorBody}
 return \$object;
 STRING;
@@ -91,9 +92,9 @@ STRING;
     private function createHydrateMutatorBody(PropertyMetadata $property): string
     {
         $body = <<<STRING
-        
+
 // property {propertyName}
-if (isset(\$data['{exposeAs}'])) {
+if (isset(\$data['{exposeAs}']) || \array_key_exists('{exposeAs}', \$data)) {
     if (null !== \$value = \$data['{exposeAs}']) {
         {mutator}
     } else {
@@ -107,6 +108,8 @@ STRING;
             $mutator = \sprintf('$object->%s(%s);', $property->setter, $property->writeValueFilter);
         } elseif ($property->isScalarType()) {
             $mutator = \sprintf('$object->%s((%s) $value);', $property->setter, $property->type);
+        } elseif ($property->isMixedCollectionType()) {
+            $mutator = \sprintf('$object->%s($value);', $property->setter, $property->type);
         } elseif ($property->isCollection()) {
             $template = <<<STRING
 foreach (\$value as \$key => \$val) {

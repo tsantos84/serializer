@@ -32,7 +32,11 @@ class ExtractionDecorator implements CodeDecoratorInterface
     {
         $extract = $class->addMethod('extract')
             ->setReturnType('array')
-            ->setVisibility('public');
+            ->setVisibility('public')
+            ->addComment('@param '.$classMetadata->name.' $object')
+            ->addComment('@param '.SerializationContext::class.' $context')
+            ->addComment('@return array')
+        ;
 
         $extract
             ->addParameter('object');
@@ -46,30 +50,33 @@ class ExtractionDecorator implements CodeDecoratorInterface
 
     private function createExtractMethodBody(ClassMetadata $classMetadata): string
     {
-        $body = <<<STRING
-if (!\$object instanceof {$classMetadata->name}) {
-    throw new \InvalidArgumentException(sprintf('%s is able to serialize only instances of "%s" only. "%s" given', get_class(\$this), '{$classMetadata->name}', is_object(\$object) ? get_class(\$object) : gettype(\$object)));
-}
-
-STRING;
-
         if (!$classMetadata->hasProperties()) {
-            $body .= 'return [];';
-
-            return $body;
+            return 'return [];';
         }
 
-        $body .= <<<STRING
-\$data = [];
-\$shouldSerializeNull = \$context->shouldSerializeNull();
+        $initialData = [];
+        foreach ($classMetadata->all() as $property) {
+            $initialData[$property->exposeAs] = null;
+        }
+
+        $data = \var_export($initialData, true);
+
+        $body = <<<STRING
+\$data = $data;
+
 {accessors}
+
+if (null === \$groups = \$context->getGroups()) {
+    return \$data;
+}
+
 \$contextId = \$context->getId();
 
 if (!isset(self::\$exposedPropertiesForContext[\$contextId])) {
     self::\$exposedPropertiesForContext[\$contextId] = \$this->getExposedKeys(\$context);
 }
 
-\$data = array_intersect_key(\$data, self::\$exposedPropertiesForContext[\$contextId]);
+\$data = \array_intersect_key(\$data, self::\$exposedPropertiesForContext[\$contextId]);
 
 return \$data;
 STRING;
@@ -116,8 +123,6 @@ STRING;
 // property {propertyName}
 if (null !== \$value = {accessor}) {
     {formatter} 
-} elseif (\$shouldSerializeNull) {
-    \$data['{exposeAs}'] = null;
 }
 
 STRING;
@@ -126,6 +131,8 @@ STRING;
             $formatter = \sprintf('$data[\'%s\'] = %s;', $property->exposeAs, $property->readValueFilter);
         } elseif ($property->isScalarType()) {
             $formatter = \sprintf('$data[\'%s\'] = (%s) $value;', $property->exposeAs, $property->type);
+        } elseif ($property->isMixedCollectionType()) {
+            $formatter = \sprintf('$data[\'%s\'] = $value;', $property->exposeAs, $property->type);
         } elseif ($property->isCollection()) {
             $template = <<<STRING
 foreach (\$value as \$key => \$val) {

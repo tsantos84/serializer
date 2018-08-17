@@ -53,6 +53,11 @@ class ClassMetadata extends MergeableClassMetadata
         return \count($this->propertyMetadata) > 0 || \count($this->methodMetadata) > 0;
     }
 
+    public function all(): array
+    {
+        return \array_merge($this->propertyMetadata, $this->methodMetadata);
+    }
+
     public function getWritableProperties(): array
     {
         return \array_filter($this->propertyMetadata, function (PropertyMetadata $propertyMetadata) {
