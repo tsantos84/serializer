@@ -68,6 +68,7 @@ if (null !== \$context->getGroups()) {
     
     \$data = \array_intersect_key(\$data, self::\$exposedPropertiesForContext[\$contextId]);
 }
+
 {mutatorBody}
 return \$object;
 STRING;
