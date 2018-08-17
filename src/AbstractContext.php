@@ -23,7 +23,7 @@ abstract class AbstractContext
     private $id;
 
     /** @var array */
-    private $groups = ['Default' => true];
+    private $groups;
 
     /** @var int */
     private $maxDepth;
@@ -67,7 +67,7 @@ abstract class AbstractContext
         return $this;
     }
 
-    public function getGroups(): array
+    public function getGroups(): ?array
     {
         return $this->groups;
     }
