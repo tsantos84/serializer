@@ -131,6 +131,8 @@ STRING;
             $formatter = \sprintf('$data[\'%s\'] = %s;', $property->exposeAs, $property->readValueFilter);
         } elseif ($property->isScalarType()) {
             $formatter = \sprintf('$data[\'%s\'] = (%s) $value;', $property->exposeAs, $property->type);
+        } elseif ($property->isMixedCollectionType()) {
+            $formatter = \sprintf('$data[\'%s\'] = $value;', $property->exposeAs, $property->type);
         } elseif ($property->isCollection()) {
             $template = <<<STRING
 foreach (\$value as \$key => \$val) {
@@ -140,8 +142,6 @@ foreach (\$value as \$key => \$val) {
 STRING;
             if ($property->isScalarCollectionType()) {
                 $reader = \sprintf('(%s) $val', $property->getTypeOfCollection());
-            } elseif ($property->isMixedCollectionType()) {
-                $reader = '$val';
             } else {
                 $reader = '$this->serializer->normalize($val, $context);';
             }
