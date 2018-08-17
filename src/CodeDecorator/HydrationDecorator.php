@@ -91,9 +91,9 @@ STRING;
     private function createHydrateMutatorBody(PropertyMetadata $property): string
     {
         $body = <<<STRING
-        
+
 // property {propertyName}
-if (isset(\$data['{exposeAs}'])) {
+if (isset(\$data['{exposeAs}']) || \array_key_exists('{exposeAs}', \$data)) {
     if (null !== \$value = \$data['{exposeAs}']) {
         {mutator}
     } else {
