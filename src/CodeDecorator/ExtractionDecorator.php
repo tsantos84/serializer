@@ -33,8 +33,8 @@ class ExtractionDecorator implements CodeDecoratorInterface
         $extract = $class->addMethod('extract')
             ->setReturnType('array')
             ->setVisibility('public')
-            ->addComment('@param ' . $classMetadata->name . ' $object')
-            ->addComment('@param ' . SerializationContext::class . ' $context')
+            ->addComment('@param '.$classMetadata->name.' $object')
+            ->addComment('@param '.SerializationContext::class.' $context')
             ->addComment('@return array')
         ;
 
@@ -59,7 +59,7 @@ class ExtractionDecorator implements CodeDecoratorInterface
             $initialData[$property->exposeAs] = null;
         }
 
-        $data = var_export($initialData, true);
+        $data = \var_export($initialData, true);
 
         $body = <<<STRING
 \$data = $data;

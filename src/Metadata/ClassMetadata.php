@@ -55,7 +55,7 @@ class ClassMetadata extends MergeableClassMetadata
 
     public function all(): array
     {
-        return array_merge($this->propertyMetadata, $this->methodMetadata);
+        return \array_merge($this->propertyMetadata, $this->methodMetadata);
     }
 
     public function getWritableProperties(): array
