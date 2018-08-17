@@ -107,6 +107,8 @@ STRING;
             $mutator = \sprintf('$object->%s(%s);', $property->setter, $property->writeValueFilter);
         } elseif ($property->isScalarType()) {
             $mutator = \sprintf('$object->%s((%s) $value);', $property->setter, $property->type);
+        } elseif ($property->isMixedCollectionType()) {
+            $mutator = \sprintf('$object->%s($value);', $property->setter, $property->type);
         } elseif ($property->isCollection()) {
             $template = <<<STRING
 foreach (\$value as \$key => \$val) {
