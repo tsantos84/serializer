@@ -1,7 +1,8 @@
 <?php
 
 declare(strict_types=1);
-/**
+
+/*
  * This file is part of the TSantos Serializer package.
  *
  * (c) Tales Santos <tales.augusto.santos@gmail.com>
@@ -40,7 +41,7 @@ class SerializationListenerTest extends SerializerTestCase
 
         $expected = '{"id":10,"name":"Tales","lastName":"Santos","age":33}';
 
-        $this->assertEquals($expected, $serializer->serialize($person));
+        $this->assertSame($expected, $serializer->serialize($person));
     }
 
     protected function createBuilder()

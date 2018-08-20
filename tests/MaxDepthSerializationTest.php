@@ -1,7 +1,8 @@
 <?php
 
 declare(strict_types=1);
-/**
+
+/*
  * This file is part of the TSantos Serializer package.
  *
  * (c) Tales Santos <tales.augusto.santos@gmail.com>
@@ -60,7 +61,7 @@ class MaxDepthSerializationTest extends SerializerTestCase
 
         $json = $serializer->serialize($person, SerializationContext::create()->setMaxDepth(2));
 
-        $this->assertEquals(\json_encode([
+        $this->assertSame(\json_encode([
             'id' => 1,
             'name' => 'Tales',
             'address' => [
@@ -94,7 +95,7 @@ class MaxDepthSerializationTest extends SerializerTestCase
         ];
 
         $json = $serializer->serialize($data, SerializationContext::create()->setMaxDepth(2));
-        $this->assertEquals('{"0":1,"1":2,"2":3,"3":"four","five":["six"],"seven":{"eight":["nine"]}}', $json);
+        $this->assertSame('{"0":1,"1":2,"2":3,"3":"four","five":["six"],"seven":{"eight":["nine"]}}', $json);
     }
 
     /**
@@ -111,6 +112,6 @@ class MaxDepthSerializationTest extends SerializerTestCase
 
         $expected = '{"color":"white","ports":4}';
 
-        $this->assertEquals($expected, $serializer->serialize($person, SerializationContext::create()->setMaxDepth(1)));
+        $this->assertSame($expected, $serializer->serialize($person, SerializationContext::create()->setMaxDepth(1)));
     }
 }

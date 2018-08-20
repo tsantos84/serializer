@@ -1,7 +1,8 @@
 <?php
 
 declare(strict_types=1);
-/**
+
+/*
  * This file is part of the TSantos Serializer package.
  *
  * (c) Tales Santos <tales.augusto.santos@gmail.com>
@@ -23,7 +24,7 @@ class JsonEncoderTest extends TestCase
     public function encode()
     {
         $encoder = new JsonEncoder();
-        $this->assertEquals('{"foo":"bar"}', $encoder->encode(['foo' => 'bar']));
+        $this->assertSame('{"foo":"bar"}', $encoder->encode(['foo' => 'bar']));
     }
 
     /**
@@ -32,6 +33,6 @@ class JsonEncoderTest extends TestCase
     public function getFormat()
     {
         $encoder = new JsonEncoder();
-        $this->assertEquals('json', $encoder->getFormat());
+        $this->assertSame('json', $encoder->getFormat());
     }
 }

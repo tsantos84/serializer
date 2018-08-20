@@ -1,7 +1,8 @@
 <?php
 
 declare(strict_types=1);
-/**
+
+/*
  * This file is part of the TSantos Serializer package.
  *
  * (c) Tales Santos <tales.augusto.santos@gmail.com>
@@ -41,7 +42,7 @@ class VirtualPropertyTypeConfiguratorTest extends AbstractConfiguratorTest
         $property->type = 'some_type';
         $classMetadata->addMethodMetadata($property);
         $this->configurator->configure($classMetadata);
-        $this->assertEquals('some_type', $property->type);
+        $this->assertSame('some_type', $property->type);
     }
 
     /** @test */
@@ -57,7 +58,7 @@ class VirtualPropertyTypeConfiguratorTest extends AbstractConfiguratorTest
         $property = new VirtualPropertyMetadata($classMetadata->name, 'getFullName');
         $classMetadata->addMethodMetadata($property);
         $this->configurator->configure($classMetadata);
-        $this->assertEquals('string', $property->type);
+        $this->assertSame('string', $property->type);
     }
 
     /** @test */
@@ -73,7 +74,7 @@ class VirtualPropertyTypeConfiguratorTest extends AbstractConfiguratorTest
         $property = new VirtualPropertyMetadata($classMetadata->name, 'getAge');
         $classMetadata->addMethodMetadata($property);
         $this->configurator->configure($classMetadata);
-        $this->assertEquals('integer', $property->type);
+        $this->assertSame('integer', $property->type);
     }
 
     /** @test */
@@ -90,6 +91,6 @@ class VirtualPropertyTypeConfiguratorTest extends AbstractConfiguratorTest
         $property = new VirtualPropertyMetadata($classMetadata->name, 'getAge');
         $classMetadata->addMethodMetadata($property);
         $this->configurator->configure($classMetadata);
-        $this->assertEquals('integer', $property->type);
+        $this->assertSame('integer', $property->type);
     }
 }

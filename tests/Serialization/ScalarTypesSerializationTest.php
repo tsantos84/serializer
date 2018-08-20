@@ -1,7 +1,8 @@
 <?php
 
 declare(strict_types=1);
-/**
+
+/*
  * This file is part of the TSantos Serializer package.
  *
  * (c) Tales Santos <tales.augusto.santos@gmail.com>
@@ -30,7 +31,7 @@ class ScalarTypesSerializationTest extends SerializerTestCase
     {
         $serializer = $this->createSerializer([]);
         $json = $serializer->serialize(1);
-        $this->assertEquals(1, $json);
+        $this->assertSame(1, $json);
     }
 
     /**
@@ -40,6 +41,6 @@ class ScalarTypesSerializationTest extends SerializerTestCase
     {
         $serializer = $this->createSerializer([]);
         $json = $serializer->serialize([1, 2, 3, 'four']);
-        $this->assertEquals(\json_encode([1, 2, 3, 'four']), $json);
+        $this->assertSame(\json_encode([1, 2, 3, 'four']), $json);
     }
 }

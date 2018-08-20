@@ -1,7 +1,8 @@
 <?php
 
 declare(strict_types=1);
-/**
+
+/*
  * This file is part of the TSantos Serializer package.
  *
  * (c) Tales Santos <tales.augusto.santos@gmail.com>
@@ -132,7 +133,7 @@ class AnnotationDriver implements DriverInterface
         $annotations = \array_filter($annotations, function ($annotation) {
             $ref = new \ReflectionObject($annotation);
 
-            return 0 === \strpos($ref->getNamespaceName(), 'TSantos\Serializer');
+            return 0 === \mb_strpos($ref->getNamespaceName(), 'TSantos\Serializer');
         });
 
         return $annotations;

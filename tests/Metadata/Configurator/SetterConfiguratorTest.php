@@ -1,7 +1,8 @@
 <?php
 
 declare(strict_types=1);
-/**
+
+/*
  * This file is part of the TSantos Serializer package.
  *
  * (c) Tales Santos <tales.augusto.santos@gmail.com>
@@ -33,7 +34,7 @@ class SetterConfiguratorTest extends AbstractConfiguratorTest
         $classMetadata->addPropertyMetadata($property = new PropertyMetadata($classMetadata->name, 'name'));
         $property->setter = 'someSetter';
         $this->configurator->configure($classMetadata);
-        $this->assertEquals('someSetter', $property->setter);
+        $this->assertSame('someSetter', $property->setter);
     }
 
     /** @test */
@@ -46,7 +47,7 @@ class SetterConfiguratorTest extends AbstractConfiguratorTest
         $classMetadata = $this->createClassMetadata($subject);
         $classMetadata->addPropertyMetadata($property = new PropertyMetadata($classMetadata->name, 'name'));
         $this->configurator->configure($classMetadata);
-        $this->assertEquals('name', $property->setter);
+        $this->assertSame('name', $property->setter);
     }
 
     /** @test */
@@ -63,6 +64,6 @@ class SetterConfiguratorTest extends AbstractConfiguratorTest
         $classMetadata = $this->createClassMetadata($subject);
         $classMetadata->addPropertyMetadata($property = new PropertyMetadata($classMetadata->name, 'name'));
         $this->configurator->configure($classMetadata);
-        $this->assertEquals('setName', $property->setter);
+        $this->assertSame('setName', $property->setter);
     }
 }

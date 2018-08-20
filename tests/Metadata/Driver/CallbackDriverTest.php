@@ -1,7 +1,8 @@
 <?php
 
 declare(strict_types=1);
-/**
+
+/*
  * This file is part of the TSantos Serializer package.
  *
  * (c) Tales Santos <tales.augusto.santos@gmail.com>
@@ -39,7 +40,7 @@ class CallbackDriverTest extends TestCase
 
         $metadata = $driver->loadMetadataForClass(new \ReflectionClass(Person::class));
 
-        $this->assertEquals(Person::class, $metadata->name);
+        $this->assertSame(Person::class, $metadata->name);
         $this->assertCount(1, $metadata->propertyMetadata);
         $this->assertArrayHasKey('id', $metadata->propertyMetadata);
     }

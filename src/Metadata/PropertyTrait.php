@@ -1,7 +1,8 @@
 <?php
 
 declare(strict_types=1);
-/**
+
+/*
  * This file is part of the TSantos Serializer package.
  *
  * (c) Tales Santos <tales.augusto.santos@gmail.com>
@@ -32,11 +33,11 @@ trait PropertyTrait
 
     public function isScalarCollectionType(): bool
     {
-        if (false === $pos = \strpos($this->type, '[]')) {
+        if (false === $pos = \mb_strpos($this->type, '[]')) {
             return false;
         }
 
-        $type = \substr($this->type, 0, $pos);
+        $type = \mb_substr($this->type, 0, $pos);
 
         return \in_array($type, ['integer', 'string', 'float', 'boolean'], true);
     }
@@ -48,15 +49,15 @@ trait PropertyTrait
 
     public function isCollection(): bool
     {
-        return false !== \strpos($this->type, '[]');
+        return false !== \mb_strpos($this->type, '[]');
     }
 
     public function getTypeOfCollection(): ?string
     {
-        if (false === $pos = \strpos($this->type, '[]')) {
+        if (false === $pos = \mb_strpos($this->type, '[]')) {
             return null;
         }
 
-        return \substr($this->type, 0, $pos);
+        return \mb_substr($this->type, 0, $pos);
     }
 }

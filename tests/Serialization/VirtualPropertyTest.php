@@ -1,7 +1,8 @@
 <?php
 
 declare(strict_types=1);
-/**
+
+/*
  * This file is part of the TSantos Serializer package.
  *
  * (c) Tales Santos <tales.augusto.santos@gmail.com>
@@ -33,7 +34,7 @@ class VirtualPropertyTest extends SerializerTestCase
 
         $person = (new Person(1, 'Tales', true))->setLastName('Santos');
 
-        $this->assertEquals('{"fullName":"Tales Santos"}', $serializer->serialize($person));
+        $this->assertSame('{"fullName":"Tales Santos"}', $serializer->serialize($person));
     }
 
     /** @test */
@@ -46,6 +47,6 @@ class VirtualPropertyTest extends SerializerTestCase
         $person = (new Person(1, 'Tales', true));
         $person->setBirthday(new \DateTime('1984-11-28'));
 
-        $this->assertEquals('{"birthday":"28\/11\/1984"}', $serializer->serialize($person));
+        $this->assertSame('{"birthday":"28\/11\/1984"}', $serializer->serialize($person));
     }
 }

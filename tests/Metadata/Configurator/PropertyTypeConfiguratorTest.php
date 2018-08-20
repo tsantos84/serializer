@@ -1,7 +1,8 @@
 <?php
 
 declare(strict_types=1);
-/**
+
+/*
  * This file is part of the TSantos Serializer package.
  *
  * (c) Tales Santos <tales.augusto.santos@gmail.com>
@@ -48,7 +49,7 @@ class PropertyTypeConfiguratorTest extends AbstractConfiguratorTest
         $property->type = 'some_type';
         $classMetadata->addPropertyMetadata($property);
         $this->configurator->configure($classMetadata);
-        $this->assertEquals('some_type', $property->type);
+        $this->assertSame('some_type', $property->type);
     }
 
     /** @test */
@@ -67,7 +68,7 @@ class PropertyTypeConfiguratorTest extends AbstractConfiguratorTest
         $property = new PropertyMetadata($classMetadata->name, 'id');
         $classMetadata->addPropertyMetadata($property);
         $this->configurator->configure($classMetadata);
-        $this->assertEquals('integer', $property->type);
+        $this->assertSame('integer', $property->type);
     }
 
     /** @test */
@@ -89,7 +90,7 @@ class PropertyTypeConfiguratorTest extends AbstractConfiguratorTest
         $property = new PropertyMetadata($classMetadata->name, 'published');
         $classMetadata->addPropertyMetadata($property);
         $this->configurator->configure($classMetadata);
-        $this->assertEquals('boolean', $property->type);
+        $this->assertSame('boolean', $property->type);
     }
 
     /** @test */
@@ -104,7 +105,7 @@ class PropertyTypeConfiguratorTest extends AbstractConfiguratorTest
         $property = new PropertyMetadata($classMetadata->name, 'published');
         $classMetadata->addPropertyMetadata($property);
         $this->configurator->configure($classMetadata);
-        $this->assertEquals('boolean', $property->type);
+        $this->assertSame('boolean', $property->type);
     }
 
     /** @test */
@@ -118,7 +119,7 @@ class PropertyTypeConfiguratorTest extends AbstractConfiguratorTest
         $property = new PropertyMetadata($classMetadata->name, 'name');
         $classMetadata->addPropertyMetadata($property);
         $this->configurator->configure($classMetadata);
-        $this->assertEquals('string', $property->type);
+        $this->assertSame('string', $property->type);
     }
 
     /** @test */
@@ -137,7 +138,7 @@ class PropertyTypeConfiguratorTest extends AbstractConfiguratorTest
         $property = new PropertyMetadata($classMetadata->name, 'name');
         $classMetadata->addPropertyMetadata($property);
         $this->configurator->configure($classMetadata);
-        $this->assertEquals('string', $property->type);
+        $this->assertSame('string', $property->type);
     }
 
     /** @test */
@@ -159,7 +160,7 @@ class PropertyTypeConfiguratorTest extends AbstractConfiguratorTest
         $property = new PropertyMetadata($classMetadata->name, 'name');
         $classMetadata->addPropertyMetadata($property);
         $this->configurator->configure($classMetadata);
-        $this->assertEquals('string', $property->type);
+        $this->assertSame('string', $property->type);
     }
 
     /** @test */
@@ -174,7 +175,7 @@ class PropertyTypeConfiguratorTest extends AbstractConfiguratorTest
         $property = new PropertyMetadata($classMetadata->name, 'age');
         $classMetadata->addPropertyMetadata($property);
         $this->configurator->configure($classMetadata);
-        $this->assertEquals('integer', $property->type);
+        $this->assertSame('integer', $property->type);
     }
 
     /** @test */
@@ -192,7 +193,7 @@ class PropertyTypeConfiguratorTest extends AbstractConfiguratorTest
         $property = new PropertyMetadata($classMetadata->name, 'age');
         $classMetadata->addPropertyMetadata($property);
         $this->configurator->configure($classMetadata);
-        $this->assertEquals('integer', $property->type);
+        $this->assertSame('integer', $property->type);
     }
 
     /** @test */
@@ -214,7 +215,7 @@ class PropertyTypeConfiguratorTest extends AbstractConfiguratorTest
         $property = new PropertyMetadata($classMetadata->name, 'age');
         $classMetadata->addPropertyMetadata($property);
         $this->configurator->configure($classMetadata);
-        $this->assertEquals('integer', $property->type);
+        $this->assertSame('integer', $property->type);
     }
 
     /** @test */
@@ -232,7 +233,7 @@ class PropertyTypeConfiguratorTest extends AbstractConfiguratorTest
         $property = new PropertyMetadata($classMetadata->name, 'age');
         $classMetadata->addPropertyMetadata($property);
         $this->configurator->configure($classMetadata);
-        $this->assertEquals('integer', $property->type);
+        $this->assertSame('integer', $property->type);
     }
 
     /** @test */
@@ -254,7 +255,7 @@ class PropertyTypeConfiguratorTest extends AbstractConfiguratorTest
         $property = new PropertyMetadata($classMetadata->name, 'age');
         $classMetadata->addPropertyMetadata($property);
         $this->configurator->configure($classMetadata);
-        $this->assertEquals('integer', $property->type);
+        $this->assertSame('integer', $property->type);
     }
 
     /** @test */
@@ -272,7 +273,7 @@ class PropertyTypeConfiguratorTest extends AbstractConfiguratorTest
         $property = new PropertyMetadata($classMetadata->name, 'comments');
         $classMetadata->addPropertyMetadata($property);
         $this->configurator->configure($classMetadata);
-        $this->assertEquals('string[]', $property->type);
+        $this->assertSame('string[]', $property->type);
     }
 
     /** @test */
@@ -290,7 +291,7 @@ class PropertyTypeConfiguratorTest extends AbstractConfiguratorTest
         $property = new PropertyMetadata($classMetadata->name, 'persons');
         $classMetadata->addPropertyMetadata($property);
         $this->configurator->configure($classMetadata);
-        $this->assertEquals(Person::class.'[]', $property->type);
+        $this->assertSame(Person::class.'[]', $property->type);
     }
 
     /** @test */
@@ -307,6 +308,6 @@ class PropertyTypeConfiguratorTest extends AbstractConfiguratorTest
         $property = new PropertyMetadata($classMetadata->name, 'roles');
         $classMetadata->addPropertyMetadata($property);
         $this->configurator->configure($classMetadata);
-        $this->assertEquals('mixed[]', $property->type);
+        $this->assertSame('mixed[]', $property->type);
     }
 }
