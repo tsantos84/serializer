@@ -45,7 +45,7 @@ class XmlDriver extends AbstractFileDriver
         $elem = \reset($elems);
 
         if (null !== $baseClass = $elem->attributes()->{'base-class'}) {
-            $metadata->baseClass = $baseClass;
+            $metadata->baseClass = (string) $baseClass;
         }
 
         /* @var \SimpleXMLElement $property */
