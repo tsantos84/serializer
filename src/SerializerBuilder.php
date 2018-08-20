@@ -14,39 +14,17 @@ namespace TSantos\Serializer;
 
 use Doctrine\Common\Annotations\AnnotationReader;
 use Doctrine\Common\Annotations\AnnotationRegistry;
-use Doctrine\Instantiator\Instantiator;
+use Doctrine\Common\Annotations\Reader;
 use Metadata\Cache\CacheInterface;
 use Metadata\Cache\FileCache;
-use Metadata\Driver\DriverChain;
 use Metadata\Driver\DriverInterface;
-use Metadata\Driver\FileLocator;
-use Metadata\MetadataFactory;
-use Symfony\Component\PropertyInfo\Extractor\PhpDocExtractor;
-use Symfony\Component\PropertyInfo\Extractor\ReflectionExtractor;
-use Symfony\Component\PropertyInfo\PropertyInfoExtractor;
-use TSantos\Serializer\CodeDecorator\ExposedKeysDecorator;
-use TSantos\Serializer\CodeDecorator\ExtractionDecorator;
-use TSantos\Serializer\CodeDecorator\HydrationDecorator;
-use TSantos\Serializer\CodeDecorator\PropertiesDecorator;
-use TSantos\Serializer\CodeDecorator\ReflectionPropertyMethodDecorator;
+use Pimple\Container;
 use TSantos\Serializer\Encoder\EncoderInterface;
-use TSantos\Serializer\Encoder\JsonEncoder;
-use TSantos\Serializer\EventDispatcher\EventDispatcher;
+use TSantos\Serializer\EventDispatcher\EventDispatcherInterface;
 use TSantos\Serializer\EventDispatcher\EventSubscriberInterface;
-use TSantos\Serializer\Metadata\Configurator\DateTimeConfigurator;
-use TSantos\Serializer\Metadata\Configurator\GetterConfigurator;
-use TSantos\Serializer\Metadata\Configurator\PropertyTypeConfigurator;
-use TSantos\Serializer\Metadata\Configurator\SetterConfigurator;
-use TSantos\Serializer\Metadata\Configurator\VirtualPropertyTypeConfigurator;
 use TSantos\Serializer\Metadata\Driver\AnnotationDriver;
-use TSantos\Serializer\Metadata\Driver\ConfiguratorDriver;
-use TSantos\Serializer\Metadata\Driver\ReflectionDriver;
-use TSantos\Serializer\Metadata\Driver\XmlDriver;
-use TSantos\Serializer\Metadata\Driver\YamlDriver;
 use TSantos\Serializer\Normalizer\CollectionNormalizer;
 use TSantos\Serializer\Normalizer\JsonNormalizer;
-use TSantos\Serializer\Normalizer\ObjectNormalizer;
-use TSantos\Serializer\ObjectInstantiator\DoctrineInstantiator;
 use TSantos\Serializer\ObjectInstantiator\ObjectInstantiatorInterface;
 
 /**
@@ -56,30 +34,21 @@ use TSantos\Serializer\ObjectInstantiator\ObjectInstantiatorInterface;
  */
 class SerializerBuilder
 {
-    private $encoders;
-    private $normalizers;
-    private $driver;
-    private $metadataCache;
-    private $debug;
-    private $hydratorDir;
-    private $metadataDirs;
-    private $hydratorGenerationStrategy;
-    private $instantiator;
-    private $format = 'json';
-    private $dispatcher;
-    private $hasListener = false;
-    private $circularReferenceHandler;
+    /**
+     * @var Container
+     */
+    private $container;
 
     /**
      * Builder constructor.
      */
-    public function __construct()
+    public function __construct(Container $container = null)
     {
-        $this->encoders = new EncoderRegistry();
-        $this->normalizers = new NormalizerRegistry();
-        $this->debug = false;
-        $this->metadataDirs = [];
-        $this->hydratorGenerationStrategy = HydratorLoader::AUTOGENERATE_ALWAYS;
+        if (null === $container) {
+            $container = require __DIR__.'/DependencyInjection/Pimple/Container.php';
+        }
+
+        $this->container = $container;
     }
 
     /**
@@ -89,14 +58,19 @@ class SerializerBuilder
      */
     public function setMetadataDriver(DriverInterface $driver): self
     {
-        $this->driver = $driver;
+        $this->container['custom_metadata_driver'] = function () use ($driver) {
+            return $driver;
+        };
 
         return $this;
     }
 
     public function setMetadataDirs(array $dirs): self
     {
-        $this->metadataDirs = [];
+        $this->container['metadata_dirs'] = function () {
+            return [];
+        };
+
         $this->addMetadataDirs($dirs);
 
         return $this;
@@ -117,51 +91,53 @@ class SerializerBuilder
             throw new \InvalidArgumentException('The metadata directory "'.$dir.'" does not exist');
         }
 
-        $this->metadataDirs[$namespace] = $dir;
+        $this->container->extend('metadata_dirs', function (array $dirs) use ($namespace, $dir) {
+            $dirs[$namespace] = $dir;
+
+            return $dirs;
+        });
 
         return $this;
     }
 
     public function setHydratorDir(string $dir): self
     {
-        if (!\is_dir($dir)) {
-            $this->createDir($dir);
-        }
-
-        if (!\is_writable($dir)) {
-            throw new \InvalidArgumentException(\sprintf('The serializer class directory "%s" is not writable.', $dir));
-        }
-
-        $this->hydratorDir = $dir;
+        $this->container['hydrator_dir'] = $dir;
 
         return $this;
     }
 
     public function setDebug(bool $debug): self
     {
-        $this->debug = $debug;
+        $this->container['debug'] = $debug;
 
         return $this;
     }
 
     public function addNormalizer($normalizer): self
     {
-        $this->normalizers->add($normalizer);
+        $this->container->extend('normalizers', function (array $normalizers) use ($normalizer) {
+            $normalizers[] = $normalizer;
+
+            return $normalizers;
+        });
 
         return $this;
     }
 
     public function enableBuiltInNormalizers(): self
     {
-        $this->normalizers->add(new CollectionNormalizer());
-        $this->normalizers->add(new JsonNormalizer());
+        $this->addNormalizer(new CollectionNormalizer());
+        $this->addNormalizer(new JsonNormalizer());
 
         return $this;
     }
 
     public function addEncoder(EncoderInterface $encoder): self
     {
-        $this->encoders->add($encoder);
+        $this->container->extend(EncoderRegistryInterface::class, function (EncoderRegistryInterface $encoders) use ($encoder) {
+            return $encoders->add($encoder);
+        });
 
         return $this;
     }
@@ -179,14 +155,16 @@ class SerializerBuilder
 
     public function setMetadataCache(CacheInterface $cache): self
     {
-        $this->metadataCache = $cache;
+        $this->container[CacheInterface::class] = function () use ($cache) {
+            return $cache;
+        };
 
         return $this;
     }
 
     public function setHydratorGenerationStrategy(int $strategy): self
     {
-        $this->hydratorGenerationStrategy = $strategy;
+        $this->container['generation_strategy'] = $strategy;
 
         return $this;
     }
@@ -198,40 +176,46 @@ class SerializerBuilder
                 'You must include the package doctrine/annotations as your composer dependency.');
         }
 
-        AnnotationRegistry::registerLoader('class_exists');
+        $this->container['custom_metadata_driver'] = function ($container) use ($reader) {
+            AnnotationRegistry::registerLoader('class_exists');
 
-        $this->driver = new AnnotationDriver($reader ?? new AnnotationReader());
+            return new AnnotationDriver($reader ?? $container[Reader::class]);
+        };
 
         return $this;
     }
 
     public function setObjectInstantiator(ObjectInstantiatorInterface $instantiator): self
     {
-        $this->instantiator = $instantiator;
+        $this->container['custom_object_instantiator'] = function () use ($instantiator) {
+            return $instantiator;
+        };
 
         return $this;
     }
 
     public function addListener(string $eventName, callable $listener, int $priority = 0, string $type = null)
     {
-        if (null === $this->dispatcher) {
-            $this->dispatcher = new EventDispatcher();
-        }
+        $this->container->extend(EventDispatcherInterface::class, function (EventDispatcherInterface $dispatcher) use ($eventName, $listener, $priority, $type) {
+            $dispatcher->addListener($eventName, $listener, $priority, $type);
 
-        $this->dispatcher->addListener($eventName, $listener, $priority, $type);
-        $this->hasListener = true;
+            return $dispatcher;
+        });
+
+        $this->container['has_listener'] = true;
 
         return $this;
     }
 
     public function addSubscriber(EventSubscriberInterface $subscriber)
     {
-        if (null === $this->dispatcher) {
-            $this->dispatcher = new EventDispatcher();
-        }
+        $this->container->extend(EventDispatcherInterface::class, function (EventDispatcherInterface $dispatcher) use ($subscriber) {
+            $dispatcher->addSubscriber($subscriber);
 
-        $this->dispatcher->addSubscriber($subscriber);
-        $this->hasListener = true;
+            return $dispatcher;
+        });
+
+        $this->container['has_listener'] = true;
 
         return $this;
     }
@@ -243,7 +227,7 @@ class SerializerBuilder
      */
     public function setFormat(string $format): self
     {
-        $this->format = $format;
+        $this->container['format'] = $format;
 
         return $this;
     }
@@ -255,7 +239,7 @@ class SerializerBuilder
      */
     public function setCircularReferenceHandler(callable $circularReferenceHandler): self
     {
-        $this->circularReferenceHandler = $circularReferenceHandler;
+        $this->container['circular_reference_handler'] = $this->container->protect($circularReferenceHandler);
 
         return $this;
     }
@@ -265,92 +249,6 @@ class SerializerBuilder
      */
     public function build(): SerializerInterface
     {
-        if ($this->encoders->isEmpty()) {
-            $this->encoders->add(new JsonEncoder());
-        }
-
-        if (null === $hydratorDir = $this->hydratorDir) {
-            $this->createDir($hydratorDir = \sys_get_temp_dir().'/serializer/hydrators');
-        }
-
-        $metadataFactory = $this->createMetadataFactory($this->createMetadataDriver());
-
-        $loader = new HydratorLoader(
-            $metadataFactory,
-            new HydratorCodeGenerator([
-                new ExposedKeysDecorator(),
-                new ExtractionDecorator(),
-                new HydrationDecorator(),
-                new PropertiesDecorator(),
-                new ReflectionPropertyMethodDecorator(),
-            ]),
-            new HydratorCodeWriter($hydratorDir),
-            $this->hydratorGenerationStrategy
-        );
-
-        if (null === $this->instantiator) {
-            $this->instantiator = new DoctrineInstantiator(new Instantiator());
-        }
-        $this->normalizers->unshift(new ObjectNormalizer($loader, $this->instantiator, $this->circularReferenceHandler));
-
-        if (null === $this->dispatcher) {
-            return new Serializer(
-                $this->encoders->get($this->format),
-                $this->normalizers
-            );
-        }
-
-        return new EventEmitterSerializer(
-            $this->encoders->get($this->format),
-            $this->normalizers,
-            $this->dispatcher
-        );
-    }
-
-    private function createMetadataFactory(DriverInterface $driver): MetadataFactory
-    {
-        $metadataFactory = new MetadataFactory($driver, 'Metadata\ClassHierarchyMetadata', $this->debug);
-        if (null !== $this->metadataCache) {
-            $metadataFactory->setCache($this->metadataCache);
-        }
-
-        return $metadataFactory;
-    }
-
-    private function createMetadataDriver(): DriverInterface
-    {
-        if (null === $driver = $this->driver) {
-            $fileLocator = new FileLocator($this->metadataDirs);
-            $driver = new DriverChain([
-                new YamlDriver($fileLocator),
-                new XmlDriver($fileLocator),
-                new ReflectionDriver(),
-            ]);
-        }
-
-        $propertyInfo = new PropertyInfoExtractor([], [
-            new ReflectionExtractor(),
-            new PhpDocExtractor(),
-        ]);
-
-        $driver = new ConfiguratorDriver($driver, [
-            new PropertyTypeConfigurator($propertyInfo),
-            new VirtualPropertyTypeConfigurator(),
-            new GetterConfigurator(),
-            new SetterConfigurator(),
-            new DateTimeConfigurator(),
-        ]);
-
-        return $driver;
-    }
-
-    private function createDir($dir)
-    {
-        if (\is_dir($dir)) {
-            return;
-        }
-        if (false === @\mkdir($dir, 0777, true) && false === \is_dir($dir)) {
-            throw new \RuntimeException(\sprintf('Could not create directory "%s".', $dir));
-        }
+        return $this->container[SerializerInterface::class];
     }
 }

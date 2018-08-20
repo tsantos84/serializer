@@ -36,6 +36,16 @@ class NormalizerRegistry implements NormalizerRegistryInterface
     ];
 
     /**
+     * NormalizerRegistry constructor.
+     *
+     * @param array $normalizers
+     */
+    public function __construct(array $normalizers = [])
+    {
+        $this->normalizers = $normalizers;
+    }
+
+    /**
      * @param $normalizer
      *
      * @return $this
