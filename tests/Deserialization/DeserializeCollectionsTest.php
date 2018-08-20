@@ -1,7 +1,8 @@
 <?php
 
 declare(strict_types=1);
-/**
+
+/*
  * This file is part of the TSantos Serializer package.
  *
  * (c) Tales Santos <tales.augusto.santos@gmail.com>
@@ -74,11 +75,11 @@ EOF;
         $this->assertCount(3, $persons);
 
         foreach ($persons as $person) {
-            $this->assertEquals('Tales Santos', $person->getName());
-            $this->assertEquals(['white', 'blue'], $person->getColors());
+            $this->assertSame('Tales Santos', $person->getName());
+            $this->assertSame(['white', 'blue'], $person->getColors());
             $this->assertInstanceOf(Book::class, $person->getFavouriteBook());
-            $this->assertEquals(10, $person->getFavouriteBook()->getId());
-            $this->assertEquals('Design Patterns', $person->getFavouriteBook()->getName());
+            $this->assertSame(10, $person->getFavouriteBook()->getId());
+            $this->assertSame('Design Patterns', $person->getFavouriteBook()->getName());
         }
     }
 

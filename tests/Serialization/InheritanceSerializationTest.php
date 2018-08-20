@@ -1,7 +1,8 @@
 <?php
 
 declare(strict_types=1);
-/**
+
+/*
  * This file is part of the TSantos Serializer package.
  *
  * (c) Tales Santos <tales.augusto.santos@gmail.com>
@@ -41,7 +42,7 @@ class InheritanceSerializationTest extends SerializerTestCase
 
         $expected = '{"name":"Tales","position":"Developer"}';
 
-        $this->assertEquals($expected, $serializer->serialize($employee));
+        $this->assertSame($expected, $serializer->serialize($employee));
     }
 
     /** @test */
@@ -60,7 +61,7 @@ class InheritanceSerializationTest extends SerializerTestCase
 
         $employee = $serializer->deserialize($content, Employee::class);
 
-        $this->assertEquals('Tales', $employee->getName());
-        $this->assertEquals('Developer', $employee->getPosition());
+        $this->assertSame('Tales', $employee->getName());
+        $this->assertSame('Developer', $employee->getPosition());
     }
 }

@@ -1,7 +1,8 @@
 <?php
 
 declare(strict_types=1);
-/**
+
+/*
  * This file is part of the TSantos Serializer package.
  *
  * (c) Tales Santos <tales.augusto.santos@gmail.com>
@@ -38,7 +39,7 @@ class GetterConfiguratorTest extends AbstractConfiguratorTest
         $classMetadata->addPropertyMetadata($property = new PropertyMetadata($classMetadata->name, 'id'));
         $property->getter = 'someGetter';
         $this->configurator->configure($classMetadata);
-        $this->assertEquals('someGetter', $property->getter);
+        $this->assertSame('someGetter', $property->getter);
     }
 
     /** @test */
@@ -51,7 +52,7 @@ class GetterConfiguratorTest extends AbstractConfiguratorTest
         $classMetadata = $this->createClassMetadata($subject);
         $classMetadata->addPropertyMetadata($property = new PropertyMetadata($classMetadata->name, 'id'));
         $this->configurator->configure($classMetadata);
-        $this->assertEquals('id', $property->getter);
+        $this->assertSame('id', $property->getter);
     }
 
     /** @test */
@@ -68,7 +69,7 @@ class GetterConfiguratorTest extends AbstractConfiguratorTest
         $classMetadata = $this->createClassMetadata($subject);
         $classMetadata->addPropertyMetadata($property = new PropertyMetadata($classMetadata->name, 'id'));
         $this->configurator->configure($classMetadata);
-        $this->assertEquals('getId', $property->getter);
+        $this->assertSame('getId', $property->getter);
     }
 
     /** @test */
@@ -85,7 +86,7 @@ class GetterConfiguratorTest extends AbstractConfiguratorTest
         $classMetadata = $this->createClassMetadata($subject);
         $classMetadata->addPropertyMetadata($property = new PropertyMetadata($classMetadata->name, 'published'));
         $this->configurator->configure($classMetadata);
-        $this->assertEquals('isPublished', $property->getter);
+        $this->assertSame('isPublished', $property->getter);
     }
 
     /** @test */
@@ -102,6 +103,6 @@ class GetterConfiguratorTest extends AbstractConfiguratorTest
         $classMetadata = $this->createClassMetadata($subject);
         $classMetadata->addPropertyMetadata($property = new PropertyMetadata($classMetadata->name, 'address'));
         $this->configurator->configure($classMetadata);
-        $this->assertEquals('hasAddress', $property->getter);
+        $this->assertSame('hasAddress', $property->getter);
     }
 }

@@ -1,7 +1,8 @@
 <?php
 
 declare(strict_types=1);
-/**
+
+/*
  * This file is part of the TSantos Serializer package.
  *
  * (c) Tales Santos <tales.augusto.santos@gmail.com>
@@ -43,6 +44,6 @@ class NormalizationTest extends SerializerTestCase
         /** @var Person $person */
         $person = $serializer->deserialize($json, Person::class);
 
-        $this->assertEquals('28/11/1984', $person->getBirthday()->format('d/m/Y'));
+        $this->assertSame('28/11/1984', $person->getBirthday()->format('d/m/Y'));
     }
 }

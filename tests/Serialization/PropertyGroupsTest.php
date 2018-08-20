@@ -1,7 +1,8 @@
 <?php
 
 declare(strict_types=1);
-/**
+
+/*
  * This file is part of the TSantos Serializer package.
  *
  * (c) Tales Santos <tales.augusto.santos@gmail.com>
@@ -38,6 +39,6 @@ class PropertyGroupsTest extends SerializerTestCase
 
         $expected = \json_encode(['id' => 1, 'married' => true]);
 
-        $this->assertEquals($expected, $serializer->serialize($person, SerializationContext::create()->setGroups(['web', 'Default'])));
+        $this->assertSame($expected, $serializer->serialize($person, SerializationContext::create()->setGroups(['web', 'Default'])));
     }
 }

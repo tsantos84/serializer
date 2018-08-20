@@ -1,7 +1,8 @@
 <?php
 
 declare(strict_types=1);
-/**
+
+/*
  * This file is part of the TSantos Serializer package.
  *
  * (c) Tales Santos <tales.augusto.santos@gmail.com>
@@ -46,7 +47,7 @@ class CollectionNormalizer implements NormalizerInterface, DenormalizerInterface
 
     public function denormalize($data, string $type, DeserializationContext $context)
     {
-        $type = \substr($type, 0, \strpos($type, '[]'));
+        $type = \mb_substr($type, 0, \mb_strpos($type, '[]'));
 
         $scalarTypes = [
             'integer' => true,
@@ -97,7 +98,7 @@ class CollectionNormalizer implements NormalizerInterface, DenormalizerInterface
 
     public function supportsDenormalization(string $type, $data, DeserializationContext $context): bool
     {
-        return \strpos($type, '[]') > 0;
+        return \mb_strpos($type, '[]') > 0;
     }
 
     public function canBeCachedByType(): bool

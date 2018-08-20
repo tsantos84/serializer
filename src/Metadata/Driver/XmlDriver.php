@@ -1,7 +1,8 @@
 <?php
 
 declare(strict_types=1);
-/**
+
+/*
  * This file is part of the TSantos Serializer package.
  *
  * (c) Tales Santos <tales.augusto.santos@gmail.com>
@@ -44,7 +45,7 @@ class XmlDriver extends AbstractFileDriver
         $elem = \reset($elems);
 
         if (null !== $baseClass = $elem->attributes()->{'base-class'}) {
-            $metadata->baseClass = $baseClass;
+            $metadata->baseClass = (string) $baseClass;
         }
 
         /* @var \SimpleXMLElement $property */
@@ -82,7 +83,7 @@ class XmlDriver extends AbstractFileDriver
             $property->readValueFilter = $attribs['read-value-filter'] ?? null;
             $property->writeValueFilter = $attribs['write-value-filter'] ?? null;
             $property->type = $attribs['type'] ?? null;
-            $property->readOnly = 'true' === \strtolower($attribs['read-only'] ?? '') ?? false;
+            $property->readOnly = 'true' === \mb_strtolower($attribs['read-only'] ?? '') ?? false;
 
             $metadata->addPropertyMetadata($property);
         }

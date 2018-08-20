@@ -1,7 +1,8 @@
 <?php
 
 declare(strict_types=1);
-/**
+
+/*
  * This file is part of the TSantos Serializer package.
  *
  * (c) Tales Santos <tales.augusto.santos@gmail.com>
@@ -54,10 +55,10 @@ EOF;
         /** @var Person $person */
         $person = $serializer->deserialize($content, Person::class);
 
-        $this->assertEquals('Tales Santos', $person->getName());
+        $this->assertSame('Tales Santos', $person->getName());
         $this->assertInstanceOf(Book::class, $person->getFavouriteBook());
-        $this->assertEquals(10, $person->getFavouriteBook()->getId());
-        $this->assertEquals('Design Patterns', $person->getFavouriteBook()->getName());
+        $this->assertSame(10, $person->getFavouriteBook()->getId());
+        $this->assertSame('Design Patterns', $person->getFavouriteBook()->getName());
     }
 
     /** @test */
@@ -72,7 +73,7 @@ EOF;
         /** @var Dummy $subject */
         $subject = $serializer->deserialize($content, Dummy::class);
 
-        $this->assertEquals('bar', $subject->getFoo());
+        $this->assertSame('bar', $subject->getFoo());
     }
 
     /** @test */
@@ -98,7 +99,7 @@ EOF;
         /** @var Person $person */
         $person = $serializer->deserialize($content, Person::class, $context);
 
-        $this->assertEquals('Tales Augusto Santos', $person->getName());
-        $this->assertEquals(10, $person->getId());
+        $this->assertSame('Tales Augusto Santos', $person->getName());
+        $this->assertSame(10, $person->getId());
     }
 }

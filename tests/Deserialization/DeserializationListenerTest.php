@@ -1,7 +1,8 @@
 <?php
 
 declare(strict_types=1);
-/**
+
+/*
  * This file is part of the TSantos Serializer package.
  *
  * (c) Tales Santos <tales.augusto.santos@gmail.com>
@@ -41,8 +42,8 @@ class DeserializationListenerTest extends SerializerTestCase
         /** @var Person $person */
         $person = $serializer->deserialize($content, Person::class);
 
-        $this->assertEquals('Tales', $person->getName());
-        $this->assertEquals('Santos', $person->getLastName());
+        $this->assertSame('Tales', $person->getName());
+        $this->assertSame('Santos', $person->getLastName());
         $this->assertTrue($person->isMarried());
     }
 

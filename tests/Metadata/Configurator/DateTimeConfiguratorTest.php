@@ -1,7 +1,8 @@
 <?php
 
 declare(strict_types=1);
-/**
+
+/*
  * This file is part of the TSantos Serializer package.
  *
  * (c) Tales Santos <tales.augusto.santos@gmail.com>
@@ -42,8 +43,8 @@ class DateTimeConfiguratorTest extends AbstractConfiguratorTest
         $configurator = new DateTimeConfigurator();
         $configurator->configure($classMetadata);
 
-        $this->assertEquals(\sprintf('$value->format(\'%s\')', \DateTime::ISO8601), $property->readValueFilter);
-        $this->assertEquals(\sprintf('\DateTime::createFromFormat(\'%s\', $value)', \DateTime::ISO8601), $property->writeValueFilter);
+        $this->assertSame(\sprintf('$value->format(\'%s\')', \DateTime::ISO8601), $property->readValueFilter);
+        $this->assertSame(\sprintf('\DateTime::createFromFormat(\'%s\', $value)', \DateTime::ISO8601), $property->writeValueFilter);
     }
 
     /** @test */
@@ -61,8 +62,8 @@ class DateTimeConfiguratorTest extends AbstractConfiguratorTest
 
         $this->configurator->configure($classMetadata);
 
-        $this->assertEquals('$value->format(\'d/m/Y\')', $property->readValueFilter);
-        $this->assertEquals('\DateTime::createFromFormat(\'d/m/Y\', $value)', $property->writeValueFilter);
+        $this->assertSame('$value->format(\'d/m/Y\')', $property->readValueFilter);
+        $this->assertSame('\DateTime::createFromFormat(\'d/m/Y\', $value)', $property->writeValueFilter);
     }
 
     /** @test */
@@ -81,8 +82,8 @@ class DateTimeConfiguratorTest extends AbstractConfiguratorTest
 
         $this->configurator->configure($classMetadata);
 
-        $this->assertEquals('some_read', $property->readValueFilter);
-        $this->assertEquals('some_write', $property->writeValueFilter);
+        $this->assertSame('some_read', $property->readValueFilter);
+        $this->assertSame('some_write', $property->writeValueFilter);
     }
 
     /** @test */
