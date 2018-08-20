@@ -34,8 +34,6 @@ use TSantos\Serializer\ObjectInstantiator\ObjectInstantiatorInterface;
  */
 class SerializerBuilder
 {
-    private $metadataDirs;
-
     /**
      * @var Container
      */
@@ -194,7 +192,7 @@ class SerializerBuilder
 
     public function addListener(string $eventName, callable $listener, int $priority = 0, string $type = null)
     {
-        $this->container->extend(EventDispatcherInterface::class, function (EventDispatcherInterface $dispatcher, $container) use ($eventName, $listener, $priority, $type) {
+        $this->container->extend(EventDispatcherInterface::class, function (EventDispatcherInterface $dispatcher) use ($eventName, $listener, $priority, $type) {
             $dispatcher->addListener($eventName, $listener, $priority, $type);
 
             return $dispatcher;
@@ -207,7 +205,7 @@ class SerializerBuilder
 
     public function addSubscriber(EventSubscriberInterface $subscriber)
     {
-        $this->container->extend(EventDispatcherInterface::class, function (EventDispatcherInterface $dispatcher, $container) use ($subscriber) {
+        $this->container->extend(EventDispatcherInterface::class, function (EventDispatcherInterface $dispatcher) use ($subscriber) {
             $dispatcher->addSubscriber($subscriber);
 
             return $dispatcher;

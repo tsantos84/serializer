@@ -59,7 +59,7 @@ class MetadataServiceProvider implements ServiceProviderInterface
             );
         };
 
-        $container->extend(MetadataFactoryInterface::class, function (MetadataFactoryInterface $factory, $container) {
+        $container->extend(MetadataFactoryInterface::class, function (MetadataFactory $factory, $container) {
             if (isset($container[CacheInterface::class])) {
                 $factory->setCache($container[CacheInterface::class]);
             }
@@ -101,7 +101,7 @@ class MetadataServiceProvider implements ServiceProviderInterface
             };
         }
 
-        $container[PropertyInfoExtractorInterface::class] = function ($container) {
+        $container[PropertyInfoExtractorInterface::class] = function () {
             return new PropertyInfoExtractor([], [
                 new ReflectionExtractor(),
                 new PhpDocExtractor(),
