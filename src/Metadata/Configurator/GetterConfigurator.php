@@ -26,6 +26,10 @@ class GetterConfigurator implements ConfiguratorInterface
 {
     public function configure(ClassMetadata $classMetadata): void
     {
+        if (null !== $classMetadata->discriminatorField) {
+            $this->doConfigure($classMetadata, $classMetadata->discriminatorField);
+        }
+
         foreach ($classMetadata->propertyMetadata as $propertyMetadata) {
             if (null !== $propertyMetadata->getter) {
                 continue;

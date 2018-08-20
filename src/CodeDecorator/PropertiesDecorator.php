@@ -18,6 +18,7 @@ use Nette\PhpGenerator\PhpFile;
 use Nette\PhpGenerator\PhpNamespace;
 use TSantos\Serializer\CodeDecoratorInterface;
 use TSantos\Serializer\Metadata\ClassMetadata;
+use TSantos\Serializer\Metadata\PropertyMetadata;
 
 /**
  * Class MainDecorator.
@@ -33,5 +34,13 @@ class PropertiesDecorator implements CodeDecoratorInterface
             ->setVisibility('private')
             ->setStatic(true)
             ->setValue([]);
+
+        if (null !== $classMetadata->discriminatorField && $classMetadata->isAbstract()) {
+            $class
+                ->addProperty('discriminatorMapping')
+                ->setVisibility('private')
+                ->setStatic(true)
+                ->setValue(\array_flip($classMetadata->discriminatorMapping));
+        }
     }
 }

@@ -15,6 +15,7 @@ namespace Tests\TSantos\Serializer;
 
 use PHPUnit\Framework\TestCase;
 use Tests\TSantos\Serializer\Fixture\Driver\TestDriver;
+use TSantos\Serializer\HydratorLoader;
 use TSantos\Serializer\Metadata\ClassMetadata;
 use TSantos\Serializer\Metadata\Driver\CallbackDriver;
 use TSantos\Serializer\Metadata\PropertyMetadata;
@@ -56,16 +57,30 @@ abstract class SerializerTestCase extends TestCase
             ->setMetadataDriver(new TestDriver($mapping))
             ->setHydratorDir($this->classCacheDir)
             ->enableBuiltInNormalizers()
+            ->setHydratorGenerationStrategy(HydratorLoader::AUTOGENERATE_ALWAYS)
             ->setDebug(true);
 
         return $builder->build();
     }
 
-    protected function createMapping(string $type, array $properties, array $virtualProperties = []): array
+    protected function createMapping(string $type, array $properties, array $virtualProperties = [], array $classOptions = []): array
     {
         return [
-            $type => new CallbackDriver(function (\ReflectionClass $class) use ($properties, $virtualProperties) {
+            $type => new CallbackDriver(function (\ReflectionClass $class) use ($properties, $virtualProperties, $classOptions) {
                 $metadata = new ClassMetadata($class->name);
+
+                if (isset($classOptions['discriminatorMap'])) {
+                    $metadata->setDiscriminatorMap(
+                        $classOptions['discriminatorMap']['field'],
+                        $classOptions['discriminatorMap']['mapping']
+                    );
+                    unset($classOptions['discriminatorMap']);
+                }
+
+                foreach ($classOptions as $name => $option) {
+                    $metadata->{$name} = $option;
+                }
+
                 foreach ($properties as $name => $options) {
                     $pm = new PropertyMetadata($class->name, $name);
 

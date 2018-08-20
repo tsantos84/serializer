@@ -14,6 +14,9 @@ declare(strict_types=1);
 namespace Tests\TSantos\Serializer\Serialization;
 
 use Tests\TSantos\Serializer\Fixture\Model\Dummy;
+use Tests\TSantos\Serializer\Fixture\Model\Inheritance\AbstractVehicle;
+use Tests\TSantos\Serializer\Fixture\Model\Inheritance\Airplane;
+use Tests\TSantos\Serializer\Fixture\Model\Inheritance\Car;
 use Tests\TSantos\Serializer\Fixture\Model\Person;
 use Tests\TSantos\Serializer\SerializerTestCase;
 use TSantos\Serializer\Metadata\Driver\ReflectionDriver;
@@ -81,6 +84,61 @@ class SerializerTest extends SerializerTestCase
         ]);
         $json = $serializer->serialize(new Dummy('bar'));
         $this->assertSame('{"foo":"bar","bar":null,"baz":null,"innerDummy":null}', $json);
+    }
+
+    /** @test */
+    public function it_can_deserialize_abstract_classes()
+    {
+        $serializer = $this->createSerializer(
+            $this->createMapping(
+                AbstractVehicle::class,
+                [
+                    'color' => []
+                ],
+                [],
+                [
+                    'discriminatorMap' => [
+                        'field' => 'type',
+                        'mapping' => [
+                            'car' => Car::class,
+                            'airplane' => Airplane::class
+                        ]
+                    ]
+                ]
+            )
+        );
+
+        $serialized = $serializer->serialize(new Car('blue', 2));
+        $this->assertSame('{"color":"blue","type":"car"}', $serialized);
+    }
+
+    /** @test */
+    public function it_can_deserialize_abstract_mixed_with_concrete_classes()
+    {
+        $serializer = $this->createSerializer(\array_merge(
+            $this->createMapping(
+                AbstractVehicle::class,
+                [
+                    'color' => []
+                ],
+                [],
+                [
+                    'discriminatorMap' => [
+                        'field' => 'type',
+                        'mapping' => [
+                            'car' => Car::class,
+                            'airplane' => Airplane::class
+                        ]
+                    ]
+                ]
+            ),
+            $this->createMapping(Car::class, [
+                'doors' => ['type' => 'integer']
+            ])
+        ));
+
+        $serialized = $serializer->serialize(new Car("red", 2));
+        $this->assertSame('{"color":"red","doors":2,"type":"car"}', $serialized);
     }
 
     private function createPerson()

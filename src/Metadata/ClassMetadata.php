@@ -24,6 +24,13 @@ class ClassMetadata extends MergeableClassMetadata
 {
     public $baseClass;
 
+    /**
+     * @var PropertyMetadata
+     */
+    public $discriminatorField;
+
+    public $discriminatorMapping;
+
     public function serialize()
     {
         return \serialize([
@@ -64,5 +71,16 @@ class ClassMetadata extends MergeableClassMetadata
         return \array_filter($this->propertyMetadata, function (PropertyMetadata $propertyMetadata) {
             return !$propertyMetadata->readOnly;
         });
+    }
+
+    public function setDiscriminatorMap(string $field, array $mapping)
+    {
+        $this->discriminatorField = new PropertyMetadata($this->name, $field);
+        $this->discriminatorMapping = $mapping;
+    }
+
+    public function isAbstract(): bool
+    {
+        return $this->reflection->isAbstract() || $this->reflection->isInterface();
     }
 }
