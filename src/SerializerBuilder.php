@@ -42,9 +42,13 @@ class SerializerBuilder
     /**
      * Builder constructor.
      */
-    public function __construct()
+    public function __construct(Container $container = null)
     {
-        $this->container = require __DIR__.'/DependencyInjection/Pimple/Container.php';
+        if (null === $container) {
+            $container = require __DIR__.'/DependencyInjection/Pimple/Container.php';
+        }
+
+        $this->container = $container;
     }
 
     /**
@@ -132,7 +136,7 @@ class SerializerBuilder
     public function addEncoder(EncoderInterface $encoder): self
     {
         $this->container->extend(EncoderRegistryInterface::class, function (EncoderRegistryInterface $encoders) use ($encoder) {
-            $encoders->add($encoder);
+            return $encoders->add($encoder);
         });
 
         return $this;
