@@ -19,6 +19,7 @@ use Pimple\ServiceProviderInterface;
 use TSantos\Serializer\CodeDecorator\ExposedKeysDecorator;
 use TSantos\Serializer\CodeDecorator\ExtractionDecorator;
 use TSantos\Serializer\CodeDecorator\HydrationDecorator;
+use TSantos\Serializer\CodeDecorator\NewInstanceMethodDecorator;
 use TSantos\Serializer\CodeDecorator\PropertiesDecorator;
 use TSantos\Serializer\CodeDecorator\ReflectionPropertyMethodDecorator;
 use TSantos\Serializer\HydratorCodeGenerator;
@@ -42,6 +43,7 @@ class HydratorServiceProvider implements ServiceProviderInterface
                 new ExposedKeysDecorator(),
                 new ExtractionDecorator(),
                 new HydrationDecorator(),
+                new NewInstanceMethodDecorator(),
                 new PropertiesDecorator(),
                 new ReflectionPropertyMethodDecorator(),
             ]);
