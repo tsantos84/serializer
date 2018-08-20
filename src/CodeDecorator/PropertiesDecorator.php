@@ -18,7 +18,6 @@ use Nette\PhpGenerator\PhpFile;
 use Nette\PhpGenerator\PhpNamespace;
 use TSantos\Serializer\CodeDecoratorInterface;
 use TSantos\Serializer\Metadata\ClassMetadata;
-use TSantos\Serializer\Metadata\PropertyMetadata;
 
 /**
  * Class MainDecorator.

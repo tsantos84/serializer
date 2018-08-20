@@ -1,5 +1,8 @@
 <?php
-/**
+
+declare(strict_types=1);
+
+/*
  * This file is part of the TSantos Serializer package.
  *
  * (c) Tales Santos <tales.augusto.santos@gmail.com>
@@ -11,7 +14,7 @@
 namespace Tests\TSantos\Serializer\Fixture\Model\Inheritance;
 
 /**
- * Class AbstractVehicle
+ * Class AbstractVehicle.
  *
  * @author Tales Santos <tales.augusto.santos@gmail.com>
  */
@@ -20,15 +23,11 @@ abstract class AbstractVehicle
     /**
      * @var string
      */
-    private $type;
-
-    /**
-     * @var string
-     */
     private $color;
 
     /**
      * AbstractVehicle constructor.
+     *
      * @param string $color
      */
     public function __construct(string $color)
@@ -50,13 +49,5 @@ abstract class AbstractVehicle
     public function setColor(string $color): void
     {
         $this->color = $color;
-    }
-
-    /**
-     * @return string
-     */
-    public function getType(): string
-    {
-        return $this->type;
     }
 }

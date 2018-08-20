@@ -14,7 +14,7 @@ declare(strict_types=1);
 namespace Tests\TSantos\Serializer\Fixture\Model;
 
 /**
- * Class Vehicle
+ * Class Vehicle.
  *
  * @author Tales Santos <tales.augusto.santos@gmail.com>
  */

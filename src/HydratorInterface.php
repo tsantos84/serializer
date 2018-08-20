@@ -34,8 +34,9 @@ interface HydratorInterface
     /**
      * Create a new instance of the type.
      *
-     * @param array $data
+     * @param array                  $data
      * @param DeserializationContext $context
+     *
      * @return mixed
      */
     public function newInstance(array $data, DeserializationContext $context);

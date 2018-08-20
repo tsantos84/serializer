@@ -75,7 +75,7 @@ class ClassMetadata extends MergeableClassMetadata
 
     public function setDiscriminatorMap(string $field, array $mapping)
     {
-        $this->discriminatorField = new PropertyMetadata($this->name, $field);
+        $this->discriminatorField = $field;
         $this->discriminatorMapping = $mapping;
     }
 

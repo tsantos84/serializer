@@ -93,7 +93,7 @@ class SerializerTest extends SerializerTestCase
             $this->createMapping(
                 AbstractVehicle::class,
                 [
-                    'color' => []
+                    'color' => [],
                 ],
                 [],
                 [
@@ -101,9 +101,9 @@ class SerializerTest extends SerializerTestCase
                         'field' => 'type',
                         'mapping' => [
                             'car' => Car::class,
-                            'airplane' => Airplane::class
-                        ]
-                    ]
+                            'airplane' => Airplane::class,
+                        ],
+                    ],
                 ]
             )
         );
@@ -119,7 +119,7 @@ class SerializerTest extends SerializerTestCase
             $this->createMapping(
                 AbstractVehicle::class,
                 [
-                    'color' => []
+                    'color' => [],
                 ],
                 [],
                 [
@@ -127,17 +127,17 @@ class SerializerTest extends SerializerTestCase
                         'field' => 'type',
                         'mapping' => [
                             'car' => Car::class,
-                            'airplane' => Airplane::class
-                        ]
-                    ]
+                            'airplane' => Airplane::class,
+                        ],
+                    ],
                 ]
             ),
             $this->createMapping(Car::class, [
-                'doors' => ['type' => 'integer']
+                'doors' => ['type' => 'integer'],
             ])
         ));
 
-        $serialized = $serializer->serialize(new Car("red", 2));
+        $serialized = $serializer->serialize(new Car('red', 2));
         $this->assertSame('{"color":"red","doors":2,"type":"car"}', $serialized);
     }
 

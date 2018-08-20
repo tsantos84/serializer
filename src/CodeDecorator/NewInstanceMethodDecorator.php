@@ -1,5 +1,8 @@
 <?php
-/**
+
+declare(strict_types=1);
+
+/*
  * This file is part of the TSantos Serializer package.
  *
  * (c) Tales Santos <tales.augusto.santos@gmail.com>
@@ -17,9 +20,8 @@ use TSantos\Serializer\CodeDecoratorInterface;
 use TSantos\Serializer\DeserializationContext;
 use TSantos\Serializer\Metadata\ClassMetadata;
 
-
 /**
- * Class CreateInstanceMethodDecorator
+ * Class CreateInstanceMethodDecorator.
  *
  * @author Tales Santos <tales.augusto.santos@gmail.com>
  */
