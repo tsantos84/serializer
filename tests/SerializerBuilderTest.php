@@ -1,4 +1,6 @@
 <?php
+
+declare(strict_types=1);
 /**
  * This file is part of the TSantos Serializer package.
  *
@@ -33,7 +35,7 @@ use TSantos\Serializer\SerializerBuilder;
 use TSantos\Serializer\SerializerInterface;
 
 /**
- * Class SerializerBuilderTest
+ * Class SerializerBuilderTest.
  *
  * @author Tales Santos <tales.augusto.santos@gmail.com>
  */
@@ -93,7 +95,7 @@ class SerializerBuilderTest extends TestCase
             return [];
         };
 
-        $this->builder->addNormalizer( $normalizer = new JsonNormalizer());
+        $this->builder->addNormalizer($normalizer = new JsonNormalizer());
         $this->assertCount(1, $this->container['normalizers']);
         $this->assertSame($normalizer, $this->container['normalizers'][0]);
     }
@@ -184,7 +186,7 @@ class SerializerBuilderTest extends TestCase
             return new DummyEventDispatcher();
         };
 
-        $subscriber = new class implements EventSubscriberInterface {
+        $subscriber = new class() implements EventSubscriberInterface {
             public static function getListeners(): array
             {
                 return [];

@@ -1,4 +1,6 @@
 <?php
+
+declare(strict_types=1);
 /**
  * This file is part of the TSantos Serializer package.
  *
@@ -15,7 +17,7 @@ use TSantos\Serializer\EventDispatcher\EventDispatcherInterface;
 use TSantos\Serializer\EventDispatcher\EventSubscriberInterface;
 
 /**
- * Class DummyEventDispatcher
+ * Class DummyEventDispatcher.
  *
  * @author Tales Santos <tales.augusto.santos@gmail.com>
  */
@@ -35,7 +37,7 @@ class DummyEventDispatcher implements EventDispatcherInterface
             'eventName' => $eventName,
             'listener' => $listener,
             'priority' => $priority,
-            'type' => $type
+            'type' => $type,
         ];
     }
 
