@@ -1,8 +1,9 @@
 Custom Metadata Configurator
 ============================
 
-A useful way to control how to expose your data is through metadata configurators. They can change, for example, round
-all numeric properties before encoding the data. To do so, you need to create a custom `TSantos\\Serializer\\Metadata\\ConfiguratorInterface`::
+A useful way to control how the hydrators should be generated is through metadata configurators.
+They can change, for example, how to read/write data from/to your objects. Suppose you want to round the order
+amount before encoding the data. To do so, you need to create a custom `TSantos\\Serializer\\Metadata\\ConfiguratorInterface`::
 
     namespace App\Serializer\Metadata\Configurator;
 
@@ -34,7 +35,7 @@ all numeric properties before encoding the data. To do so, you need to create a 
                 $precision = (int) $property->options['round'];
                 $mode = $property->options['mode'] ?? PHP_ROUND_HALF_UP;
 
-                $property->readValueFilter = sprintf('round($value, %d, %d)', $precision, $mode);
+                $property->readValueFilter = \sprintf('\round($value, %d, %d)', $precision, $mode);
             }
         }
     }
@@ -76,4 +77,5 @@ When you deserialize the `Order` class, the amount will be rounded::
     }
 
 .. note::
-    This configuration will change the behavior of all classes.
+    This is useful when you want to make single changes in the value. For more complex filters, use `EventListeners` to
+    hook into serialize operations and change the array resulted from serialization.
