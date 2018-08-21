@@ -48,10 +48,8 @@ class HydratorFactory implements HydratorFactoryInterface
 
     public function newInstance(ClassMetadata $classMetadata): HydratorInterface
     {
-        $fqn = $this->configuration->getFqnClassName($classMetadata);
-
         /** @var HydratorInterface $hydrator */
-        $hydrator = new $fqn($this->container->get(ObjectInstantiatorInterface::class));
+        $hydrator = $this->instantiate($classMetadata);
 
         if ($hydrator instanceof SerializerAwareInterface) {
             $hydrator->setSerializer($this->container->get(SerializerInterface::class));
@@ -61,6 +59,45 @@ class HydratorFactory implements HydratorFactoryInterface
             $hydrator->setLoader($this->container->get(HydratorLoaderInterface::class));
         }
 
+        if ($hydrator instanceof ObjectInstantiatorAwareInterface) {
+            $hydrator->setInstantiator($this->container->get(ObjectInstantiatorInterface::class));
+        }
+
         return $hydrator;
+    }
+
+    private function instantiate(ClassMetadata $classMetadata): HydratorInterface
+    {
+        $reflection = new \ReflectionClass($this->configuration->getFqnClassName($classMetadata));
+
+        if (empty($classMetadata->hydratorConstructArgs)) {
+            return $reflection->newInstanceWithoutConstructor();
+        }
+
+        $args = $this->resolveArgs($reflection, $classMetadata);
+
+        return $reflection->newInstanceArgs($args);
+    }
+
+    private function resolveArgs(\ReflectionClass $hydratorClass, ClassMetadata $classMetadata): array
+    {
+        $constructor = $hydratorClass->getConstructor();
+        $configuredArgs = $classMetadata->hydratorConstructArgs;
+
+        $args = [];
+
+        foreach ($constructor->getParameters() as $param) {
+            $arg = $configuredArgs[$param->getName()];
+
+            $argValue = $arg['value'];
+
+            if (\is_string($argValue) && 0 === \mb_strpos($argValue, '@')) {
+                $argValue = $this->container->get(\mb_substr($argValue, 1));
+            }
+
+            $args[] = $argValue;
+        }
+
+        return $args;
     }
 }

@@ -28,6 +28,8 @@ class ClassMetadata extends MergeableClassMetadata
 
     public $discriminatorMapping;
 
+    public $hydratorConstructArgs = [];
+
     public function serialize()
     {
         return \serialize([

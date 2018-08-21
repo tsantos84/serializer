@@ -18,7 +18,6 @@ use Nette\PhpGenerator\PhpFile;
 use Nette\PhpGenerator\PhpNamespace;
 use TSantos\Serializer\CodeDecoratorInterface;
 use TSantos\Serializer\Metadata\ClassMetadata;
-use TSantos\Serializer\ObjectInstantiator\ObjectInstantiatorInterface;
 
 /**
  * Class ConstructorMethodDecorator.
@@ -29,19 +28,27 @@ class ConstructorMethodDecorator implements CodeDecoratorInterface
 {
     public function decorate(PhpFile $file, PhpNamespace $namespace, ClassType $class, ClassMetadata $classMetadata): void
     {
-        $constructor = $class
-            ->addMethod('__construct')
-            ->addComment('@param '.ObjectInstantiatorInterface::class.' $instantiator')
-        ;
+        if (empty($classMetadata->hydratorConstructArgs)) {
+            return;
+        }
 
-        $constructor
-            ->addParameter('instantiator')
-            ->setTypeHint(ObjectInstantiatorInterface::class);
+        $constructor = $class->addMethod('__construct');
 
-        $constructor
-            ->setBody(<<<STRING
-\$this->instantiator = \$instantiator;
-STRING
-);
+        foreach ($classMetadata->hydratorConstructArgs as $argName => $arg) {
+            $param = $constructor->addParameter($argName);
+
+            if (isset($arg['type'])) {
+                $param->setTypeHint($arg['type']);
+            }
+
+            $constructor
+                ->addComment(\sprintf('@param %s $%s', $arg['type'] ?? '', $argName))
+                ->addBody(\sprintf('$this->%s = $%s;', $argName, $argName));
+
+            $class
+                ->addProperty($argName)
+                ->setVisibility('private')
+                ->setComment('@var '.$arg['type'] ?? '');
+        }
     }
 }

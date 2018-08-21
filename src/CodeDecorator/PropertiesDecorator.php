@@ -18,7 +18,6 @@ use Nette\PhpGenerator\PhpFile;
 use Nette\PhpGenerator\PhpNamespace;
 use TSantos\Serializer\CodeDecoratorInterface;
 use TSantos\Serializer\Metadata\ClassMetadata;
-use TSantos\Serializer\ObjectInstantiator\ObjectInstantiatorInterface;
 
 /**
  * Class MainDecorator.
@@ -34,10 +33,5 @@ class PropertiesDecorator implements CodeDecoratorInterface
             ->setVisibility('private')
             ->setStatic(true)
             ->setValue([]);
-
-        $class
-            ->addProperty('instantiator')
-            ->setVisibility('private')
-            ->setComment('@var '.ObjectInstantiatorInterface::class);
     }
 }
