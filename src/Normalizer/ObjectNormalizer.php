@@ -42,8 +42,8 @@ class ObjectNormalizer implements NormalizerInterface, DenormalizerInterface, Se
     /**
      * ObjectNormalizer constructor.
      *
-     * @param HydratorLoaderInterface     $classLoader
-     * @param callable|null               $circularReferenceHandler
+     * @param HydratorLoaderInterface $classLoader
+     * @param callable|null           $circularReferenceHandler
      */
     public function __construct(HydratorLoaderInterface $classLoader, callable $circularReferenceHandler = null)
     {

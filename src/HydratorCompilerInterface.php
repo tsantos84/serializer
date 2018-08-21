@@ -1,5 +1,8 @@
 <?php
-/**
+
+declare(strict_types=1);
+
+/*
  * This file is part of the TSantos Serializer package.
  *
  * (c) Tales Santos <tales.augusto.santos@gmail.com>
@@ -13,14 +16,14 @@ namespace TSantos\Serializer;
 use TSantos\Serializer\Metadata\ClassMetadata;
 
 /**
- * Class HydratorCompiler
+ * Class HydratorCompiler.
  *
  * @author Tales Santos <tales.augusto.santos@gmail.com>
  */
 interface HydratorCompilerInterface
 {
     /**
-     * Generate hydrators code and save the class in the specified directory
+     * Generate hydrators code and save the class in the specified directory.
      *
      * @param ClassMetadata $classMetadata
      */

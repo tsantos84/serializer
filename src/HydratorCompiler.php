@@ -16,7 +16,7 @@ namespace TSantos\Serializer;
 use TSantos\Serializer\Metadata\ClassMetadata;
 
 /**
- * Class HydratorCompiler
+ * Class HydratorCompiler.
  *
  * @author Tales Santos <tales.augusto.santos@gmail.com>
  */

@@ -51,10 +51,10 @@ class HydratorLoader implements HydratorLoaderInterface
     /**
      * HydratorLoader constructor.
      *
-     * @param Configuration $configuration
-     * @param MetadataFactoryInterface $metadataFactory
+     * @param Configuration             $configuration
+     * @param MetadataFactoryInterface  $metadataFactory
      * @param HydratorCompilerInterface $compiler
-     * @param HydratorFactoryInterface $factory
+     * @param HydratorFactoryInterface  $factory
      */
     public function __construct(
         Configuration $configuration,
