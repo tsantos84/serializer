@@ -17,27 +17,45 @@ use Nette\PhpGenerator\ClassType;
 use Nette\PhpGenerator\PhpFile;
 use Nette\PhpGenerator\PhpNamespace;
 use TSantos\Serializer\CodeDecoratorInterface;
+use TSantos\Serializer\HydratorLoader;
+use TSantos\Serializer\HydratorLoaderAwareInterface;
 use TSantos\Serializer\Metadata\ClassMetadata;
-use TSantos\Serializer\ObjectInstantiator\ObjectInstantiatorInterface;
 
 /**
- * Class MainDecorator.
+ * Class AbstractHydratorDecorator.
  *
  * @author Tales Santos <tales.augusto.santos@gmail.com>
  */
-class PropertiesDecorator implements CodeDecoratorInterface
+class AbstractHydratorDecorator implements CodeDecoratorInterface
 {
     public function decorate(PhpFile $file, PhpNamespace $namespace, ClassType $class, ClassMetadata $classMetadata): void
     {
-        $class
-            ->addProperty('exposedPropertiesForContext')
-            ->setVisibility('private')
-            ->setStatic(true)
-            ->setValue([]);
+        if (!$classMetadata->isAbstract()) {
+            return;
+        }
 
         $class
-            ->addProperty('instantiator')
+            ->addProperty('discriminatorMapping')
             ->setVisibility('private')
-            ->setComment('@var '.ObjectInstantiatorInterface::class);
+            ->setStatic(true)
+            ->setValue(\array_flip($classMetadata->discriminatorMapping));
+
+        $class
+            ->addProperty('loader')
+            ->setVisibility('private')
+            ->setComment('@var '.HydratorLoader::class);
+
+        $class
+            ->addImplement(HydratorLoaderAwareInterface::class);
+
+        $setter = $class
+            ->addMethod('setLoader')
+            ->setReturnType('void');
+
+        $setter
+            ->addParameter('loader')
+            ->setTypeHint(HydratorLoader::class);
+
+        $setter->setBody('$this->loader = $loader;');
     }
 }

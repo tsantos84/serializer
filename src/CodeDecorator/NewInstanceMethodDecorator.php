@@ -44,9 +44,31 @@ class NewInstanceMethodDecorator implements CodeDecoratorInterface
             ->addParameter('context')
             ->setTypeHint(DeserializationContext::class);
 
-        $method->setBody(<<<STRING
-return new {$classMetadata->name}();
+        if (!$classMetadata->isAbstract()) {
+            $method->setBody(<<<STRING
+return \$this->instantiator->create('{$classMetadata->name}', \$data, \$context);
 STRING
-);
+            );
+
+            return;
+        }
+
+        $method->setBody($this->createMethodForAbstractClass($classMetadata));
+    }
+
+    private function createMethodForAbstractClass(ClassMetadata $classMetadata): string
+    {
+        $code = <<<STRING
+if (!isset(\$data['{$classMetadata->discriminatorField}'])) {
+    throw new \InvalidArgumentException('The \$data provided should have the field "{$classMetadata->discriminatorField}"');
+}
+
+\$type = array_search(\$data['{$classMetadata->discriminatorField}'], self::\$discriminatorMapping);
+\$hydrator = \$this->loader->load(\$type, \$this->serializer);
+
+return \$hydrator->newInstance(\$data, \$context);
+STRING;
+
+        return $code;
     }
 }

@@ -16,6 +16,8 @@ namespace TSantos\Serializer\DependencyInjection\Pimple;
 use Metadata\MetadataFactoryInterface;
 use Pimple\Container;
 use Pimple\ServiceProviderInterface;
+use TSantos\Serializer\CodeDecorator\AbstractHydratorDecorator;
+use TSantos\Serializer\CodeDecorator\ConstructorMethodDecorator;
 use TSantos\Serializer\CodeDecorator\ExposedKeysDecorator;
 use TSantos\Serializer\CodeDecorator\ExtractionDecorator;
 use TSantos\Serializer\CodeDecorator\HydrationDecorator;
@@ -25,6 +27,7 @@ use TSantos\Serializer\CodeDecorator\ReflectionPropertyMethodDecorator;
 use TSantos\Serializer\HydratorCodeGenerator;
 use TSantos\Serializer\HydratorCodeWriter;
 use TSantos\Serializer\HydratorLoader;
+use TSantos\Serializer\ObjectInstantiator\ObjectInstantiatorInterface;
 
 /**
  * Class HydratorServiceProvider.
@@ -41,6 +44,8 @@ class HydratorServiceProvider implements ServiceProviderInterface
         $container[HydratorCodeGenerator::class] = function () {
             return new HydratorCodeGenerator([
                 new ExposedKeysDecorator(),
+                new ConstructorMethodDecorator(),
+                new AbstractHydratorDecorator(),
                 new ExtractionDecorator(),
                 new HydrationDecorator(),
                 new NewInstanceMethodDecorator(),
@@ -64,7 +69,8 @@ class HydratorServiceProvider implements ServiceProviderInterface
                 $container[MetadataFactoryInterface::class],
                 $container[HydratorCodeGenerator::class],
                 $container[HydratorCodeWriter::class],
-                $container['generation_strategy']
+                $container['generation_strategy'],
+                $container[ObjectInstantiatorInterface::class]
             );
         };
     }

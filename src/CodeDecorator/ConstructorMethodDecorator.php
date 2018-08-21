@@ -21,23 +21,27 @@ use TSantos\Serializer\Metadata\ClassMetadata;
 use TSantos\Serializer\ObjectInstantiator\ObjectInstantiatorInterface;
 
 /**
- * Class MainDecorator.
+ * Class ConstructorMethodDecorator.
  *
  * @author Tales Santos <tales.augusto.santos@gmail.com>
  */
-class PropertiesDecorator implements CodeDecoratorInterface
+class ConstructorMethodDecorator implements CodeDecoratorInterface
 {
     public function decorate(PhpFile $file, PhpNamespace $namespace, ClassType $class, ClassMetadata $classMetadata): void
     {
-        $class
-            ->addProperty('exposedPropertiesForContext')
-            ->setVisibility('private')
-            ->setStatic(true)
-            ->setValue([]);
+        $constructor = $class
+            ->addMethod('__construct')
+            ->addComment('@param '.ObjectInstantiatorInterface::class.' $instantiator')
+        ;
 
-        $class
-            ->addProperty('instantiator')
-            ->setVisibility('private')
-            ->setComment('@var '.ObjectInstantiatorInterface::class);
+        $constructor
+            ->addParameter('instantiator')
+            ->setTypeHint(ObjectInstantiatorInterface::class);
+
+        $constructor
+            ->setBody(<<<STRING
+\$this->instantiator = \$instantiator;
+STRING
+);
     }
 }

@@ -87,7 +87,7 @@ class SerializerTest extends SerializerTestCase
     }
 
     /** @test */
-    public function it_can_deserialize_abstract_classes()
+    public function it_can_serialize_abstract_classes()
     {
         $serializer = $this->createSerializer(
             $this->createMapping(
@@ -113,7 +113,7 @@ class SerializerTest extends SerializerTestCase
     }
 
     /** @test */
-    public function it_can_deserialize_abstract_mixed_with_concrete_classes()
+    public function it_can_serialize_abstract_mixed_with_concrete_classes()
     {
         $serializer = $this->createSerializer(\array_merge(
             $this->createMapping(

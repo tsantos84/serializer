@@ -24,9 +24,6 @@ class ClassMetadata extends MergeableClassMetadata
 {
     public $baseClass;
 
-    /**
-     * @var PropertyMetadata
-     */
     public $discriminatorField;
 
     public $discriminatorMapping;

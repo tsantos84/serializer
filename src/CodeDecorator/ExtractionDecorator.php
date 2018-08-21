@@ -46,7 +46,8 @@ class ExtractionDecorator implements CodeDecoratorInterface
             ->addParameter('context')
             ->setTypeHint(SerializationContext::class);
 
-        $extract->setBody($this->createExtractMethodBody($classMetadata));
+        $extract
+            ->setBody($this->createExtractMethodBody($classMetadata));
     }
 
     private function createExtractMethodBody(ClassMetadata $classMetadata): string

@@ -54,11 +54,25 @@ class HydrationDecorator implements CodeDecoratorInterface
 
     private function createHydrateMethodBody(ClassMetadata $classMetadata): string
     {
-        if (!$classMetadata->hasProperties()) {
-            return 'return $object;';
+        $body = '';
+
+        if ($classMetadata->isAbstract()) {
+            $body .= <<<STRING
+// hydrate with concrete hydrator
+\$type = \array_search(\$data['type'], self::\$discriminatorMapping);
+\$this->loader->load(\$type, \$this->serializer)->hydrate(\$object, \$data, \$context);
+
+
+STRING;
         }
 
-        $body = <<<STRING
+        if (!$classMetadata->hasProperties()) {
+            $body .= 'return $object;';
+
+            return $body;
+        }
+
+        $body .= <<<STRING
 if (null !== \$context->getGroups()) {
 
     \$contextId = \$context->getId();
