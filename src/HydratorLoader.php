@@ -15,19 +15,14 @@ namespace TSantos\Serializer;
 
 use Metadata\MetadataFactoryInterface;
 use TSantos\Serializer\Metadata\ClassMetadata;
-use TSantos\Serializer\ObjectInstantiator\ObjectInstantiatorInterface;
 
 /**
  * Class HydratorLoader.
  *
  * @author Tales Santos <tales.augusto.santos@gmail.com>
  */
-class HydratorLoader
+class HydratorLoader implements HydratorLoaderInterface
 {
-    const AUTOGENERATE_NEVER = Compiler::AUTOGENERATE_NEVER;
-    const AUTOGENERATE_ALWAYS = Compiler::AUTOGENERATE_ALWAYS;
-    const AUTOGENERATE_FILE_NOT_EXISTS = Compiler::AUTOGENERATE_FILE_NOT_EXISTS;
-
     /**
      * @var Configuration
      */
@@ -44,41 +39,41 @@ class HydratorLoader
     private $metadataFactory;
 
     /**
-     * @var ObjectInstantiatorInterface
-     */
-    private $instantiator;
-
-    /**
-     * @var Compiler
+     * @var HydratorCompilerInterface
      */
     private $compiler;
 
     /**
+     * @var HydratorFactoryInterface
+     */
+    private $factory;
+
+    /**
      * HydratorLoader constructor.
+     *
      * @param Configuration $configuration
      * @param MetadataFactoryInterface $metadataFactory
-     * @param Compiler $compiler
-     * @param ObjectInstantiatorInterface $instantiator
+     * @param HydratorCompilerInterface $compiler
+     * @param HydratorFactoryInterface $factory
      */
     public function __construct(
         Configuration $configuration,
         MetadataFactoryInterface $metadataFactory,
-        Compiler $compiler,
-        ObjectInstantiatorInterface $instantiator
+        HydratorCompilerInterface $compiler,
+        HydratorFactoryInterface $factory
     ) {
         $this->configuration = $configuration;
         $this->metadataFactory = $metadataFactory;
         $this->compiler = $compiler;
-        $this->instantiator = $instantiator;
+        $this->factory = $factory;
     }
 
     /**
-     * @param string              $class
-     * @param SerializerInterface $serializer
+     * @param string $class
      *
      * @return HydratorInterface
      */
-    public function load(string $class, SerializerInterface $serializer): HydratorInterface
+    public function load(string $class): HydratorInterface
     {
         if (isset($this->hydrators[$class])) {
             return $this->hydrators[$class];
@@ -97,24 +92,11 @@ class HydratorLoader
         $fqn = $this->configuration->getFQNClassName($classMetadata);
 
         if (\class_exists($fqn, false)) {
-            return $this->hydrators[$class] = $this->inject(new $fqn($this->instantiator), $serializer);
+            return $this->hydrators[$class] = $this->factory->newInstance($classMetadata);
         }
 
         $this->compiler->compile($classMetadata);
 
-        return $this->hydrators[$class] = $this->inject(new $fqn($this->instantiator), $serializer);
-    }
-
-    private function inject(HydratorInterface $hydrator, SerializerInterface $serializer): HydratorInterface
-    {
-        if ($hydrator instanceof SerializerAwareInterface) {
-            $hydrator->setSerializer($serializer);
-        }
-
-        if ($hydrator instanceof HydratorLoaderAwareInterface) {
-            $hydrator->setLoader($this);
-        }
-
-        return $hydrator;
+        return $this->hydrators[$class] = $this->factory->newInstance($classMetadata);
     }
 }

@@ -12,11 +12,16 @@ declare(strict_types=1);
  */
 
 use Pimple\Container;
+use Psr\Container\ContainerInterface;
 use TSantos\Serializer\DependencyInjection\Pimple\HydratorServiceProvider;
 use TSantos\Serializer\DependencyInjection\Pimple\MetadataServiceProvider;
 use TSantos\Serializer\DependencyInjection\Pimple\SerializerServiceProvider;
 
 $container = new Container();
+
+$container[ContainerInterface::class] = function ($container) {
+    return new \Pimple\Psr11\Container($container);
+};
 
 $container['directory_creator'] = $container->protect(function (string $dir) {
     if (\is_dir($dir)) {

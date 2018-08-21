@@ -22,7 +22,7 @@ use TSantos\Serializer\EncoderRegistryInterface;
 use TSantos\Serializer\EventDispatcher\EventDispatcher;
 use TSantos\Serializer\EventDispatcher\EventDispatcherInterface;
 use TSantos\Serializer\EventEmitterSerializer;
-use TSantos\Serializer\HydratorLoader;
+use TSantos\Serializer\HydratorLoaderInterface;
 use TSantos\Serializer\Normalizer\ObjectNormalizer;
 use TSantos\Serializer\NormalizerRegistry;
 use TSantos\Serializer\NormalizerRegistryInterface;
@@ -85,8 +85,7 @@ class SerializerServiceProvider implements ServiceProviderInterface
 
         $container['normalizers'] = function ($container) {
             $objectNormalizer = new ObjectNormalizer(
-                $container[HydratorLoader::class],
-                $container[ObjectInstantiatorInterface::class],
+                $container[HydratorLoaderInterface::class],
                 $container['circular_reference_handler']
             );
 

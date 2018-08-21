@@ -14,14 +14,19 @@ declare(strict_types=1);
 namespace TSantos\Serializer;
 
 /**
- * Interface HydratorLoaderAwareInterface.
+ * Class HydratorLoader.
+ *
+ * Load a hydrator for a class. It should not create new hydrator instances
+ * for one class.
  *
  * @author Tales Santos <tales.augusto.santos@gmail.com>
  */
-interface HydratorLoaderAwareInterface
+interface HydratorLoaderInterface
 {
     /**
-     * @param HydratorLoaderInterface $loader
+     * @param string $class
+     *
+     * @return HydratorInterface
      */
-    public function setLoader(HydratorLoaderInterface $loader): void;
+    public function load(string $class): HydratorInterface;
 }

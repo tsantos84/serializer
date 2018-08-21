@@ -17,8 +17,8 @@ use Nette\PhpGenerator\ClassType;
 use Nette\PhpGenerator\PhpFile;
 use Nette\PhpGenerator\PhpNamespace;
 use TSantos\Serializer\CodeDecoratorInterface;
-use TSantos\Serializer\HydratorLoader;
 use TSantos\Serializer\HydratorLoaderAwareInterface;
+use TSantos\Serializer\HydratorLoaderInterface;
 use TSantos\Serializer\Metadata\ClassMetadata;
 
 /**
@@ -43,7 +43,7 @@ class AbstractHydratorDecorator implements CodeDecoratorInterface
         $class
             ->addProperty('loader')
             ->setVisibility('private')
-            ->setComment('@var '.HydratorLoader::class);
+            ->setComment('@var '.HydratorLoaderInterface::class);
 
         $class
             ->addImplement(HydratorLoaderAwareInterface::class);
@@ -54,7 +54,7 @@ class AbstractHydratorDecorator implements CodeDecoratorInterface
 
         $setter
             ->addParameter('loader')
-            ->setTypeHint(HydratorLoader::class);
+            ->setTypeHint(HydratorLoaderInterface::class);
 
         $setter->setBody('$this->loader = $loader;');
     }

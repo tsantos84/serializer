@@ -1,5 +1,8 @@
 <?php
-/**
+
+declare(strict_types=1);
+
+/*
  * This file is part of the TSantos Serializer package.
  *
  * (c) Tales Santos <tales.augusto.santos@gmail.com>
@@ -13,11 +16,11 @@ namespace TSantos\Serializer;
 use TSantos\Serializer\Metadata\ClassMetadata;
 
 /**
- * Class Compiler
+ * Class HydratorCompiler
  *
  * @author Tales Santos <tales.augusto.santos@gmail.com>
  */
-class Compiler
+class HydratorCompiler implements HydratorCompilerInterface
 {
     const AUTOGENERATE_NEVER = 1;
     const AUTOGENERATE_ALWAYS = 2;
@@ -40,9 +43,10 @@ class Compiler
 
     /**
      * Compiler constructor.
-     * @param Configuration $configuration
+     *
+     * @param Configuration         $configuration
      * @param HydratorCodeGenerator $generator
-     * @param HydratorCodeWriter $writer
+     * @param HydratorCodeWriter    $writer
      */
     public function __construct(Configuration $configuration, HydratorCodeGenerator $generator, HydratorCodeWriter $writer)
     {
@@ -51,7 +55,7 @@ class Compiler
         $this->writer = $writer;
     }
 
-    public function compile(ClassMetadata $classMetadata)
+    public function compile(ClassMetadata $classMetadata): void
     {
         $filename = $this->configuration->getFilename($classMetadata);
 
