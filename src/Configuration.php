@@ -1,5 +1,8 @@
 <?php
-/**
+
+declare(strict_types=1);
+
+/*
  * This file is part of the TSantos Serializer package.
  *
  * (c) Tales Santos <tales.augusto.santos@gmail.com>
@@ -13,7 +16,7 @@ namespace TSantos\Serializer;
 use TSantos\Serializer\Metadata\ClassMetadata;
 
 /**
- * Class Configuration
+ * Class Configuration.
  *
  * @author Tales Santos <tales.augusto.santos@gmail.com>
  */
@@ -36,9 +39,10 @@ class Configuration
 
     /**
      * Configuration constructor.
+     *
      * @param string $hydratorNamespace
      * @param string $hydratorDirectory
-     * @param int $generationStrategy
+     * @param int    $generationStrategy
      */
     public function __construct(string $hydratorNamespace, string $hydratorDirectory, int $generationStrategy)
     {
@@ -73,38 +77,43 @@ class Configuration
 
     /**
      * @param ClassMetadata $classMetadata
+     *
      * @return string
      */
     public function getNamespaceForClass(ClassMetadata $classMetadata): string
     {
-        return sprintf('%s\\%s', $this->hydratorNamespace, $classMetadata->reflection->getNamespaceName());
+        return \sprintf('%s\\%s', $this->hydratorNamespace, $classMetadata->reflection->getNamespaceName());
     }
 
     /**
      * @param ClassMetadata $classMetadata
+     *
      * @return string
      */
     public function getClassName(ClassMetadata $classMetadata): string
     {
-        return $classMetadata->reflection->getShortName() . 'Hydrator';
+        return $classMetadata->reflection->getShortName().'Hydrator';
     }
 
     /**
      * @param ClassMetadata $classMetadata
+     *
      * @return string
      */
     public function getFqnClassName(ClassMetadata $classMetadata): string
     {
-        return $this->getNamespaceForClass($classMetadata) . '\\' . $this->getClassName($classMetadata);
+        return $this->getNamespaceForClass($classMetadata).'\\'.$this->getClassName($classMetadata);
     }
 
     /**
      * @param ClassMetadata $classMetadata
+     *
      * @return string
      */
     public function getFilename(ClassMetadata $classMetadata): string
     {
-        $filename = str_replace('\\', '', $classMetadata->reflection->name);
+        $filename = \str_replace('\\', '', $classMetadata->reflection->name);
+
         return $this->hydratorDirectory.\DIRECTORY_SEPARATOR.$filename.'.php';
     }
 }

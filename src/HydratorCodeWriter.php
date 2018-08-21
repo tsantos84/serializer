@@ -29,6 +29,7 @@ class HydratorCodeWriter
 
     /**
      * HydratorCodeWriter constructor.
+     *
      * @param Configuration $configuration
      */
     public function __construct(Configuration $configuration)

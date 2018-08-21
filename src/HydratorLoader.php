@@ -66,11 +66,11 @@ class HydratorLoader
     /**
      * SerializerClassLoader constructor.
      *
-     * @param Configuration $configuration
-     * @param MetadataFactoryInterface $metadataFactory
-     * @param HydratorCodeGenerator $codeGenerator
-     * @param HydratorCodeWriter $writer
-     * @param int $autogenerate
+     * @param Configuration               $configuration
+     * @param MetadataFactoryInterface    $metadataFactory
+     * @param HydratorCodeGenerator       $codeGenerator
+     * @param HydratorCodeWriter          $writer
+     * @param int                         $autogenerate
      * @param ObjectInstantiatorInterface $instantiator
      */
     public function __construct(

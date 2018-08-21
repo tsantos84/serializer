@@ -38,7 +38,7 @@ class HydratorCodeGenerator
     /**
      * ChainDecorator constructor.
      *
-     * @param Configuration $configuration
+     * @param Configuration            $configuration
      * @param CodeDecoratorInterface[] $decorators
      */
     public function __construct(Configuration $configuration, array $decorators = [])
