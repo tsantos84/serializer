@@ -16,10 +16,8 @@ use Psr\Container\ContainerInterface;
 use TSantos\Serializer\DependencyInjection\Pimple\HydratorServiceProvider;
 use TSantos\Serializer\DependencyInjection\Pimple\MetadataServiceProvider;
 use TSantos\Serializer\DependencyInjection\Pimple\SerializerServiceProvider;
-use TSantos\Serializer\SerializerBuilder;
 
 return function (Container $container) {
-
     $container[ContainerInterface::class] = function ($container) {
         return new \Pimple\Psr11\Container($container);
     };
