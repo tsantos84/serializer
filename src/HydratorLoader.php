@@ -29,6 +29,11 @@ class HydratorLoader
     const AUTOGENERATE_FILE_NOT_EXISTS = 3;
 
     /**
+     * @var Configuration
+     */
+    private $configuration;
+
+    /**
      * @var array
      */
     private $hydrators = [];
@@ -61,19 +66,22 @@ class HydratorLoader
     /**
      * SerializerClassLoader constructor.
      *
-     * @param MetadataFactoryInterface    $metadataFactory
-     * @param HydratorCodeGenerator       $codeGenerator
-     * @param HydratorCodeWriter          $writer
-     * @param int                         $autogenerate
+     * @param Configuration $configuration
+     * @param MetadataFactoryInterface $metadataFactory
+     * @param HydratorCodeGenerator $codeGenerator
+     * @param HydratorCodeWriter $writer
+     * @param int $autogenerate
      * @param ObjectInstantiatorInterface $instantiator
      */
     public function __construct(
+        Configuration $configuration,
         MetadataFactoryInterface $metadataFactory,
         HydratorCodeGenerator $codeGenerator,
         HydratorCodeWriter $writer,
         int $autogenerate,
         ObjectInstantiatorInterface $instantiator
     ) {
+        $this->configuration = $configuration;
         $this->metadataFactory = $metadataFactory;
         $this->codeGenerator = $codeGenerator;
         $this->writer = $writer;
@@ -103,13 +111,13 @@ class HydratorLoader
             );
         }
 
-        $fqn = $this->getClassName($classMetadata);
+        $fqn = $this->configuration->getFQNClassName($classMetadata);
 
         if (\class_exists($fqn, false)) {
             return $this->hydrators[$class] = $this->inject(new $fqn($this->instantiator), $serializer);
         }
 
-        $filename = $this->getFilename($classMetadata);
+        $filename = $this->configuration->getFilename($classMetadata);
 
         switch ($this->autogenerate) {
             case self::AUTOGENERATE_NEVER:
@@ -136,16 +144,6 @@ class HydratorLoader
     {
         $code = $this->codeGenerator->generate($classMetadata);
         $this->writer->write($classMetadata, $code);
-    }
-
-    private function getClassName(ClassMetadata $classMetadata): string
-    {
-        return $this->codeGenerator->getClassName($classMetadata);
-    }
-
-    private function getFilename(ClassMetadata $classMetadata): string
-    {
-        return $this->writer->getPath().\DIRECTORY_SEPARATOR.$this->getClassName($classMetadata).'.php';
     }
 
     private function inject(HydratorInterface $hydrator, SerializerInterface $serializer): HydratorInterface

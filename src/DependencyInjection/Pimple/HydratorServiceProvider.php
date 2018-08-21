@@ -24,6 +24,7 @@ use TSantos\Serializer\CodeDecorator\HydrationDecorator;
 use TSantos\Serializer\CodeDecorator\NewInstanceMethodDecorator;
 use TSantos\Serializer\CodeDecorator\PropertiesDecorator;
 use TSantos\Serializer\CodeDecorator\ReflectionPropertyMethodDecorator;
+use TSantos\Serializer\Configuration;
 use TSantos\Serializer\HydratorCodeGenerator;
 use TSantos\Serializer\HydratorCodeWriter;
 use TSantos\Serializer\HydratorLoader;
@@ -39,19 +40,31 @@ class HydratorServiceProvider implements ServiceProviderInterface
     public function register(Container $container)
     {
         $container['hydrator_dir'] = \sys_get_temp_dir().'/serializer/hydrators';
+        $container['hydrator_namespace'] = 'App\\Hydrator';
         $container['generation_strategy'] = HydratorLoader::AUTOGENERATE_ALWAYS;
 
-        $container[HydratorCodeGenerator::class] = function () {
-            return new HydratorCodeGenerator([
-                new ExposedKeysDecorator(),
-                new ConstructorMethodDecorator(),
-                new AbstractHydratorDecorator(),
-                new ExtractionDecorator(),
-                new HydrationDecorator(),
-                new NewInstanceMethodDecorator(),
-                new PropertiesDecorator(),
-                new ReflectionPropertyMethodDecorator(),
-            ]);
+        $container[HydratorCodeGenerator::class] = function ($container) {
+            return new HydratorCodeGenerator(
+                $container[Configuration::class],
+                [
+                    new ExposedKeysDecorator(),
+                    new ConstructorMethodDecorator(),
+                    new AbstractHydratorDecorator(),
+                    new ExtractionDecorator(),
+                    new HydrationDecorator(),
+                    new NewInstanceMethodDecorator(),
+                    new PropertiesDecorator(),
+                    new ReflectionPropertyMethodDecorator(),
+                ]
+            );
+        };
+
+        $container[Configuration::class] = function ($container) {
+            return new Configuration(
+                $container['hydrator_namespace'],
+                $container['hydrator_dir'],
+                $container['generation_strategy']
+            );
         };
 
         $container[HydratorCodeWriter::class] = function ($container) {
@@ -61,11 +74,12 @@ class HydratorServiceProvider implements ServiceProviderInterface
                 throw new \InvalidArgumentException(\sprintf('The hydrator directory "%s" is not writable.', $container['hydrator_dir']));
             }
 
-            return new HydratorCodeWriter($container['hydrator_dir']);
+            return new HydratorCodeWriter($container[Configuration::class]);
         };
 
         $container[HydratorLoader::class] = function ($container) {
             return new HydratorLoader(
+                $container[Configuration::class],
                 $container[MetadataFactoryInterface::class],
                 $container[HydratorCodeGenerator::class],
                 $container[HydratorCodeWriter::class],
