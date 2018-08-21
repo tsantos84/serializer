@@ -24,6 +24,7 @@ use TSantos\Serializer\CodeDecorator\HydrationDecorator;
 use TSantos\Serializer\CodeDecorator\NewInstanceMethodDecorator;
 use TSantos\Serializer\CodeDecorator\PropertiesDecorator;
 use TSantos\Serializer\CodeDecorator\ReflectionPropertyMethodDecorator;
+use TSantos\Serializer\Compiler;
 use TSantos\Serializer\Configuration;
 use TSantos\Serializer\HydratorCodeGenerator;
 use TSantos\Serializer\HydratorCodeWriter;
@@ -81,10 +82,16 @@ class HydratorServiceProvider implements ServiceProviderInterface
             return new HydratorLoader(
                 $container[Configuration::class],
                 $container[MetadataFactoryInterface::class],
-                $container[HydratorCodeGenerator::class],
-                $container[HydratorCodeWriter::class],
-                $container['generation_strategy'],
+                $container[Compiler::class],
                 $container[ObjectInstantiatorInterface::class]
+            );
+        };
+
+        $container[Compiler::class] = function ($container) {
+            return new Compiler(
+                $container[Configuration::class],
+                $container[HydratorCodeGenerator::class],
+                $container[HydratorCodeWriter::class]
             );
         };
     }

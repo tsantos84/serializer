@@ -24,9 +24,9 @@ use TSantos\Serializer\ObjectInstantiator\ObjectInstantiatorInterface;
  */
 class HydratorLoader
 {
-    const AUTOGENERATE_NEVER = 1;
-    const AUTOGENERATE_ALWAYS = 2;
-    const AUTOGENERATE_FILE_NOT_EXISTS = 3;
+    const AUTOGENERATE_NEVER = Compiler::AUTOGENERATE_NEVER;
+    const AUTOGENERATE_ALWAYS = Compiler::AUTOGENERATE_ALWAYS;
+    const AUTOGENERATE_FILE_NOT_EXISTS = Compiler::AUTOGENERATE_FILE_NOT_EXISTS;
 
     /**
      * @var Configuration
@@ -44,48 +44,31 @@ class HydratorLoader
     private $metadataFactory;
 
     /**
-     * @var int
-     */
-    private $autogenerate;
-
-    /**
-     * @var HydratorCodeGenerator
-     */
-    private $codeGenerator;
-
-    /**
-     * @var HydratorCodeWriter
-     */
-    private $writer;
-
-    /**
      * @var ObjectInstantiatorInterface
      */
     private $instantiator;
 
     /**
-     * SerializerClassLoader constructor.
-     *
-     * @param Configuration               $configuration
-     * @param MetadataFactoryInterface    $metadataFactory
-     * @param HydratorCodeGenerator       $codeGenerator
-     * @param HydratorCodeWriter          $writer
-     * @param int                         $autogenerate
+     * @var Compiler
+     */
+    private $compiler;
+
+    /**
+     * HydratorLoader constructor.
+     * @param Configuration $configuration
+     * @param MetadataFactoryInterface $metadataFactory
+     * @param Compiler $compiler
      * @param ObjectInstantiatorInterface $instantiator
      */
     public function __construct(
         Configuration $configuration,
         MetadataFactoryInterface $metadataFactory,
-        HydratorCodeGenerator $codeGenerator,
-        HydratorCodeWriter $writer,
-        int $autogenerate,
+        Compiler $compiler,
         ObjectInstantiatorInterface $instantiator
     ) {
         $this->configuration = $configuration;
         $this->metadataFactory = $metadataFactory;
-        $this->codeGenerator = $codeGenerator;
-        $this->writer = $writer;
-        $this->autogenerate = $autogenerate;
+        $this->compiler = $compiler;
         $this->instantiator = $instantiator;
     }
 
@@ -117,33 +100,9 @@ class HydratorLoader
             return $this->hydrators[$class] = $this->inject(new $fqn($this->instantiator), $serializer);
         }
 
-        $filename = $this->configuration->getFilename($classMetadata);
-
-        switch ($this->autogenerate) {
-            case self::AUTOGENERATE_NEVER:
-                requireHydrator($filename);
-                break;
-
-            case self::AUTOGENERATE_ALWAYS:
-                $this->generate($classMetadata);
-                requireHydrator($filename);
-                break;
-
-            case self::AUTOGENERATE_FILE_NOT_EXISTS:
-                if (!\file_exists($filename)) {
-                    $this->generate($classMetadata);
-                }
-                requireHydrator($filename);
-                break;
-        }
+        $this->compiler->compile($classMetadata);
 
         return $this->hydrators[$class] = $this->inject(new $fqn($this->instantiator), $serializer);
-    }
-
-    private function generate(ClassMetadata $classMetadata)
-    {
-        $code = $this->codeGenerator->generate($classMetadata);
-        $this->writer->write($classMetadata, $code);
     }
 
     private function inject(HydratorInterface $hydrator, SerializerInterface $serializer): HydratorInterface
@@ -158,10 +117,4 @@ class HydratorLoader
 
         return $hydrator;
     }
-}
-
-function requireHydrator(string $filename): void
-{
-    /** @noinspection PhpIncludeInspection */
-    require_once $filename;
 }
