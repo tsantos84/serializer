@@ -41,12 +41,17 @@ class SerializerBuilder
     private $container;
 
     /**
-     * Builder constructor.
+     * SerializerBuilder constructor.
+     * @param Container|null $container
+     * @param bool $autoBuild
      */
-    public function __construct(Container $container = null)
+    public function __construct(Container $container = null, bool $autoBuild = true)
     {
-        if (null === $container) {
-            $container = require __DIR__.'/DependencyInjection/Pimple/Container.php';
+        $container = $container ?? new Container();
+
+        if ($autoBuild) {
+            $builder = require __DIR__.'/DependencyInjection/Pimple/Container.php';
+            $builder($container);
         }
 
         $this->container = $container;
