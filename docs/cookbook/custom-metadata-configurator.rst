@@ -40,8 +40,14 @@ amount before encoding the data. To do so, you need to create a custom `TSantos\
         }
     }
 
-Done! The configurator is able to round the values of all configured properties. The last step is tell the serializer
-which properties should be rounded::
+The next step is register your metadata configurator into the serializer::
+
+    $serializer = (new SerializerBuilder())
+        ->addMetadataConfigurator(new PropertyRoundConfigurator())
+        ->build();
+
+Done! The configurator is able to round the values of all configured properties and the serializer is aware of it.
+The next and last step is to tell the serializer which properties should be rounded::
 
     namespace App\Entity;
 
@@ -61,7 +67,7 @@ which properties should be rounded::
         }
     }
 
-When you deserialize the `Order` class, the amount will be rounded::
+When you serialize the `Order` class, the amount will be rounded exactly as you configured::
 
     class OrderController
     {

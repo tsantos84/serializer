@@ -80,6 +80,16 @@ class MetadataServiceProvider implements ServiceProviderInterface
             ]);
         };
 
+        $container['metadata_configurators'] = function ($container) {
+            return [
+                new PropertyTypeConfigurator($container[PropertyInfoExtractorInterface::class]),
+                new VirtualPropertyTypeConfigurator(),
+                new GetterConfigurator(),
+                new SetterConfigurator(),
+                new DateTimeConfigurator(),
+            ];
+        };
+
         $container[DriverInterface::class] = function ($container) {
             $driver = $container[DriverChain::class];
 
@@ -87,13 +97,7 @@ class MetadataServiceProvider implements ServiceProviderInterface
                 $driver = $container['custom_metadata_driver'];
             }
 
-            return new ConfiguratorDriver($driver, [
-                new PropertyTypeConfigurator($container[PropertyInfoExtractorInterface::class]),
-                new VirtualPropertyTypeConfigurator(),
-                new GetterConfigurator(),
-                new SetterConfigurator(),
-                new DateTimeConfigurator(),
-            ]);
+            return new ConfiguratorDriver($driver, $container['metadata_configurators']);
         };
 
         if (\class_exists(AnnotationReader::class)) {

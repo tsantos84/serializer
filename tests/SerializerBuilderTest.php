@@ -28,6 +28,7 @@ use TSantos\Serializer\EventDispatcher\EventDispatcherInterface;
 use TSantos\Serializer\EventDispatcher\EventSubscriberInterface;
 use TSantos\Serializer\Events;
 use TSantos\Serializer\HydratorCompiler;
+use TSantos\Serializer\Metadata\Configurator\DateTimeConfigurator;
 use TSantos\Serializer\Metadata\Driver\AnnotationDriver;
 use TSantos\Serializer\Metadata\Driver\ReflectionDriver;
 use TSantos\Serializer\Normalizer\JsonNormalizer;
@@ -121,6 +122,17 @@ class SerializerBuilderTest extends TestCase
 
         $this->builder->addEncoder(new JsonEncoder());
         $this->assertTrue($this->container[EncoderRegistryInterface::class]->has('json'));
+    }
+
+    /** @test */
+    public function it_can_add_custom_metadata_configurator()
+    {
+        $this->container['metadata_configurators'] = function () {
+            return [];
+        };
+
+        $this->builder->addMetadataConfigurator(new DateTimeConfigurator());
+        $this->assertCount(1, $this->container['metadata_configurators']);
     }
 
     /** @test */

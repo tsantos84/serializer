@@ -23,6 +23,7 @@ use Pimple\Container;
 use TSantos\Serializer\Encoder\EncoderInterface;
 use TSantos\Serializer\EventDispatcher\EventDispatcherInterface;
 use TSantos\Serializer\EventDispatcher\EventSubscriberInterface;
+use TSantos\Serializer\Metadata\ConfiguratorInterface;
 use TSantos\Serializer\Metadata\Driver\AnnotationDriver;
 use TSantos\Serializer\Normalizer\CollectionNormalizer;
 use TSantos\Serializer\Normalizer\JsonNormalizer;
@@ -144,6 +145,16 @@ class SerializerBuilder
     {
         $this->container->extend(EncoderRegistryInterface::class, function (EncoderRegistryInterface $encoders) use ($encoder) {
             return $encoders->add($encoder);
+        });
+
+        return $this;
+    }
+
+    public function addMetadataConfigurator(ConfiguratorInterface $configurator): self
+    {
+        $this->container->extend('metadata_configurators', function (array $configurators) use ($configurator) {
+            $configurators[] = $configurator;
+            return $configurators;
         });
 
         return $this;
