@@ -49,6 +49,10 @@ class YamlDriver extends AbstractFileDriver
             $metadata->baseClass = $mapping['baseClass'];
         }
 
+        if (isset($mapping['discriminatorField']) && isset($mapping['discriminatorMapping'])) {
+            $metadata->setDiscriminatorMap($mapping['discriminatorField'], $mapping['discriminatorMapping']);
+        }
+
         foreach ($mapping['properties'] ?? [] as $name => $map) {
             $property = new PropertyMetadata($class->getName(), $name);
 

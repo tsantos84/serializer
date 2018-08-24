@@ -1,0 +1,8 @@
+Tests\TSantos\Serializer\Fixture\Model\Inheritance\AbstractVehicle:
+  discriminatorField: "type"
+  discriminatorMapping:
+    car: "Tests\\TSantos\\Serializer\\Fixture\\Model\\Inheritance\\Car"
+    airplane: "Tests\\TSantos\\Serializer\\Fixture\\Model\\Inheritance\\Airplane"
+  properties:
+    color:
+      type: string

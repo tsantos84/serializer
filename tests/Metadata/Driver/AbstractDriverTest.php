@@ -15,6 +15,9 @@ namespace Tests\TSantos\Serializer\Metadata\Driver;
 
 use Metadata\Driver\DriverInterface;
 use PHPUnit\Framework\TestCase;
+use Tests\TSantos\Serializer\Fixture\Model\Inheritance\AbstractVehicle;
+use Tests\TSantos\Serializer\Fixture\Model\Inheritance\Airplane;
+use Tests\TSantos\Serializer\Fixture\Model\Inheritance\Car;
 use Tests\TSantos\Serializer\Fixture\Model\Person;
 use TSantos\Serializer\Metadata\ClassMetadata;
 
@@ -79,6 +82,23 @@ abstract class AbstractDriverTest extends TestCase
         // virtual property 'getFormattedAddress'
         $this->assertSame('getFormattedAddress', $m->methodMetadata['getFormattedAddress']->exposeAs);
         $this->assertSame(['Default'], $m->methodMetadata['getFormattedAddress']->groups);
+    }
+
+    /** @test */
+    public function it_can_read_metadata_information_from_classes_containing_inheritance()
+    {
+        $driver = $this->createDriver();
+
+        /** @var ClassMetadata $m */
+        $m = $driver->loadMetadataForClass(new \ReflectionClass(AbstractVehicle::class));
+
+        $this->assertSame('type', $m->discriminatorField);
+
+        $mapping = [
+            'car' => Car::class,
+            'airplane' => Airplane::class
+        ];
+        $this->assertSame($mapping, $m->discriminatorMapping);
     }
 
     abstract public function createDriver(): DriverInterface;
