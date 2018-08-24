@@ -1,5 +1,8 @@
 Tests\TSantos\Serializer\Fixture\Model\Person:
   baseClass: Tests\TSantos\Serializer\AbstractSerializerClass
+  hydratorConstructArgs:
+    foo: "bar"
+    bar: "@baz"
   properties:
     id:
       type: integer
