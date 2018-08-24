@@ -97,7 +97,7 @@ abstract class AbstractDriverTest extends TestCase
 
         $mapping = [
             'car' => Car::class,
-            'airplane' => Airplane::class
+            'airplane' => Airplane::class,
         ];
         $this->assertSame($mapping, $m->discriminatorMapping);
     }

@@ -154,6 +154,7 @@ class SerializerBuilder
     {
         $this->container->extend('metadata_configurators', function (array $configurators) use ($configurator) {
             $configurators[] = $configurator;
+
             return $configurators;
         });
 
