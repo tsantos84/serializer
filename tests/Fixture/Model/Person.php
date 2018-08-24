@@ -20,6 +20,7 @@ use TSantos\Serializer\Mapping as Serializer;
  *
  * @author Tales Santos <tales.augusto.santos@gmail.com>
  * @Serializer\BaseClass("Tests\TSantos\Serializer\AbstractSerializerClass")
+ * @Serializer\HydratorConstructArgs(args={"foo":"bar","bar":"@baz"})
  */
 class Person
 {

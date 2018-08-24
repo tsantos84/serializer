@@ -39,6 +39,7 @@ abstract class AbstractDriverTest extends TestCase
 
         $this->assertInstanceOf(ClassMetadata::class, $m);
         $this->assertSame('Tests\TSantos\Serializer\AbstractSerializerClass', $m->baseClass);
+        $this->assertSame(['foo' => 'bar', 'bar' => '@baz'], $m->hydratorConstructArgs);
 
         // field 'id'
         $this->assertSame('integer', $pm['id']->type);
