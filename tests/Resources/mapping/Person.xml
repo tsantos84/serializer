@@ -10,6 +10,10 @@
 
 <serializer>
     <class name="Tests\TSantos\Serializer\Fixture\Model\Person" base-class="Tests\TSantos\Serializer\AbstractSerializerClass">
+        <hydrator_construct_args>
+            <arg name="foo">bar</arg>
+            <arg name="bar">@baz</arg>
+        </hydrator_construct_args>
         <property name="id" type="integer" />
         <property name="name" type="string" expose-as="nome" groups="api" />
         <property name="lastName" type="string" />

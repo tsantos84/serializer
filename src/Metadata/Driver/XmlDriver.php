@@ -59,6 +59,13 @@ class XmlDriver extends AbstractFileDriver
             $metadata->setDiscriminatorMap($field, $mapping);
         }
 
+        if (count($hydratorArgs = $elem->xpath('./hydrator_construct_args')) > 0) {
+            foreach (current($hydratorArgs)->xpath('./arg') as $arg) {
+                $name = (string) $arg->attributes()->{'name'};
+                $metadata->hydratorConstructArgs[$name] = (string)$arg;
+            }
+        }
+
         /* @var \SimpleXMLElement $property */
         foreach ($elem->xpath('./property') as $xmlProperty) {
             $attribs = ((array) $xmlProperty->attributes())['@attributes'];
