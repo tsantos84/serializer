@@ -48,6 +48,17 @@ class XmlDriver extends AbstractFileDriver
             $metadata->baseClass = (string) $baseClass;
         }
 
+        if (count($discriminator = $elem->xpath('./discriminator')) > 0) {
+            $discriminatorElem =current($discriminator);
+            $field = (string) $discriminatorElem->attributes()->{'field'};
+            $mapping = [];
+            foreach ($discriminatorElem->xpath('./map') as $map) {
+                $value = (string) $map->attributes()->{'value'};
+                $mapping[$value] = (string)$map;
+            }
+            $metadata->setDiscriminatorMap($field, $mapping);
+        }
+
         /* @var \SimpleXMLElement $property */
         foreach ($elem->xpath('./property') as $xmlProperty) {
             $attribs = ((array) $xmlProperty->attributes())['@attributes'];
