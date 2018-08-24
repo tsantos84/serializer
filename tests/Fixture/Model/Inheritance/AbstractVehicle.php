@@ -13,10 +13,14 @@ declare(strict_types=1);
 
 namespace Tests\TSantos\Serializer\Fixture\Model\Inheritance;
 
+use TSantos\Serializer\Mapping as Serializer;
+
 /**
  * Class AbstractVehicle.
  *
  * @author Tales Santos <tales.augusto.santos@gmail.com>
+ *
+ * @Serializer\Discriminator(field="type", map={"car":"Tests\TSantos\Serializer\Fixture\Model\Inheritance\Car", "airplane":"Tests\TSantos\Serializer\Fixture\Model\Inheritance\Airplane"})
  */
 abstract class AbstractVehicle
 {
