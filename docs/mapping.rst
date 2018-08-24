@@ -96,6 +96,37 @@ Define what class the generated class should extends
 
     <class name="App\Entity\Post" base-class="My\Custom\Class">
 
+Discriminator
+~~~~~~~~~~~~~
+
+Discriminates the sub-types of an abstract class.
+
+.. code-block:: php-annotations
+
+    /**
+     * @Discriminator(field="type", map={"car":"App\Entity\Car","airplane":"App\Entity\Airplane"})
+     */
+    abstract class AbstractVehicle {}
+    class Car extends AbstractVehicle {}
+    class Airplane extends AbstractVehicle {}
+
+.. code-block:: yaml
+
+    App\Entity\AbstractVehicle:
+        discriminatorField: "type"
+        discriminatorMap:
+            car: "App\\Entity\\Car"
+            airplane: "App\\Entity\\airplane"
+
+.. code-block:: xml
+
+    <class name="App\Entity\AbstractVehicle">
+        <discriminator field="type">
+            <map value="car">App\Entity\Car</map>
+            <map value="airplane">App\Entity\Airplane</map>
+        </discriminator>
+    </class>
+
 ExposeAs
 ~~~~~~~~
 
