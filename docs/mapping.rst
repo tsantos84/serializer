@@ -78,7 +78,7 @@ Options Reference
 BaseClass
 ~~~~~~~~~
 
-Define what class the generated class should extends
+Define what class the generated hydrator class should extends
 
 .. code-block:: php-annotations
 
@@ -126,6 +126,38 @@ Discriminates the sub-types of an abstract class.
             <map value="airplane">App\Entity\Airplane</map>
         </discriminator>
     </class>
+
+Hydrator Construct Args
+~~~~~~~~~~~~~~~~~~~~~~~
+
+Provides the set of arguments that should be passed to hydrators when constructing them.
+
+.. code-block:: php-annotations
+
+    /**
+     * @HydratorConstructArgs(args={"users":"@App\Repository\UserRepository", "foo":"bar"})
+     */
+    class Order {}
+
+.. code-block:: yaml
+
+    App\Entity\Order:
+        hydratorConstructArgs:
+            users: "@App\\Repository\\UserRepository"
+            foo: "bar"
+
+.. code-block:: xml
+
+    <class name="App\Entity\Order">
+        <hydrator_construct_args>
+            <arg name="car">@App\Entity\Car</map>
+            <arg name="foo">bar</map>
+        </hydrator_construct_args>
+    </class>
+
+.. note::
+    By prefixing the argument value with "@", the value will be treated as a service name and the correspondent service
+    will be passed to hydrators as dependency.
 
 ExposeAs
 ~~~~~~~~
