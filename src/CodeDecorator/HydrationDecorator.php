@@ -32,9 +32,9 @@ class HydrationDecorator implements CodeDecoratorInterface
     {
         $hydrate = $class->addMethod('hydrate')
             ->setVisibility('public')
-            ->addComment('@param '.$classMetadata->name.' $object')
+            ->addComment('@param \\'.$classMetadata->name.' $object')
             ->addComment('@param array $data')
-            ->addComment('@param '.DeserializationContext::class.' $context')
+            ->addComment('@param \\'.DeserializationContext::class.' $context')
             ->addComment('@return mixed')
         ;
 

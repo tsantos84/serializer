@@ -34,8 +34,8 @@ class ExtractionDecorator implements CodeDecoratorInterface
         $extract = $class->addMethod('extract')
             ->setReturnType('array')
             ->setVisibility('public')
-            ->addComment('@param '.$classMetadata->name.' $object')
-            ->addComment('@param '.SerializationContext::class.' $context')
+            ->addComment('@param \\'.$classMetadata->name.' $object')
+            ->addComment('@param \\'.SerializationContext::class.' $context')
             ->addComment('@return array')
         ;
 

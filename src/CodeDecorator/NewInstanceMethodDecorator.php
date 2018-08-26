@@ -32,8 +32,8 @@ class NewInstanceMethodDecorator implements CodeDecoratorInterface
         $method = $class
             ->addMethod('newInstance')
             ->addComment('@param array $data')
-            ->addComment('@param '.DeserializationContext::class.' $context')
-            ->addComment('@return '.$classMetadata->name)
+            ->addComment('@param \\'.DeserializationContext::class.' $context')
+            ->addComment('@return \\'.$classMetadata->name)
         ;
 
         $method
