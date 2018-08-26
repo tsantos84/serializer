@@ -27,7 +27,8 @@ use TSantos\Serializer\EncoderRegistryInterface;
 use TSantos\Serializer\EventDispatcher\EventDispatcherInterface;
 use TSantos\Serializer\EventDispatcher\EventSubscriberInterface;
 use TSantos\Serializer\Events;
-use TSantos\Serializer\HydratorLoader;
+use TSantos\Serializer\HydratorCompiler;
+use TSantos\Serializer\Metadata\Configurator\DateTimeConfigurator;
 use TSantos\Serializer\Metadata\Driver\AnnotationDriver;
 use TSantos\Serializer\Metadata\Driver\ReflectionDriver;
 use TSantos\Serializer\Normalizer\JsonNormalizer;
@@ -124,6 +125,17 @@ class SerializerBuilderTest extends TestCase
     }
 
     /** @test */
+    public function it_can_add_custom_metadata_configurator()
+    {
+        $this->container['metadata_configurators'] = function () {
+            return [];
+        };
+
+        $this->builder->addMetadataConfigurator(new DateTimeConfigurator());
+        $this->assertCount(1, $this->container['metadata_configurators']);
+    }
+
+    /** @test */
     public function it_can_set_the_metadata_cache_dir()
     {
         $this->builder->setMetadataCacheDir('/tmp');
@@ -133,8 +145,8 @@ class SerializerBuilderTest extends TestCase
     /** @test */
     public function it_change_the_hydrator_generation_strategy()
     {
-        $this->builder->setHydratorGenerationStrategy(HydratorLoader::AUTOGENERATE_ALWAYS);
-        $this->assertSame(HydratorLoader::AUTOGENERATE_ALWAYS, $this->container['generation_strategy']);
+        $this->builder->setHydratorGenerationStrategy(HydratorCompiler::AUTOGENERATE_ALWAYS);
+        $this->assertSame(HydratorCompiler::AUTOGENERATE_ALWAYS, $this->container['generation_strategy']);
     }
 
     /** @test */

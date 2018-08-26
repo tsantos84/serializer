@@ -17,8 +17,7 @@ use Doctrine\Common\Persistence\Proxy;
 use TSantos\Serializer\CacheableNormalizerInterface;
 use TSantos\Serializer\DeserializationContext;
 use TSantos\Serializer\Exception\CircularReferenceException;
-use TSantos\Serializer\HydratorLoader;
-use TSantos\Serializer\ObjectInstantiator\ObjectInstantiatorInterface;
+use TSantos\Serializer\HydratorLoaderInterface;
 use TSantos\Serializer\SerializationContext;
 use TSantos\Serializer\SerializerAwareInterface;
 use TSantos\Serializer\Traits\SerializerAwareTrait;
@@ -31,14 +30,9 @@ class ObjectNormalizer implements NormalizerInterface, DenormalizerInterface, Se
     use SerializerAwareTrait;
 
     /**
-     * @var HydratorLoader
+     * @var HydratorLoaderInterface
      */
     private $loader;
-
-    /**
-     * @var ObjectInstantiatorInterface
-     */
-    private $instantiator;
 
     /**
      * @var callable|null
@@ -48,14 +42,12 @@ class ObjectNormalizer implements NormalizerInterface, DenormalizerInterface, Se
     /**
      * ObjectNormalizer constructor.
      *
-     * @param HydratorLoader              $classLoader
-     * @param ObjectInstantiatorInterface $instantiator
-     * @param callable|null               $circularReferenceHandler
+     * @param HydratorLoaderInterface $classLoader
+     * @param callable|null           $circularReferenceHandler
      */
-    public function __construct(HydratorLoader $classLoader, ObjectInstantiatorInterface $instantiator, callable $circularReferenceHandler = null)
+    public function __construct(HydratorLoaderInterface $classLoader, callable $circularReferenceHandler = null)
     {
         $this->loader = $classLoader;
-        $this->instantiator = $instantiator;
         $this->circularReferenceHandler = $circularReferenceHandler;
     }
 
@@ -69,7 +61,7 @@ class ObjectNormalizer implements NormalizerInterface, DenormalizerInterface, Se
             $class = \get_parent_class($class);
         }
 
-        $hydrator = $this->loader->load($class, $this->serializer);
+        $hydrator = $this->loader->load($class);
         $objectId = \spl_object_hash($data);
 
         try {
@@ -102,11 +94,12 @@ class ObjectNormalizer implements NormalizerInterface, DenormalizerInterface, Se
             return [];
         }
 
+        $hydrator = $this->loader->load($type);
+
         if (null === $object = $context->getTarget()) {
-            $object = $this->instantiator->create($type, $data, $context);
+            $object = $hydrator->newInstance($data, $context);
         }
 
-        $hydrator = $this->loader->load($type, $this->serializer);
         $context->enter();
         $object = $hydrator->hydrate($object, $data, $context);
         $context->leave();

@@ -48,6 +48,24 @@ class XmlDriver extends AbstractFileDriver
             $metadata->baseClass = (string) $baseClass;
         }
 
+        if (\count($discriminator = $elem->xpath('./discriminator')) > 0) {
+            $discriminatorElem = \current($discriminator);
+            $field = (string) $discriminatorElem->attributes()->{'field'};
+            $mapping = [];
+            foreach ($discriminatorElem->xpath('./map') as $map) {
+                $value = (string) $map->attributes()->{'value'};
+                $mapping[$value] = (string) $map;
+            }
+            $metadata->setDiscriminatorMap($field, $mapping);
+        }
+
+        if (\count($hydratorArgs = $elem->xpath('./hydrator_construct_args')) > 0) {
+            foreach (\current($hydratorArgs)->xpath('./arg') as $arg) {
+                $name = (string) $arg->attributes()->{'name'};
+                $metadata->hydratorConstructArgs[$name] = (string) $arg;
+            }
+        }
+
         /* @var \SimpleXMLElement $property */
         foreach ($elem->xpath('./property') as $xmlProperty) {
             $attribs = ((array) $xmlProperty->attributes())['@attributes'];

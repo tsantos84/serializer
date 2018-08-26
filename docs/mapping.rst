@@ -78,7 +78,7 @@ Options Reference
 BaseClass
 ~~~~~~~~~
 
-Define what class the generated class should extends
+Define what class the generated hydrator class should extends
 
 .. code-block:: php-annotations
 
@@ -95,6 +95,69 @@ Define what class the generated class should extends
 .. code-block:: xml
 
     <class name="App\Entity\Post" base-class="My\Custom\Class">
+
+Discriminator
+~~~~~~~~~~~~~
+
+Discriminates the sub-types of an abstract class.
+
+.. code-block:: php-annotations
+
+    /**
+     * @Discriminator(field="type", map={"car":"App\Entity\Car","airplane":"App\Entity\Airplane"})
+     */
+    abstract class AbstractVehicle {}
+    class Car extends AbstractVehicle {}
+    class Airplane extends AbstractVehicle {}
+
+.. code-block:: yaml
+
+    App\Entity\AbstractVehicle:
+        discriminatorField: "type"
+        discriminatorMap:
+            car: "App\\Entity\\Car"
+            airplane: "App\\Entity\\airplane"
+
+.. code-block:: xml
+
+    <class name="App\Entity\AbstractVehicle">
+        <discriminator field="type">
+            <map value="car">App\Entity\Car</map>
+            <map value="airplane">App\Entity\Airplane</map>
+        </discriminator>
+    </class>
+
+Hydrator Construct Args
+~~~~~~~~~~~~~~~~~~~~~~~
+
+Provides the set of arguments that should be passed to hydrators when constructing them.
+
+.. code-block:: php-annotations
+
+    /**
+     * @HydratorConstructArgs(args={"users":"@App\Repository\UserRepository", "foo":"bar"})
+     */
+    class Order {}
+
+.. code-block:: yaml
+
+    App\Entity\Order:
+        hydratorConstructArgs:
+            users: "@App\\Repository\\UserRepository"
+            foo: "bar"
+
+.. code-block:: xml
+
+    <class name="App\Entity\Order">
+        <hydrator_construct_args>
+            <arg name="car">@App\Entity\Car</map>
+            <arg name="foo">bar</map>
+        </hydrator_construct_args>
+    </class>
+
+.. note::
+    By prefixing the argument value with "@", the value will be treated as a service name and the correspondent service
+    will be passed to hydrators as dependency.
 
 ExposeAs
 ~~~~~~~~

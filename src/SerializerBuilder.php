@@ -23,6 +23,7 @@ use Pimple\Container;
 use TSantos\Serializer\Encoder\EncoderInterface;
 use TSantos\Serializer\EventDispatcher\EventDispatcherInterface;
 use TSantos\Serializer\EventDispatcher\EventSubscriberInterface;
+use TSantos\Serializer\Metadata\ConfiguratorInterface;
 use TSantos\Serializer\Metadata\Driver\AnnotationDriver;
 use TSantos\Serializer\Normalizer\CollectionNormalizer;
 use TSantos\Serializer\Normalizer\JsonNormalizer;
@@ -41,12 +42,18 @@ class SerializerBuilder
     private $container;
 
     /**
-     * Builder constructor.
+     * SerializerBuilder constructor.
+     *
+     * @param Container|null $container
+     * @param bool           $build
      */
-    public function __construct(Container $container = null)
+    public function __construct(Container $container = null, bool $build = true)
     {
-        if (null === $container) {
-            $container = require __DIR__.'/DependencyInjection/Pimple/Container.php';
+        $container = $container ?? new Container();
+
+        if ($build) {
+            $builder = require __DIR__.'/DependencyInjection/Pimple/Builder.php';
+            $builder($container);
         }
 
         $this->container = $container;
@@ -138,6 +145,17 @@ class SerializerBuilder
     {
         $this->container->extend(EncoderRegistryInterface::class, function (EncoderRegistryInterface $encoders) use ($encoder) {
             return $encoders->add($encoder);
+        });
+
+        return $this;
+    }
+
+    public function addMetadataConfigurator(ConfiguratorInterface $configurator): self
+    {
+        $this->container->extend('metadata_configurators', function (array $configurators) use ($configurator) {
+            $configurators[] = $configurator;
+
+            return $configurators;
         });
 
         return $this;

@@ -14,9 +14,9 @@ declare(strict_types=1);
 namespace Tests\TSantos\Serializer\Fixture\Model;
 
 /**
- * Class Veihcle.
+ * Class Vehicle.
  *
- * @author Tales Santos <tales.maxmilhas@gmail.com>
+ * @author Tales Santos <tales.augusto.santos@gmail.com>
  */
 class Vehicle implements \JsonSerializable
 {
@@ -27,7 +27,7 @@ class Vehicle implements \JsonSerializable
     private $ports;
 
     /**
-     * Veihcle constructor.
+     * Vehicle constructor.
      *
      * @param string $color
      * @param int    $ports

@@ -24,14 +24,6 @@ use TSantos\Serializer\Metadata\Driver\AnnotationDriver;
  */
 class AnnotationReaderTest extends AbstractDriverTest
 {
-    public function setUp()
-    {
-        parent::setUp();
-        if (!\class_exists('Doctrine\Common\Annotations\AnnotationReader')) {
-            $this->markTestSkipped('Skipping test as doctrine/annotation component is not installed');
-        }
-    }
-
     public function createDriver(): DriverInterface
     {
         return new AnnotationDriver(new AnnotationReader());

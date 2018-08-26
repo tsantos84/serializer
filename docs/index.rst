@@ -28,4 +28,5 @@ Summary
    installation
    usage
    mapping
+   cookbook/index
    benchmark

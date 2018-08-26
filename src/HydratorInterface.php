@@ -32,6 +32,16 @@ interface HydratorInterface
     public function extract($object, SerializationContext $context): array;
 
     /**
+     * Create a new instance of the type.
+     *
+     * @param array                  $data
+     * @param DeserializationContext $context
+     *
+     * @return mixed
+     */
+    public function newInstance(array $data, DeserializationContext $context);
+
+    /**
      * Hydrate an object from the given array.
      *
      * @param $object

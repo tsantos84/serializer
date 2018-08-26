@@ -16,9 +16,11 @@ namespace TSantos\Serializer\Metadata\Driver;
 use Doctrine\Common\Annotations\AnnotationReader;
 use Metadata\Driver\DriverInterface;
 use TSantos\Serializer\Mapping\BaseClass;
+use TSantos\Serializer\Mapping\Discriminator;
 use TSantos\Serializer\Mapping\ExposeAs;
 use TSantos\Serializer\Mapping\Getter;
 use TSantos\Serializer\Mapping\Groups;
+use TSantos\Serializer\Mapping\HydratorConstructArgs;
 use TSantos\Serializer\Mapping\Options;
 use TSantos\Serializer\Mapping\ReadOnly;
 use TSantos\Serializer\Mapping\ReadValueFilter;
@@ -76,6 +78,14 @@ class AnnotationDriver implements DriverInterface
             switch (true) {
                 case $annotation instanceof BaseClass:
                     $metadata->baseClass = $annotation->name;
+                    $configured = true;
+                    break;
+                case $annotation instanceof Discriminator:
+                    $metadata->setDiscriminatorMap($annotation->field, $annotation->map);
+                    $configured = true;
+                    break;
+                case $annotation instanceof HydratorConstructArgs:
+                    $metadata->hydratorConstructArgs = $annotation->args;
                     $configured = true;
                     break;
             }

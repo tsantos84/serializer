@@ -13,7 +13,7 @@ declare(strict_types=1);
 
 namespace TSantos\Serializer;
 
-use Metadata\ClassMetadata;
+use TSantos\Serializer\Metadata\ClassMetadata;
 
 /**
  * Class ClassWriter.
@@ -23,18 +23,18 @@ use Metadata\ClassMetadata;
 class HydratorCodeWriter
 {
     /**
-     * @var string
+     * @var Configuration
      */
-    private $path;
+    private $configuration;
 
     /**
-     * SerializerClassWriter constructor.
+     * HydratorCodeWriter constructor.
      *
-     * @param string $path
+     * @param Configuration $configuration
      */
-    public function __construct(string $path)
+    public function __construct(Configuration $configuration)
     {
-        $this->path = $path;
+        $this->configuration = $configuration;
     }
 
     /**
@@ -45,16 +45,6 @@ class HydratorCodeWriter
      */
     public function write(ClassMetadata $classMetadata, string $code)
     {
-        $filename = \sprintf('%s/%sHydrator.php', $this->path, \str_replace('\\', '', $classMetadata->name));
-
-        return \file_put_contents($filename, $code) > 0;
-    }
-
-    /**
-     * @return string
-     */
-    public function getPath(): string
-    {
-        return $this->path;
+        return \file_put_contents($this->configuration->getFilename($classMetadata), $code) > 0;
     }
 }
