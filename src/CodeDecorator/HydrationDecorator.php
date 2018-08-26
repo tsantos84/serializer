@@ -164,13 +164,11 @@ STRING;
         $body = <<<STRING
         
 // property {propertyName}
-if (isset(\$data['{exposeAs}'])) {
-    \$propReflection = \$this->getReflectionProperty('{declaringClass}', '{propertyName}');
-    \$propReflection->setAccessible(true);
+if (isset(\$data['{exposeAs}']) || \array_key_exists('{exposeAs}', \$data)) {
     if (null !== \$value = \$data['{exposeAs}']) {
-        \$propReflection->setValue(\$object, {value});
+        \$this->classMetadata->propertyMetadata['{propertyName}']->setValue(\$object, \$value);
     } else {
-        \$propReflection->setValue(\$object, null);
+        \$this->classMetadata->propertyMetadata['{propertyName}']->setValue(\$object, null);
     }
 }
 
@@ -185,7 +183,6 @@ STRING;
 
         return \strtr($body, [
             '{exposeAs}' => $property->exposeAs,
-            '{declaringClass}' => $property->reflection->getDeclaringClass()->name,
             '{propertyName}' => $property->name,
             '{value}' => $value,
         ]);

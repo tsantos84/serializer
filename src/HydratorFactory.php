@@ -63,6 +63,10 @@ class HydratorFactory implements HydratorFactoryInterface
             $hydrator->setInstantiator($this->container->get(ObjectInstantiatorInterface::class));
         }
 
+        if ($hydrator instanceof ClassMetadataAwareInterface) {
+            $hydrator->setClassMetadata($classMetadata);
+        }
+
         return $hydrator;
     }
 

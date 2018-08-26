@@ -95,5 +95,8 @@ class PropertyMetadata extends BasePropertyMetadata
         if ($this->setter) {
             $this->setterRef = new \ReflectionMethod($this->class, $this->setter);
         }
+
+        $this->reflection = new \ReflectionProperty($this->class, $this->name);
+        $this->reflection->setAccessible(true);
     }
 }

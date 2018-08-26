@@ -97,15 +97,9 @@ STRING;
                 continue;
             }
 
-            $propCode = <<<STRING
-\$propReflection = \$this->getReflectionProperty('{declaringClass}', '{propertyName}');
-\$propReflection->setAccessible(true);
-
-STRING;
-            $propCode .= $this->createAccessorCode($property, '$propReflection->getValue($object)');
+            $propCode = $this->createAccessorCode($property, '$this->classMetadata->propertyMetadata[\'{propertyName}\']->getValue($object)');
 
             $accessors .= \strtr($propCode, [
-                '{declaringClass}' => $property->reflection->getDeclaringClass()->name,
                 '{propertyName}' => $property->name,
             ]);
         }

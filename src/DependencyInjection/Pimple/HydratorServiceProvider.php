@@ -24,7 +24,7 @@ use TSantos\Serializer\CodeDecorator\ExtractionDecorator;
 use TSantos\Serializer\CodeDecorator\HydrationDecorator;
 use TSantos\Serializer\CodeDecorator\NewInstanceMethodDecorator;
 use TSantos\Serializer\CodeDecorator\PropertiesDecorator;
-use TSantos\Serializer\CodeDecorator\ReflectionPropertyMethodDecorator;
+use TSantos\Serializer\CodeDecorator\ClassMetadataDecorator;
 use TSantos\Serializer\Configuration;
 use TSantos\Serializer\HydratorCodeGenerator;
 use TSantos\Serializer\HydratorCodeWriter;
@@ -67,7 +67,7 @@ class HydratorServiceProvider implements ServiceProviderInterface
                     new HydrationDecorator(),
                     new NewInstanceMethodDecorator(),
                     new PropertiesDecorator(),
-                    new ReflectionPropertyMethodDecorator(),
+                    new ClassMetadataDecorator(),
                 ]
             );
         };
