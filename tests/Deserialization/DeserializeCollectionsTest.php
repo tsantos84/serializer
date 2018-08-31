@@ -13,7 +13,7 @@ declare(strict_types=1);
 
 namespace Tests\TSantos\Serializer\Deserialization;
 
-use Tests\TSantos\Serializer\Fixture\Model\Book;
+use Tests\TSantos\Serializer\Fixture\Model\DummyCollection;
 use Tests\TSantos\Serializer\Fixture\Model\Person;
 use Tests\TSantos\Serializer\SerializerTestCase;
 
@@ -26,61 +26,125 @@ use Tests\TSantos\Serializer\SerializerTestCase;
 class DeserializeCollectionsTest extends SerializerTestCase
 {
     /** @test */
-    public function it_can_deserialize_an_array_of_persons()
+    public function it_can_deserialize_a_collection_of_values_using_writer_filter_and_setter()
     {
-        $serializer = $this->createSerializer(\array_merge(
-            $this->createMapping(Person::class, [
-                'name' => ['type' => 'string'],
-                'colors' => ['type' => 'string[]'],
-                'favouriteBook' => ['type' => Book::class],
+        $serializer = $this->createSerializer($this->createMapping(DummyCollection::class, [
+            'foo' => ['type' => 'integer[]', 'writeValueFilter' => 'array_filter($value)']
+        ]));
+
+        $dummy = $serializer->deserialize('{"foo":[null,2,3,null]}', DummyCollection::class);
+        $this->assertSame([1 => 2, 2 => 3], $dummy->getFoo());
+    }
+
+    /** @test */
+    public function it_can_deserialize_a_collection_of_scalar_values_through_setter()
+    {
+        $serializer = $this->createSerializer($this->createMapping(DummyCollection::class, [
+            'foo' => ['type' => 'integer[]']
+        ]));
+
+        $dummy = $serializer->deserialize('{"foo":[1,2,3,4,5,6,7,8,9,10]}', DummyCollection::class);
+        $this->assertSame([1, 2, 3, 4, 5, 6, 7, 8, 9, 10], $dummy->getFoo());
+    }
+
+    /** @test */
+    public function it_can_deserialize_a_collection_of_mixed_values_through_and_setter()
+    {
+        $serializer = $this->createSerializer($this->createMapping(DummyCollection::class, [
+            'foo' => ['type' => 'mixed[]']
+        ]));
+
+        $dummy = $serializer->deserialize('{"foo":[1,2,"3",4,5,6,"7",8,9,10]}', DummyCollection::class);
+        $this->assertSame([1, 2, '3', 4, 5, 6, '7', 8, 9, 10], $dummy->getFoo());
+    }
+
+    /** @test */
+    public function it_can_deserialize_a_collection_of_persons_through_and_setter()
+    {
+        $serializer = $this->createSerializer(array_merge(
+            $this->createMapping(DummyCollection::class, [
+                'foo' => ['type' => Person::class . '[]']
             ]),
-            $this->createMapping(Book::class, [
-                'id' => ['type' => 'integer'],
-                'name' => ['type' => 'string'],
+            $this->createMapping(Person::class, [
+                'name' => []
             ])
         ));
 
-        $content = <<<EOF
-[
-    {
-        "name":"Tales Santos",
-        "colors":["white","blue"],
-        "favouriteBook": {
-            "id":10,
-            "name":"Design Patterns"
-        }
-    },
-    {
-        "name":"Tales Santos",
-        "colors":["white","blue"],
-        "favouriteBook": {
-            "id":10,
-            "name":"Design Patterns"
-        }
-    },
-    {
-        "name":"Tales Santos",
-        "colors":["white","blue"],
-        "favouriteBook": {
-            "id":10,
-            "name":"Design Patterns"
-        }
+        $dummy = $serializer->deserialize('{"foo":[{"name":"Tales"}]}', DummyCollection::class);
+        $this->assertCount(1, $dummy->getFoo());
+        $this->assertInstanceOf(Person::class, $dummy->getFoo()[0]);
+        $this->assertSame($dummy->getFoo()[0]->getName(), 'Tales');
     }
-]
-EOF;
 
-        /** @var Person[] $persons */
-        $persons = $serializer->deserialize($content, \sprintf('%s[]', Person::class));
+    /** @test */
+    public function it_can_deserialize_a_collection_of_values_using_writer_filter_and_reflection()
+    {
+        $serializer = $this->createSerializer($this->createMapping(DummyCollection::class, [
+            'bar' => ['type' => 'integer[]', 'writeValueFilter' => 'array_filter($value)']
+        ]));
 
-        $this->assertCount(3, $persons);
+        $dummy = $serializer->deserialize('{"bar":[null,2,3,null]}', DummyCollection::class);
 
-        foreach ($persons as $person) {
-            $this->assertSame('Tales Santos', $person->getName());
-            $this->assertSame(['white', 'blue'], $person->getColors());
-            $this->assertInstanceOf(Book::class, $person->getFavouriteBook());
-            $this->assertSame(10, $person->getFavouriteBook()->getId());
-            $this->assertSame('Design Patterns', $person->getFavouriteBook()->getName());
-        }
+        $ref = new \ReflectionObject($dummy);
+        $prop = $ref->getProperty('bar');
+        $prop->setAccessible(true);
+
+        $this->assertSame([1 => 2, 2 => 3], $prop->getValue($dummy));
+    }
+
+    /** @test */
+    public function it_can_deserialize_a_collection_of_scalar_values_through_reflection()
+    {
+        $serializer = $this->createSerializer($this->createMapping(DummyCollection::class, [
+            'bar' => ['type' => 'integer[]']
+        ]));
+
+        $dummy = $serializer->deserialize('{"bar":[1,2,3,4,5,6,7,8,9,10]}', DummyCollection::class);
+
+        $ref = new \ReflectionObject($dummy);
+        $prop = $ref->getProperty('bar');
+        $prop->setAccessible(true);
+
+        $this->assertSame([1, 2, 3, 4, 5, 6, 7, 8, 9, 10], $prop->getValue($dummy));
+    }
+
+    /** @test */
+    public function it_can_deserialize_a_collection_of_mixed_values_through_reflection()
+    {
+        $serializer = $this->createSerializer($this->createMapping(DummyCollection::class, [
+            'bar' => ['type' => 'mixed[]']
+        ]));
+
+        $dummy = $serializer->deserialize('{"bar":[1,2,"3",4,5,6,"7",8,9,10]}', DummyCollection::class);
+
+        $ref = new \ReflectionObject($dummy);
+        $prop = $ref->getProperty('bar');
+        $prop->setAccessible(true);
+
+        $this->assertSame([1, 2, '3', 4, 5, 6, '7', 8, 9, 10], $prop->getValue($dummy));
+    }
+
+    /** @test */
+    public function it_can_deserialize_a_collection_of_persons_through_reflection()
+    {
+        $serializer = $this->createSerializer(array_merge(
+            $this->createMapping(DummyCollection::class, [
+                'bar' => ['type' => Person::class . '[]']
+            ]),
+            $this->createMapping(Person::class, [
+                'name' => []
+            ])
+        ));
+
+        $dummy = $serializer->deserialize('{"bar":[{"name":"Tales"}]}', DummyCollection::class);
+
+        $ref = new \ReflectionObject($dummy);
+        $prop = $ref->getProperty('bar');
+        $prop->setAccessible(true);
+
+        $this->assertCount(1, $prop->getValue($dummy));
+        $this->assertInstanceOf(Person::class, $prop->getValue($dummy)[0]);
+        $this->assertSame($prop->getValue($dummy)[0]->getName(), 'Tales');
     }
 
     /** @test */

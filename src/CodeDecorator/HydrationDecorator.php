@@ -112,33 +112,29 @@ STRING;
 if (isset(\$data['{exposeAs}']) || \array_key_exists('{exposeAs}', \$data)) {
     if (null !== \$value = \$data['{exposeAs}']) {
         {mutator}
-    } else {
-        \$object->{setter}(null);
     }
+    \$object->{setter}(\$value);
 }
 
 STRING;
 
         if ($property->writeValueFilter) {
-            $mutator = \sprintf('$object->%s(%s);', $property->setter, $property->writeValueFilter);
+            $mutator = \sprintf('$value = %s;', $property->writeValueFilter);
         } elseif ($property->isScalarType()) {
-            $mutator = \sprintf('$object->%s((%s) $value);', $property->setter, $property->type);
+            $mutator = \sprintf('$value = (%s) $value;', $property->type);
         } elseif ($property->isMixedCollectionType()) {
-            $mutator = \sprintf('$object->%s($value);', $property->setter, $property->type);
+            $mutator = '$value = $value;';
         } elseif ($property->isCollection()) {
             $template = <<<STRING
 foreach (\$value as \$key => \$val) {
             \$value[\$key] = {reader};
         }
-        \$object->{setter}(\$value);
 STRING;
 
             if ($property->isScalarCollectionType()) {
                 $reader = \sprintf('(%s) $val', $property->getTypeOfCollection());
-            } elseif ($property->isMixedCollectionType()) {
-                $reader = '$val';
             } else {
-                $reader = \sprintf('$this->serializer->denormalize($val, \'%s\' $context);', $property->type);
+                $reader = \sprintf('$this->serializer->denormalize($val, \'%s\', $context)', $property->getTypeOfCollection());
             }
 
             $mutator = \strtr($template, [
@@ -147,7 +143,7 @@ STRING;
                 '{exposeAs}' => $property->exposeAs,
             ]);
         } else {
-            $mutator = \sprintf('$object->%s($this->serializer->denormalize($value, \'%s\', $context));', $property->setter, $property->type);
+            $mutator = \sprintf('$value = $this->serializer->denormalize($value, \'%s\', $context);', $property->type);
         }
 
         return \strtr($body, [
@@ -166,25 +162,47 @@ STRING;
 // property {propertyName}
 if (isset(\$data['{exposeAs}']) || \array_key_exists('{exposeAs}', \$data)) {
     if (null !== \$value = \$data['{exposeAs}']) {
-        \$this->classMetadata->propertyMetadata['{propertyName}']->setValue(\$object, \$value);
-    } else {
-        \$this->classMetadata->propertyMetadata['{propertyName}']->setValue(\$object, null);
+        {mutator}
     }
+    \$this->classMetadata->propertyMetadata['{propertyName}']->reflection->setValue(\$object, \$value);
 }
 
 STRING;
+
+        $mutatorPattern = '$this->classMetadata->propertyMetadata[\''.$property->name.'\']->reflection->setValue($object, %s);';
+
         if ($property->writeValueFilter) {
-            $value = $property->writeValueFilter;
+            $mutator = \sprintf('$value = %s;', $property->writeValueFilter);
         } elseif ($property->isScalarType()) {
-            $value = '$value';
+            $mutator = \sprintf($mutatorPattern, \sprintf('(%s) $value', $property->type));
+        } elseif ($property->isMixedCollectionType()) {
+            $mutator = \sprintf($mutatorPattern, '$value');
+        } elseif ($property->isCollection()) {
+            $template = <<<STRING
+foreach (\$value as \$key => \$val) {
+            \$value[\$key] = {reader};
+        }
+STRING;
+
+            if ($property->isScalarCollectionType()) {
+                $reader = \sprintf('(%s) $val', $property->getTypeOfCollection());
+            } else {
+                $reader = \sprintf('$this->serializer->denormalize($val, \'%s\', $context)', $property->getTypeOfCollection());
+            }
+
+            $mutator = \strtr($template, [
+                '{reader}' => $reader,
+                '{propertyName}' => $property->name,
+                '{exposeAs}' => $property->exposeAs,
+            ]);
         } else {
-            $value = '$this->serializer->denormalize($value, '.$property->type.', $context)';
+            $mutator = \sprintf($mutatorPattern, '$this->serializer->denormalize($value, '.$property->type.', $context)');
         }
 
         return \strtr($body, [
             '{exposeAs}' => $property->exposeAs,
             '{propertyName}' => $property->name,
-            '{value}' => $value,
+            '{mutator}' => $mutator,
         ]);
     }
 }
