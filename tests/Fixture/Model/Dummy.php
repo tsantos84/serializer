@@ -18,72 +18,36 @@ namespace Tests\TSantos\Serializer\Fixture\Model;
  *
  * @author Tales Santos <tales.augusto.santos@gmail.com>
  */
-class Dummy
+class Dummy extends DummyAbstract
 {
-    /**
-     * @var string
-     */
     private $foo;
 
-    /**
-     * @var string
-     */
     private $bar;
 
     /**
-     * @var string
+     * Dummy constructor.
+     * @param $foo
+     * @param $bar
      */
-    private $baz;
-
-    /**
-     * @var Dummy
-     */
-    private $innerDummy;
-
-    /**
-     * ClassWithoutAccessor constructor.
-     *
-     * @param string $foo
-     */
-    public function __construct(string $foo)
+    public function __construct($foo = null, $bar = null)
     {
         $this->foo = $foo;
+        $this->bar = $bar;
     }
 
     /**
-     * @return string
+     * @return mixed
      */
-    public function getFoo(): string
+    public function getFoo()
     {
         return $this->foo;
     }
 
     /**
-     * @return string
+     * @param mixed $foo
      */
-    public function getBar(): ?string
+    public function setFoo($foo): void
     {
-        return $this->bar;
-    }
-
-    /**
-     * @param string $bar
-     */
-    public function setBar(string $bar): void
-    {
-        $this->bar = $bar;
-    }
-
-    /**
-     * @param string $baz
-     */
-    public function setBaz(string $baz): void
-    {
-        $this->baz = $baz;
-    }
-
-    public function getFooBar(): string
-    {
-        return $this->foo.$this->bar;
+        $this->foo = $foo;
     }
 }

@@ -97,7 +97,7 @@ STRING;
                 continue;
             }
 
-            $propCode = $this->createAccessorCode($property, '$this->classMetadata->propertyMetadata[\'{propertyName}\']->getValue($object)');
+            $propCode = $this->createAccessorCode($property, '$this->classMetadata->propertyMetadata[\'{propertyName}\']->reflection->getValue($object)');
 
             $accessors .= \strtr($propCode, [
                 '{propertyName}' => $property->name,

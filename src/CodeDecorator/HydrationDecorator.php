@@ -169,14 +169,12 @@ if (isset(\$data['{exposeAs}']) || \array_key_exists('{exposeAs}', \$data)) {
 
 STRING;
 
-        $mutatorPattern = '$this->classMetadata->propertyMetadata[\''.$property->name.'\']->reflection->setValue($object, %s);';
-
         if ($property->writeValueFilter) {
             $mutator = \sprintf('$value = %s;', $property->writeValueFilter);
         } elseif ($property->isScalarType()) {
-            $mutator = \sprintf($mutatorPattern, \sprintf('(%s) $value', $property->type));
+            $mutator = \sprintf('$value = (%s) $value;', $property->type);
         } elseif ($property->isMixedCollectionType()) {
-            $mutator = \sprintf($mutatorPattern, '$value');
+            $mutator = '$value = (array) $value;';
         } elseif ($property->isCollection()) {
             $template = <<<STRING
 foreach (\$value as \$key => \$val) {
@@ -196,7 +194,7 @@ STRING;
                 '{exposeAs}' => $property->exposeAs,
             ]);
         } else {
-            $mutator = \sprintf($mutatorPattern, '$this->serializer->denormalize($value, '.$property->type.', $context)');
+            $mutator = '$value = $this->serializer->denormalize($value, \''.$property->type.'\', $context);';
         }
 
         return \strtr($body, [

@@ -13,12 +13,9 @@ declare(strict_types=1);
 
 namespace Tests\TSantos\Serializer\Deserialization;
 
-use Tests\TSantos\Serializer\Fixture\Model\Book;
 use Tests\TSantos\Serializer\Fixture\Model\Dummy;
-use Tests\TSantos\Serializer\Fixture\Model\Inheritance\AbstractVehicle;
-use Tests\TSantos\Serializer\Fixture\Model\Inheritance\Airplane;
-use Tests\TSantos\Serializer\Fixture\Model\Inheritance\Car;
-use Tests\TSantos\Serializer\Fixture\Model\Person;
+use Tests\TSantos\Serializer\Fixture\Model\DummyAbstract;
+use Tests\TSantos\Serializer\Fixture\Model\DummyInner;
 use Tests\TSantos\Serializer\SerializerTestCase;
 use TSantos\Serializer\DeserializationContext;
 use TSantos\Serializer\Metadata\Driver\ReflectionDriver;
@@ -32,36 +29,105 @@ use TSantos\Serializer\Metadata\Driver\ReflectionDriver;
 class DeserializeSimpleObjectTest extends SerializerTestCase
 {
     /** @test */
-    public function it_can_deserialize_a_simple_object()
+    public function it_can_deserialize_an_object_with_value_filter_and_setter()
     {
-        $serializer = $this->createSerializer(\array_merge(
-            $this->createMapping(Person::class, [
-                'name' => ['type' => 'string'],
-                'favouriteBook' => ['type' => Book::class],
+        $serializer = $this->createSerializer($this->createMapping(Dummy::class, [
+            'foo' => ['type' => 'string', 'writeValueFilter' => 'trim($value)'],
+        ]));
+
+        $dummy = $serializer->deserialize('{"foo":" Foobar "}', Dummy::class);
+
+        $this->assertInstanceOf(Dummy::class, $dummy);
+        $this->assertSame('Foobar', $dummy->getFoo());
+    }
+
+    /** @test */
+    public function it_can_deserialize_an_object_containing_scalar_value_with_setter()
+    {
+        $serializer = $this->createSerializer($this->createMapping(Dummy::class, [
+            'foo' => ['type' => 'string'],
+        ]));
+
+        $dummy = $serializer->deserialize('{"foo":"Foobar"}', Dummy::class);
+
+        $this->assertInstanceOf(Dummy::class, $dummy);
+        $this->assertSame('Foobar', $dummy->getFoo());
+    }
+
+    /** @test */
+    public function it_can_deserialize_an_object_containing_a_complex_value_with_setter()
+    {
+        $serializer = $this->createSerializer(array_merge(
+            $this->createMapping(Dummy::class, [
+                'foo' => ['type' => DummyInner::class],
             ]),
-            $this->createMapping(Book::class, [
-                'id' => ['type' => 'integer'],
-                'name' => ['type' => 'string'],
+            $this->createMapping(DummyInner::class, [
+                'baz' => ['type' => 'string']
             ])
         ));
 
-        $content = <<<EOF
-{
-    "name":"Tales Santos",
-    "favouriteBook": {
-        "id":10,
-        "name":"Design Patterns"
+        $dummy = $serializer->deserialize('{"foo":{"baz":"baz"}}', Dummy::class);
+
+        $this->assertInstanceOf(Dummy::class, $dummy);
+        $this->assertInstanceOf(DummyInner::class, $dummy->getFoo());
+        $this->assertSame('baz', $dummy->getFoo()->getBaz());
     }
-}
-EOF;
 
-        /** @var Person $person */
-        $person = $serializer->deserialize($content, Person::class);
+    /** @test */
+    public function it_can_deserialize_an_object_with_value_filter_and_reflection()
+    {
+        $serializer = $this->createSerializer($this->createMapping(Dummy::class, [
+            'bar' => ['type' => 'string', 'writeValueFilter' => 'trim($value)'],
+        ]));
 
-        $this->assertSame('Tales Santos', $person->getName());
-        $this->assertInstanceOf(Book::class, $person->getFavouriteBook());
-        $this->assertSame(10, $person->getFavouriteBook()->getId());
-        $this->assertSame('Design Patterns', $person->getFavouriteBook()->getName());
+        $dummy = $serializer->deserialize('{"bar":" Foobar "}', Dummy::class);
+
+        $ref = new \ReflectionObject($dummy);
+        $prop = $ref->getProperty('bar');
+        $prop->setAccessible(true);
+
+        $this->assertInstanceOf(Dummy::class, $dummy);
+        $this->assertSame('Foobar', $prop->getValue($dummy));
+    }
+
+    /** @test */
+    public function it_can_deserialize_an_object_containing_scalar_value_with_reflection()
+    {
+        $serializer = $this->createSerializer($this->createMapping(Dummy::class, [
+            'bar' => ['type' => 'string'],
+        ]));
+
+        $dummy = $serializer->deserialize('{"bar":"Foobar"}', Dummy::class);
+
+        $ref = new \ReflectionObject($dummy);
+        $prop = $ref->getProperty('bar');
+        $prop->setAccessible(true);
+
+        $this->assertInstanceOf(Dummy::class, $dummy);
+        $this->assertSame('Foobar', $prop->getValue($dummy));
+    }
+
+    /** @test */
+    public function it_can_deserialize_an_object_containing_a_complex_value_with_reflection()
+    {
+        $serializer = $this->createSerializer(array_merge(
+            $this->createMapping(Dummy::class, [
+                'bar' => ['type' => DummyInner::class],
+            ]),
+            $this->createMapping(DummyInner::class, [
+                'baz' => ['type' => 'string']
+            ])
+        ));
+
+        $dummy = $serializer->deserialize('{"bar":{"baz":"baz"}}', Dummy::class);
+
+        $ref = new \ReflectionObject($dummy);
+        $prop = $ref->getProperty('bar');
+        $prop->setAccessible(true);
+
+        $this->assertInstanceOf(Dummy::class, $dummy);
+        $this->assertInstanceOf(DummyInner::class, $prop->getValue($dummy));
+        $this->assertSame('baz', $prop->getValue($dummy)->getBaz());
     }
 
     /** @test */
@@ -73,37 +139,28 @@ EOF;
 
         $content = '{"foo":"bar"}';
 
-        /** @var Dummy $subject */
-        $subject = $serializer->deserialize($content, Dummy::class);
+        $dummy = $serializer->deserialize($content, Dummy::class);
 
-        $this->assertSame('bar', $subject->getFoo());
+        $this->assertSame('bar', $dummy->getFoo());
     }
 
     /** @test */
     public function it_cannot_deserialize_read_only_attributes()
     {
-        $serializer = $this->createSerializer(\array_merge(
-            $this->createMapping(Person::class, [
-                'id' => ['type' => 'integer', 'readOnly' => true],
-                'name' => ['type' => 'string'],
-            ])
-        ));
+        $serializer = $this->createSerializer($this->createMapping(Dummy::class, [
+            'foo' => ['type' => 'integer', 'readOnly' => true],
+            'bar' => ['type' => 'string'],
+        ]));
 
-        $content = <<<EOF
-{
-    "id":10,
-    "name":"Tales Augusto Santos"
-}
-EOF;
-        $person = new Person(10, 'Tales Santos');
-        $context = new DeserializationContext();
-        $context->setTarget($person);
+        $dummy = new Dummy(100);
 
-        /** @var Person $person */
-        $person = $serializer->deserialize($content, Person::class, $context);
+        $dummy = $serializer->deserialize(
+            '{"foo":200,"bar":"bar"}',
+            Dummy::class,
+            DeserializationContext::create()->setTarget($dummy)
+        );
 
-        $this->assertSame('Tales Augusto Santos', $person->getName());
-        $this->assertSame(10, $person->getId());
+        $this->assertSame(100, $dummy->getFoo());
     }
 
     /** @test */
@@ -111,37 +168,37 @@ EOF;
     {
         $serializer = $this->createSerializer(\array_merge(
             $this->createMapping(
-                AbstractVehicle::class,
+                DummyAbstract::class,
                 [
-                    'color' => [],
+                    'foobar' => [],
                 ],
                 [],
                 [
                     'discriminatorMap' => [
                         'field' => 'type',
                         'mapping' => [
-                            'car' => Car::class,
-                            'airplane' => Airplane::class,
+                            'dummy' => Dummy::class,
+                            'inner' => DummyInner::class,
                         ],
                     ],
                 ]
             ),
-            $this->createMapping(Car::class, [
-                'doors' => ['type' => 'integer'],
+            $this->createMapping(Dummy::class, [
+                'foo' => ['type' => 'string'],
             ]),
-            $this->createMapping(Airplane::class, [
-                'turbines' => ['type' => 'integer'],
+            $this->createMapping(DummyInner::class, [
+                'baz' => ['type' => 'string'],
             ])
         ));
 
-        $car = $serializer->deserialize('{"color":"blue","type":"car","doors":2}', AbstractVehicle::class);
-        $this->assertInstanceOf(Car::class, $car);
-        $this->assertSame('blue', $car->getColor());
-        $this->assertSame(2, $car->getDoors());
+        $dummy = $serializer->deserialize('{"foo":"foo","type":"dummy","foobar":"foobar"}', DummyAbstract::class);
+        $this->assertInstanceOf(Dummy::class, $dummy);
+        $this->assertSame('foo', $dummy->getFoo());
+        $this->assertSame('foobar', $dummy->getFoobar());
 
-        $airplane = $serializer->deserialize('{"color":"red","type":"airplane","turbines":4}', AbstractVehicle::class);
-        $this->assertInstanceOf(Airplane::class, $airplane);
-        $this->assertSame('red', $airplane->getColor());
-        $this->assertSame(4, $airplane->getTurbines());
+        $inner = $serializer->deserialize('{"baz":"baz","type":"inner","foobar":"foobar"}', DummyAbstract::class);
+        $this->assertInstanceOf(DummyInner::class, $inner);
+        $this->assertSame('baz', $inner->getBaz());
+        $this->assertSame('foobar', $inner->getFoobar());
     }
 }
