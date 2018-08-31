@@ -12,6 +12,16 @@ class DummyInner extends DummyAbstract
     private $baz;
 
     /**
+     * DummyInner constructor.
+     * @param $baz
+     */
+    public function __construct($baz = null)
+    {
+        $this->baz = $baz;
+    }
+
+
+    /**
      * @return mixed
      */
     public function getBaz()
