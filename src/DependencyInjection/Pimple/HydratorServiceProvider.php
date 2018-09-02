@@ -18,13 +18,13 @@ use Pimple\Container;
 use Pimple\ServiceProviderInterface;
 use Psr\Container\ContainerInterface;
 use TSantos\Serializer\CodeDecorator\AbstractHydratorDecorator;
+use TSantos\Serializer\CodeDecorator\ClassMetadataDecorator;
 use TSantos\Serializer\CodeDecorator\ConstructorMethodDecorator;
 use TSantos\Serializer\CodeDecorator\ExposedKeysDecorator;
 use TSantos\Serializer\CodeDecorator\ExtractionDecorator;
 use TSantos\Serializer\CodeDecorator\HydrationDecorator;
 use TSantos\Serializer\CodeDecorator\NewInstanceMethodDecorator;
 use TSantos\Serializer\CodeDecorator\PropertiesDecorator;
-use TSantos\Serializer\CodeDecorator\ReflectionPropertyMethodDecorator;
 use TSantos\Serializer\Configuration;
 use TSantos\Serializer\HydratorCodeGenerator;
 use TSantos\Serializer\HydratorCodeWriter;
@@ -67,7 +67,7 @@ class HydratorServiceProvider implements ServiceProviderInterface
                     new HydrationDecorator(),
                     new NewInstanceMethodDecorator(),
                     new PropertiesDecorator(),
-                    new ReflectionPropertyMethodDecorator(),
+                    new ClassMetadataDecorator(),
                 ]
             );
         };

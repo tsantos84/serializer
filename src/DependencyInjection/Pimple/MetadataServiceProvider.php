@@ -53,11 +53,15 @@ class MetadataServiceProvider implements ServiceProviderInterface
         };
 
         $container[MetadataFactoryInterface::class] = function ($container) {
-            return new MetadataFactory(
+            $factory = new MetadataFactory(
                 $container[DriverInterface::class],
                 'Metadata\ClassHierarchyMetadata',
                 $container['debug']
             );
+
+            $factory->setIncludeInterfaces(true);
+
+            return $factory;
         };
 
         $container->extend(MetadataFactoryInterface::class, function (MetadataFactory $factory, $container) {

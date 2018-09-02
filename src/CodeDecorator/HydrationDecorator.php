@@ -32,9 +32,9 @@ class HydrationDecorator implements CodeDecoratorInterface
     {
         $hydrate = $class->addMethod('hydrate')
             ->setVisibility('public')
-            ->addComment('@param '.$classMetadata->name.' $object')
+            ->addComment('@param \\'.$classMetadata->name.' $object')
             ->addComment('@param array $data')
-            ->addComment('@param '.DeserializationContext::class.' $context')
+            ->addComment('@param \\'.DeserializationContext::class.' $context')
             ->addComment('@return mixed')
         ;
 
@@ -59,8 +59,8 @@ class HydrationDecorator implements CodeDecoratorInterface
         if ($classMetadata->isAbstract()) {
             $body .= <<<STRING
 // hydrate with concrete hydrator
-\$type = \array_search(\$data['type'], self::\$discriminatorMapping);
-\$this->loader->load(\$type, \$this->serializer)->hydrate(\$object, \$data, \$context);
+\$type = \array_search(\$data['{$classMetadata->discriminatorField}'], self::\$discriminatorMapping);
+\$this->hydratorLoader->load(\$type)->hydrate(\$object, \$data, \$context);
 
 
 STRING;
@@ -112,33 +112,29 @@ STRING;
 if (isset(\$data['{exposeAs}']) || \array_key_exists('{exposeAs}', \$data)) {
     if (null !== \$value = \$data['{exposeAs}']) {
         {mutator}
-    } else {
-        \$object->{setter}(null);
     }
+    \$object->{setter}(\$value);
 }
 
 STRING;
 
         if ($property->writeValueFilter) {
-            $mutator = \sprintf('$object->%s(%s);', $property->setter, $property->writeValueFilter);
+            $mutator = \sprintf('$value = %s;', $property->writeValueFilter);
         } elseif ($property->isScalarType()) {
-            $mutator = \sprintf('$object->%s((%s) $value);', $property->setter, $property->type);
+            $mutator = \sprintf('$value = (%s) $value;', $property->type);
         } elseif ($property->isMixedCollectionType()) {
-            $mutator = \sprintf('$object->%s($value);', $property->setter, $property->type);
+            $mutator = '$value = (array) $value;';
         } elseif ($property->isCollection()) {
             $template = <<<STRING
 foreach (\$value as \$key => \$val) {
             \$value[\$key] = {reader};
         }
-        \$object->{setter}(\$value);
 STRING;
 
             if ($property->isScalarCollectionType()) {
                 $reader = \sprintf('(%s) $val', $property->getTypeOfCollection());
-            } elseif ($property->isMixedCollectionType()) {
-                $reader = '$val';
             } else {
-                $reader = \sprintf('$this->serializer->denormalize($val, \'%s\' $context);', $property->type);
+                $reader = \sprintf('$this->serializer->denormalize($val, \'%s\', $context)', $property->getTypeOfCollection());
             }
 
             $mutator = \strtr($template, [
@@ -147,7 +143,7 @@ STRING;
                 '{exposeAs}' => $property->exposeAs,
             ]);
         } else {
-            $mutator = \sprintf('$object->%s($this->serializer->denormalize($value, \'%s\', $context));', $property->setter, $property->type);
+            $mutator = \sprintf('$value = $this->serializer->denormalize($value, \'%s\', $context);', $property->type);
         }
 
         return \strtr($body, [
@@ -164,30 +160,47 @@ STRING;
         $body = <<<STRING
         
 // property {propertyName}
-if (isset(\$data['{exposeAs}'])) {
-    \$propReflection = \$this->getReflectionProperty('{declaringClass}', '{propertyName}');
-    \$propReflection->setAccessible(true);
+if (isset(\$data['{exposeAs}']) || \array_key_exists('{exposeAs}', \$data)) {
     if (null !== \$value = \$data['{exposeAs}']) {
-        \$propReflection->setValue(\$object, {value});
-    } else {
-        \$propReflection->setValue(\$object, null);
+        {mutator}
     }
+    \$this->classMetadata->propertyMetadata['{propertyName}']->reflection->setValue(\$object, \$value);
 }
 
 STRING;
+
         if ($property->writeValueFilter) {
-            $value = $property->writeValueFilter;
+            $mutator = \sprintf('$value = %s;', $property->writeValueFilter);
         } elseif ($property->isScalarType()) {
-            $value = '$value';
+            $mutator = \sprintf('$value = (%s) $value;', $property->type);
+        } elseif ($property->isMixedCollectionType()) {
+            $mutator = '$value = (array) $value;';
+        } elseif ($property->isCollection()) {
+            $template = <<<STRING
+foreach (\$value as \$key => \$val) {
+            \$value[\$key] = {reader};
+        }
+STRING;
+
+            if ($property->isScalarCollectionType()) {
+                $reader = \sprintf('(%s) $val', $property->getTypeOfCollection());
+            } else {
+                $reader = \sprintf('$this->serializer->denormalize($val, \'%s\', $context)', $property->getTypeOfCollection());
+            }
+
+            $mutator = \strtr($template, [
+                '{reader}' => $reader,
+                '{propertyName}' => $property->name,
+                '{exposeAs}' => $property->exposeAs,
+            ]);
         } else {
-            $value = '$this->serializer->denormalize($value, '.$property->type.', $context)';
+            $mutator = '$value = $this->serializer->denormalize($value, \''.$property->type.'\', $context);';
         }
 
         return \strtr($body, [
             '{exposeAs}' => $property->exposeAs,
-            '{declaringClass}' => $property->reflection->getDeclaringClass()->name,
             '{propertyName}' => $property->name,
-            '{value}' => $value,
+            '{mutator}' => $mutator,
         ]);
     }
 }

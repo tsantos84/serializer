@@ -13,15 +13,17 @@ declare(strict_types=1);
 
 namespace TSantos\Serializer;
 
+use TSantos\Serializer\Metadata\ClassMetadata;
+
 /**
- * Interface HydratorLoaderAwareInterface.
+ * Interface ClassMetadataAwareInterface.
  *
  * @author Tales Santos <tales.augusto.santos@gmail.com>
  */
-interface HydratorLoaderAwareInterface
+interface ClassMetadataAwareInterface
 {
     /**
-     * @param HydratorLoaderInterface $loader
+     * @param ClassMetadata $classMetadata
      */
-    public function setHydratorLoader(HydratorLoaderInterface $loader): void;
+    public function setClassMetadata(ClassMetadata $classMetadata): void;
 }

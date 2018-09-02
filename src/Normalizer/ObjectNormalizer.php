@@ -66,14 +66,16 @@ class ObjectNormalizer implements NormalizerInterface, DenormalizerInterface, Se
 
         try {
             $context->enter($data, $objectId);
-            $array = $hydrator->extract($data, $context);
-            $context->leave($data, $objectId);
         } catch (CircularReferenceException $circularReferenceException) {
             if (null === $this->circularReferenceHandler) {
                 throw $circularReferenceException;
             }
-            $array = \call_user_func($this->circularReferenceHandler, $data, $circularReferenceException);
+
+            return \call_user_func($this->circularReferenceHandler, $data, $circularReferenceException);
         }
+
+        $array = $hydrator->extract($data, $context);
+        $context->leave($data, $objectId);
 
         return $array;
     }
@@ -109,6 +111,6 @@ class ObjectNormalizer implements NormalizerInterface, DenormalizerInterface, Se
 
     public function supportsDenormalization(string $type, $data, DeserializationContext $context): bool
     {
-        return \class_exists($type) && \DateTime::class !== $type;
+        return (\class_exists($type) || \interface_exists($type)) && \DateTime::class !== $type;
     }
 }

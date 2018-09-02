@@ -14,41 +14,41 @@ declare(strict_types=1);
 namespace Tests\TSantos\Serializer\Fixture\Model;
 
 /**
- * Class Dummy.
+ * Class DummyInner.
  *
  * @author Tales Santos <tales.augusto.santos@gmail.com>
  */
-class Dummy extends DummyAbstract implements DummyInterface
+class DummyInner extends DummyAbstract implements DummyInterface
 {
-    private $foo;
+    private $baz;
 
-    private $bar;
+    private $qux;
 
     /**
-     * Dummy constructor.
+     * DummyInner constructor.
      *
-     * @param $foo
-     * @param $bar
+     * @param $baz
+     * @param null $qux
      */
-    public function __construct($foo = null, $bar = null)
+    public function __construct($baz = null, $qux = null)
     {
-        $this->foo = $foo;
-        $this->bar = $bar;
+        $this->baz = $baz;
+        $this->qux = $qux;
     }
 
     /**
      * @return mixed
      */
-    public function getFoo()
+    public function getBaz()
     {
-        return $this->foo;
+        return $this->baz;
     }
 
     /**
-     * @param mixed $foo
+     * @param mixed $baz
      */
-    public function setFoo($foo): void
+    public function setBaz($baz): void
     {
-        $this->foo = $foo;
+        $this->baz = $baz;
     }
 }

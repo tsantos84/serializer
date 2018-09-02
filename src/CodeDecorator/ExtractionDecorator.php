@@ -34,8 +34,8 @@ class ExtractionDecorator implements CodeDecoratorInterface
         $extract = $class->addMethod('extract')
             ->setReturnType('array')
             ->setVisibility('public')
-            ->addComment('@param '.$classMetadata->name.' $object')
-            ->addComment('@param '.SerializationContext::class.' $context')
+            ->addComment('@param \\'.$classMetadata->name.' $object')
+            ->addComment('@param \\'.SerializationContext::class.' $context')
             ->addComment('@return array')
         ;
 
@@ -58,32 +58,28 @@ class ExtractionDecorator implements CodeDecoratorInterface
             return 'return [];';
         }
 
-        $initialData = [];
+        $data = [];
         foreach ($classMetadata->all() as $property) {
-            $initialData[$property->exposeAs] = null;
+            $data[$property->exposeAs] = null;
         }
 
-        $data = \var_export($initialData, true);
-
-        $body = \sprintf('$data = %s;', $data).PHP_EOL.PHP_EOL;
-
-        if ($discriminatorField) {
-            $body .= $this->buildDiscriminatorField($classMetadata);
+        if (!$classMetadata->isAbstract() && $discriminatorField) {
+            $values = \array_flip($classMetadata->discriminatorMapping);
+            $data[$discriminatorField] = $values[$classMetadata->name];
         }
+
+        $body = \sprintf('$data = %s;', \var_export($data, true)).PHP_EOL.PHP_EOL;
 
         $body .= <<<STRING
 {accessors}
-
 if (null === \$groups = \$context->getGroups()) {
     return \$data;
 }
 
 \$contextId = \$context->getId();
-
 if (!isset(self::\$exposedPropertiesForContext[\$contextId])) {
     self::\$exposedPropertiesForContext[\$contextId] = \$this->getExposedKeys(\$context);
 }
-
 \$data = \array_intersect_key(\$data, self::\$exposedPropertiesForContext[\$contextId]);
 
 return \$data;
@@ -97,15 +93,9 @@ STRING;
                 continue;
             }
 
-            $propCode = <<<STRING
-\$propReflection = \$this->getReflectionProperty('{declaringClass}', '{propertyName}');
-\$propReflection->setAccessible(true);
-
-STRING;
-            $propCode .= $this->createAccessorCode($property, '$propReflection->getValue($object)');
+            $propCode = $this->createAccessorCode($property, '$this->classMetadata->propertyMetadata[\'{propertyName}\']->reflection->getValue($object)');
 
             $accessors .= \strtr($propCode, [
-                '{declaringClass}' => $property->reflection->getDeclaringClass()->name,
                 '{propertyName}' => $property->name,
             ]);
         }
@@ -150,8 +140,6 @@ foreach (\$value as \$key => \$val) {
 STRING;
             if ($property->isScalarCollectionType()) {
                 $reader = \sprintf('(%s) $val', $property->getTypeOfCollection());
-            } elseif ($property->isMixedCollectionType()) {
-                $reader = '$val';
             } else {
                 $reader = '$this->serializer->normalize($val, $context);';
             }
@@ -172,29 +160,5 @@ STRING;
         ];
 
         return \strtr($code, $replaces);
-    }
-
-    private function buildDiscriminatorField(ClassMetadata $classMetadata): string
-    {
-        if ($classMetadata->isAbstract()) {
-            return <<<STRING
-// discriminator field
-if (isset(self::\$discriminatorMapping[\$class = get_class(\$object)])) {
-    \$data['{$classMetadata->discriminatorField}'] = self::\$discriminatorMapping[\$class];
-}
-
-STRING;
-        }
-
-        $values = \array_flip($classMetadata->discriminatorMapping);
-        $value = $values[$classMetadata->name];
-
-        $code = <<<STRING
-// discriminator field
-\$data['{$classMetadata->discriminatorField}'] = '{$value}';
-
-STRING;
-
-        return $code;
     }
 }

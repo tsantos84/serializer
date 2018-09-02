@@ -32,8 +32,8 @@ class NewInstanceMethodDecorator implements CodeDecoratorInterface
         $method = $class
             ->addMethod('newInstance')
             ->addComment('@param array $data')
-            ->addComment('@param '.DeserializationContext::class.' $context')
-            ->addComment('@return '.$classMetadata->name)
+            ->addComment('@param \\'.DeserializationContext::class.' $context')
+            ->addComment('@return \\'.$classMetadata->name)
         ;
 
         $method
@@ -63,8 +63,8 @@ if (!isset(\$data['{$classMetadata->discriminatorField}'])) {
     throw new \InvalidArgumentException('The \$data provided should have the field "{$classMetadata->discriminatorField}"');
 }
 
-\$type = array_search(\$data['{$classMetadata->discriminatorField}'], self::\$discriminatorMapping);
-\$hydrator = \$this->loader->load(\$type, \$this->serializer);
+\$type = \array_search(\$data['{$classMetadata->discriminatorField}'], self::\$discriminatorMapping);
+\$hydrator = \$this->hydratorLoader->load(\$type);
 
 return \$hydrator->newInstance(\$data, \$context);
 STRING;

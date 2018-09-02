@@ -34,14 +34,18 @@ class DeserializationContext extends AbstractContext
     }
 
     /**
-     * @param object $target
+     * @param $target
+     *
+     * @return DeserializationContext
      */
-    public function setTarget($target): void
+    public function setTarget($target): self
     {
         if (!\is_object($target)) {
             throw new \InvalidArgumentException('The $target should be an object, '.\gettype($target).' given');
         }
 
         $this->target = $target;
+
+        return $this;
     }
 }

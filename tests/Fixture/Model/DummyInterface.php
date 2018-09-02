@@ -11,17 +11,13 @@ declare(strict_types=1);
  * file that was distributed with this source code.
  */
 
-namespace TSantos\Serializer;
+namespace Tests\TSantos\Serializer\Fixture\Model;
 
 /**
- * Interface HydratorLoaderAwareInterface.
+ * Interface DummyAbstract.
  *
  * @author Tales Santos <tales.augusto.santos@gmail.com>
  */
-interface HydratorLoaderAwareInterface
+interface DummyInterface
 {
-    /**
-     * @param HydratorLoaderInterface $loader
-     */
-    public function setHydratorLoader(HydratorLoaderInterface $loader): void;
 }

@@ -14,10 +14,7 @@ declare(strict_types=1);
 namespace Tests\TSantos\Serializer\Serialization;
 
 use Tests\TSantos\Serializer\Fixture\Model\Dummy;
-use Tests\TSantos\Serializer\Fixture\Model\Inheritance\AbstractVehicle;
-use Tests\TSantos\Serializer\Fixture\Model\Inheritance\Airplane;
-use Tests\TSantos\Serializer\Fixture\Model\Inheritance\Car;
-use Tests\TSantos\Serializer\Fixture\Model\Person;
+use Tests\TSantos\Serializer\Fixture\Model\DummyInner;
 use Tests\TSantos\Serializer\SerializerTestCase;
 use TSantos\Serializer\Metadata\Driver\ReflectionDriver;
 
@@ -25,55 +22,85 @@ use TSantos\Serializer\Metadata\Driver\ReflectionDriver;
 class SerializerTest extends SerializerTestCase
 {
     /** @test */
-    public function it_can_serialize_a_collection_of_simple_objects()
+    public function it_can_serialize_an_object_containing_scalar_value_with_getter()
     {
-        $serializer = $this->createSerializer($this->createMapping(Person::class, [
-            'id' => ['type' => 'integer'],
-            'name' => [],
-            'married' => ['type' => 'boolean', 'getter' => 'isMarried'],
+        $serializer = $this->createSerializer($this->createMapping(Dummy::class, [
+            'foo' => ['type' => 'integer'],
         ]));
 
-        $persons = [$this->createPerson(), $this->createPerson(), $this->createPerson()];
+        $dummy = new Dummy(10);
 
-        $json = $serializer->serialize($persons);
-
-        $this->assertSame(\json_encode([
-            [
-                'id' => 1,
-                'name' => 'Tales',
-                'married' => true,
-            ],
-            [
-                'id' => 1,
-                'name' => 'Tales',
-                'married' => true,
-            ],
-            [
-                'id' => 1,
-                'name' => 'Tales',
-                'married' => true,
-            ],
-        ]), $json);
+        $this->assertSame('{"foo":10}', $serializer->serialize($dummy));
     }
 
     /** @test */
-    public function it_can_serialize_a_simple_object()
+    public function it_can_serialize_an_object_containing_scalar_value_with_reader_filter_and_getter()
     {
-        $serializer = $this->createSerializer($this->createMapping(Person::class, [
-            'id' => ['type' => 'integer'],
-            'name' => [],
-            'married' => ['type' => 'boolean', 'getter' => 'isMarried'],
+        $serializer = $this->createSerializer($this->createMapping(Dummy::class, [
+            'foo' => ['type' => 'string', 'readValueFilter' => 'trim($value)'],
         ]));
 
-        $person = $this->createPerson();
+        $dummy = new Dummy(' FOO ');
 
-        $json = $serializer->serialize($person);
+        $this->assertSame('{"foo":"FOO"}', $serializer->serialize($dummy));
+    }
 
-        $this->assertSame(\json_encode([
-            'id' => 1,
-            'name' => 'Tales',
-            'married' => true,
-        ]), $json);
+    /** @test */
+    public function it_can_serialize_an_object_containing_complex_value_and_getter()
+    {
+        $serializer = $this->createSerializer(\array_merge(
+            $this->createMapping(Dummy::class, [
+                'foo' => ['type' => DummyInner::class],
+            ]),
+            $this->createMapping(DummyInner::class, [
+                'baz' => ['type' => 'string'],
+            ])
+        ));
+
+        $dummy = new Dummy(new DummyInner('inner'));
+
+        $this->assertSame('{"foo":{"baz":"inner"}}', $serializer->serialize($dummy));
+    }
+
+    /** @test */
+    public function it_can_serialize_an_object_containing_scalar_value_with_reflection()
+    {
+        $serializer = $this->createSerializer($this->createMapping(Dummy::class, [
+            'bar' => ['type' => 'integer'],
+        ]));
+
+        $dummy = new Dummy(null, 10);
+
+        $this->assertSame('{"bar":10}', $serializer->serialize($dummy));
+    }
+
+    /** @test */
+    public function it_can_serialize_an_object_containing_scalar_value_with_reader_filter_and_reflection()
+    {
+        $serializer = $this->createSerializer($this->createMapping(Dummy::class, [
+            'bar' => ['type' => 'string', 'readValueFilter' => 'trim($value)'],
+        ]));
+
+        $dummy = new Dummy(null, ' FOO ');
+
+        $this->assertSame('{"bar":"FOO"}', $serializer->serialize($dummy));
+    }
+
+    /** @test */
+    public function it_can_serialize_an_object_containing_complex_value_and_reflection()
+    {
+        $serializer = $this->createSerializer(\array_merge(
+            $this->createMapping(Dummy::class, [
+                'bar' => ['type' => DummyInner::class],
+            ]),
+            $this->createMapping(DummyInner::class, [
+                'baz' => ['type' => 'string'],
+            ])
+        ));
+
+        $dummy = new Dummy(null, new DummyInner('inner'));
+
+        $this->assertSame('{"bar":{"baz":"inner"}}', $serializer->serialize($dummy));
     }
 
     /** @test */
@@ -82,70 +109,7 @@ class SerializerTest extends SerializerTestCase
         $serializer = $this->createSerializer([
             Dummy::class => new ReflectionDriver(),
         ]);
-        $json = $serializer->serialize(new Dummy('bar'));
-        $this->assertSame('{"foo":"bar","bar":null,"baz":null,"innerDummy":null}', $json);
-    }
-
-    /** @test */
-    public function it_can_serialize_abstract_classes()
-    {
-        $serializer = $this->createSerializer(
-            $this->createMapping(
-                AbstractVehicle::class,
-                [
-                    'color' => [],
-                ],
-                [],
-                [
-                    'discriminatorMap' => [
-                        'field' => 'type',
-                        'mapping' => [
-                            'car' => Car::class,
-                            'airplane' => Airplane::class,
-                        ],
-                    ],
-                ]
-            )
-        );
-
-        $serialized = $serializer->serialize(new Car('blue', 2));
-        $this->assertSame('{"color":"blue","type":"car"}', $serialized);
-    }
-
-    /** @test */
-    public function it_can_serialize_abstract_mixed_with_concrete_classes()
-    {
-        $serializer = $this->createSerializer(\array_merge(
-            $this->createMapping(
-                AbstractVehicle::class,
-                [
-                    'color' => [],
-                ],
-                [],
-                [
-                    'discriminatorMap' => [
-                        'field' => 'type',
-                        'mapping' => [
-                            'car' => Car::class,
-                            'airplane' => Airplane::class,
-                        ],
-                    ],
-                ]
-            ),
-            $this->createMapping(Car::class, [
-                'doors' => ['type' => 'integer'],
-            ])
-        ));
-
-        $serialized = $serializer->serialize(new Car('red', 2));
-        $this->assertSame('{"color":"red","doors":2,"type":"car"}', $serialized);
-    }
-
-    private function createPerson()
-    {
-        $person = new Person(1, 'Tales', true);
-//        $person->setLastName('Santos');
-
-        return $person;
+        $json = $serializer->serialize(new Dummy('foo', 'bar'));
+        $this->assertSame('{"foo":"foo","bar":"bar"}', $json);
     }
 }

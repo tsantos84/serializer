@@ -16,33 +16,35 @@ namespace TSantos\Serializer\CodeDecorator;
 use Nette\PhpGenerator\ClassType;
 use Nette\PhpGenerator\PhpFile;
 use Nette\PhpGenerator\PhpNamespace;
+use TSantos\Serializer\ClassMetadataAwareInterface;
 use TSantos\Serializer\CodeDecoratorInterface;
-use TSantos\Serializer\HydratorLoaderAwareInterface;
 use TSantos\Serializer\Metadata\ClassMetadata;
-use TSantos\Serializer\Traits\HydratorLoaderAwareTrait;
+use TSantos\Serializer\Traits\ClassMetadataAwareTrait;
 
 /**
- * Class AbstractHydratorDecorator.
+ * Class ReflectionPropertyMethodDecorator.
  *
  * @author Tales Santos <tales.augusto.santos@gmail.com>
  */
-class AbstractHydratorDecorator implements CodeDecoratorInterface
+class ClassMetadataDecorator implements CodeDecoratorInterface
 {
     public function decorate(PhpFile $file, PhpNamespace $namespace, ClassType $class, ClassMetadata $classMetadata): void
     {
-        if (!$classMetadata->isAbstract()) {
+        $needsClassMetadata = false;
+
+        foreach ($classMetadata->propertyMetadata as $property) {
+            if (null === $property->getter || null === $property->setter) {
+                $needsClassMetadata = true;
+                break;
+            }
+        }
+
+        if (!$needsClassMetadata) {
             return;
         }
 
         $class
-            ->addProperty('discriminatorMapping')
-            ->setVisibility('private')
-            ->setStatic(true)
-            ->setValue(\array_flip($classMetadata->discriminatorMapping));
-
-        $class
-            ->addImplement(HydratorLoaderAwareInterface::class);
-
-        $class->addTrait(HydratorLoaderAwareTrait::class);
+            ->addTrait(ClassMetadataAwareTrait::class)
+            ->addImplement(ClassMetadataAwareInterface::class);
     }
 }
