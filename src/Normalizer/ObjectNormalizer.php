@@ -70,11 +70,13 @@ class ObjectNormalizer implements NormalizerInterface, DenormalizerInterface, Se
             if (null === $this->circularReferenceHandler) {
                 throw $circularReferenceException;
             }
+
             return \call_user_func($this->circularReferenceHandler, $data, $circularReferenceException);
         }
 
         $array = $hydrator->extract($data, $context);
         $context->leave($data, $objectId);
+
         return $array;
     }
 

@@ -18,7 +18,6 @@ use Nette\PhpGenerator\PhpFile;
 use Nette\PhpGenerator\PhpNamespace;
 use TSantos\Serializer\CodeDecoratorInterface;
 use TSantos\Serializer\HydratorLoaderAwareInterface;
-use TSantos\Serializer\HydratorLoaderInterface;
 use TSantos\Serializer\Metadata\ClassMetadata;
 use TSantos\Serializer\Traits\HydratorLoaderAwareTrait;
 

@@ -16,7 +16,7 @@ namespace TSantos\Serializer;
 use TSantos\Serializer\Metadata\ClassMetadata;
 
 /**
- * Interface ClassMetadataAwareInterface
+ * Interface ClassMetadataAwareInterface.
  *
  * @author Tales Santos <tales.augusto.santos@gmail.com>
  */

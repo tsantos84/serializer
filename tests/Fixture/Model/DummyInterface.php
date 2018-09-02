@@ -1,5 +1,8 @@
 <?php
-/**
+
+declare(strict_types=1);
+
+/*
  * This file is part of the TSantos Serializer package.
  *
  * (c) Tales Santos <tales.augusto.santos@gmail.com>
@@ -11,7 +14,7 @@
 namespace Tests\TSantos\Serializer\Fixture\Model;
 
 /**
- * Interface DummyAbstract
+ * Interface DummyAbstract.
  *
  * @author Tales Santos <tales.augusto.santos@gmail.com>
  */

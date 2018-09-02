@@ -14,7 +14,6 @@ declare(strict_types=1);
 namespace Tests\TSantos\Serializer\Deserialization;
 
 use Tests\TSantos\Serializer\Fixture\Model\Dummy;
-use Tests\TSantos\Serializer\Fixture\Model\DummyAbstract;
 use Tests\TSantos\Serializer\Fixture\Model\DummyInner;
 use Tests\TSantos\Serializer\SerializerTestCase;
 use TSantos\Serializer\DeserializationContext;
@@ -57,12 +56,12 @@ class DeserializeSimpleObjectTest extends SerializerTestCase
     /** @test */
     public function it_can_deserialize_an_object_containing_a_complex_value_with_setter()
     {
-        $serializer = $this->createSerializer(array_merge(
+        $serializer = $this->createSerializer(\array_merge(
             $this->createMapping(Dummy::class, [
                 'foo' => ['type' => DummyInner::class],
             ]),
             $this->createMapping(DummyInner::class, [
-                'baz' => ['type' => 'string']
+                'baz' => ['type' => 'string'],
             ])
         ));
 
@@ -110,12 +109,12 @@ class DeserializeSimpleObjectTest extends SerializerTestCase
     /** @test */
     public function it_can_deserialize_an_object_containing_a_complex_value_with_reflection()
     {
-        $serializer = $this->createSerializer(array_merge(
+        $serializer = $this->createSerializer(\array_merge(
             $this->createMapping(Dummy::class, [
                 'bar' => ['type' => DummyInner::class],
             ]),
             $this->createMapping(DummyInner::class, [
-                'baz' => ['type' => 'string']
+                'baz' => ['type' => 'string'],
             ])
         ));
 

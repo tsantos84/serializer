@@ -1,5 +1,8 @@
 <?php
-/**
+
+declare(strict_types=1);
+
+/*
  * This file is part of the TSantos Serializer package.
  *
  * (c) Tales Santos <tales.augusto.santos@gmail.com>
@@ -17,7 +20,7 @@ use Tests\TSantos\Serializer\Fixture\Model\DummyInterface;
 use Tests\TSantos\Serializer\SerializerTestCase;
 
 /**
- * Class DeserializeAbstractClassTest
+ * Class DeserializeAbstractClassTest.
  *
  * @author Tales Santos <tales.augusto.santos@gmail.com>
  *
@@ -68,7 +71,7 @@ class InheritanceDeserializationTest extends SerializerTestCase
     public function it_can_deserialize_interfaces()
     {
         $serializer = $this->createSerializer(\array_merge(
-            $this->createMapping(DummyInterface::class, [],[],[
+            $this->createMapping(DummyInterface::class, [], [], [
                 'discriminatorMap' => [
                     'field' => 'customField',
                     'mapping' => [

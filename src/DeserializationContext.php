@@ -35,6 +35,7 @@ class DeserializationContext extends AbstractContext
 
     /**
      * @param $target
+     *
      * @return DeserializationContext
      */
     public function setTarget($target): self

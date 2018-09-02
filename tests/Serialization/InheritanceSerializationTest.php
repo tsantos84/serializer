@@ -30,8 +30,8 @@ class InheritanceSerializationTest extends SerializerTestCase
     /** @test */
     public function it_can_serialize_abstract_classes_accessing_data_through_getter()
     {
-        $serializer = $this->createSerializer(array_merge(
-            $this->createMapping(DummyAbstract::class, ['foobar' => []],[],[
+        $serializer = $this->createSerializer(\array_merge(
+            $this->createMapping(DummyAbstract::class, ['foobar' => []], [], [
                 'discriminatorMap' => [
                     'field' => 'customField',
                     'mapping' => [
@@ -60,8 +60,8 @@ class InheritanceSerializationTest extends SerializerTestCase
     /** @test */
     public function it_can_serialize_abstract_classes_accessing_data_through_reflection()
     {
-        $serializer = $this->createSerializer(array_merge(
-            $this->createMapping(DummyAbstract::class, ['foo' => []],[],[
+        $serializer = $this->createSerializer(\array_merge(
+            $this->createMapping(DummyAbstract::class, ['foo' => []], [], [
                 'discriminatorMap' => [
                     'field' => 'customField',
                     'mapping' => [
@@ -88,8 +88,8 @@ class InheritanceSerializationTest extends SerializerTestCase
     /** @test */
     public function it_can_serialize_interface_accessing_data_through_getter()
     {
-        $serializer = $this->createSerializer(array_merge(
-            $this->createMapping(DummyInterface::class, [],[],[
+        $serializer = $this->createSerializer(\array_merge(
+            $this->createMapping(DummyInterface::class, [], [], [
                 'discriminatorMap' => [
                     'field' => 'customField',
                     'mapping' => [
@@ -116,8 +116,8 @@ class InheritanceSerializationTest extends SerializerTestCase
     /** @test */
     public function it_can_serialize_interface_accessing_data_through_reflection()
     {
-        $serializer = $this->createSerializer(array_merge(
-            $this->createMapping(DummyInterface::class, [],[],[
+        $serializer = $this->createSerializer(\array_merge(
+            $this->createMapping(DummyInterface::class, [], [], [
                 'discriminatorMap' => [
                     'field' => 'customField',
                     'mapping' => [

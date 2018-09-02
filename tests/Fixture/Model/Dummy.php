@@ -26,6 +26,7 @@ class Dummy extends DummyAbstract implements DummyInterface
 
     /**
      * Dummy constructor.
+     *
      * @param $foo
      * @param $bar
      */

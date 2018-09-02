@@ -1,5 +1,8 @@
 <?php
-/**
+
+declare(strict_types=1);
+
+/*
  * This file is part of the TSantos Serializer package.
  *
  * (c) Tales Santos <tales.augusto.santos@gmail.com>
@@ -14,9 +17,8 @@ use Tests\TSantos\Serializer\Fixture\Model\Dummy;
 use Tests\TSantos\Serializer\Fixture\Model\DummyInner;
 use Tests\TSantos\Serializer\SerializerTestCase;
 
-
 /**
- * Class SerializeCollectionTest
+ * Class SerializeCollectionTest.
  *
  * @author Tales Santos <tales.augusto.santos@gmail.com>
  * @runTestsInSeparateProcesses
@@ -62,9 +64,9 @@ class SerializeCollectionTest extends SerializerTestCase
     /** @test */
     public function it_can_serialize_an_object_containing_a_collection_of_complex_values()
     {
-        $serializer = $this->createSerializer(array_merge(
+        $serializer = $this->createSerializer(\array_merge(
             $this->createMapping(Dummy::class, [
-                'foo' => ['type' => DummyInner::class . '[]'],
+                'foo' => ['type' => DummyInner::class.'[]'],
             ]),
             $this->createMapping(DummyInner::class, [
                 'baz' => [],

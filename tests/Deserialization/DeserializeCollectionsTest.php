@@ -29,7 +29,7 @@ class DeserializeCollectionsTest extends SerializerTestCase
     public function it_can_deserialize_a_collection_of_values_using_writer_filter_and_setter()
     {
         $serializer = $this->createSerializer($this->createMapping(Dummy::class, [
-            'foo' => ['type' => 'integer[]', 'writeValueFilter' => 'array_filter($value)']
+            'foo' => ['type' => 'integer[]', 'writeValueFilter' => 'array_filter($value)'],
         ]));
 
         $dummy = $serializer->deserialize('{"foo":[null,2,3,null]}', Dummy::class);
@@ -40,7 +40,7 @@ class DeserializeCollectionsTest extends SerializerTestCase
     public function it_can_deserialize_a_collection_of_scalar_values_through_setter()
     {
         $serializer = $this->createSerializer($this->createMapping(Dummy::class, [
-            'foo' => ['type' => 'integer[]']
+            'foo' => ['type' => 'integer[]'],
         ]));
 
         $dummy = $serializer->deserialize('{"foo":[1,2,3,4,5,6,7,8,9,10]}', Dummy::class);
@@ -51,7 +51,7 @@ class DeserializeCollectionsTest extends SerializerTestCase
     public function it_can_deserialize_a_collection_of_mixed_values_through_and_setter()
     {
         $serializer = $this->createSerializer($this->createMapping(Dummy::class, [
-            'foo' => ['type' => 'mixed[]']
+            'foo' => ['type' => 'mixed[]'],
         ]));
 
         $dummy = $serializer->deserialize('{"foo":[1,2,"3",4,5,6,"7",8,9,10]}', Dummy::class);
@@ -61,12 +61,12 @@ class DeserializeCollectionsTest extends SerializerTestCase
     /** @test */
     public function it_can_deserialize_a_collection_of_persons_through_and_setter()
     {
-        $serializer = $this->createSerializer(array_merge(
+        $serializer = $this->createSerializer(\array_merge(
             $this->createMapping(Dummy::class, [
-                'foo' => ['type' => Person::class . '[]']
+                'foo' => ['type' => Person::class.'[]'],
             ]),
             $this->createMapping(Person::class, [
-                'name' => []
+                'name' => [],
             ])
         ));
 
@@ -80,7 +80,7 @@ class DeserializeCollectionsTest extends SerializerTestCase
     public function it_can_deserialize_a_collection_of_values_using_writer_filter_and_reflection()
     {
         $serializer = $this->createSerializer($this->createMapping(Dummy::class, [
-            'bar' => ['type' => 'integer[]', 'writeValueFilter' => 'array_filter($value)']
+            'bar' => ['type' => 'integer[]', 'writeValueFilter' => 'array_filter($value)'],
         ]));
 
         $dummy = $serializer->deserialize('{"bar":[null,2,3,null]}', Dummy::class);
@@ -96,7 +96,7 @@ class DeserializeCollectionsTest extends SerializerTestCase
     public function it_can_deserialize_a_collection_of_scalar_values_through_reflection()
     {
         $serializer = $this->createSerializer($this->createMapping(Dummy::class, [
-            'bar' => ['type' => 'integer[]']
+            'bar' => ['type' => 'integer[]'],
         ]));
 
         $dummy = $serializer->deserialize('{"bar":[1,2,3,4,5,6,7,8,9,10]}', Dummy::class);
@@ -112,7 +112,7 @@ class DeserializeCollectionsTest extends SerializerTestCase
     public function it_can_deserialize_a_collection_of_mixed_values_through_reflection()
     {
         $serializer = $this->createSerializer($this->createMapping(Dummy::class, [
-            'bar' => ['type' => 'mixed[]']
+            'bar' => ['type' => 'mixed[]'],
         ]));
 
         $dummy = $serializer->deserialize('{"bar":[1,2,"3",4,5,6,"7",8,9,10]}', Dummy::class);
@@ -127,12 +127,12 @@ class DeserializeCollectionsTest extends SerializerTestCase
     /** @test */
     public function it_can_deserialize_a_collection_of_persons_through_reflection()
     {
-        $serializer = $this->createSerializer(array_merge(
+        $serializer = $this->createSerializer(\array_merge(
             $this->createMapping(Dummy::class, [
-                'bar' => ['type' => Person::class . '[]']
+                'bar' => ['type' => Person::class.'[]'],
             ]),
             $this->createMapping(Person::class, [
-                'name' => []
+                'name' => [],
             ])
         ));
 

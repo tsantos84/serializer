@@ -16,8 +16,7 @@ namespace TSantos\Serializer\Traits;
 use TSantos\Serializer\Metadata\ClassMetadata;
 
 /**
- * Trait ClassMetadataAwareTrait
- * @package TSantos\Serializer\Traits
+ * Trait ClassMetadataAwareTrait.
  */
 trait ClassMetadataAwareTrait
 {

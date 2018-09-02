@@ -14,7 +14,6 @@ declare(strict_types=1);
 namespace Tests\TSantos\Serializer\Serialization;
 
 use Tests\TSantos\Serializer\Fixture\Model\Dummy;
-use Tests\TSantos\Serializer\Fixture\Model\DummyAbstract;
 use Tests\TSantos\Serializer\Fixture\Model\DummyInner;
 use Tests\TSantos\Serializer\SerializerTestCase;
 use TSantos\Serializer\Metadata\Driver\ReflectionDriver;
@@ -49,7 +48,7 @@ class SerializerTest extends SerializerTestCase
     /** @test */
     public function it_can_serialize_an_object_containing_complex_value_and_getter()
     {
-        $serializer = $this->createSerializer(array_merge(
+        $serializer = $this->createSerializer(\array_merge(
             $this->createMapping(Dummy::class, [
                 'foo' => ['type' => DummyInner::class],
             ]),
@@ -90,7 +89,7 @@ class SerializerTest extends SerializerTestCase
     /** @test */
     public function it_can_serialize_an_object_containing_complex_value_and_reflection()
     {
-        $serializer = $this->createSerializer(array_merge(
+        $serializer = $this->createSerializer(\array_merge(
             $this->createMapping(Dummy::class, [
                 'bar' => ['type' => DummyInner::class],
             ]),
