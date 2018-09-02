@@ -7,7 +7,7 @@ namespace Tests\TSantos\Serializer\Fixture\Model;
  *
  * @author Tales Santos <tales.augusto.santos@gmail.com>
  */
-class DummyInner extends DummyAbstract
+class DummyInner extends DummyAbstract implements DummyInterface
 {
     private $baz;
 
