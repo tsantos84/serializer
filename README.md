@@ -1,7 +1,8 @@
-# TSantos Serializer [![Build Status](https://travis-ci.org/tsantos84/serializer.svg?branch=master)](https://travis-ci.org/tsantos84/serializer)
+# TSantos Serializer
+[![Build Status](https://travis-ci.org/tsantos84/serializer.svg?branch=master)](https://travis-ci.org/tsantos84/serializer) [![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/tsantos84/serializer/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/tsantos84/serializer/?branch=master) [![Code Coverage](https://scrutinizer-ci.com/g/tsantos84/serializer/badges/coverage.png?b=master)](https://scrutinizer-ci.com/g/tsantos84/serializer/?branch=master) [![Latest Stable Version](https://poser.pugx.org/tsantos/serializer/version)](https://packagist.org/packages/tsantos/serializer) [![Total Downloads](https://poser.pugx.org/tsantos/serializer/downloads)](https://packagist.org/packages/tsantos/serializer) [![Latest Unstable Version](https://poser.pugx.org/tsantos/serializer/v/unstable)](//packagist.org/packages/tsantos/serializer) [![License](https://poser.pugx.org/tsantos/serializer/license)](https://packagist.org/packages/tsantos/serializer) [![composer.lock available](https://poser.pugx.org/tsantos/serializer/composerlock)](https://packagist.org/packages/tsantos/serializer)
 
-TSantos Serializer is a library to encode/decode PHP objects to some format. Because of its exclusive
-serialization strategy, this library is the faster serialization component to PHP.
+TSantos Serializer is a library to encode/decode PHP objects to some string representation. Because of its exclusive
+serialization strategy, this library is the [faster serialization component](https://github.com/tsantos84/serializer-benchmark) to PHP.
 
 ## Instalation
 
@@ -27,7 +28,9 @@ class Post {
     public $summary;
 }
 
-$serializer = (new SerializerBuilder())->build();
+$serializer = (new SerializerBuilder())
+    ->setHydratorDir('/path/to/generated/hydrators')
+    ->build();
 $person = new Post('Post title', 'Post summary');
 echo $serializer->serialize($person); // {"title":"Post title", "summary":"Post summary"}
 ```
