@@ -16,10 +16,6 @@ namespace Tests\TSantos\Serializer\Serialization;
 use Tests\TSantos\Serializer\Fixture\Model\Dummy;
 use Tests\TSantos\Serializer\Fixture\Model\DummyAbstract;
 use Tests\TSantos\Serializer\Fixture\Model\DummyInner;
-use Tests\TSantos\Serializer\Fixture\Model\Inheritance\AbstractVehicle;
-use Tests\TSantos\Serializer\Fixture\Model\Inheritance\Airplane;
-use Tests\TSantos\Serializer\Fixture\Model\Inheritance\Car;
-use Tests\TSantos\Serializer\Fixture\Model\Person;
 use Tests\TSantos\Serializer\SerializerTestCase;
 use TSantos\Serializer\Metadata\Driver\ReflectionDriver;
 

@@ -123,7 +123,7 @@ STRING;
         } elseif ($property->isScalarType()) {
             $mutator = \sprintf('$value = (%s) $value;', $property->type);
         } elseif ($property->isMixedCollectionType()) {
-            $mutator = '$value = $value;';
+            $mutator = '$value = (array) $value;';
         } elseif ($property->isCollection()) {
             $template = <<<STRING
 foreach (\$value as \$key => \$val) {
@@ -163,6 +163,9 @@ STRING;
 if (isset(\$data['{exposeAs}']) || \array_key_exists('{exposeAs}', \$data)) {
     if (null !== \$value = \$data['{exposeAs}']) {
         {mutator}
+        if (!is_string(\$value)) {
+            throw new InvalidValueType();
+        }
     }
     \$this->classMetadata->propertyMetadata['{propertyName}']->reflection->setValue(\$object, \$value);
 }

@@ -144,8 +144,6 @@ foreach (\$value as \$key => \$val) {
 STRING;
             if ($property->isScalarCollectionType()) {
                 $reader = \sprintf('(%s) $val', $property->getTypeOfCollection());
-            } elseif ($property->isMixedCollectionType()) {
-                $reader = '$val';
             } else {
                 $reader = '$this->serializer->normalize($val, $context);';
             }
