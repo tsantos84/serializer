@@ -24,7 +24,7 @@ use Tests\TSantos\Serializer\SerializerTestCase;
  *
  * @author Tales Santos <tales.augusto.santos@gmail.com>
  *
- * @runTestsInSeparateProcesses
+ * @runTestsInSeparateProcessesxxxx
  */
 class InheritanceDeserializationTest extends SerializerTestCase
 {

@@ -63,11 +63,8 @@ class ExtractionDecorator implements CodeDecoratorInterface
             $data[$property->exposeAs] = null;
         }
 
-        if ($discriminatorField) {
+        if (!$classMetadata->isAbstract() && $discriminatorField) {
             $values = \array_flip($classMetadata->discriminatorMapping);
-            if (!isset($values[$classMetadata->name])) {
-                throw new \InvalidArgumentException(implode(',', array_keys($values)));
-            }
             $data[$discriminatorField] = $values[$classMetadata->name];
         }
 
