@@ -58,19 +58,20 @@ class ExtractionDecorator implements CodeDecoratorInterface
             return 'return [];';
         }
 
-        $initialData = [];
+        $data = [];
         foreach ($classMetadata->all() as $property) {
-            $initialData[$property->exposeAs] = null;
+            $data[$property->exposeAs] = null;
         }
 
         if ($discriminatorField) {
             $values = \array_flip($classMetadata->discriminatorMapping);
-            $initialData[$discriminatorField] = $values[$classMetadata->name];
+            if (!isset($values[$classMetadata->name])) {
+                throw new \InvalidArgumentException(implode(',', array_keys($values)));
+            }
+            $data[$discriminatorField] = $values[$classMetadata->name];
         }
 
-        $data = \var_export($initialData, true);
-
-        $body = \sprintf('$data = %s;', $data).PHP_EOL.PHP_EOL;
+        $body = \sprintf('$data = %s;', \var_export($data, true)).PHP_EOL.PHP_EOL;
 
         $body .= <<<STRING
 {accessors}
