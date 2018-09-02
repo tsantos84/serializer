@@ -11,15 +11,18 @@ class DummyInner extends DummyAbstract
 {
     private $baz;
 
+    private $qux;
+
     /**
      * DummyInner constructor.
      * @param $baz
+     * @param null $qux
      */
-    public function __construct($baz = null)
+    public function __construct($baz = null, $qux = null)
     {
         $this->baz = $baz;
+        $this->qux = $qux;
     }
-
 
     /**
      * @return mixed

@@ -13,8 +13,9 @@ declare(strict_types=1);
 
 namespace Tests\Serializer;
 
-use Tests\TSantos\Serializer\Fixture\Model\Employee;
-use Tests\TSantos\Serializer\Fixture\Model\Person;
+use Tests\TSantos\Serializer\Fixture\Model\Dummy;
+use Tests\TSantos\Serializer\Fixture\Model\DummyAbstract;
+use Tests\TSantos\Serializer\Fixture\Model\DummyInner;
 use Tests\TSantos\Serializer\SerializerTestCase;
 
 /**
@@ -25,43 +26,63 @@ use Tests\TSantos\Serializer\SerializerTestCase;
  */
 class InheritanceSerializationTest extends SerializerTestCase
 {
-    /** @test */
-    public function it_can_serialize_an_employee_which_inherits_from_person()
-    {
-        $employee = new Employee(1, 'Tales', true);
-        $employee->setPosition('Developer');
+    protected $clearCache = false;
 
-        $serializer = $this->createSerializer(\array_merge(
-            $this->createMapping(Person::class, [
-                'name' => [],
+    /** @test */
+    public function it_can_serialize_abstract_classes_accessing_data_through_getter()
+    {
+        $serializer = $this->createSerializer(array_merge(
+            $this->createMapping(DummyAbstract::class, ['foobar' => []],[],[
+                'discriminatorMap' => [
+                    'field' => 'customField',
+                    'mapping' => [
+                        'dummy' => Dummy::class,
+                        'inner' => DummyInner::class,
+                    ],
+                ],
             ]),
-            $this->createMapping(Employee::class, [
-                'position' => [],
+            $this->createMapping(Dummy::class, [
+                'foo' => [],
+            ]),
+            $this->createMapping(DummyInner::class, [
+                'baz' => [],
             ])
         ));
 
-        $expected = '{"name":"Tales","position":"Developer"}';
+        $dummy = new Dummy('foo', 'bar');
+        $dummy->setFoobar('foobar');
+        $this->assertSame('{"foobar":"foobar","foo":"foo","customField":"dummy"}', $serializer->serialize($dummy));
 
-        $this->assertSame($expected, $serializer->serialize($employee));
+        $dummyInner = new DummyInner('baz');
+        $dummyInner->setFoobar('foobarInner');
+        $this->assertSame('{"foobar":"foobarInner","baz":"baz","customField":"inner"}', $serializer->serialize($dummyInner));
     }
 
     /** @test */
-    public function it_can_deserialize_an_employee_which_inherits_from_person()
+    public function it_can_serialize_abstract_classes_accessing_data_through_reflection()
     {
-        $serializer = $this->createSerializer(\array_merge(
-            $this->createMapping(Person::class, [
-                'name' => [],
+        $serializer = $this->createSerializer(array_merge(
+            $this->createMapping(DummyAbstract::class, ['foo' => []],[],[
+                'discriminatorMap' => [
+                    'field' => 'customField',
+                    'mapping' => [
+                        'dummy' => Dummy::class,
+                        'inner' => DummyInner::class,
+                    ],
+                ],
             ]),
-            $this->createMapping(Employee::class, [
-                'position' => [],
+            $this->createMapping(Dummy::class, [
+                'bar' => [],
+            ]),
+            $this->createMapping(DummyInner::class, [
+                'qux' => [],
             ])
         ));
 
-        $content = '{"name":"Tales","position":"Developer"}';
+        $dummy = new Dummy(null, 'bar');
+        $this->assertSame('{"foo":null,"bar":"bar","customField":"dummy"}', $serializer->serialize($dummy));
 
-        $employee = $serializer->deserialize($content, Employee::class);
-
-        $this->assertSame('Tales', $employee->getName());
-        $this->assertSame('Developer', $employee->getPosition());
+        $dummyInner = new DummyInner(null, 'qux');
+        $this->assertSame('{"foo":null,"qux":"qux","customField":"inner"}', $serializer->serialize($dummyInner));
     }
 }

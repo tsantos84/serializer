@@ -11,6 +11,8 @@ abstract class DummyAbstract
 {
     private $foobar;
 
+    private $foo;
+
     /**
      * @return mixed
      */

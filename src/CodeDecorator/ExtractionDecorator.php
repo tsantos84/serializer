@@ -63,27 +63,25 @@ class ExtractionDecorator implements CodeDecoratorInterface
             $initialData[$property->exposeAs] = null;
         }
 
+        if ($discriminatorField) {
+            $values = \array_flip($classMetadata->discriminatorMapping);
+            $initialData[$discriminatorField] = $values[$classMetadata->name];
+        }
+
         $data = \var_export($initialData, true);
 
         $body = \sprintf('$data = %s;', $data).PHP_EOL.PHP_EOL;
 
-        if ($discriminatorField) {
-            $body .= $this->buildDiscriminatorField($classMetadata);
-        }
-
         $body .= <<<STRING
 {accessors}
-
 if (null === \$groups = \$context->getGroups()) {
     return \$data;
 }
 
 \$contextId = \$context->getId();
-
 if (!isset(self::\$exposedPropertiesForContext[\$contextId])) {
     self::\$exposedPropertiesForContext[\$contextId] = \$this->getExposedKeys(\$context);
 }
-
 \$data = \array_intersect_key(\$data, self::\$exposedPropertiesForContext[\$contextId]);
 
 return \$data;
@@ -164,29 +162,5 @@ STRING;
         ];
 
         return \strtr($code, $replaces);
-    }
-
-    private function buildDiscriminatorField(ClassMetadata $classMetadata): string
-    {
-        if ($classMetadata->isAbstract()) {
-            return <<<STRING
-// discriminator field
-if (isset(self::\$discriminatorMapping[\$class = get_class(\$object)])) {
-    \$data['{$classMetadata->discriminatorField}'] = self::\$discriminatorMapping[\$class];
-}
-
-STRING;
-        }
-
-        $values = \array_flip($classMetadata->discriminatorMapping);
-        $value = $values[$classMetadata->name];
-
-        $code = <<<STRING
-// discriminator field
-\$data['{$classMetadata->discriminatorField}'] = '{$value}';
-
-STRING;
-
-        return $code;
     }
 }
