@@ -31,7 +31,9 @@ class Post {
 $serializer = (new SerializerBuilder())
     ->setHydratorDir('/path/to/generated/hydrators')
     ->build();
+
 $person = new Post('Post title', 'Post summary');
+
 echo $serializer->serialize($person); // {"title":"Post title", "summary":"Post summary"}
 ```
 
@@ -43,13 +45,14 @@ and take advantage of all library's power.
 
 Main features currently supported by TSantos Serializer:
 
-* Supports `YAML`, `XML` and `Annotations` mapping formats
-* Supports `JSON` encoders (output)
+* No need to mapping classes for simple use cases ...
+* ... but supports `YAML`, `XML` and `Annotations` mapping formats for advanced mapping
+* Supports `JSON` encoders
 * (De-)serializes objects of any depth
-* Custom `getters` and `setters`
 * Virtual properties
 * Properties grouping
 * Event listeners to hook into serialization operations
+* (De-)serializes interfaces and abstract classes
 
 ## Documentation
 
