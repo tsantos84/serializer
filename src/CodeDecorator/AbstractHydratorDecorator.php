@@ -20,6 +20,7 @@ use TSantos\Serializer\CodeDecoratorInterface;
 use TSantos\Serializer\HydratorLoaderAwareInterface;
 use TSantos\Serializer\HydratorLoaderInterface;
 use TSantos\Serializer\Metadata\ClassMetadata;
+use TSantos\Serializer\Traits\HydratorLoaderAwareTrait;
 
 /**
  * Class AbstractHydratorDecorator.
@@ -41,21 +42,8 @@ class AbstractHydratorDecorator implements CodeDecoratorInterface
             ->setValue(\array_flip($classMetadata->discriminatorMapping));
 
         $class
-            ->addProperty('loader')
-            ->setVisibility('private')
-            ->setComment('@var '.HydratorLoaderInterface::class);
-
-        $class
             ->addImplement(HydratorLoaderAwareInterface::class);
 
-        $setter = $class
-            ->addMethod('setLoader')
-            ->setReturnType('void');
-
-        $setter
-            ->addParameter('loader')
-            ->setTypeHint(HydratorLoaderInterface::class);
-
-        $setter->setBody('$this->loader = $loader;');
+        $class->addTrait(HydratorLoaderAwareTrait::class);
     }
 }

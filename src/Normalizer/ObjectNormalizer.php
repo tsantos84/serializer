@@ -109,6 +109,6 @@ class ObjectNormalizer implements NormalizerInterface, DenormalizerInterface, Se
 
     public function supportsDenormalization(string $type, $data, DeserializationContext $context): bool
     {
-        return \class_exists($type) && \DateTime::class !== $type;
+        return (\class_exists($type) || \interface_exists($type)) && \DateTime::class !== $type;
     }
 }

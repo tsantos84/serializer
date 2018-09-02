@@ -162,43 +162,4 @@ class DeserializeSimpleObjectTest extends SerializerTestCase
 
         $this->assertSame(100, $dummy->getFoo());
     }
-
-    /** @test */
-    public function it_can_deserialize_abstract_classes()
-    {
-        $serializer = $this->createSerializer(\array_merge(
-            $this->createMapping(
-                DummyAbstract::class,
-                [
-                    'foobar' => [],
-                ],
-                [],
-                [
-                    'discriminatorMap' => [
-                        'field' => 'type',
-                        'mapping' => [
-                            'dummy' => Dummy::class,
-                            'inner' => DummyInner::class,
-                        ],
-                    ],
-                ]
-            ),
-            $this->createMapping(Dummy::class, [
-                'foo' => ['type' => 'string'],
-            ]),
-            $this->createMapping(DummyInner::class, [
-                'baz' => ['type' => 'string'],
-            ])
-        ));
-
-        $dummy = $serializer->deserialize('{"foo":"foo","type":"dummy","foobar":"foobar"}', DummyAbstract::class);
-        $this->assertInstanceOf(Dummy::class, $dummy);
-        $this->assertSame('foo', $dummy->getFoo());
-        $this->assertSame('foobar', $dummy->getFoobar());
-
-        $inner = $serializer->deserialize('{"baz":"baz","type":"inner","foobar":"foobar"}', DummyAbstract::class);
-        $this->assertInstanceOf(DummyInner::class, $inner);
-        $this->assertSame('baz', $inner->getBaz());
-        $this->assertSame('foobar', $inner->getFoobar());
-    }
 }

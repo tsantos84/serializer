@@ -23,5 +23,5 @@ interface HydratorLoaderAwareInterface
     /**
      * @param HydratorLoaderInterface $loader
      */
-    public function setLoader(HydratorLoaderInterface $loader): void;
+    public function setHydratorLoader(HydratorLoaderInterface $loader): void;
 }

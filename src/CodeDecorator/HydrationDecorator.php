@@ -59,8 +59,8 @@ class HydrationDecorator implements CodeDecoratorInterface
         if ($classMetadata->isAbstract()) {
             $body .= <<<STRING
 // hydrate with concrete hydrator
-\$type = \array_search(\$data['type'], self::\$discriminatorMapping);
-\$this->loader->load(\$type, \$this->serializer)->hydrate(\$object, \$data, \$context);
+\$type = \array_search(\$data['{$classMetadata->discriminatorField}'], self::\$discriminatorMapping);
+\$this->hydratorLoader->load(\$type)->hydrate(\$object, \$data, \$context);
 
 
 STRING;
@@ -163,9 +163,6 @@ STRING;
 if (isset(\$data['{exposeAs}']) || \array_key_exists('{exposeAs}', \$data)) {
     if (null !== \$value = \$data['{exposeAs}']) {
         {mutator}
-        if (!is_string(\$value)) {
-            throw new InvalidValueType();
-        }
     }
     \$this->classMetadata->propertyMetadata['{propertyName}']->reflection->setValue(\$object, \$value);
 }

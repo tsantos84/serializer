@@ -16,7 +16,6 @@ namespace TSantos\Serializer;
 use Nette\PhpGenerator\Helpers;
 use Nette\PhpGenerator\PhpFile;
 use TSantos\Serializer\Metadata\ClassMetadata;
-use TSantos\Serializer\Traits\HydratorLoaderAwareTrait;
 use TSantos\Serializer\Traits\ObjectInstantiatorAwareTrait;
 use TSantos\Serializer\Traits\SerializerAwareTrait;
 
@@ -79,10 +78,6 @@ class HydratorCodeGenerator
 
         $class->addTrait(SerializerAwareTrait::class);
         $class->addTrait(ObjectInstantiatorAwareTrait::class);
-
-        if ($classMetadata->isAbstract()) {
-            $class->addTrait(HydratorLoaderAwareTrait::class);
-        }
 
         foreach ($this->decorators as $decorator) {
             $decorator->decorate($phpFile, $namespace, $class, $classMetadata);

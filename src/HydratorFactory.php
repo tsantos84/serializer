@@ -56,7 +56,7 @@ class HydratorFactory implements HydratorFactoryInterface
         }
 
         if ($hydrator instanceof HydratorLoaderAwareInterface) {
-            $hydrator->setLoader($this->container->get(HydratorLoaderInterface::class));
+            $hydrator->setHydratorLoader($this->container->get(HydratorLoaderInterface::class));
         }
 
         if ($hydrator instanceof ObjectInstantiatorAwareInterface) {
