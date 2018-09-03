@@ -64,7 +64,7 @@ class HydratorServiceProvider implements ServiceProviderInterface
                     new ExposedKeysDecorator(),
                     new ConstructorMethodDecorator(),
                     new AbstractHydratorDecorator(),
-                    new ExtractionDecorator(),
+                    new ExtractionDecorator($container[Template::class]),
                     new HydrationDecorator($container[Template::class]),
                     new NewInstanceMethodDecorator($container[Template::class]),
                     new PropertiesDecorator(),

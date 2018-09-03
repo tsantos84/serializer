@@ -14,6 +14,7 @@ declare(strict_types=1);
 namespace TSantos\Serializer\CodeDecorator;
 
 use Nette\PhpGenerator\ClassType;
+use Nette\PhpGenerator\Method;
 use Nette\PhpGenerator\PhpFile;
 use Nette\PhpGenerator\PhpNamespace;
 use TSantos\Serializer\CodeDecoratorInterface;
@@ -29,6 +30,20 @@ use TSantos\Serializer\SerializationContext;
  */
 class ExtractionDecorator implements CodeDecoratorInterface
 {
+    /**
+     * @var Template
+     */
+    private $template;
+
+    /**
+     * ExtractionDecorator constructor.
+     * @param Template $template
+     */
+    public function __construct(Template $template)
+    {
+        $this->template = $template;
+    }
+
     public function decorate(PhpFile $file, PhpNamespace $namespace, ClassType $class, ClassMetadata $classMetadata): void
     {
         $extract = $class->addMethod('extract')
@@ -46,16 +61,16 @@ class ExtractionDecorator implements CodeDecoratorInterface
             ->addParameter('context')
             ->setTypeHint(SerializationContext::class);
 
-        $extract
-            ->setBody($this->createExtractMethodBody($classMetadata));
+        $this->configureExtractMethodBody($classMetadata, $extract);
     }
 
-    private function createExtractMethodBody(ClassMetadata $classMetadata): string
+    private function configureExtractMethodBody(ClassMetadata $classMetadata, Method $method): void
     {
         $discriminatorField = $classMetadata->discriminatorField;
 
         if (!$classMetadata->hasProperties() && null === $discriminatorField) {
-            return 'return [];';
+            $method->addBody('return [];');
+            return;
         }
 
         $data = [];
@@ -68,97 +83,21 @@ class ExtractionDecorator implements CodeDecoratorInterface
             $data[$discriminatorField] = $values[$classMetadata->name];
         }
 
-        $body = \sprintf('$data = %s;', \var_export($data, true)).PHP_EOL.PHP_EOL;
-
-        $body .= <<<STRING
-{accessors}
-if (null === \$groups = \$context->getGroups()) {
-    return \$data;
-}
-
-\$contextId = \$context->getId();
-if (!isset(self::\$exposedPropertiesForContext[\$contextId])) {
-    self::\$exposedPropertiesForContext[\$contextId] = \$this->getExposedKeys(\$context);
-}
-\$data = \array_intersect_key(\$data, self::\$exposedPropertiesForContext[\$contextId]);
-
-return \$data;
-STRING;
-        $accessors = '';
+        $method->addBody('$data = ?;', [$data]);
+        $method->addBody(PHP_EOL);
 
         /** @var PropertyMetadata $property */
         foreach ($classMetadata->propertyMetadata as $property) {
-            if ($property->getter) {
-                $accessors .= $this->createAccessorCode($property, '$object->'.$property->getter.'()');
-                continue;
-            }
-
-            $propCode = $this->createAccessorCode($property, '$this->classMetadata->propertyMetadata[\'{propertyName}\']->reflection->getValue($object)');
-
-            $accessors .= \strtr($propCode, [
-                '{propertyName}' => $property->name,
-            ]);
+            $method->addBody($this->template->renderValueReader($property));
         }
 
         /** @var VirtualPropertyMetadata $property */
         foreach ($classMetadata->methodMetadata as $property) {
-            $accessors .= $this->createAccessorCode($property, '$object->'.$property->name.'()');
+            $method->addBody($this->template->renderValueReader($property));
         }
 
-        return \strtr($body, ['{accessors}' => $accessors]);
-    }
+        $method->addBody($this->template->renderGroupHandler());
 
-    /**
-     * @param PropertyMetadata|VirtualPropertyMetadata $property
-     * @param string                                   $accessor
-     *
-     * @return string
-     */
-    private function createAccessorCode($property, string $accessor): string
-    {
-        $code = <<<STRING
-
-// property {propertyName}
-if (null !== \$value = {accessor}) {
-    {formatter} 
-}
-
-STRING;
-
-        if ($property->readValueFilter) {
-            $formatter = \sprintf('$data[\'%s\'] = %s;', $property->exposeAs, $property->readValueFilter);
-        } elseif ($property->isScalarType()) {
-            $formatter = \sprintf('$data[\'%s\'] = (%s) $value;', $property->exposeAs, $property->type);
-        } elseif ($property->isMixedCollectionType()) {
-            $formatter = \sprintf('$data[\'%s\'] = $value;', $property->exposeAs, $property->type);
-        } elseif ($property->isCollection()) {
-            $template = <<<STRING
-foreach (\$value as \$key => \$val) {
-        \$value[\$key] = {reader};
-    }
-    \$data['{exposeAs}'] = \$value;
-STRING;
-            if ($property->isScalarCollectionType()) {
-                $reader = \sprintf('(%s) $val', $property->getTypeOfCollection());
-            } else {
-                $reader = '$this->serializer->normalize($val, $context);';
-            }
-
-            $formatter = \strtr($template, [
-                '{reader}' => $reader,
-                '{exposeAs}' => $property->exposeAs,
-            ]);
-        } else {
-            $formatter = \sprintf('$data[\'%s\'] = $this->serializer->normalize($value, $context);', $property->exposeAs);
-        }
-
-        $replaces = [
-            '{exposeAs}' => $property->exposeAs,
-            '{propertyName}' => $property->name,
-            '{formatter}' => $formatter,
-            '{accessor}' => $accessor,
-        ];
-
-        return \strtr($code, $replaces);
+        $method->addBody('return $data;');
     }
 }

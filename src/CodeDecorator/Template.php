@@ -14,6 +14,7 @@ declare(strict_types=1);
 namespace TSantos\Serializer\CodeDecorator;
 
 use TSantos\Serializer\Metadata\PropertyMetadata;
+use TSantos\Serializer\Metadata\VirtualPropertyMetadata;
 
 /**
  * Class CodeTemplate.
@@ -45,6 +46,35 @@ STRING;
         return $code;
     }
 
+    /**
+     * @param PropertyMetadata|VirtualPropertyMetadata $property
+     * @return string
+     */
+    public function renderValueReader($property): string
+    {
+        if ($property instanceof VirtualPropertyMetadata) {
+            $accessor = sprintf('$object->%s()', $property->name);
+        } elseif (null !== $property->getter) {
+            $accessor = sprintf('$object->%s()', $property->getter);
+        } else {
+            $accessor = sprintf('$this->classMetadata->propertyMetadata[\'%s\']->reflection->getValue($object)', $property->name);
+        }
+
+        $code = <<<STRING
+// property "{propertyName}"
+if (null !== \$value = {accessor}) {
+    {exposure} 
+}
+
+STRING;
+
+        return strtr($code, [
+            '{propertyName}' => $property->name,
+            '{accessor}' => $accessor,
+            '{exposure}' => $this->createValueExposure($property)
+        ]);
+    }
+
     public function renderGroupHandler()
     {
         return <<<STRING
@@ -55,6 +85,7 @@ if (null !== \$context->getGroups()) {
     }
     \$data = \array_intersect_key(\$data, self::\$exposedPropertiesForContext[\$contextId]);
 }
+
 STRING;
     }
 
@@ -89,5 +120,41 @@ STRING;
         }
 
         return $mutator;
+    }
+
+    /**
+     * @param PropertyMetadata|VirtualPropertyMetadata $property
+     * @return string
+     */
+    private function createValueExposure($property): string
+    {
+        if ($property->readValueFilter) {
+            $exposure = \sprintf('$data[\'%s\'] = %s;', $property->exposeAs, $property->readValueFilter);
+        } elseif ($property->isScalarType()) {
+            $exposure = \sprintf('$data[\'%s\'] = (%s) $value;', $property->exposeAs, $property->type);
+        } elseif ($property->isMixedCollectionType()) {
+            $exposure = \sprintf('$data[\'%s\'] = $value;', $property->exposeAs, $property->type);
+        } elseif ($property->isCollection()) {
+            $template = <<<STRING
+foreach (\$value as \$key => \$val) {
+        \$value[\$key] = {reader};
+    }
+    \$data['{exposeAs}'] = \$value;
+STRING;
+            if ($property->isScalarCollectionType()) {
+                $reader = \sprintf('(%s) $val', $property->getTypeOfCollection());
+            } else {
+                $reader = '$this->serializer->normalize($val, $context);';
+            }
+
+            $exposure = \strtr($template, [
+                '{reader}' => $reader,
+                '{exposeAs}' => $property->exposeAs,
+            ]);
+        } else {
+            $exposure = \sprintf('$data[\'%s\'] = $this->serializer->normalize($value, $context);', $property->exposeAs);
+        }
+
+        return $exposure;
     }
 }
