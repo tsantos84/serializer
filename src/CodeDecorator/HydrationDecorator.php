@@ -14,6 +14,7 @@ declare(strict_types=1);
 namespace TSantos\Serializer\CodeDecorator;
 
 use Nette\PhpGenerator\ClassType;
+use Nette\PhpGenerator\Method;
 use Nette\PhpGenerator\PhpFile;
 use Nette\PhpGenerator\PhpNamespace;
 use TSantos\Serializer\CodeDecoratorInterface;
@@ -28,6 +29,21 @@ use TSantos\Serializer\Metadata\PropertyMetadata;
  */
 class HydrationDecorator implements CodeDecoratorInterface
 {
+    /**
+     * @var Template
+     */
+    private $template;
+
+    /**
+     * HydrationDecorator constructor.
+     *
+     * @param Template $template
+     */
+    public function __construct(Template $template)
+    {
+        $this->template = $template;
+    }
+
     public function decorate(PhpFile $file, PhpNamespace $namespace, ClassType $class, ClassMetadata $classMetadata): void
     {
         $hydrate = $class->addMethod('hydrate')
@@ -49,158 +65,45 @@ class HydrationDecorator implements CodeDecoratorInterface
             ->addParameter('context')
             ->setTypeHint(DeserializationContext::class);
 
-        $hydrate->setBody($this->createHydrateMethodBody($classMetadata));
+        $this->appendMethodBody($classMetadata, $hydrate);
     }
 
-    private function createHydrateMethodBody(ClassMetadata $classMetadata): string
+    private function appendMethodBody(ClassMetadata $classMetadata, Method $method): void
     {
-        $body = '';
-
         if ($classMetadata->isAbstract()) {
-            $body .= <<<STRING
+            $method->addBody(<<<STRING
 // hydrate with concrete hydrator
 \$type = \array_search(\$data['{$classMetadata->discriminatorField}'], self::\$discriminatorMapping);
 \$this->hydratorLoader->load(\$type)->hydrate(\$object, \$data, \$context);
 
-
-STRING;
+STRING
+            );
         }
 
-        if (!$classMetadata->hasProperties()) {
-            $body .= 'return $object;';
+        /** @var PropertyMetadata[] $properties */
+        $properties = $classMetadata->getWritableProperties();
 
-            return $body;
+        if (0 === \count($properties)) {
+            $method->addBody('return $object;');
+
+            return;
         }
 
-        $body .= <<<STRING
-if (null !== \$context->getGroups()) {
-
-    \$contextId = \$context->getId();
-
-    if (!isset(self::\$exposedPropertiesForContext[\$contextId])) {
-        self::\$exposedPropertiesForContext[\$contextId] = \$this->getExposedKeys(\$context);
-    }
-    
-    \$data = \array_intersect_key(\$data, self::\$exposedPropertiesForContext[\$contextId]);
-}
-
-{mutatorBody}
-return \$object;
-STRING;
-
-        $mutatorBody = '';
+        $method->addBody($this->template->renderGroupHandler());
 
         /** @var PropertyMetadata[] $properties */
         $properties = $classMetadata->getWritableProperties();
 
         foreach ($properties as $property) {
             if ($property->setter) {
-                $mutatorBody .= $this->createHydrateMutatorBody($property);
-                continue;
-            }
-            $mutatorBody .= $this->createHydrateReflectionBody($property);
-        }
-
-        return \strtr($body, ['{mutatorBody}' => $mutatorBody]);
-    }
-
-    private function createHydrateMutatorBody(PropertyMetadata $property): string
-    {
-        $body = <<<STRING
-
-// property {propertyName}
-if (isset(\$data['{exposeAs}']) || \array_key_exists('{exposeAs}', \$data)) {
-    if (null !== \$value = \$data['{exposeAs}']) {
-        {mutator}
-    }
-    \$object->{setter}(\$value);
-}
-
-STRING;
-
-        if ($property->writeValueFilter) {
-            $mutator = \sprintf('$value = %s;', $property->writeValueFilter);
-        } elseif ($property->isScalarType()) {
-            $mutator = \sprintf('$value = (%s) $value;', $property->type);
-        } elseif ($property->isMixedCollectionType()) {
-            $mutator = '$value = (array) $value;';
-        } elseif ($property->isCollection()) {
-            $template = <<<STRING
-foreach (\$value as \$key => \$val) {
-            \$value[\$key] = {reader};
-        }
-STRING;
-
-            if ($property->isScalarCollectionType()) {
-                $reader = \sprintf('(%s) $val', $property->getTypeOfCollection());
+                $mutator = \sprintf('$object->%s($value);', $property->setter);
             } else {
-                $reader = \sprintf('$this->serializer->denormalize($val, \'%s\', $context)', $property->getTypeOfCollection());
+                $mutator = \sprintf('$this->classMetadata->propertyMetadata[\'%s\']->reflection->setValue($object, $value);', $property->name);
             }
 
-            $mutator = \strtr($template, [
-                '{reader}' => $reader,
-                '{setter}' => $property->setter,
-                '{exposeAs}' => $property->exposeAs,
-            ]);
-        } else {
-            $mutator = \sprintf('$value = $this->serializer->denormalize($value, \'%s\', $context);', $property->type);
+            $method->addBody($this->template->renderValueWriter($property, $mutator));
         }
 
-        return \strtr($body, [
-            '{exposeAs}' => $property->exposeAs,
-            '{propertyName}' => $property->name,
-            '{setter}' => $property->setter,
-            '{type}' => $property->type,
-            '{mutator}' => $mutator,
-        ]);
-    }
-
-    private function createHydrateReflectionBody(PropertyMetadata $property): string
-    {
-        $body = <<<STRING
-        
-// property {propertyName}
-if (isset(\$data['{exposeAs}']) || \array_key_exists('{exposeAs}', \$data)) {
-    if (null !== \$value = \$data['{exposeAs}']) {
-        {mutator}
-    }
-    \$this->classMetadata->propertyMetadata['{propertyName}']->reflection->setValue(\$object, \$value);
-}
-
-STRING;
-
-        if ($property->writeValueFilter) {
-            $mutator = \sprintf('$value = %s;', $property->writeValueFilter);
-        } elseif ($property->isScalarType()) {
-            $mutator = \sprintf('$value = (%s) $value;', $property->type);
-        } elseif ($property->isMixedCollectionType()) {
-            $mutator = '$value = (array) $value;';
-        } elseif ($property->isCollection()) {
-            $template = <<<STRING
-foreach (\$value as \$key => \$val) {
-            \$value[\$key] = {reader};
-        }
-STRING;
-
-            if ($property->isScalarCollectionType()) {
-                $reader = \sprintf('(%s) $val', $property->getTypeOfCollection());
-            } else {
-                $reader = \sprintf('$this->serializer->denormalize($val, \'%s\', $context)', $property->getTypeOfCollection());
-            }
-
-            $mutator = \strtr($template, [
-                '{reader}' => $reader,
-                '{propertyName}' => $property->name,
-                '{exposeAs}' => $property->exposeAs,
-            ]);
-        } else {
-            $mutator = '$value = $this->serializer->denormalize($value, \''.$property->type.'\', $context);';
-        }
-
-        return \strtr($body, [
-            '{exposeAs}' => $property->exposeAs,
-            '{propertyName}' => $property->name,
-            '{mutator}' => $mutator,
-        ]);
+        $method->addBody('return $object;');
     }
 }

@@ -25,6 +25,7 @@ use TSantos\Serializer\CodeDecorator\ExtractionDecorator;
 use TSantos\Serializer\CodeDecorator\HydrationDecorator;
 use TSantos\Serializer\CodeDecorator\NewInstanceMethodDecorator;
 use TSantos\Serializer\CodeDecorator\PropertiesDecorator;
+use TSantos\Serializer\CodeDecorator\Template;
 use TSantos\Serializer\Configuration;
 use TSantos\Serializer\HydratorCodeGenerator;
 use TSantos\Serializer\HydratorCodeWriter;
@@ -64,12 +65,16 @@ class HydratorServiceProvider implements ServiceProviderInterface
                     new ConstructorMethodDecorator(),
                     new AbstractHydratorDecorator(),
                     new ExtractionDecorator(),
-                    new HydrationDecorator(),
-                    new NewInstanceMethodDecorator(),
+                    new HydrationDecorator($container[Template::class]),
+                    new NewInstanceMethodDecorator($container[Template::class]),
                     new PropertiesDecorator(),
                     new ClassMetadataDecorator(),
                 ]
             );
+        };
+
+        $container[Template::class] = function () {
+            return new Template();
         };
 
         $container[HydratorCodeWriter::class] = function ($container) {

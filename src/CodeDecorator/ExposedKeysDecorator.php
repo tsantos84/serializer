@@ -38,6 +38,7 @@ class ExposedKeysDecorator implements CodeDecoratorInterface
         $method = $class->addMethod('getExposedKeys')
             ->setVisibility('private')
             ->setReturnType('array')
+            ->setStatic(true)
             ->setBody(<<<STRING
 \$exposedKeys = [];
 \$contextGroups = \$context->getGroups();

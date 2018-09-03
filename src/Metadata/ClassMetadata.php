@@ -14,6 +14,7 @@ declare(strict_types=1);
 namespace TSantos\Serializer\Metadata;
 
 use Metadata\MergeableClassMetadata;
+use Metadata\PropertyMetadata as JMSPropertyMetadata;
 
 /**
  * Class ClassMetadata.
@@ -30,6 +31,24 @@ class ClassMetadata extends MergeableClassMetadata
 
     public $hydratorConstructArgs = [];
 
+    public $constructArgs = [];
+
+    /**
+     * ClassMetadata constructor.
+     *
+     * @param $name
+     */
+    public function __construct($name)
+    {
+        parent::__construct($name);
+
+        if (null !== $construct = $this->reflection->getConstructor()) {
+            foreach ($construct->getParameters() as $parameter) {
+                $this->constructArgs[$parameter->name] = $parameter->getPosition();
+            }
+        }
+    }
+
     public function serialize()
     {
         return \serialize([
@@ -39,6 +58,7 @@ class ClassMetadata extends MergeableClassMetadata
             $this->fileResources,
             $this->createdAt,
             $this->baseClass,
+            $this->constructArgs,
         ]);
     }
 
@@ -50,7 +70,8 @@ class ClassMetadata extends MergeableClassMetadata
             $this->propertyMetadata,
             $this->fileResources,
             $this->createdAt,
-            $this->baseClass) = \unserialize($str);
+            $this->baseClass,
+            $this->constructArgs) = \unserialize($str);
 
         $this->reflection = new \ReflectionClass($this->name);
     }
@@ -58,6 +79,15 @@ class ClassMetadata extends MergeableClassMetadata
     public function hasProperties(): bool
     {
         return \count($this->propertyMetadata) > 0 || \count($this->methodMetadata) > 0;
+    }
+
+    public function addPropertyMetadata(JMSPropertyMetadata $metadata)
+    {
+        if (isset($this->constructArgs[$metadata->name])) {
+            $metadata->isConstructArg = true;
+        }
+
+        parent::addPropertyMetadata($metadata);
     }
 
     public function all(): array
@@ -68,8 +98,32 @@ class ClassMetadata extends MergeableClassMetadata
     public function getWritableProperties(): array
     {
         return \array_filter($this->propertyMetadata, function (PropertyMetadata $propertyMetadata) {
-            return !$propertyMetadata->readOnly;
+            if ($propertyMetadata->readOnly) {
+                return false;
+            }
+
+            if (!$this->canBeInstantiatedThroughConstructor()) {
+                return true;
+            }
+
+            return !$propertyMetadata->isConstructArg;
         });
+    }
+
+    public function getConstructProperties(): array
+    {
+        return \array_filter($this->propertyMetadata, function (PropertyMetadata $propertyMetadata) {
+            return $propertyMetadata->isConstructArg;
+        });
+    }
+
+    public function canBeInstantiatedThroughConstructor(): bool
+    {
+        if (null === $constructor = $this->reflection->getConstructor()) {
+            return false;
+        }
+
+        return count($this->getConstructProperties()) < $constructor->getNumberOfRequiredParameters();
     }
 
     public function setDiscriminatorMap(string $field, array $mapping)
