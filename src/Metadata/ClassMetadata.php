@@ -14,6 +14,7 @@ declare(strict_types=1);
 namespace TSantos\Serializer\Metadata;
 
 use Metadata\MergeableClassMetadata;
+use Metadata\MergeableInterface;
 use Metadata\PropertyMetadata as JMSPropertyMetadata;
 
 /**
@@ -76,6 +77,12 @@ class ClassMetadata extends MergeableClassMetadata
         $this->reflection = new \ReflectionClass($this->name);
     }
 
+    public function merge(MergeableInterface $object)
+    {
+        parent::merge($object);
+        $this->constructArgs = $object->constructArgs;
+    }
+
     public function hasProperties(): bool
     {
         return \count($this->propertyMetadata) > 0 || \count($this->methodMetadata) > 0;
@@ -123,7 +130,11 @@ class ClassMetadata extends MergeableClassMetadata
             return false;
         }
 
-        return \count($this->getConstructProperties()) < $constructor->getNumberOfRequiredParameters();
+        if ($constructor->getNumberOfRequiredParameters() > 0) {
+            return \count($this->getConstructProperties()) >= $constructor->getNumberOfRequiredParameters();
+        }
+
+        return true;
     }
 
     public function setDiscriminatorMap(string $field, array $mapping)
