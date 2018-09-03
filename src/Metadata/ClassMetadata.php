@@ -123,7 +123,7 @@ class ClassMetadata extends MergeableClassMetadata
             return false;
         }
 
-        return count($this->getConstructProperties()) < $constructor->getNumberOfRequiredParameters();
+        return \count($this->getConstructProperties()) < $constructor->getNumberOfRequiredParameters();
     }
 
     public function setDiscriminatorMap(string $field, array $mapping)

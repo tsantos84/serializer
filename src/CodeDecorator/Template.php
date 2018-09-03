@@ -48,16 +48,17 @@ STRING;
 
     /**
      * @param PropertyMetadata|VirtualPropertyMetadata $property
+     *
      * @return string
      */
     public function renderValueReader($property): string
     {
         if ($property instanceof VirtualPropertyMetadata) {
-            $accessor = sprintf('$object->%s()', $property->name);
+            $accessor = \sprintf('$object->%s()', $property->name);
         } elseif (null !== $property->getter) {
-            $accessor = sprintf('$object->%s()', $property->getter);
+            $accessor = \sprintf('$object->%s()', $property->getter);
         } else {
-            $accessor = sprintf('$this->classMetadata->propertyMetadata[\'%s\']->reflection->getValue($object)', $property->name);
+            $accessor = \sprintf('$this->classMetadata->propertyMetadata[\'%s\']->reflection->getValue($object)', $property->name);
         }
 
         $code = <<<STRING
@@ -68,10 +69,10 @@ if (null !== \$value = {accessor}) {
 
 STRING;
 
-        return strtr($code, [
+        return \strtr($code, [
             '{propertyName}' => $property->name,
             '{accessor}' => $accessor,
-            '{exposure}' => $this->createValueExposure($property)
+            '{exposure}' => $this->createValueExposure($property),
         ]);
     }
 
@@ -124,6 +125,7 @@ STRING;
 
     /**
      * @param PropertyMetadata|VirtualPropertyMetadata $property
+     *
      * @return string
      */
     private function createValueExposure($property): string

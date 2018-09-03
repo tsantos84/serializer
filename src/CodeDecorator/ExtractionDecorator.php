@@ -37,6 +37,7 @@ class ExtractionDecorator implements CodeDecoratorInterface
 
     /**
      * ExtractionDecorator constructor.
+     *
      * @param Template $template
      */
     public function __construct(Template $template)
@@ -70,6 +71,7 @@ class ExtractionDecorator implements CodeDecoratorInterface
 
         if (!$classMetadata->hasProperties() && null === $discriminatorField) {
             $method->addBody('return [];');
+
             return;
         }
 
