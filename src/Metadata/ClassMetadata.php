@@ -130,6 +130,10 @@ class ClassMetadata extends MergeableClassMetadata
             return false;
         }
 
+        if ($constructor->isStatic() || $constructor->isPrivate() || $constructor->isProtected()) {
+            return false;
+        }
+
         if ($constructor->getNumberOfRequiredParameters() > 0) {
             return \count($this->getConstructProperties()) >= $constructor->getNumberOfRequiredParameters();
         }
