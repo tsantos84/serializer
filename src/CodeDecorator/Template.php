@@ -34,6 +34,14 @@ if (isset(\$data['{exposeAs}']) || \array_key_exists('{exposeAs}', \$data)) {
 
 STRING;
 
+    private static $propertyReadTeamplte = <<<STRING
+// property "{propertyName}"
+if (null !== \$value = {accessor}) {
+    {exposure} 
+}
+
+STRING;
+
     public function renderValueWriter(PropertyMetadata $property, string $mutator): string
     {
         $code = \strtr(self::$propertyWriteTemplate, [
@@ -61,15 +69,7 @@ STRING;
             $accessor = \sprintf('$this->classMetadata->propertyMetadata[\'%s\']->reflection->getValue($object)', $property->name);
         }
 
-        $code = <<<STRING
-// property "{propertyName}"
-if (null !== \$value = {accessor}) {
-    {exposure} 
-}
-
-STRING;
-
-        return \strtr($code, [
+        return \strtr(self::$propertyReadTeamplte, [
             '{propertyName}' => $property->name,
             '{accessor}' => $accessor,
             '{exposure}' => $this->createValueExposure($property),
