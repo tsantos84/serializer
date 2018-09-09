@@ -14,6 +14,7 @@ declare(strict_types=1);
 namespace TSantos\Serializer\CodeDecorator;
 
 use Nette\PhpGenerator\ClassType;
+use Nette\PhpGenerator\Method;
 use Nette\PhpGenerator\PhpFile;
 use Nette\PhpGenerator\PhpNamespace;
 use TSantos\Serializer\CodeDecoratorInterface;
@@ -27,6 +28,21 @@ use TSantos\Serializer\Metadata\ClassMetadata;
  */
 class NewInstanceMethodDecorator implements CodeDecoratorInterface
 {
+    /**
+     * @var Template
+     */
+    private $template;
+
+    /**
+     * HydrationDecorator constructor.
+     *
+     * @param Template $template
+     */
+    public function __construct(Template $template)
+    {
+        $this->template = $template;
+    }
+
     public function decorate(PhpFile $file, PhpNamespace $namespace, ClassType $class, ClassMetadata $classMetadata): void
     {
         $method = $class
@@ -44,19 +60,22 @@ class NewInstanceMethodDecorator implements CodeDecoratorInterface
             ->addParameter('context')
             ->setTypeHint(DeserializationContext::class);
 
-        if (!$classMetadata->isAbstract()) {
-            $method->setBody(<<<STRING
-return \$this->instantiator->create('{$classMetadata->name}', \$data, \$context);
-STRING
-            );
+        if ($classMetadata->isAbstract()) {
+            $this->configureMethodBodyToUseConcreteHydrator($method, $classMetadata);
 
             return;
         }
 
-        $method->setBody($this->createMethodForAbstractClass($classMetadata));
+        if ($classMetadata->canBeInstantiatedThroughConstructor()) {
+            $this->configureMethodToInstantiateObjectsThroughConstructor($method, $classMetadata);
+
+            return;
+        }
+
+        $method->setBody('return $this->instantiator->create(\''.$classMetadata->name.'\', $data, $context);');
     }
 
-    private function createMethodForAbstractClass(ClassMetadata $classMetadata): string
+    private function configureMethodBodyToUseConcreteHydrator(Method $method, ClassMetadata $classMetadata): void
     {
         $code = <<<STRING
 if (!isset(\$data['{$classMetadata->discriminatorField}'])) {
@@ -69,6 +88,20 @@ if (!isset(\$data['{$classMetadata->discriminatorField}'])) {
 return \$hydrator->newInstance(\$data, \$context);
 STRING;
 
-        return $code;
+        $method->setBody($code);
+    }
+
+    private function configureMethodToInstantiateObjectsThroughConstructor(Method $newInstanceMethod, ClassMetadata $classMetadata): void
+    {
+        $constructor = $classMetadata->reflection->getConstructor();
+        $defaultArgs = \array_fill(0, $constructor->getNumberOfParameters(), null);
+        $newInstanceMethod->addBody('$args = ?;', [$defaultArgs]);
+
+        foreach ($classMetadata->getConstructProperties() as $prop) {
+            $mutator = \sprintf('$args[%d] = $value;', $classMetadata->constructArgs[$prop->name]);
+            $newInstanceMethod->addBody($this->template->renderValueWriter($prop, $mutator));
+        }
+
+        $newInstanceMethod->addBody('return $this->classMetadata->reflection->newInstanceArgs($args);');
     }
 }

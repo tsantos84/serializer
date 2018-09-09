@@ -38,7 +38,9 @@ class DateTimeConfigurator implements ConfiguratorInterface
     {
         /** @var PropertyMetadata $propertyMetadata */
         foreach ($classMetadata->propertyMetadata as $propertyMetadata) {
-            if (\DateTime::class !== $propertyMetadata->type && \DateTimeInterface::class !== $propertyMetadata->type) {
+            if (\DateTime::class !== $propertyMetadata->type &&
+                \DateTimeInterface::class !== $propertyMetadata->type &&
+                \DateTimeImmutable::class !== $propertyMetadata->type) {
                 continue;
             }
 

@@ -27,6 +27,8 @@ use TSantos\Serializer\Metadata\Driver\ReflectionDriver;
  */
 class DeserializeSimpleObjectTest extends SerializerTestCase
 {
+    protected $clearCache = false;
+
     /** @test */
     public function it_can_deserialize_an_object_with_value_filter_and_setter()
     {

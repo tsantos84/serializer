@@ -33,6 +33,9 @@ class PropertyMetadata extends BasePropertyMetadata
     public $setter;
     public $writeValueFilter;
 
+    /** @var bool */
+    public $isConstructArg = false;
+
     public $readOnly = false;
 
     public function __construct($class, $name)
@@ -67,6 +70,7 @@ class PropertyMetadata extends BasePropertyMetadata
             $this->writeValueFilter,
             $this->readOnly,
             $this->options,
+            $this->isConstructArg,
         ]);
     }
 
@@ -85,7 +89,8 @@ class PropertyMetadata extends BasePropertyMetadata
             $this->readValueFilter,
             $this->writeValueFilter,
             $this->readOnly,
-            $this->options
+            $this->options,
+            $this->isConstructArg
             ) = $unserialized;
 
         if ($this->getter) {

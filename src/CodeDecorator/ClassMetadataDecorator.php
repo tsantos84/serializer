@@ -39,6 +39,8 @@ class ClassMetadataDecorator implements CodeDecoratorInterface
             }
         }
 
+        $needsClassMetadata = $classMetadata->reflection->getConstructor() || $needsClassMetadata;
+
         if (!$needsClassMetadata) {
             return;
         }
