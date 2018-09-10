@@ -52,6 +52,35 @@ Instead of throwing an exception you can provide a circular reference handler::
 
 The serializer will return the post id instead of all its properties.
 
+Property Grouping
+~~~~~~~~~~~~~~~~~
+
+Grouping properties is a way to specify which properties should be exposed when serializing your objects. Before using
+this feature you need to enable it through the builder::
+
+    $serializer = new (SerializerBuilder())
+        ->enablePropertyGrouping()
+        ->build();
+
+Now you need to configure the metadata to set the groups of the properties::
+
+    class Post
+    {
+        /** @Groups({"v1"}) */
+        private $id;
+        /** @Type("string")
+        private $title;
+    }
+
+    $post = ...;
+    $context = (new SerializationContext())->setGroups(['v1']);
+    $encoded = $serializer->serialize($post, $context);
+    echo $encoded; // {"id":100}
+
+.. note::
+    You are probably asking your self why do you need to explicitly enable such feature and the answer is quite simple:
+    performance! If you don't need to use this feature, you don't need to assume the costs caused by it.
+
 Deserialize Objects
 -------------------
 

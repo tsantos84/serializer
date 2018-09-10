@@ -24,7 +24,6 @@ use TSantos\Serializer\CodeDecorator\ExposedKeysDecorator;
 use TSantos\Serializer\CodeDecorator\ExtractionDecorator;
 use TSantos\Serializer\CodeDecorator\HydrationDecorator;
 use TSantos\Serializer\CodeDecorator\NewInstanceMethodDecorator;
-use TSantos\Serializer\CodeDecorator\PropertiesDecorator;
 use TSantos\Serializer\CodeDecorator\Template;
 use TSantos\Serializer\Configuration;
 use TSantos\Serializer\HydratorCodeGenerator;
@@ -48,6 +47,7 @@ class HydratorServiceProvider implements ServiceProviderInterface
         $container['hydrator_dir'] = \sys_get_temp_dir().'/serializer/hydrators';
         $container['hydrator_namespace'] = 'App\\Hydrator';
         $container['generation_strategy'] = HydratorCompiler::AUTOGENERATE_ALWAYS;
+        $container['property_group_enabled'] = false;
 
         $container[Configuration::class] = function ($container) {
             return new Configuration(
@@ -58,19 +58,23 @@ class HydratorServiceProvider implements ServiceProviderInterface
         };
 
         $container[HydratorCodeGenerator::class] = function ($container) {
-            return new HydratorCodeGenerator(
+            $generator = new HydratorCodeGenerator(
                 $container[Configuration::class],
                 [
-                    new ExposedKeysDecorator(),
                     new ConstructorMethodDecorator(),
                     new AbstractHydratorDecorator(),
-                    new ExtractionDecorator($container[Template::class]),
-                    new HydrationDecorator($container[Template::class]),
+                    new ExtractionDecorator($container[Template::class], $container['property_group_enabled']),
+                    new HydrationDecorator($container[Template::class], $container['property_group_enabled']),
                     new NewInstanceMethodDecorator($container[Template::class]),
-                    new PropertiesDecorator(),
                     new ClassMetadataDecorator(),
                 ]
             );
+
+            if ($container['property_group_enabled']) {
+                $generator->addDecorator(new ExposedKeysDecorator());
+            }
+
+            return $generator;
         };
 
         $container[Template::class] = function () {
