@@ -30,6 +30,12 @@ class ExposedKeysDecorator implements CodeDecoratorInterface
     public function decorate(PhpFile $file, PhpNamespace $namespace, ClassType $class, ClassMetadata $classMetadata): void
     {
         $class
+            ->addProperty('exposedPropertiesForContext')
+            ->setVisibility('private')
+            ->setStatic(true)
+            ->setValue([]);
+
+        $class
             ->addProperty('exposedGroups')
             ->setVisibility('private')
             ->setStatic(true)

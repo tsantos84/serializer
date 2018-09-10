@@ -36,13 +36,20 @@ class ExtractionDecorator implements CodeDecoratorInterface
     private $template;
 
     /**
+     * @var bool
+     */
+    private $propertyGroupingEnabled;
+
+    /**
      * ExtractionDecorator constructor.
      *
      * @param Template $template
+     * @param bool $enablePropertyGrouping
      */
-    public function __construct(Template $template)
+    public function __construct(Template $template, bool $enablePropertyGrouping)
     {
         $this->template = $template;
+        $this->propertyGroupingEnabled = $enablePropertyGrouping;
     }
 
     public function decorate(PhpFile $file, PhpNamespace $namespace, ClassType $class, ClassMetadata $classMetadata): void
@@ -98,7 +105,9 @@ class ExtractionDecorator implements CodeDecoratorInterface
             $method->addBody($this->template->renderValueReader($property));
         }
 
-        $method->addBody($this->template->renderGroupHandler());
+        if ($this->propertyGroupingEnabled) {
+            $method->addBody($this->template->renderGroupHandler());
+        }
 
         $method->addBody('return $data;');
     }

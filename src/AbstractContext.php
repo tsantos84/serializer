@@ -57,6 +57,13 @@ abstract class AbstractContext
     }
 
     /**
+     * Set the property groups.
+     *
+     * Although you can set the groups in the context, you need to enable this feature in you serializer instance
+     * to get this feature working on you project.
+     *
+     * @see https://tsantos-serializer.readthedocs.io/en/latest/usage.html#property-grouping
+     *
      * @param array $groups
      *
      * @return self

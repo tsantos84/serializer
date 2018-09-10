@@ -33,15 +33,21 @@ class HydrationDecorator implements CodeDecoratorInterface
      * @var Template
      */
     private $template;
+    /**
+     * @var bool
+     */
+    private $propertyGroupingEnabled;
 
     /**
      * HydrationDecorator constructor.
      *
      * @param Template $template
+     * @param bool $propertyGroupEnabled
      */
-    public function __construct(Template $template)
+    public function __construct(Template $template, bool $propertyGroupEnabled)
     {
         $this->template = $template;
+        $this->propertyGroupingEnabled = $propertyGroupEnabled;
     }
 
     public function decorate(PhpFile $file, PhpNamespace $namespace, ClassType $class, ClassMetadata $classMetadata): void
@@ -89,7 +95,9 @@ STRING
             return;
         }
 
-        $method->addBody($this->template->renderGroupHandler());
+        if ($this->propertyGroupingEnabled) {
+            $method->addBody($this->template->renderGroupHandler());
+        }
 
         /** @var PropertyMetadata[] $properties */
         $properties = $classMetadata->getWritableProperties();
