@@ -30,6 +30,7 @@ class PropertyGroupingTest extends SerializerTestCase
     {
         $builder = parent::createBuilder();
         $builder->enablePropertyGrouping();
+
         return $builder;
     }
 

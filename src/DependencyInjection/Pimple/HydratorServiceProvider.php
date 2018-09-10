@@ -24,7 +24,6 @@ use TSantos\Serializer\CodeDecorator\ExposedKeysDecorator;
 use TSantos\Serializer\CodeDecorator\ExtractionDecorator;
 use TSantos\Serializer\CodeDecorator\HydrationDecorator;
 use TSantos\Serializer\CodeDecorator\NewInstanceMethodDecorator;
-use TSantos\Serializer\CodeDecorator\PropertiesDecorator;
 use TSantos\Serializer\CodeDecorator\Template;
 use TSantos\Serializer\Configuration;
 use TSantos\Serializer\HydratorCodeGenerator;

@@ -264,24 +264,26 @@ class SerializerBuilder
     }
 
     /**
-     * Disable property grouping feature
+     * Disable property grouping feature.
      *
      * @return SerializerBuilder
      */
     public function disablePropertyGrouping(): self
     {
         $this->container['property_group_enabled'] = false;
+
         return $this;
     }
 
     /**
-     * Enable property grouping feature
+     * Enable property grouping feature.
      *
      * @return SerializerBuilder
      */
     public function enablePropertyGrouping(): self
     {
         $this->container['property_group_enabled'] = true;
+
         return $this;
     }
 

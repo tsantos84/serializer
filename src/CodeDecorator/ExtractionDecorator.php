@@ -44,7 +44,7 @@ class ExtractionDecorator implements CodeDecoratorInterface
      * ExtractionDecorator constructor.
      *
      * @param Template $template
-     * @param bool $enablePropertyGrouping
+     * @param bool     $enablePropertyGrouping
      */
     public function __construct(Template $template, bool $enablePropertyGrouping)
     {

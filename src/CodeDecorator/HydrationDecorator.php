@@ -42,7 +42,7 @@ class HydrationDecorator implements CodeDecoratorInterface
      * HydrationDecorator constructor.
      *
      * @param Template $template
-     * @param bool $propertyGroupEnabled
+     * @param bool     $propertyGroupEnabled
      */
     public function __construct(Template $template, bool $propertyGroupEnabled)
     {
