@@ -16,6 +16,7 @@ namespace Tests\TSantos\Serializer\Deserialization;
 use Tests\TSantos\Serializer\Fixture\Model\Dummy;
 use Tests\TSantos\Serializer\Fixture\Model\DummyInner;
 use Tests\TSantos\Serializer\SerializerTestCase;
+use TSantos\Serializer\Exception\UnexpectedTypeException;
 
 /**
  * Class DeserializeArrayOfObjectTest.
@@ -74,6 +75,23 @@ class DeserializeCollectionsTest extends SerializerTestCase
         $this->assertCount(1, $dummy->getFoo());
         $this->assertInstanceOf(DummyInner::class, $dummy->getFoo()[0]);
         $this->assertSame($dummy->getFoo()[0]->getBaz(), 'baz');
+    }
+
+    /** @test */
+    public function it_should_not_deserialize_a_collection_of_objects_with_invalid_key_type()
+    {
+        $this->expectExceptionObject(UnexpectedTypeException::createKeyTypeException('string', 'integer'));
+
+        $serializer = $this->createSerializer(\array_merge(
+            $this->createMapping(Dummy::class, [
+                'foo' => ['type' => DummyInner::class.'[]', 'options' => ['key_type' => 'string']],
+            ]),
+            $this->createMapping(DummyInner::class, [
+                'baz' => [],
+            ])
+        ));
+
+        $serializer->deserialize('{"foo":[{"baz":"baz"}]}', Dummy::class);
     }
 
     /** @test */

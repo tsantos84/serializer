@@ -13,8 +13,10 @@ declare(strict_types=1);
 
 namespace TSantos\Serializer\CodeDecorator;
 
+use TSantos\Serializer\Exception\UnexpectedTypeException;
 use TSantos\Serializer\Metadata\PropertyMetadata;
 use TSantos\Serializer\Metadata\VirtualPropertyMetadata;
+use TSantos\Serializer\TypeHelper;
 
 /**
  * Class CodeTemplate.
@@ -101,6 +103,19 @@ STRING;
         } elseif ($property->isCollection()) {
             $template = <<<STRING
 foreach (\$value as \$key => \$val) {
+
+STRING;
+            if (isset($property->options['key_type']) && null !== $checker = TypeHelper::getScalarChecker($property->options['key_type'])) {
+                $exceptionClass = '\\' . UnexpectedTypeException::class;
+                $template .= <<<STRING
+            if (!$checker(\$key)) {
+                throw {$exceptionClass}::createKeyTypeException('{$property->options['key_type']}', \gettype(\$key));
+            }
+
+STRING;
+
+            }
+            $template .= <<<STRING
             \$value[\$key] = {reader};
         }
 STRING;
