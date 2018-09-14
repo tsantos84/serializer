@@ -44,6 +44,21 @@ if (null !== \$value = {accessor}) {
 
 STRING;
 
+    public function renderTypeChecker(string $type, string $value): string
+    {
+        $checker = TypeHelper::getChecker($type, $value);
+        $exceptionClass = '\\'.UnexpectedTypeException::class;
+
+        $template = <<<STRING
+        if (!($checker)) {
+                throw {$exceptionClass}::createKeyTypeException('{$type}', \gettype(\$key));
+            }
+
+STRING;
+
+        return $template;
+    }
+
     public function renderValueWriter(PropertyMetadata $property, string $mutator): string
     {
         $code = \strtr(self::$propertyWriteTemplate, [
@@ -105,15 +120,11 @@ STRING;
 foreach (\$value as \$key => \$val) {
 
 STRING;
-            if (isset($property->options['key_type']) && null !== $checker = TypeHelper::getScalarChecker($property->options['key_type'])) {
-                $exceptionClass = '\\' . UnexpectedTypeException::class;
+            if (isset($property->options['key_type'])) {
                 $template .= <<<STRING
-            if (!$checker(\$key)) {
-                throw {$exceptionClass}::createKeyTypeException('{$property->options['key_type']}', \gettype(\$key));
-            }
+    {$this->renderTypeChecker($property->options['key_type'], '$key')};
 
 STRING;
-
             }
             $template .= <<<STRING
             \$value[\$key] = {reader};
