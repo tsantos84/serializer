@@ -51,7 +51,7 @@ STRING;
 
         $template = <<<STRING
         if (!($checker)) {
-                throw {$exceptionClass}::createKeyTypeException('{$type}', \gettype(\$key));
+                throw {$exceptionClass}::keyType('{$type}', \gettype(\$key));
             }
 
 STRING;

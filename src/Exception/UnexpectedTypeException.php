@@ -20,7 +20,7 @@ namespace TSantos\Serializer\Exception;
  */
 class UnexpectedTypeException extends InvalidArgumentException
 {
-    public static function createKeyTypeException(string $expected, string $given): self
+    public static function keyType(string $expected, string $given): self
     {
         $message = \sprintf('Expected key type "%s", "%s" given', $expected, $given);
 

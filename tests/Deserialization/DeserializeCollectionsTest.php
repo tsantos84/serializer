@@ -80,7 +80,7 @@ class DeserializeCollectionsTest extends SerializerTestCase
     /** @test */
     public function it_should_not_deserialize_a_collection_of_objects_with_invalid_key_type()
     {
-        $this->expectExceptionObject(UnexpectedTypeException::createKeyTypeException('string', 'integer'));
+        $this->expectExceptionObject(UnexpectedTypeException::keyType('string', 'integer'));
 
         $serializer = $this->createSerializer(\array_merge(
             $this->createMapping(Dummy::class, [
