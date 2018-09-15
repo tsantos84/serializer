@@ -362,9 +362,48 @@ The data type of mapped property
 
     <property name="id" type="integer" />
 
+Available types:
+
+=================  ===================================================  =========
+Type               Description                                          Options
+-----------------  ---------------------------------------------------  ---------
+string             Primitive string type
+integer            Primitive integer type
+boolean            Primitive bool type
+float              Primitive float type
+[]                 A collection with mixed values                       key_type (e.g: key_type: "string")
+T[]                A collection of T, where T can be any allowed type   key_type (e.g: key_type: "string")
+DateTime           PHP DateTime object                                  format (e.g: format: "Y-m-d")
+DateTimeImmutable  PHP DateTimeImmutable object                         format (e.g: format: "Y-m-d")
+DateTimeInterface  PHP DateTimeInterface object                         format (e.g: format: "Y-m-d")
+T                  T is any fully qualified class name
+=================  ===================================================  =========
+
+The following example shows how you can configure options for collections and date/time properties::
+
+    <?php
+
+    namespace App\Entity;
+
+    class Post
+    {
+        /**
+         * @Type("App\Entity\Comment[]")
+         * @Options({"key_type":"integer"})
+         */
+        private $comments;
+
+        /**
+         * @Type("\DateTime")
+         * @Options({"format":"Y-m-d"})
+         */
+        private $createdAt;
+    }
+
 .. tip::
 
-    If you omit the type, the serializer will try to guess the type automatically.
+    If you omit the type information, the serializer will try to guess the type automatically by introspecting your class
+    docblocks and/or method type hint and method return type.
 
 Virtual Property
 ~~~~~~~~~~~~~~~~

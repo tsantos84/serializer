@@ -13,6 +13,8 @@ declare(strict_types=1);
 
 namespace TSantos\Serializer\Metadata;
 
+use TSantos\Serializer\TypeHelper;
+
 /**
  * Class AbstractPropertyMetadata.
  *
@@ -28,36 +30,26 @@ trait PropertyTrait
 
     public function isScalarType(): bool
     {
-        return \in_array($this->type, ['integer', 'string', 'float', 'boolean'], true);
+        return TypeHelper::isScalar($this->type);
     }
 
     public function isScalarCollectionType(): bool
     {
-        if (false === $pos = \mb_strpos($this->type, '[]')) {
-            return false;
-        }
-
-        $type = \mb_substr($this->type, 0, $pos);
-
-        return \in_array($type, ['integer', 'string', 'float', 'boolean'], true);
+        return TypeHelper::isScalarCollectionType($this->type);
     }
 
     public function isMixedCollectionType(): bool
     {
-        return 'mixed' === $this->getTypeOfCollection() || '[]' === $this->type;
+        return TypeHelper::isMixedCollectionType($this->type);
     }
 
     public function isCollection(): bool
     {
-        return false !== \mb_strpos($this->type, '[]');
+        return TypeHelper::isCollection($this->type);
     }
 
     public function getTypeOfCollection(): ?string
     {
-        if (false === $pos = \mb_strpos($this->type, '[]')) {
-            return null;
-        }
-
-        return \mb_substr($this->type, 0, $pos);
+        return TypeHelper::getTypeOfCollection($this->type);
     }
 }

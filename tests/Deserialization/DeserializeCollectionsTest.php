@@ -14,8 +14,9 @@ declare(strict_types=1);
 namespace Tests\TSantos\Serializer\Deserialization;
 
 use Tests\TSantos\Serializer\Fixture\Model\Dummy;
-use Tests\TSantos\Serializer\Fixture\Model\Person;
+use Tests\TSantos\Serializer\Fixture\Model\DummyInner;
 use Tests\TSantos\Serializer\SerializerTestCase;
+use TSantos\Serializer\Exception\UnexpectedTypeException;
 
 /**
  * Class DeserializeArrayOfObjectTest.
@@ -59,21 +60,38 @@ class DeserializeCollectionsTest extends SerializerTestCase
     }
 
     /** @test */
-    public function it_can_deserialize_a_collection_of_persons_through_and_setter()
+    public function it_can_deserialize_a_collection_of_objects_through_and_setter()
     {
         $serializer = $this->createSerializer(\array_merge(
             $this->createMapping(Dummy::class, [
-                'foo' => ['type' => Person::class.'[]'],
+                'foo' => ['type' => DummyInner::class.'[]'],
             ]),
-            $this->createMapping(Person::class, [
-                'name' => [],
+            $this->createMapping(DummyInner::class, [
+                'baz' => [],
             ])
         ));
 
-        $dummy = $serializer->deserialize('{"foo":[{"name":"Tales"}]}', Dummy::class);
+        $dummy = $serializer->deserialize('{"foo":[{"baz":"baz"}]}', Dummy::class);
         $this->assertCount(1, $dummy->getFoo());
-        $this->assertInstanceOf(Person::class, $dummy->getFoo()[0]);
-        $this->assertSame($dummy->getFoo()[0]->getName(), 'Tales');
+        $this->assertInstanceOf(DummyInner::class, $dummy->getFoo()[0]);
+        $this->assertSame($dummy->getFoo()[0]->getBaz(), 'baz');
+    }
+
+    /** @test */
+    public function it_should_not_deserialize_a_collection_of_objects_with_invalid_key_type()
+    {
+        $this->expectExceptionObject(UnexpectedTypeException::keyType('string', 'integer'));
+
+        $serializer = $this->createSerializer(\array_merge(
+            $this->createMapping(Dummy::class, [
+                'foo' => ['type' => DummyInner::class.'[]', 'options' => ['key_type' => 'string']],
+            ]),
+            $this->createMapping(DummyInner::class, [
+                'baz' => [],
+            ])
+        ));
+
+        $serializer->deserialize('{"foo":[{"baz":"baz"}]}', Dummy::class);
     }
 
     /** @test */
@@ -125,26 +143,26 @@ class DeserializeCollectionsTest extends SerializerTestCase
     }
 
     /** @test */
-    public function it_can_deserialize_a_collection_of_persons_through_reflection()
+    public function it_can_deserialize_a_collection_of_objects_through_reflection()
     {
         $serializer = $this->createSerializer(\array_merge(
             $this->createMapping(Dummy::class, [
-                'bar' => ['type' => Person::class.'[]'],
+                'bar' => ['type' => DummyInner::class.'[]'],
             ]),
-            $this->createMapping(Person::class, [
-                'name' => [],
+            $this->createMapping(DummyInner::class, [
+                'baz' => [],
             ])
         ));
 
-        $dummy = $serializer->deserialize('{"bar":[{"name":"Tales"}]}', Dummy::class);
+        $dummy = $serializer->deserialize('{"bar":[{"baz":"baz"}]}', Dummy::class);
 
         $ref = new \ReflectionObject($dummy);
         $prop = $ref->getProperty('bar');
         $prop->setAccessible(true);
 
         $this->assertCount(1, $prop->getValue($dummy));
-        $this->assertInstanceOf(Person::class, $prop->getValue($dummy)[0]);
-        $this->assertSame($prop->getValue($dummy)[0]->getName(), 'Tales');
+        $this->assertInstanceOf(DummyInner::class, $prop->getValue($dummy)[0]);
+        $this->assertSame($prop->getValue($dummy)[0]->getBaz(), 'baz');
     }
 
     /** @test */
