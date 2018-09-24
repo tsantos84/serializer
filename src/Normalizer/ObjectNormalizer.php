@@ -19,16 +19,12 @@ use TSantos\Serializer\DeserializationContext;
 use TSantos\Serializer\Exception\CircularReferenceException;
 use TSantos\Serializer\HydratorLoaderInterface;
 use TSantos\Serializer\SerializationContext;
-use TSantos\Serializer\SerializerAwareInterface;
-use TSantos\Serializer\Traits\SerializerAwareTrait;
 
 /**
  * Class ObjectNormalizer.
  */
-class ObjectNormalizer implements NormalizerInterface, DenormalizerInterface, SerializerAwareInterface, CacheableNormalizerInterface
+class ObjectNormalizer implements NormalizerInterface, DenormalizerInterface, CacheableNormalizerInterface
 {
-    use SerializerAwareTrait;
-
     /**
      * @var HydratorLoaderInterface
      */
