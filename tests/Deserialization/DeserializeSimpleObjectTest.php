@@ -15,6 +15,7 @@ namespace Tests\TSantos\Serializer\Deserialization;
 
 use Tests\TSantos\Serializer\Fixture\Model\Dummy;
 use Tests\TSantos\Serializer\Fixture\Model\DummyInner;
+use Tests\TSantos\Serializer\Fixture\Model\DummyPublic;
 use Tests\TSantos\Serializer\SerializerTestCase;
 use TSantos\Serializer\DeserializationContext;
 use TSantos\Serializer\Metadata\Driver\ReflectionDriver;
@@ -162,5 +163,22 @@ class DeserializeSimpleObjectTest extends SerializerTestCase
         );
 
         $this->assertSame(100, $dummy->getFoo());
+    }
+
+    /** @test */
+    public function it_can_deserialize_object_with_public_attributes()
+    {
+        $serializer = $this->createSerializer($this->createMapping(DummyPublic::class, [
+            'foo' => ['type' => 'integer'],
+            'bar' => ['type' => 'string'],
+        ]));
+
+        $dummy = $serializer->deserialize(
+            '{"foo":200,"bar":"bar"}',
+            DummyPublic::class
+        );
+
+        $this->assertSame(200, $dummy->foo);
+        $this->assertSame('bar', $dummy->bar);
     }
 }

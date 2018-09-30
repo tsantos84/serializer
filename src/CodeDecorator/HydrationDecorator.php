@@ -105,6 +105,8 @@ STRING
         foreach ($properties as $property) {
             if ($property->setter) {
                 $mutator = \sprintf('$object->%s($value);', $property->setter);
+            } elseif ($property->reflection->isPublic()) {
+                $mutator = \sprintf('$object->%s = $value;', $property->name);
             } else {
                 $mutator = \sprintf('$this->classMetadata->propertyMetadata[\'%s\']->reflection->setValue($object, $value);', $property->name);
             }

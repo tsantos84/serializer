@@ -38,19 +38,6 @@ class SetterConfiguratorTest extends AbstractConfiguratorTest
     }
 
     /** @test */
-    public function it_should_configure_the_setter_directly_on_property()
-    {
-        $subject = new class() {
-            public $name;
-        };
-
-        $classMetadata = $this->createClassMetadata($subject);
-        $classMetadata->addPropertyMetadata($property = new PropertyMetadata($classMetadata->name, 'name'));
-        $this->configurator->configure($classMetadata);
-        $this->assertSame('name', $property->setter);
-    }
-
-    /** @test */
     public function it_should_configure_property_to_write_from_setter_method()
     {
         $subject = new class() {

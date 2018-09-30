@@ -39,18 +39,12 @@ class GetterConfigurator implements ConfiguratorInterface
     {
         $ucName = \ucfirst($propertyMetadata->name);
         $getters = ['get'.$ucName, 'is'.$ucName, 'has'.$ucName];
-        $hasGetter = false;
 
         foreach ($getters as $getter) {
             if ($classMetadata->reflection->hasMethod($getter)) {
                 $propertyMetadata->setGetter($getter);
-                $hasGetter = true;
                 break;
             }
-        }
-
-        if (!$hasGetter && $propertyMetadata->reflection->isPublic()) {
-            $propertyMetadata->getter = $propertyMetadata->name;
         }
     }
 }

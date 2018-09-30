@@ -82,6 +82,8 @@ STRING;
             $accessor = \sprintf('$object->%s()', $property->name);
         } elseif (null !== $property->getter) {
             $accessor = \sprintf('$object->%s()', $property->getter);
+        } elseif ($property->reflection->isPublic()) {
+            $accessor = \sprintf('$object->%s', $property->name);
         } else {
             $accessor = \sprintf('$this->classMetadata->propertyMetadata[\'%s\']->reflection->getValue($object)', $property->name);
         }

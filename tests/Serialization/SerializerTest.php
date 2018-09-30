@@ -15,6 +15,7 @@ namespace Tests\TSantos\Serializer\Serialization;
 
 use Tests\TSantos\Serializer\Fixture\Model\Dummy;
 use Tests\TSantos\Serializer\Fixture\Model\DummyInner;
+use Tests\TSantos\Serializer\Fixture\Model\DummyPublic;
 use Tests\TSantos\Serializer\SerializerTestCase;
 use TSantos\Serializer\Metadata\Driver\ReflectionDriver;
 
@@ -111,5 +112,20 @@ class SerializerTest extends SerializerTestCase
         ]);
         $json = $serializer->serialize(new Dummy('foo', 'bar'));
         $this->assertSame('{"foo":"foo","bar":"bar"}', $json);
+    }
+
+    /** @test */
+    public function it_can_serialize_object_with_public_attributes(): void
+    {
+        $serializer = $this->createSerializer($this->createMapping(DummyPublic::class, [
+            'foo' => ['type' => 'integer'],
+            'bar' => ['type' => 'string'],
+        ]));
+
+        $dummy = new DummyPublic();
+        $dummy->foo = 100;
+        $dummy->bar = 'bar';
+
+        $this->assertSame('{"foo":100,"bar":"bar"}', $serializer->serialize($dummy));
     }
 }

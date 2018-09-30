@@ -43,19 +43,6 @@ class GetterConfiguratorTest extends AbstractConfiguratorTest
     }
 
     /** @test */
-    public function it_can_configure_property_to_read_from_its_own_public_value()
-    {
-        $subject = new class() {
-            public $id;
-        };
-
-        $classMetadata = $this->createClassMetadata($subject);
-        $classMetadata->addPropertyMetadata($property = new PropertyMetadata($classMetadata->name, 'id'));
-        $this->configurator->configure($classMetadata);
-        $this->assertSame('id', $property->getter);
-    }
-
-    /** @test */
     public function it_should_configure_property_to_ready_from_getter_method()
     {
         $subject = new class() {

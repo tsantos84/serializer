@@ -44,9 +44,5 @@ class SetterConfigurator implements ConfiguratorInterface
 
             return;
         }
-
-        if ($propertyMetadata->reflection->isPublic()) {
-            $propertyMetadata->setter = $propertyMetadata->name;
-        }
     }
 }
