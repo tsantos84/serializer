@@ -70,6 +70,7 @@ class HydratorCodeGenerator
     public function generate(ClassMetadata $classMetadata): string
     {
         $phpFile = new PhpFile();
+        $phpFile->setStrictTypes(true);
 
         $namespace = $phpFile->addNamespace($this->configuration->getNamespaceForClass($classMetadata));
 
