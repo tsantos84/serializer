@@ -13,8 +13,8 @@ declare(strict_types=1);
 
 namespace TSantos\Serializer;
 
-use Nette\PhpGenerator\Helpers;
 use Nette\PhpGenerator\PhpFile;
+use Nette\PhpGenerator\PsrPrinter;
 use TSantos\Serializer\Metadata\ClassMetadata;
 use TSantos\Serializer\Traits\ObjectInstantiatorAwareTrait;
 use TSantos\Serializer\Traits\SerializerAwareTrait;
@@ -32,19 +32,26 @@ class HydratorCodeGenerator
     private $configuration;
 
     /**
+     * @var PsrPrinter
+     */
+    private $printer;
+
+    /**
      * @var CodeDecoratorInterface[]
      */
     private $decorators = [];
 
     /**
-     * ChainDecorator constructor.
+     * HydratorCodeGenerator constructor.
      *
-     * @param Configuration            $configuration
-     * @param CodeDecoratorInterface[] $decorators
+     * @param Configuration $configuration
+     * @param PsrPrinter    $printer
+     * @param array         $decorators
      */
-    public function __construct(Configuration $configuration, array $decorators = [])
+    public function __construct(Configuration $configuration, PsrPrinter $printer, array $decorators = [])
     {
         $this->configuration = $configuration;
+        $this->printer = $printer;
         $this->decorators = $decorators;
     }
 
@@ -83,6 +90,6 @@ class HydratorCodeGenerator
             $decorator->decorate($phpFile, $namespace, $class, $classMetadata);
         }
 
-        return Helpers::tabsToSpaces((string) $phpFile, 4);
+        return $this->printer->printFile($phpFile);
     }
 }

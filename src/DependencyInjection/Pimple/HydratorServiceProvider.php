@@ -14,6 +14,8 @@ declare(strict_types=1);
 namespace TSantos\Serializer\DependencyInjection\Pimple;
 
 use Metadata\MetadataFactoryInterface;
+use Nette\PhpGenerator\Printer;
+use Nette\PhpGenerator\PsrPrinter;
 use Pimple\Container;
 use Pimple\ServiceProviderInterface;
 use Psr\Container\ContainerInterface;
@@ -57,9 +59,14 @@ class HydratorServiceProvider implements ServiceProviderInterface
             );
         };
 
+        $container[Printer::class] = function () {
+            return new PsrPrinter();
+        };
+
         $container[HydratorCodeGenerator::class] = function ($container) {
             $generator = new HydratorCodeGenerator(
                 $container[Configuration::class],
+                $container[Printer::class],
                 [
                     new ConstructorMethodDecorator(),
                     new AbstractHydratorDecorator(),
