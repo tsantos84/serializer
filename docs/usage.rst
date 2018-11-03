@@ -81,6 +81,36 @@ Now you need to configure the metadata to set the groups of the properties::
     You are probably asking your self why do you need to explicitly enable such feature and the answer is quite simple:
     performance! If you don't need to use this feature, you don't need to assume the costs caused by it.
 
+Max Depth Check
+~~~~~~~~~~~~~~~
+
+Max depth check is a way to avoid serializing big object graphs. Like property group feature, you need to enable max
+depth check to generate the hydrators with the necessary code::
+
+    $serializer = new (SerializerBuilder())
+        ->enableMaxDepthCheck()
+        ->build();
+
+Now you need to configure the metadata to set the groups of the properties::
+
+    class Post
+    {
+        /** @MaxDepth(2) */
+        private $author;
+    }
+
+    $post = ...;
+
+    // we need also to enable the max depth check at context level
+    $context = (new SerializationContext())->enableMaxDepthCheck();
+    $encoded = $serializer->serialize($post, $context);
+    echo $encoded; // {"id":100}
+
+.. note::
+    You are probably asking your self why do you need to explicitly enable such feature and the answer is quite simple:
+    performance! If you don't need to use this feature, you don't need to assume the costs caused by it.
+
+
 Deserialize Objects
 -------------------
 
