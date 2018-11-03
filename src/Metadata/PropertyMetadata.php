@@ -38,6 +38,8 @@ class PropertyMetadata extends BasePropertyMetadata
 
     public $readOnly = false;
 
+    public $maxDepth;
+
     public function __construct($class, $name)
     {
         parent::__construct($class, $name);

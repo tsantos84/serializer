@@ -39,7 +39,9 @@ STRING;
     private static $propertyReadTeamplte = <<<STRING
 // property "{propertyName}"
 if (null !== \$value = {accessor}) {
-    {exposure} 
+    if (!\$context->isMaxDepthAchieve(\$this->classMetadata->propertyMetadata['{propertyName}'])) {
+        {exposure} 
+    }
 }
 
 STRING;
