@@ -16,6 +16,7 @@ namespace Tests\TSantos\Serializer;
 use Tests\TSantos\Serializer\Fixture\Model\Dummy;
 use Tests\TSantos\Serializer\Fixture\Model\DummyInner;
 use Tests\TSantos\Serializer\Fixture\Model\DummyPublic;
+use TSantos\Serializer\SerializationContext;
 
 /**
  * Class MaxDepthTest
@@ -29,33 +30,7 @@ class MaxDepthTest extends SerializerTestCase
     protected $clearCache = false;
 
     /** @test */
-    public function it_should_not_serialize_on_the_first_serialization_level()
-    {
-        $serializer = $this->createSerializer(\array_merge(
-            $this->createMapping(Dummy::class, [
-                'foo' => ['type' => DummyInner::class, 'maxDepth' => 0]
-            ]),
-            $this->createMapping(DummyInner::class, [
-                'baz' => ['type' => DummyPublic::class]
-            ]),
-            $this->createMapping(DummyPublic::class, [
-                'bar' => ['type' => 'integer']
-            ])
-        ));
-
-        $public = new DummyPublic();
-        $public->bar = 100;
-        $inner = new DummyInner($public);
-        $dummy = new Dummy($inner);
-
-        $serialized = $serializer->serialize($dummy);
-
-        $this->assertSame('{"foo":null}', $serialized);
-
-    }
-
-    /** @test */
-    public function serializeWithMaxDepth()
+    public function it_should_not_check_max_depth()
     {
         $serializer = $this->createSerializer(\array_merge(
             $this->createMapping(Dummy::class, [
@@ -76,7 +51,34 @@ class MaxDepthTest extends SerializerTestCase
 
         $serialized = $serializer->serialize($dummy);
 
-        $this->assertSame('{"foo":{"baz":null}}', $serialized);
+        $this->assertSame('{"foo":{"baz":{"bar":100}}}', $serialized);
+    }
 
+    /** @test */
+    public function it_should_not_serialize_if_max_depth_is_achieved()
+    {
+        $serializer = $this->createSerializer(\array_merge(
+            $this->createMapping(Dummy::class, [
+                'foo' => ['type' => DummyInner::class, 'maxDepth' => 1]
+            ]),
+            $this->createMapping(DummyInner::class, [
+                'baz' => ['type' => DummyPublic::class]
+            ]),
+            $this->createMapping(DummyPublic::class, [
+                'bar' => ['type' => 'integer']
+            ])
+        ));
+
+        $public = new DummyPublic();
+        $public->bar = 100;
+        $inner = new DummyInner($public);
+        $dummy = new Dummy($inner);
+
+        $context = new SerializationContext();
+        $context->enableMaxDepthCheck();
+
+        $serialized = $serializer->serialize($dummy, $context);
+
+        $this->assertSame('{"foo":{"baz":null}}', $serialized);
     }
 }

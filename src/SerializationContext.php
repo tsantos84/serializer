@@ -35,6 +35,11 @@ class SerializationContext extends AbstractContext
     private $graph = [];
 
     /**
+     * @var bool
+     */
+    private $maxDepthCheck = false;
+
+    /**
      * @param int $circularReferenceCount
      *
      * @return SerializationContext
@@ -95,6 +100,10 @@ class SerializationContext extends AbstractContext
 
     public function isMaxDepthAchieve(PropertyMetadata $property): bool
     {
+        if (!$this->maxDepthCheck) {
+            return false;
+        }
+
         $countGraph = count($this->graph);
 
         for ($i=0; $i < $countGraph; $i++) {
@@ -107,5 +116,17 @@ class SerializationContext extends AbstractContext
         $this->graph[] = $property;
 
         return false;
+    }
+
+    public function enableMaxDepthCheck(): self
+    {
+        $this->maxDepthCheck = true;
+        return $this;
+    }
+
+    public function disableMaxDepthCheck(): self
+    {
+        $this->maxDepthCheck = false;
+        return $this;
     }
 }
