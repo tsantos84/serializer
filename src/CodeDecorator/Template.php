@@ -36,7 +36,7 @@ if (isset(\$data['{exposeAs}']) || \array_key_exists('{exposeAs}', \$data)) {
 
 STRING;
 
-    private static $propertyReadTeamplte = <<<STRING
+    private static $propertyReadTemplate = <<<STRING
 // property "{propertyName}"
 if (null !== \$value = {accessor}) {
     if (!\$context->isMaxDepthAchieve(\$this->classMetadata->propertyMetadata['{propertyName}'])) {
@@ -90,7 +90,7 @@ STRING;
             $accessor = \sprintf('$this->classMetadata->propertyMetadata[\'%s\']->reflection->getValue($object)', $property->name);
         }
 
-        return \strtr(self::$propertyReadTeamplte, [
+        return \strtr(self::$propertyReadTemplate, [
             '{propertyName}' => $property->name,
             '{accessor}' => $accessor,
             '{exposure}' => $this->createValueExposure($property),
