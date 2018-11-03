@@ -104,9 +104,9 @@ class SerializationContext extends AbstractContext
             return false;
         }
 
-        $countGraph = count($this->graph);
+        $countGraph = \count($this->graph);
 
-        for ($i=0; $i < $countGraph; $i++) {
+        for ($i = 0; $i < $countGraph; ++$i) {
             $node = $this->graph[$i];
             if (null !== $node->maxDepth && $node->maxDepth <= $countGraph) {
                 return true;
@@ -121,12 +121,14 @@ class SerializationContext extends AbstractContext
     public function enableMaxDepthCheck(): self
     {
         $this->maxDepthCheck = true;
+
         return $this;
     }
 
     public function disableMaxDepthCheck(): self
     {
         $this->maxDepthCheck = false;
+
         return $this;
     }
 }

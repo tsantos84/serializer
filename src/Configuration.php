@@ -44,10 +44,11 @@ class Configuration
 
     /**
      * Configuration constructor.
+     *
      * @param string $hydratorNamespace
      * @param string $hydratorDirectory
-     * @param int $generationStrategy
-     * @param bool $enableMaxDepthCheck
+     * @param int    $generationStrategy
+     * @param bool   $enableMaxDepthCheck
      */
     public function __construct(string $hydratorNamespace, string $hydratorDirectory, int $generationStrategy, bool $maxDepthCheck)
     {

@@ -52,6 +52,7 @@ STRING;
 
     /**
      * Template constructor.
+     *
      * @param Configuration $configuration
      */
     public function __construct(Configuration $configuration)
@@ -210,10 +211,10 @@ if (!\$context->isMaxDepthAchieve(\$this->classMetadata->{locatePropertyAt}['{pr
     }
 STRING;
 
-        return strtr($maxDepthWrap, [
+        return \strtr($maxDepthWrap, [
             '{exposure}' => $exposure,
             '{propertyName}' => $property->name,
-            '{locatePropertyAt}' => $property instanceof PropertyMetadata ? 'propertyMetadata' : 'methodMetadata'
+            '{locatePropertyAt}' => $property instanceof PropertyMetadata ? 'propertyMetadata' : 'methodMetadata',
         ]);
     }
 }

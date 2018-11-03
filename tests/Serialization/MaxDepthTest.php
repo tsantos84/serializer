@@ -19,7 +19,7 @@ use Tests\TSantos\Serializer\Fixture\Model\DummyPublic;
 use TSantos\Serializer\SerializationContext;
 
 /**
- * Class MaxDepthTest
+ * Class MaxDepthTest.
  *
  * @author Tales Santos <tales.augusto.santos@gmail.com>
  *
@@ -37,13 +37,13 @@ class MaxDepthTest extends SerializerTestCase
     {
         $serializer = $this->createSerializer(\array_merge(
             $this->createMapping(Dummy::class, [
-                'foo' => ['type' => DummyInner::class, 'maxDepth' => 1]
+                'foo' => ['type' => DummyInner::class, 'maxDepth' => 1],
             ]),
             $this->createMapping(DummyInner::class, [
-                'baz' => ['type' => DummyPublic::class]
+                'baz' => ['type' => DummyPublic::class],
             ]),
             $this->createMapping(DummyPublic::class, [
-                'bar' => ['type' => 'integer']
+                'bar' => ['type' => 'integer'],
             ])
         ));
 
@@ -62,13 +62,13 @@ class MaxDepthTest extends SerializerTestCase
     {
         $serializer = $this->createSerializer(\array_merge(
             $this->createMapping(Dummy::class, [
-                'foo' => ['type' => DummyInner::class, 'maxDepth' => 1]
+                'foo' => ['type' => DummyInner::class, 'maxDepth' => 1],
             ]),
             $this->createMapping(DummyInner::class, [
-                'baz' => ['type' => DummyPublic::class]
+                'baz' => ['type' => DummyPublic::class],
             ]),
             $this->createMapping(DummyPublic::class, [
-                'bar' => ['type' => 'integer']
+                'bar' => ['type' => 'integer'],
             ])
         ));
 
