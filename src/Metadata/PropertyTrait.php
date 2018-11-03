@@ -27,6 +27,7 @@ trait PropertyTrait
     public $groups = ['Default'];
     public $readValueFilter;
     public $options = [];
+    public $maxDepth;
 
     public function isScalarType(): bool
     {

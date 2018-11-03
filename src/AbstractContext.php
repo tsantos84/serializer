@@ -116,16 +116,6 @@ abstract class AbstractContext
         --$this->currentDepth;
     }
 
-    public function isMaxDeepAchieve(): bool
-    {
-        // infinite depth as the maxDepth wasn't provided
-        if (null === $this->maxDepth) {
-            return false;
-        }
-
-        return $this->currentDepth === $this->maxDepth;
-    }
-
     /**
      * @return int
      */

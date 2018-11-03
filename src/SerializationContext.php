@@ -14,6 +14,7 @@ declare(strict_types=1);
 namespace TSantos\Serializer;
 
 use TSantos\Serializer\Exception\CircularReferenceException;
+use TSantos\Serializer\Metadata\PropertyMetadata;
 
 /**
  * Class SerializationContext.
@@ -27,6 +28,16 @@ class SerializationContext extends AbstractContext
 
     /** @var int */
     private $circularReferenceCount = 1;
+
+    /**
+     * @var array
+     */
+    private $graph = [];
+
+    /**
+     * @var bool
+     */
+    private $maxDepthCheck = false;
 
     /**
      * @param int $circularReferenceCount
@@ -80,8 +91,44 @@ class SerializationContext extends AbstractContext
             return;
         }
 
+        \array_pop($this->graph);
+
         if (isset($this->circularReference)) {
             --$this->circularReference[$id];
         }
+    }
+
+    public function isMaxDepthAchieve(PropertyMetadata $property): bool
+    {
+        if (!$this->maxDepthCheck) {
+            return false;
+        }
+
+        $countGraph = \count($this->graph);
+
+        for ($i = 0; $i < $countGraph; ++$i) {
+            $node = $this->graph[$i];
+            if (null !== $node->maxDepth && $node->maxDepth <= $countGraph) {
+                return true;
+            }
+        }
+
+        $this->graph[] = $property;
+
+        return false;
+    }
+
+    public function enableMaxDepthCheck(): self
+    {
+        $this->maxDepthCheck = true;
+
+        return $this;
+    }
+
+    public function disableMaxDepthCheck(): self
+    {
+        $this->maxDepthCheck = false;
+
+        return $this;
     }
 }

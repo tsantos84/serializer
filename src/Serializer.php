@@ -78,10 +78,6 @@ class Serializer implements SerializerInterface
             $context->start();
         }
 
-        if ($context->isMaxDeepAchieve()) {
-            return [];
-        }
-
         if (null !== $normalizer = $this->normalizers->getNormalizer($data, $context)) {
             return $normalizer->normalize($data, $context);
         }
