@@ -13,6 +13,7 @@ declare(strict_types=1);
 
 namespace TSantos\Serializer\CodeDecorator;
 
+use TSantos\Serializer\Configuration;
 use TSantos\Serializer\Exception\UnexpectedTypeException;
 use TSantos\Serializer\Metadata\PropertyMetadata;
 use TSantos\Serializer\Metadata\VirtualPropertyMetadata;
@@ -39,12 +40,24 @@ STRING;
     private static $propertyReadTemplate = <<<STRING
 // property "{propertyName}"
 if (null !== \$value = {accessor}) {
-    if (!\$context->isMaxDepthAchieve(\$this->classMetadata->propertyMetadata['{propertyName}'])) {
-        {exposure} 
-    }
+    {exposure}
 }
 
 STRING;
+
+    /**
+     * @var Configuration
+     */
+    private $configuration;
+
+    /**
+     * Template constructor.
+     * @param Configuration $configuration
+     */
+    public function __construct(Configuration $configuration)
+    {
+        $this->configuration = $configuration;
+    }
 
     public function renderTypeChecker(string $type, string $value): string
     {
@@ -187,6 +200,20 @@ STRING;
             $exposure = \sprintf('$data[\'%s\'] = $this->serializer->normalize($value, $context);', $property->exposeAs);
         }
 
-        return $exposure;
+        if (!$this->configuration->isMaxDepthCheckEnabled()) {
+            return $exposure;
+        }
+
+        $maxDepthWrap = <<<STRING
+if (!\$context->isMaxDepthAchieve(\$this->classMetadata->{locatePropertyAt}['{propertyName}'])) {
+        {exposure}
+    }
+STRING;
+
+        return strtr($maxDepthWrap, [
+            '{exposure}' => $exposure,
+            '{propertyName}' => $property->name,
+            '{locatePropertyAt}' => $property instanceof PropertyMetadata ? 'propertyMetadata' : 'methodMetadata'
+        ]);
     }
 }

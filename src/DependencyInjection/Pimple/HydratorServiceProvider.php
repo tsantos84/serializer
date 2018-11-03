@@ -50,12 +50,14 @@ class HydratorServiceProvider implements ServiceProviderInterface
         $container['hydrator_namespace'] = 'App\\Hydrator';
         $container['generation_strategy'] = HydratorCompiler::AUTOGENERATE_ALWAYS;
         $container['property_group_enabled'] = false;
+        $container['max_depth_check_enabled'] = false;
 
         $container[Configuration::class] = function ($container) {
             return new Configuration(
                 $container['hydrator_namespace'],
                 $container['hydrator_dir'],
-                $container['generation_strategy']
+                $container['generation_strategy'],
+                $container['max_depth_check_enabled']
             );
         };
 
@@ -84,8 +86,8 @@ class HydratorServiceProvider implements ServiceProviderInterface
             return $generator;
         };
 
-        $container[Template::class] = function () {
-            return new Template();
+        $container[Template::class] = function ($container) {
+            return new Template($container[Configuration::class]);
         };
 
         $container[HydratorCodeWriter::class] = function ($container) {

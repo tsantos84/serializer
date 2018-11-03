@@ -288,6 +288,30 @@ class SerializerBuilder
     }
 
     /**
+     * Enable max depth check feature.
+     *
+     * @return SerializerBuilder
+     */
+    public function enableMaxDepthCheck(): self
+    {
+        $this->container['max_depth_check_enabled'] = true;
+
+        return $this;
+    }
+
+    /**
+     * Disable max depth check feature.
+     *
+     * @return SerializerBuilder
+     */
+    public function disableMaxDepthCheck(): self
+    {
+        $this->container['max_depth_check_enabled'] = false;
+
+        return $this;
+    }
+
+    /**
      * @return SerializerInterface
      */
     public function build(): SerializerInterface

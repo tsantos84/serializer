@@ -27,7 +27,10 @@ use TSantos\Serializer\SerializationContext;
  */
 class MaxDepthTest extends SerializerTestCase
 {
-    protected $clearCache = false;
+    protected function createBuilder()
+    {
+        return parent::createBuilder()->enableMaxDepthCheck();
+    }
 
     /** @test */
     public function it_should_not_check_max_depth()

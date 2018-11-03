@@ -38,17 +38,23 @@ class Configuration
     private $generationStrategy;
 
     /**
+     * @var bool
+     */
+    private $maxDepthCheck;
+
+    /**
      * Configuration constructor.
-     *
      * @param string $hydratorNamespace
      * @param string $hydratorDirectory
-     * @param int    $generationStrategy
+     * @param int $generationStrategy
+     * @param bool $enableMaxDepthCheck
      */
-    public function __construct(string $hydratorNamespace, string $hydratorDirectory, int $generationStrategy)
+    public function __construct(string $hydratorNamespace, string $hydratorDirectory, int $generationStrategy, bool $maxDepthCheck)
     {
         $this->hydratorNamespace = $hydratorNamespace;
         $this->hydratorDirectory = $hydratorDirectory;
         $this->generationStrategy = $generationStrategy;
+        $this->maxDepthCheck = $maxDepthCheck;
     }
 
     /**
@@ -115,5 +121,10 @@ class Configuration
         $filename = \str_replace('\\', '', $classMetadata->reflection->name);
 
         return $this->hydratorDirectory.\DIRECTORY_SEPARATOR.$filename.'.php';
+    }
+
+    public function isMaxDepthCheckEnabled(): bool
+    {
+        return $this->maxDepthCheck;
     }
 }
