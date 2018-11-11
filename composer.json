@@ -27,7 +27,7 @@
         "symfony/event-dispatcher": "^3.4 || ^4.0",
         "symfony/property-info": "^3.4 || ^4.0",
         "phpdocumentor/reflection-docblock": "^4.3",
-        "nette/php-generator": "^3.2 ",
+        "nette/php-generator": "^3.2",
         "pimple/pimple": "^3.2"
     },
     "require-dev": {
