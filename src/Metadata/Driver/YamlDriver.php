@@ -72,8 +72,8 @@ class YamlDriver extends AbstractFileDriver
                 $property->exposeAs = $map['exposeAs'];
             }
 
-            $property->readValueFilter = $map['readValue'] ?? null;
-            $property->writeValueFilter = $map['writeValue'] ?? null;
+            $property->readValueFilter = $map['readValueFilter'] ?? null;
+            $property->writeValueFilter = $map['writeValueFilter'] ?? null;
             $property->type = $map['type'] ?? null;
             $property->groups = (array) ($map['groups'] ?? ['Default']);
             $property->readOnly = (bool) ($map['readOnly'] ?? false);
