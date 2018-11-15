@@ -13,6 +13,7 @@ declare(strict_types=1);
 
 namespace Tests\TSantos\Serializer\Fixture\Driver;
 
+use Metadata\ClassMetadata as JmsClassMetadata;
 use Metadata\Driver\DriverInterface;
 
 /**
@@ -37,7 +38,7 @@ class TestDriver implements DriverInterface
         $this->drivers = $drivers;
     }
 
-    public function loadMetadataForClass(\ReflectionClass $class)
+    public function loadMetadataForClass(\ReflectionClass $class): ?JmsClassMetadata
     {
         if (!isset($this->drivers[$class->getName()])) {
             return null;

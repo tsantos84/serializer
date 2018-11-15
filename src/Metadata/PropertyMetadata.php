@@ -38,9 +38,12 @@ class PropertyMetadata extends BasePropertyMetadata
 
     public $readOnly = false;
 
-    public function __construct($class, $name)
+    public $reflection;
+
+    public function __construct(string $class, string $name)
     {
         parent::__construct($class, $name);
+        $this->reflection = new \ReflectionProperty($class, $name);
         $this->exposeAs = $name;
     }
 

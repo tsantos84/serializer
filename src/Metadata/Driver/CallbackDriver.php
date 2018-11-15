@@ -13,6 +13,7 @@ declare(strict_types=1);
 
 namespace TSantos\Serializer\Metadata\Driver;
 
+use Metadata\ClassMetadata as JmsClassMetadata;
 use Metadata\Driver\DriverInterface;
 use TSantos\Serializer\Metadata\ClassMetadata;
 
@@ -38,7 +39,7 @@ class CallbackDriver implements DriverInterface
         $this->callback = $callback;
     }
 
-    public function loadMetadataForClass(\ReflectionClass $class)
+    public function loadMetadataForClass(\ReflectionClass $class): ?JmsClassMetadata
     {
         $metadata = \call_user_func($this->callback, $class);
 

@@ -13,6 +13,7 @@ declare(strict_types=1);
 
 namespace TSantos\Serializer\Metadata\Driver;
 
+use Metadata\ClassMetadata as JmsClassMetadata;
 use Metadata\Driver\DriverInterface;
 use TSantos\Serializer\Metadata\ClassMetadata;
 use TSantos\Serializer\Metadata\PropertyMetadata;
@@ -26,7 +27,7 @@ use TSantos\Serializer\Metadata\PropertyMetadata;
  */
 final class ReflectionDriver implements DriverInterface
 {
-    public function loadMetadataForClass(\ReflectionClass $class)
+    public function loadMetadataForClass(\ReflectionClass $class): ?JmsClassMetadata
     {
         $metadata = new ClassMetadata($class->name);
 

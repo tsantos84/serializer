@@ -13,6 +13,7 @@ declare(strict_types=1);
 
 namespace TSantos\Serializer\Metadata\Driver;
 
+use Metadata\ClassMetadata as JmsClassMetadata;
 use Metadata\Driver\DriverInterface;
 use TSantos\Serializer\Metadata\ClassMetadata;
 use TSantos\Serializer\Metadata\ConfiguratorInterface;
@@ -48,7 +49,7 @@ final class ConfiguratorDriver implements DriverInterface
         $this->configurators = $configurators;
     }
 
-    public function loadMetadataForClass(\ReflectionClass $class)
+    public function loadMetadataForClass(\ReflectionClass $class): ?JmsClassMetadata
     {
         /** @var ClassMetadata $metadata */
         $metadata = $this->driver->loadMetadataForClass($class);
