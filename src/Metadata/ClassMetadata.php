@@ -38,7 +38,9 @@ class ClassMetadata extends MergeableClassMetadata
 
     /**
      * ClassMetadata constructor.
+     *
      * @param $name
+     *
      * @throws \ReflectionException
      */
     public function __construct($name)
