@@ -44,6 +44,7 @@ class PropertyMetadata extends BasePropertyMetadata
     {
         parent::__construct($class, $name);
         $this->reflection = new \ReflectionProperty($class, $name);
+        $this->reflection->setAccessible(true);
         $this->exposeAs = $name;
     }
 
