@@ -13,7 +13,7 @@ declare(strict_types=1);
 
 namespace TSantos\Serializer\Metadata\Driver;
 
-use Doctrine\Common\Annotations\AnnotationReader;
+use Doctrine\Common\Annotations\Reader;
 use Metadata\Driver\DriverInterface;
 use TSantos\Serializer\Mapping\BaseClass;
 use TSantos\Serializer\Mapping\Discriminator;
@@ -39,16 +39,16 @@ use TSantos\Serializer\Metadata\VirtualPropertyMetadata;
 class AnnotationDriver implements DriverInterface
 {
     /**
-     * @var AnnotationReader
+     * @var Reader
      */
     private $reader;
 
     /**
      * AnnotationDriver constructor.
      *
-     * @param AnnotationReader $reader
+     * @param Reader $reader
      */
-    public function __construct(AnnotationReader $reader)
+    public function __construct(Reader $reader)
     {
         $this->reader = $reader;
     }
