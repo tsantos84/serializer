@@ -23,6 +23,10 @@ use TSantos\Serializer\Metadata\ClassMetadata;
  */
 class HydratorLoader implements HydratorLoaderInterface
 {
+    const COMPILE_NEVER = 1;
+    const COMPILE_ALWAYS = 2;
+    const COMPILE_IF_NOT_EXISTS = 3;
+
     /**
      * @var Configuration
      */
@@ -95,8 +99,32 @@ class HydratorLoader implements HydratorLoaderInterface
             return $this->hydrators[$class] = $this->factory->newInstance($classMetadata);
         }
 
-        $this->compiler->compile($classMetadata);
+        $filename = $this->configuration->getFilename($classMetadata);
+
+        switch ($this->configuration->getGenerationStrategy()) {
+            case self::COMPILE_NEVER:
+                requireHydrator($filename);
+                break;
+
+            case self::COMPILE_ALWAYS:
+                $this->compiler->compile($classMetadata);
+                requireHydrator($filename);
+                break;
+
+            case self::COMPILE_IF_NOT_EXISTS:
+                if (!\file_exists($filename)) {
+                    $this->compiler->compile($classMetadata);
+                }
+                requireHydrator($filename);
+                break;
+        }
 
         return $this->hydrators[$class] = $this->factory->newInstance($classMetadata);
     }
+}
+
+function requireHydrator(string $filename): void
+{
+    /** @noinspection PhpIncludeInspection */
+    require_once $filename;
 }
