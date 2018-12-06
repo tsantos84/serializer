@@ -99,6 +99,13 @@ class HydratorLoader implements HydratorLoaderInterface
             return $this->hydrators[$class] = $this->factory->newInstance($classMetadata);
         }
 
+        $this->compileAndLoad($classMetadata);
+
+        return $this->hydrators[$class] = $this->factory->newInstance($classMetadata);
+    }
+
+    private function compileAndLoad(ClassMetadata $classMetadata): void
+    {
         $filename = $this->configuration->getFilename($classMetadata);
 
         switch ($this->configuration->getGenerationStrategy()) {
@@ -118,8 +125,6 @@ class HydratorLoader implements HydratorLoaderInterface
                 requireHydrator($filename);
                 break;
         }
-
-        return $this->hydrators[$class] = $this->factory->newInstance($classMetadata);
     }
 }
 
