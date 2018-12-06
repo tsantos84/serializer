@@ -111,6 +111,7 @@ class HydratorServiceProvider implements ServiceProviderInterface
 
         $container[HydratorCompilerInterface::class] = function ($container) {
             return new HydratorCompiler(
+                $container[Configuration::class],
                 $container[HydratorCodeGenerator::class],
                 $container[HydratorCodeWriter::class]
             );

@@ -14,6 +14,7 @@ declare(strict_types=1);
 namespace Tests\TSantos\Serializer;
 
 use PHPUnit\Framework\TestCase;
+use TSantos\Serializer\Configuration;
 use TSantos\Serializer\HydratorCodeGenerator;
 use TSantos\Serializer\HydratorCodeWriter;
 use TSantos\Serializer\HydratorCompiler;
@@ -31,6 +32,8 @@ class HydratorCompilerTest extends TestCase
     {
         $classMetadata = $this->createMock(ClassMetadata::class);
 
+        $configuration = $this->createMock(Configuration::class);
+
         $generator = $this->createMock(HydratorCodeGenerator::class);
         $generator
             ->expects($this->once())
@@ -44,7 +47,7 @@ class HydratorCompilerTest extends TestCase
             ->method('write')
             ->with($classMetadata, '<?php MyHydrator {}');
 
-        $compiler = new HydratorCompiler($generator, $writer);
+        $compiler = new HydratorCompiler($configuration, $generator, $writer);
         $compiler->compile($classMetadata);
     }
 }
