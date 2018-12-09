@@ -179,16 +179,17 @@ STRING;
         } elseif ($property->isScalarType()) {
             $exposure = \sprintf('$data[\'%s\'] = (%s) $value;', $property->exposeAs, $property->type);
         } elseif ($property->isMixedCollectionType()) {
-            $exposure = \sprintf('$data[\'%s\'] = $value;', $property->exposeAs, $property->type);
+            $exposure = \sprintf('$data[\'%s\'] = $value;', $property->exposeAs);
         } elseif ($property->isCollection()) {
             $template = <<<STRING
-foreach (\$value as \$key => \$val) {
-        \$value[\$key] = {reader};
+\$collection = [];
+    foreach (\$value as \$key => \$val) {
+        \$collection[\$key] = {reader}
     }
-    \$data['{exposeAs}'] = \$value;
+    \$data['{exposeAs}'] = \$collection;
 STRING;
             if ($property->isScalarCollectionType()) {
-                $reader = \sprintf('(%s) $val', $property->getTypeOfCollection());
+                $reader = \sprintf('(%s) $val;', $property->getTypeOfCollection());
             } else {
                 $reader = '$this->serializer->normalize($val, $context);';
             }
