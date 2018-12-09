@@ -56,7 +56,7 @@ class SerializationContext extends AbstractContext
     }
 
     /**
-     * @param null $object
+     * @param null        $object
      * @param string|null $id
      */
     public function enter($object = null, string $id = null)
