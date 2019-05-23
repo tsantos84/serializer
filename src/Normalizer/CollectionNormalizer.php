@@ -68,22 +68,21 @@ class CollectionNormalizer implements NormalizerInterface, DenormalizerInterface
                 switch ($type) {
                     case 'string':
                         $data[$key] = (string) $val;
-                        continue;
+                        break;
                     case 'integer':
                         $data[$key] = (int) $val;
-                        continue;
+                        break;
                     case 'float':
-                        $data[$key] = (float) $val;
-                        continue;
                     case 'double':
                         $data[$key] = (float) $val;
-                        continue;
+                        break;
                     case 'boolean':
                         $data[$key] = (bool) $val;
                         continue;
                     case 'mixed':
+                    default:
                         $data[$key] = $val;
-                        continue;
+                        break;
                 }
             }
 
