@@ -166,7 +166,6 @@ class PropertyTypeConfiguratorTest extends AbstractConfiguratorTest
     /** @test */
     public function it_should_guess_type_from_its_default_value()
     {
-        $this->markTestSkipped('Waiting PR approval to extract type from property\'s default value');
         $subject = new class() {
             private $age = 30;
         };
@@ -199,7 +198,6 @@ class PropertyTypeConfiguratorTest extends AbstractConfiguratorTest
     /** @test */
     public function it_should_guess_type_from_its_setter_method_doc_block_param_annotation()
     {
-        $this->markTestSkipped('Waiting PR approval to extract type from property\'s default value');
         $subject = new class() {
             private $age;
 
@@ -225,28 +223,6 @@ class PropertyTypeConfiguratorTest extends AbstractConfiguratorTest
             private $age;
 
             public function __construct(int $age)
-            {
-            }
-        };
-
-        $classMetadata = $this->createClassMetadata($subject);
-        $property = new PropertyMetadata($classMetadata->name, 'age');
-        $classMetadata->addPropertyMetadata($property);
-        $this->configurator->configure($classMetadata);
-        $this->assertSame('integer', $property->type);
-    }
-
-    /** @test */
-    public function it_should_guess_type_from_constructor_doc_block()
-    {
-        $this->markTestSkipped('Waiting PR approval to extract type from property\'s default value');
-        $subject = new class(33) {
-            private $age;
-
-            /**
-             * @param int $age
-             */
-            public function __construct($age)
             {
             }
         };
