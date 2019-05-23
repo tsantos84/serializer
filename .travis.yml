@@ -30,7 +30,7 @@ script:
   - vendor/bin/php-cs-fixer fix --config=.php_cs.dist --dry-run
   - vendor/bin/phpunit $PHPUNIT_FLAGS
   - |
-    # Sending code coverage to Scrutinizer
+    # Run Sonar scanner
     if [[ $COVERAGE = true ]]; then
       sonar-scanner
     fi
