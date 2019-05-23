@@ -23,7 +23,7 @@ before_install:
     - if [[ $COVERAGE != true ]]; then phpenv config-rm xdebug.ini || true; fi
 
 install:
-  - composer require --global symfony/flex
+  - composer global require symfony/flex
   - composer install -a --no-progress
 
 script:
