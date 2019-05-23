@@ -1,6 +1,10 @@
 language: php
-
+dist: trusty
 sudo: false
+
+addons:
+  sonarcloud:
+    organization: "tsantos84-github"
 
 env:
     global:
@@ -11,13 +15,15 @@ matrix:
     - php: 7.1
     - php: 7.2
     - php: 7.2
-      env: COVERAGE=true PHPUNIT_FLAGS="-v --coverage-clover=coverage.clover"
+      env: COVERAGE=true PHPUNIT_FLAGS="-v --coverage-clover reports/phpunit.coverage.xml --log-junit reports/phpunit.report.xml"
   fast_finish: true
 
 before_install:
+    - git fetch --unshallow
     - if [[ $COVERAGE != true ]]; then phpenv config-rm xdebug.ini || true; fi
 
 install:
+  - composer global require symfony/flex
   - composer install -a --no-progress
 
 script:
@@ -26,8 +32,7 @@ script:
   - |
     # Sending code coverage to Scrutinizer
     if [[ $COVERAGE = true ]]; then
-      wget https://scrutinizer-ci.com/ocular.phar
-      php ocular.phar code-coverage:upload --format=php-clover coverage.clover
+      sonar-scanner
     fi
 
 after_success:
