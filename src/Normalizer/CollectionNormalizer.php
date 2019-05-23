@@ -78,7 +78,7 @@ class CollectionNormalizer implements NormalizerInterface, DenormalizerInterface
                         break;
                     case 'boolean':
                         $data[$key] = (bool) $val;
-                        continue;
+                        break;
                     case 'mixed':
                     default:
                         $data[$key] = $val;
