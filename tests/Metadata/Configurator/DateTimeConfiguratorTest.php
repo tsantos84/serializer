@@ -23,7 +23,7 @@ use TSantos\Serializer\Metadata\PropertyMetadata;
  */
 class DateTimeConfiguratorTest extends AbstractConfiguratorTest
 {
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->configurator = new DateTimeConfigurator();
     }

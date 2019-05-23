@@ -53,7 +53,7 @@ class SerializerBuilderTest extends TestCase
      */
     private $builder;
 
-    public function setUp()
+    public function setup(): void
     {
         $this->container = new Container();
         $this->builder = new SerializerBuilder($this->container);

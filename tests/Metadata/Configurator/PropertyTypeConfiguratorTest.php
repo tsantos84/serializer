@@ -27,7 +27,7 @@ use TSantos\Serializer\Metadata\PropertyMetadata;
  */
 class PropertyTypeConfiguratorTest extends AbstractConfiguratorTest
 {
-    protected function setUp()
+    protected function setUp(): void
     {
         $propertyInfo = new PropertyInfoExtractor([], [
             new ReflectionExtractor(),

@@ -18,7 +18,7 @@ use TSantos\Serializer\Metadata\PropertyMetadata;
 
 class SetterConfiguratorTest extends AbstractConfiguratorTest
 {
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->configurator = new SetterConfigurator();
     }
