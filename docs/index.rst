@@ -1,11 +1,11 @@
 TSantos Serializer Library
 ==========================
-|build| |scrutinizer| |code_coverage| |docs|
+|build| |quality_state| |code_coverage| |docs|
 
 .. |build| image:: https://travis-ci.org/tsantos84/serializer.svg?branch=master
 .. |docs| image:: https://readthedocs.org/projects/tsantos-serializer/badge/?version=latest
-.. |scrutinizer| image:: https://scrutinizer-ci.com/g/tsantos84/serializer/badges/quality-score.png?b=master
-.. |code_coverage| image:: https://scrutinizer-ci.com/g/tsantos84/serializer/badges/coverage.png?b=master
+.. |quality_state| image:: https://sonarcloud.io/api/project_badges/measure?project=tsantos84_serializer&metric=alert_status
+.. |code_coverage| image:: https://sonarcloud.io/api/project_badges/measure?project=tsantos84_serializer&metric=coverage
 
 Welcome to TSantos Serializer documentation page! This page will show you how to install and use the TSantos Serializer
 library.

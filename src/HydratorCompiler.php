@@ -22,9 +22,23 @@ use TSantos\Serializer\Metadata\ClassMetadata;
  */
 class HydratorCompiler implements HydratorCompilerInterface
 {
-    const AUTOGENERATE_NEVER = 1;
-    const AUTOGENERATE_ALWAYS = 2;
-    const AUTOGENERATE_FILE_NOT_EXISTS = 3;
+    /**
+     * @deprecated Constant moved to HydratorLoader and will be removed from HydratorCompiler on version 5.0
+     * @see \TSantos\Serializer\HydratorLoader::COMPILE_NEVER
+     */
+    const AUTOGENERATE_NEVER = HydratorLoader::COMPILE_NEVER;
+
+    /**
+     * @deprecated Constant moved to HydratorLoader and will be removed from HydratorCompiler on version 5.0
+     * @see \TSantos\Serializer\HydratorLoader::COMPILE_ALWAYS
+     */
+    const AUTOGENERATE_ALWAYS = HydratorLoader::COMPILE_ALWAYS;
+
+    /**
+     * @deprecated Constant moved to HydratorLoader and will be removed from HydratorCompiler on version 5.0
+     * @see \TSantos\Serializer\HydratorLoader::COMPILE_IF_NOT_EXISTS
+     */
+    const AUTOGENERATE_FILE_NOT_EXISTS = HydratorLoader::COMPILE_IF_NOT_EXISTS;
 
     /**
      * @var Configuration
@@ -42,14 +56,18 @@ class HydratorCompiler implements HydratorCompilerInterface
     private $writer;
 
     /**
-     * Compiler constructor.
+     * HydratorCompiler constructor.
      *
-     * @param Configuration         $configuration
+     * @param Configuration         $configuration [DEPRECATED]
      * @param HydratorCodeGenerator $generator
      * @param HydratorCodeWriter    $writer
      */
     public function __construct(Configuration $configuration, HydratorCodeGenerator $generator, HydratorCodeWriter $writer)
     {
+        @\trigger_error(
+            'The argument the $configuration is deprecated since Serializer 4.0.1 and will be removed in 5.0',
+            E_USER_DEPRECATED
+        );
         $this->configuration = $configuration;
         $this->generator = $generator;
         $this->writer = $writer;
@@ -57,36 +75,7 @@ class HydratorCompiler implements HydratorCompilerInterface
 
     public function compile(ClassMetadata $classMetadata): void
     {
-        $filename = $this->configuration->getFilename($classMetadata);
-
-        switch ($this->configuration->getGenerationStrategy()) {
-            case self::AUTOGENERATE_NEVER:
-                requireHydrator($filename);
-                break;
-
-            case self::AUTOGENERATE_ALWAYS:
-                $this->generate($classMetadata);
-                requireHydrator($filename);
-                break;
-
-            case self::AUTOGENERATE_FILE_NOT_EXISTS:
-                if (!\file_exists($filename)) {
-                    $this->generate($classMetadata);
-                }
-                requireHydrator($filename);
-                break;
-        }
-    }
-
-    private function generate(ClassMetadata $classMetadata)
-    {
         $code = $this->generator->generate($classMetadata);
         $this->writer->write($classMetadata, $code);
     }
-}
-
-function requireHydrator(string $filename): void
-{
-    /** @noinspection PhpIncludeInspection */
-    require_once $filename;
 }

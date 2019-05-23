@@ -14,7 +14,6 @@ declare(strict_types=1);
 namespace TSantos\Serializer\Metadata\Driver;
 
 use Doctrine\Common\Annotations\AnnotationReader;
-use Metadata\ClassMetadata as JmsClassMetadata;
 use Metadata\Driver\DriverInterface;
 use TSantos\Serializer\Mapping\BaseClass;
 use TSantos\Serializer\Mapping\Discriminator;
@@ -54,7 +53,7 @@ class AnnotationDriver implements DriverInterface
         $this->reader = $reader;
     }
 
-    public function loadMetadataForClass(\ReflectionClass $class): ?JmsClassMetadata
+    public function loadMetadataForClass(\ReflectionClass $class)
     {
         $configured = false;
         $metadata = new ClassMetadata($class->name);

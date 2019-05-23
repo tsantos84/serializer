@@ -23,10 +23,14 @@ use TSantos\Serializer\Metadata\PropertyMetadata;
  */
 class SerializationContext extends AbstractContext
 {
-    /** @var array */
+    /**
+     * @var array
+     */
     private $circularReference = [];
 
-    /** @var int */
+    /**
+     * @var int
+     */
     private $circularReferenceCount = 1;
 
     /**
@@ -52,7 +56,8 @@ class SerializationContext extends AbstractContext
     }
 
     /**
-     * @param null $object
+     * @param null        $object
+     * @param string|null $id
      */
     public function enter($object = null, string $id = null)
     {
