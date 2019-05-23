@@ -5,8 +5,6 @@ sudo: false
 addons:
   sonarcloud:
     organization: "tsantos84-github"
-    token:
-      secure: SONAR_TOKEN
 
 env:
     global:
@@ -32,7 +30,7 @@ script:
   - |
     # Sending code coverage to Scrutinizer
     if [[ $COVERAGE = true ]]; then
-      sonar-scanner
+      sonar-scanner -Dsonar.verbose=true -X
     fi
 
 after_success:
