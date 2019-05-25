@@ -2,76 +2,13 @@ language: php
 dist: trusty
 sudo: false
 
-addons:
-  sonarcloud:
-    organization: "tsantos84-github"
+php:
+  - 7.2
+  - 7.3
 
-env:
-    global:
-        - PHPUNIT_FLAGS="-v"
-
-matrix:
+jobs:
   include:
-    # PHP 7.2 with stable packages
-    - php: 7.2
-      env: COMPOSER_FLAGS="--prefer-stable"
+      - stage: Tests
+        name: Code Standard
+        script: vendor/bin/php-cs-fixer fix --config=.php_cs.dist --dry-run
 
-    # PHP 7.2 with dev packages
-    - php: 7.2
-      ENV: DEV=true
-
-    # PHP 7.3 with dev packages
-    - php: 7.3
-      ENV: DEV=true
-
-    # PHP 7.3 with stable packages code coverage
-    - php: 7.3
-      env: COMPOSER_FLAGS="--prefer-stable" COVERAGE=true PHPUNIT_FLAGS="-v --coverage-clover reports/phpunit.coverage.xml --log-junit reports/phpunit.report.xml"
-  allow_failures:
-    # Dev-master is allowed to fail.
-    - env: DEV=true
-
-  fast_finish: true
-
-before_install:
-    - git fetch --unshallow
-    - if [[ $COVERAGE != true ]]; then phpenv config-rm xdebug.ini || true; fi
-
-install:
-  - composer global require symfony/flex
-  - composer update -a --no-progress $COMPOSER_FLAGS
-
-script:
-  - vendor/bin/php-cs-fixer fix --config=.php_cs.dist --dry-run
-  - vendor/bin/phpunit $PHPUNIT_FLAGS
-  - |
-    # Run Sonar scanner
-    if [[ $COVERAGE = true ]]; then
-      sonar-scanner
-    fi
-
-after_success:
-  - |
-    # Setting up Benchmark Tool
-    phpenv config-rm xdebug.ini
-    phpenv config-add php.ini
-    echo "extension = apcu.so" >> ~/.phpenv/versions/$(phpenv version-name)/etc/php.ini
-    export BENCHMARK_DIR=/tmp/serializers-benchmarking
-    git clone https://github.com/tsantos84/serializers-benchmarking.git ${BENCHMARK_DIR}
-    cd ${BENCHMARK_DIR}
-    rm -rf composer.lock
-    composer config repositories.serializer path ${TRAVIS_BUILD_DIR}
-    cat composer.json
-
-  - |
-    # Installing Benchmark Dependencies
-    composer clear-cache
-    composer install -a --prefer-source --no-progress
-
-  - |
-    # Performing serialization benchmark
-    php vendor/bin/phpbench run --warmup=1 --report=tsantos --group=serialize --iterations=10
-
-  - |
-    # Performing deserialization benchmark
-    php vendor/bin/phpbench run --warmup=1 --report=tsantos --group=deserialize --iterations=10
