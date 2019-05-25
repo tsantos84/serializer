@@ -39,7 +39,7 @@ before_install:
 
 install:
   - composer global require symfony/flex
-  - composer install -a --no-progress $COMPOSER_FLAGS
+  - composer update -a --no-progress $COMPOSER_FLAGS
 
 script:
   - vendor/bin/php-cs-fixer fix --config=.php_cs.dist --dry-run
