@@ -34,9 +34,10 @@ jobs:
 
     -
       stage: Benchmark
-      install:
-        - phpenv config-add php.ini
+      before_install:
+        - phpenv config-rm xdebug.ini
         - echo "extension = apcu.so" >> ~/.phpenv/versions/$(phpenv version-name)/etc/php.ini
+      install:
         - export BENCHMARK_DIR=/tmp/serializers-benchmarking
         - git clone https://github.com/tsantos84/serializers-benchmarking.git ${BENCHMARK_DIR}
         - cd ${BENCHMARK_DIR}
