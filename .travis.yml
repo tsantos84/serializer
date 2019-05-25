@@ -12,9 +12,34 @@ install:
 
 jobs:
   include:
-      - stage: Tests
+      -
         name: Code Standard
         script: vendor/bin/php-cs-fixer fix --config=.php_cs.dist --dry-run
+
       -
         name: Unit tests
         script: vendor/bin/phpunit
+
+      -
+        name: Benchmark
+        install:
+          phpenv config-rm xdebug.ini
+          phpenv config-add php.ini
+          echo "extension = apcu.so" >> ~/.phpenv/versions/$(phpenv version-name)/etc/php.ini
+          export BENCHMARK_DIR=/tmp/serializers-benchmarking
+          git clone https://github.com/tsantos84/serializers-benchmarking.git ${BENCHMARK_DIR}
+          cd ${BENCHMARK_DIR}
+          rm -rf composer.lock
+          composer config repositories.serializer path ${TRAVIS_BUILD_DIR}
+          cat composer.json
+          composer clear-cache
+          composer install -a --prefer-source --no-progress
+
+        script:
+          - |
+          # Performing serialization benchmark
+          php vendor/bin/phpbench run --warmup=1 --report=tsantos --group=serialize --iterations=10
+
+          - |
+          # Performing deserialization benchmark
+          php vendor/bin/phpbench run --warmup=1 --report=tsantos --group=deserialize --iterations=10
