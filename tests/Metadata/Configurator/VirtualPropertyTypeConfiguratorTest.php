@@ -23,7 +23,7 @@ use TSantos\Serializer\Metadata\VirtualPropertyMetadata;
  */
 class VirtualPropertyTypeConfiguratorTest extends AbstractConfiguratorTest
 {
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->configurator = new VirtualPropertyTypeConfigurator();
     }

@@ -34,14 +34,20 @@ class ClassMetadata extends MergeableClassMetadata
 
     public $constructArgs = [];
 
+    public $reflection;
+
     /**
      * ClassMetadata constructor.
      *
      * @param $name
+     *
+     * @throws \ReflectionException
      */
     public function __construct($name)
     {
         parent::__construct($name);
+
+        $this->reflection = new \ReflectionClass($name);
 
         if (null !== $construct = $this->reflection->getConstructor()) {
             foreach ($construct->getParameters() as $parameter) {
@@ -77,9 +83,10 @@ class ClassMetadata extends MergeableClassMetadata
         $this->reflection = new \ReflectionClass($this->name);
     }
 
-    public function merge(MergeableInterface $object)
+    public function merge(MergeableInterface $object): void
     {
         parent::merge($object);
+        $this->reflection = $object->reflection;
         $this->constructArgs = $object->constructArgs;
     }
 
@@ -88,7 +95,7 @@ class ClassMetadata extends MergeableClassMetadata
         return \count($this->propertyMetadata) > 0 || \count($this->methodMetadata) > 0;
     }
 
-    public function addPropertyMetadata(JMSPropertyMetadata $metadata)
+    public function addPropertyMetadata(JMSPropertyMetadata $metadata): void
     {
         if (isset($this->constructArgs[$metadata->name])) {
             $metadata->isConstructArg = true;

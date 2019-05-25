@@ -23,7 +23,7 @@ use TSantos\Serializer\Metadata\PropertyMetadata;
  */
 class GetterConfiguratorTest extends AbstractConfiguratorTest
 {
-    public function setup()
+    public function setup(): void
     {
         $this->configurator = new GetterConfigurator();
     }

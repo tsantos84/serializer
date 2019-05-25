@@ -24,7 +24,7 @@ use TSantos\Serializer\Metadata\Driver\YamlDriver;
  */
 class YamlDriverTest extends AbstractDriverTest
 {
-    public function setUp()
+    public function setup(): void
     {
         parent::setUp();
         if (!\class_exists('Symfony\Component\Yaml\Yaml')) {

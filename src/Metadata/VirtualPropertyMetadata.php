@@ -24,9 +24,12 @@ class VirtualPropertyMetadata extends MethodMetadata
 {
     use PropertyTrait;
 
+    public $reflection;
+
     public function __construct($class, $name)
     {
         parent::__construct($class, $name);
+        $this->reflection = new \ReflectionMethod($class, $name);
         $this->exposeAs = $name;
     }
 
@@ -56,5 +59,7 @@ class VirtualPropertyMetadata extends MethodMetadata
             $this->groups,
             $this->options
             ) = $unserialized;
+
+        $this->reflection = new \ReflectionMethod($this->class, $this->name);
     }
 }

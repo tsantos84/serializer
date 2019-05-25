@@ -13,7 +13,8 @@ declare(strict_types=1);
 
 namespace TSantos\Serializer\Metadata\Driver;
 
-use Doctrine\Common\Annotations\Reader;
+use Doctrine\Common\Annotations\AnnotationReader;
+use Metadata\ClassMetadata as JmsClassMetadata;
 use Metadata\Driver\DriverInterface;
 use TSantos\Serializer\Mapping\BaseClass;
 use TSantos\Serializer\Mapping\Discriminator;
@@ -39,21 +40,21 @@ use TSantos\Serializer\Metadata\VirtualPropertyMetadata;
 class AnnotationDriver implements DriverInterface
 {
     /**
-     * @var Reader
+     * @var AnnotationReader
      */
     private $reader;
 
     /**
      * AnnotationDriver constructor.
      *
-     * @param Reader $reader
+     * @param AnnotationReader $reader
      */
-    public function __construct(Reader $reader)
+    public function __construct(AnnotationReader $reader)
     {
         $this->reader = $reader;
     }
 
-    public function loadMetadataForClass(\ReflectionClass $class)
+    public function loadMetadataForClass(\ReflectionClass $class): ?JmsClassMetadata
     {
         $configured = false;
         $metadata = new ClassMetadata($class->name);

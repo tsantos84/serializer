@@ -13,6 +13,7 @@ declare(strict_types=1);
 
 namespace TSantos\Serializer\Metadata\Driver;
 
+use Metadata\ClassMetadata as JmsClassMetadata;
 use Metadata\Driver\AbstractFileDriver;
 use TSantos\Serializer\Metadata\ClassMetadata;
 use TSantos\Serializer\Metadata\PropertyMetadata;
@@ -25,7 +26,7 @@ use TSantos\Serializer\Metadata\VirtualPropertyMetadata;
  */
 class XmlDriver extends AbstractFileDriver
 {
-    protected function loadMetadataFromFile(\ReflectionClass $class, $file)
+    protected function loadMetadataFromFile(\ReflectionClass $class, string $file): ?JmsClassMetadata
     {
         $previous = \libxml_use_internal_errors(true);
         \libxml_clear_errors();
@@ -138,7 +139,7 @@ class XmlDriver extends AbstractFileDriver
         return $metadata;
     }
 
-    protected function getExtension()
+    protected function getExtension(): string
     {
         return 'xml';
     }

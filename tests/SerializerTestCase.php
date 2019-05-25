@@ -34,7 +34,7 @@ abstract class SerializerTestCase extends TestCase
 
     protected $clearCache = true;
 
-    protected function tearDown()
+    protected function tearDown(): void
     {
         if ($this->clearCache && \is_dir($dir = __DIR__.'/../var')) {
             \system('rm -rf '.\escapeshellarg($dir), $retval);

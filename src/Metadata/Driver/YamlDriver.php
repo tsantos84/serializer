@@ -13,6 +13,7 @@ declare(strict_types=1);
 
 namespace TSantos\Serializer\Metadata\Driver;
 
+use Metadata\ClassMetadata as JmsClassMetadata;
 use Metadata\Driver\AbstractFileDriver;
 use Symfony\Component\Yaml\Yaml;
 use TSantos\Serializer\Exception\MappingException;
@@ -27,7 +28,7 @@ use TSantos\Serializer\Metadata\VirtualPropertyMetadata;
  */
 class YamlDriver extends AbstractFileDriver
 {
-    protected function loadMetadataFromFile(\ReflectionClass $class, $file)
+    protected function loadMetadataFromFile(\ReflectionClass $class, string $file): ?JmsClassMetadata
     {
         if (!\class_exists('Symfony\Component\Yaml\Yaml')) {
             throw new \RuntimeException(
@@ -100,7 +101,7 @@ class YamlDriver extends AbstractFileDriver
         return $metadata;
     }
 
-    protected function getExtension()
+    protected function getExtension(): string
     {
         return 'yaml';
     }
