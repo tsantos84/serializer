@@ -14,7 +14,7 @@ install:
   - composer require symfony/flex
   - composer install
 
-jobs:
+matrix:
   include:
     -
       name: Code Standard
