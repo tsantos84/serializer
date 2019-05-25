@@ -40,5 +40,10 @@
         "doctrine/annotations": "Allow to use annotations format to define class metadata",
         "symfony/yaml": "Allow to use Yaml format to define class metadata"
     },
+    "extra": {
+        "branch-alias": {
+            "dev-master": "4.0-dev"
+        }
+    },
     "minimum-stability": "dev"
 }
