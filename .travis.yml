@@ -7,6 +7,7 @@ php:
   - 7.3
 
 install:
+  - phpenv config-rm xdebug.ini
   - composer require symfony/flex
   - composer install
 
@@ -20,10 +21,16 @@ jobs:
       name: Unit tests
       script: vendor/bin/phpunit
 
+    - stage: SonarQube Scanner
+      install:
+        - phpenv config-rm xdebug.ini
+      script:
+        - phpenv config-rm xdebug.ini
+        - sonar-scanner
+
     -
       stage: Benchmark
       install:
-        - phpenv config-rm xdebug.ini
         - phpenv config-add php.ini
         - echo "extension = apcu.so" >> ~/.phpenv/versions/$(phpenv version-name)/etc/php.ini
         - export BENCHMARK_DIR=/tmp/serializers-benchmarking
@@ -40,4 +47,5 @@ jobs:
         - php vendor/bin/phpbench run --warmup=1 --report=tsantos --group=deserialize --iterations=10
 
   allow_failures:
+    -   stage: SonarQube Scanner
     -   stage: Benchmark
