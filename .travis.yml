@@ -43,3 +43,5 @@ jobs:
           - |
           # Performing deserialization benchmark
           php vendor/bin/phpbench run --warmup=1 --report=tsantos --group=deserialize --iterations=10
+  allow_failures:
+    - stage: Benchmark
