@@ -10,23 +10,24 @@ php:
   - 7.2
   - 7.3
 
+cache:
+  directories:
+    - $HOME/.composer/cache
+
+notifications:
+  email: false
+
 install:
   - composer require symfony/flex
-  - composer install
+  - composer install --prefer-dist --no-progress
 
-script: false
+script: vendor/bin/phpunit
 
-matrix:
+jobs:
   include:
     -
       name: Code Standard
-      before_install: phpenv config-rm xdebug.ini
       script: vendor/bin/php-cs-fixer fix --config=.php_cs.dist --dry-run
-
-    -
-      name: Unit tests
-      before_install: phpenv config-rm xdebug.ini
-      script: vendor/bin/phpunit
 
     -
       stage: Static analysis
