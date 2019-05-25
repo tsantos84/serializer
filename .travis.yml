@@ -20,10 +20,6 @@ matrix:
     - php: 7.2
       ENV: DEV=true
 
-    # PHP 7.2 with stable packages
-    - php: 7.3
-      env: COMPOSER_FLAGS="--prefer-stable"
-
     # PHP 7.3 with dev packages
     - php: 7.3
       ENV: DEV=true
