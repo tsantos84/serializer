@@ -2,6 +2,10 @@ language: php
 dist: trusty
 sudo: false
 
+addons:
+  sonarcloud:
+    organization: "tsantos84-github"
+
 php:
   - 7.2
   - 7.3
@@ -24,6 +28,8 @@ jobs:
 
     - stage: Static analysis
       script:
+        - vendor/bin/phpunit --coverage-clover reports/phpunit.coverage.xml --log-junit reports/phpunit.report.xml
+      after_script:
         - sonar-scanner
 
     -
