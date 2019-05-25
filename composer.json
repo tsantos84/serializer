@@ -40,5 +40,5 @@
         "doctrine/annotations": "Allow to use annotations format to define class metadata",
         "symfony/yaml": "Allow to use Yaml format to define class metadata"
     },
-    "minimum-stability": "beta"
+    "minimum-stability": "dev"
 }

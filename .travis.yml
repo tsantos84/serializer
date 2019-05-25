@@ -12,10 +12,29 @@ env:
 
 matrix:
   include:
+    # PHP 7.2 with stable packages
     - php: 7.2
+      env: COMPOSER_FLAGS="--prefer-stable"
+
+    # PHP 7.2 with dev packages
+    - php: 7.2
+      ENV: DEV=true
+
+    # PHP 7.2 with stable packages
     - php: 7.3
+      env: COMPOSER_FLAGS="--prefer-stable"
+
+    # PHP 7.3 with dev packages
     - php: 7.3
-      env: COVERAGE=true PHPUNIT_FLAGS="-v --coverage-clover reports/phpunit.coverage.xml --log-junit reports/phpunit.report.xml"
+      ENV: DEV=true
+
+    # PHP 7.3 with stable packages code coverage
+    - php: 7.3
+      env: COMPOSER_FLAGS="--prefer-stable" COVERAGE=true PHPUNIT_FLAGS="-v --coverage-clover reports/phpunit.coverage.xml --log-junit reports/phpunit.report.xml"
+  allow_failures:
+    # Dev-master is allowed to fail.
+    - env: DEV=true
+
   fast_finish: true
 
 before_install:
@@ -24,7 +43,7 @@ before_install:
 
 install:
   - composer global require symfony/flex
-  - composer install -a --no-progress
+  - composer install -a --no-progress $COMPOSER_FLAGS
 
 script:
   - vendor/bin/php-cs-fixer fix --config=.php_cs.dist --dry-run
