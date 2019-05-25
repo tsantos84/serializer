@@ -14,6 +14,8 @@ install:
   - composer require symfony/flex
   - composer install
 
+script: false
+
 matrix:
   include:
     -
@@ -26,7 +28,9 @@ matrix:
       before_install: phpenv config-rm xdebug.ini
       script: vendor/bin/phpunit
 
-    - stage: Static analysis
+    -
+      stage: Static analysis
+      before_script: git fetch --unshallow
       script:
         - vendor/bin/phpunit --coverage-clover reports/phpunit.coverage.xml --log-junit reports/phpunit.report.xml
       after_script:
@@ -52,5 +56,5 @@ matrix:
         - php vendor/bin/phpbench run --warmup=1 --report=tsantos --group=deserialize --iterations=10
 
   allow_failures:
-    -   stage: SonarQube Scanner
+    -   stage: Static analysis
     -   stage: Benchmark
