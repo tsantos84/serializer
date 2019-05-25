@@ -166,6 +166,7 @@ class PropertyTypeConfiguratorTest extends AbstractConfiguratorTest
     /** @test */
     public function it_should_guess_type_from_its_default_value()
     {
+        $this->markTestSkipped('Waiting Symfony 4.3 to be released and then we can run this unit test');
         $subject = new class() {
             private $age = 30;
         };
