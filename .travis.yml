@@ -32,6 +32,7 @@ jobs:
     -
       stage: Static analysis
       before_script: git fetch --unshallow
+      php: 7.3
       script:
         - vendor/bin/phpunit --coverage-clover reports/phpunit.coverage.xml --log-junit reports/phpunit.report.xml
       after_script:
@@ -39,6 +40,7 @@ jobs:
 
     -
       stage: Benchmark
+      php: 7.3
       before_install:
         - phpenv config-rm xdebug.ini
         - echo "extension = apcu.so" >> ~/.phpenv/versions/$(phpenv version-name)/etc/php.ini
