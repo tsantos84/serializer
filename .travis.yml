@@ -45,14 +45,12 @@ jobs:
       before_install:
         - phpenv config-rm xdebug.ini
         - echo "extension = apcu.so" >> ~/.phpenv/versions/$(phpenv version-name)/etc/php.ini
+        - composer require symfony/flex
       install:
-        - export BENCHMARK_DIR=/tmp/serializers-benchmarking
-        - git clone https://github.com/tsantos84/serializers-benchmarking.git ${BENCHMARK_DIR}
+        - export BENCHMARK_DIR=/tmp/benchmark
+        - git clone https://github.com/tsantos84/serializer-benchmark.git ${BENCHMARK_DIR}
         - cd ${BENCHMARK_DIR}
-        - rm -rf composer.lock
-        - composer config repositories.serializer path ${TRAVIS_BUILD_DIR}
-        - cat composer.json
-        - composer clear-cache
+        - composer require tsantos/serializer:4.0-dev --no-update
         - composer install -a --prefer-source --no-progress
 
       script:
