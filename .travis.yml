@@ -28,6 +28,7 @@ jobs:
     -
       name: Code Standard
       script: vendor/bin/php-cs-fixer fix --config=.php_cs.dist --dry-run
+      php: 7.3
 
     -
       stage: Static analysis
