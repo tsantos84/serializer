@@ -9,6 +9,7 @@ addons:
 php:
   - 7.2
   - 7.3
+  - 7.4snapshot
 
 cache:
   directories:
@@ -60,3 +61,4 @@ jobs:
   allow_failures:
     -   stage: Static analysis
     -   stage: Benchmark
+    -   7.4snapshot
