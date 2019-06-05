@@ -6,9 +6,14 @@ addons:
   sonarcloud:
     organization: "tsantos84-github"
 
+env:
+  - STABILITY="stable"
+
 php:
   - 7.2
   - 7.3
+  - 7.3
+    env: STABILITY="dev"
   - 7.4snapshot
 
 cache:
@@ -19,6 +24,7 @@ notifications:
   email: false
 
 install:
+  - composer config minimum-stability $STABILITY
   - composer require symfony/flex
   - composer install --prefer-dist --no-progress
 
@@ -62,3 +68,4 @@ jobs:
     -   stage: Static analysis
     -   stage: Benchmark
     -   7.4snapshot
+    -   STABILITY=dev
