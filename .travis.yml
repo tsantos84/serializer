@@ -68,5 +68,5 @@ jobs:
   allow_failures:
     -   stage: Static analysis
     -   stage: Benchmark
-    -   7.4snapshot
-    -   STABILITY=dev
+    -   php: 7.4snapshot
+    -   env: STABILITY=dev
