@@ -20,8 +20,6 @@ notifications:
   email: false
 
 install:
-  - composer config minimum-stability $STABILITY
-  - composer require symfony/flex
   - composer install --prefer-dist --no-progress
 
 script: vendor/bin/phpunit
