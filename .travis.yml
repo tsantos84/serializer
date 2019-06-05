@@ -8,13 +8,13 @@ addons:
 
 env:
   global:
-    - STABILITY="stable"
+    - STABILITY=stable
 
 php:
   - 7.2
   - 7.3
   - 7.3
-    env: STABILITY="dev"
+    env: STABILITY=dev
   - 7.4snapshot
 
 cache:
