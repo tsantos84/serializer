@@ -6,16 +6,11 @@ addons:
   sonarcloud:
     organization: "tsantos84-github"
 
-env:
-  global:
-    - STABILITY=stable
-
 php:
   - 7.2
   - 7.3
-  - 7.3
-    env: STABILITY=dev
   - 7.4snapshot
+  - nightly
 
 cache:
   directories:
@@ -69,4 +64,4 @@ jobs:
     -   stage: Static analysis
     -   stage: Benchmark
     -   php: 7.4snapshot
-    -   env: STABILITY=dev
+    -   php: nightly
