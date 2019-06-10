@@ -15,7 +15,6 @@ namespace Tests\TSantos\Serializer;
 
 use PHPUnit\Framework\TestCase;
 use Tests\TSantos\Serializer\Fixture\Driver\TestDriver;
-use TSantos\Serializer\HydratorCompiler;
 use TSantos\Serializer\HydratorLoader;
 use TSantos\Serializer\Metadata\ClassMetadata;
 use TSantos\Serializer\Metadata\Driver\CallbackDriver;

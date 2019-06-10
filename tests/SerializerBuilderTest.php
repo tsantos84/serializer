@@ -27,7 +27,6 @@ use TSantos\Serializer\EncoderRegistryInterface;
 use TSantos\Serializer\EventDispatcher\EventDispatcherInterface;
 use TSantos\Serializer\EventDispatcher\EventSubscriberInterface;
 use TSantos\Serializer\Events;
-use TSantos\Serializer\HydratorCompiler;
 use TSantos\Serializer\HydratorLoader;
 use TSantos\Serializer\Metadata\Configurator\DateTimeConfigurator;
 use TSantos\Serializer\Metadata\Driver\AnnotationDriver;
