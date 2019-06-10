@@ -128,4 +128,17 @@ class SerializerTest extends SerializerTestCase
 
         $this->assertSame('{"foo":100,"bar":"bar"}', $serializer->serialize($dummy));
     }
+
+    /** @test */
+    public function it_can_serialize_class_without_namespace()
+    {
+        $serializer = $this->createSerializer($this->createMapping(\NoNamespaceDummy::class, [
+            'foo' => ['type' => 'string'],
+            'bar' => ['type' => 'string'],
+        ]));
+
+        $dummy = new \NoNamespaceDummy('foo', 'bar');
+
+        $this->assertSame('{"foo":"foo","bar":"bar"}', $serializer->serialize($dummy));
+    }
 }

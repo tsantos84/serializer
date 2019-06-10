@@ -18,7 +18,8 @@
     "autoload-dev": {
         "psr-4": {
             "Tests\\TSantos\\Serializer\\": "tests/"
-        }
+        },
+        "files": ["tests/Fixture/Model/NoNamespaceDummy.php"]
     },
     "require": {
         "php": "^7.2",
