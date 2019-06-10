@@ -10,6 +10,7 @@ php:
   - 7.2
   - 7.3
   - 7.4snapshot
+  - nightly
 
 cache:
   directories:
@@ -19,7 +20,6 @@ notifications:
   email: false
 
 install:
-  - composer require symfony/flex
   - composer install --prefer-dist --no-progress
 
 script: vendor/bin/phpunit
@@ -61,4 +61,5 @@ jobs:
   allow_failures:
     -   stage: Static analysis
     -   stage: Benchmark
-    -   7.4snapshot
+    -   php: 7.4snapshot
+    -   php: nightly
