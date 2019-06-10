@@ -23,24 +23,6 @@ use TSantos\Serializer\Metadata\ClassMetadata;
 class HydratorCompiler implements HydratorCompilerInterface
 {
     /**
-     * @deprecated Constant moved to HydratorLoader and will be removed from HydratorCompiler on version 5.0
-     * @see \TSantos\Serializer\HydratorLoader::COMPILE_NEVER
-     */
-    const AUTOGENERATE_NEVER = HydratorLoader::COMPILE_NEVER;
-
-    /**
-     * @deprecated Constant moved to HydratorLoader and will be removed from HydratorCompiler on version 5.0
-     * @see \TSantos\Serializer\HydratorLoader::COMPILE_ALWAYS
-     */
-    const AUTOGENERATE_ALWAYS = HydratorLoader::COMPILE_ALWAYS;
-
-    /**
-     * @deprecated Constant moved to HydratorLoader and will be removed from HydratorCompiler on version 5.0
-     * @see \TSantos\Serializer\HydratorLoader::COMPILE_IF_NOT_EXISTS
-     */
-    const AUTOGENERATE_FILE_NOT_EXISTS = HydratorLoader::COMPILE_IF_NOT_EXISTS;
-
-    /**
      * @var Configuration
      */
     private $configuration;
