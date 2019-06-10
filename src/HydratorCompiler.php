@@ -23,11 +23,6 @@ use TSantos\Serializer\Metadata\ClassMetadata;
 class HydratorCompiler implements HydratorCompilerInterface
 {
     /**
-     * @var Configuration
-     */
-    private $configuration;
-
-    /**
      * @var HydratorCodeGenerator
      */
     private $generator;
@@ -40,17 +35,11 @@ class HydratorCompiler implements HydratorCompilerInterface
     /**
      * HydratorCompiler constructor.
      *
-     * @param Configuration         $configuration [DEPRECATED]
      * @param HydratorCodeGenerator $generator
      * @param HydratorCodeWriter    $writer
      */
-    public function __construct(Configuration $configuration, HydratorCodeGenerator $generator, HydratorCodeWriter $writer)
+    public function __construct(HydratorCodeGenerator $generator, HydratorCodeWriter $writer)
     {
-        @\trigger_error(
-            'The argument the $configuration is deprecated since Serializer 4.0.1 and will be removed in 5.0',
-            E_USER_DEPRECATED
-        );
-        $this->configuration = $configuration;
         $this->generator = $generator;
         $this->writer = $writer;
     }

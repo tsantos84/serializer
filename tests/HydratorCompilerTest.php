@@ -47,7 +47,7 @@ class HydratorCompilerTest extends TestCase
             ->method('write')
             ->with($classMetadata, '<?php MyHydrator {}');
 
-        $compiler = new HydratorCompiler($configuration, $generator, $writer);
+        $compiler = new HydratorCompiler($generator, $writer);
         $compiler->compile($classMetadata);
     }
 }
