@@ -27,7 +27,7 @@ use TSantos\Serializer\EncoderRegistryInterface;
 use TSantos\Serializer\EventDispatcher\EventDispatcherInterface;
 use TSantos\Serializer\EventDispatcher\EventSubscriberInterface;
 use TSantos\Serializer\Events;
-use TSantos\Serializer\HydratorCompiler;
+use TSantos\Serializer\HydratorLoader;
 use TSantos\Serializer\Metadata\Configurator\DateTimeConfigurator;
 use TSantos\Serializer\Metadata\Driver\AnnotationDriver;
 use TSantos\Serializer\Metadata\Driver\ReflectionDriver;
@@ -145,8 +145,8 @@ class SerializerBuilderTest extends TestCase
     /** @test */
     public function it_change_the_hydrator_generation_strategy()
     {
-        $this->builder->setHydratorGenerationStrategy(HydratorCompiler::AUTOGENERATE_ALWAYS);
-        $this->assertSame(HydratorCompiler::AUTOGENERATE_ALWAYS, $this->container['generation_strategy']);
+        $this->builder->setHydratorGenerationStrategy(HydratorLoader::COMPILE_ALWAYS);
+        $this->assertSame(HydratorLoader::COMPILE_ALWAYS, $this->container['generation_strategy']);
     }
 
     /** @test */
