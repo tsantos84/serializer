@@ -90,7 +90,8 @@ class Configuration
     public function getNamespaceForClass(ClassMetadata $classMetadata): string
     {
         $namespace = \sprintf('%s\\%s', $this->hydratorNamespace, $classMetadata->reflection->getNamespaceName());
-        return rtrim($namespace, '\\');
+
+        return \rtrim($namespace, '\\');
     }
 
     /**

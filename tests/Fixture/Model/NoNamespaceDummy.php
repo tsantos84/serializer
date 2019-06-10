@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the TSantos Serializer package.
  *
@@ -9,9 +11,8 @@
  * file that was distributed with this source code.
  */
 
-
 /**
- * Class NoNamespaceDummy
+ * Class NoNamespaceDummy.
  *
  * @author Tales Santos <tales.augusto.santos@gmail.com>
  */
@@ -23,6 +24,7 @@ class NoNamespaceDummy
 
     /**
      * NoNamespaceDummy constructor.
+     *
      * @param $foo
      * @param $bar
      */
