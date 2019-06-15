@@ -20,6 +20,7 @@ use Metadata\Cache\CacheInterface;
 use Metadata\Cache\FileCache;
 use Metadata\Driver\DriverInterface;
 use Pimple\Container;
+use Symfony\Component\Filesystem\Filesystem;
 use TSantos\Serializer\Encoder\EncoderInterface;
 use TSantos\Serializer\EventDispatcher\EventDispatcherInterface;
 use TSantos\Serializer\EventDispatcher\EventSubscriberInterface;
@@ -165,10 +166,7 @@ class SerializerBuilder
 
     public function setMetadataCacheDir(string $dir): self
     {
-        if (!\is_dir($dir)) {
-            throw new FilesystemException('The metadata cache directory "'.$dir.'" does not exist');
-        }
-
+        $this->container[Filesystem::class]->mkdir($dir);
         $this->setMetadataCache(new FileCache($dir));
 
         return $this;

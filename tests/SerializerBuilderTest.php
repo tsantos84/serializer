@@ -20,6 +20,7 @@ use Metadata\Cache\CacheInterface;
 use Metadata\Cache\FileCache;
 use PHPUnit\Framework\TestCase;
 use Pimple\Container;
+use Symfony\Component\Filesystem\Filesystem;
 use Tests\TSantos\Serializer\Fixture\DummyEventDispatcher;
 use TSantos\Serializer\Encoder\JsonEncoder;
 use TSantos\Serializer\EncoderRegistry;
@@ -53,10 +54,24 @@ class SerializerBuilderTest extends TestCase
      */
     private $builder;
 
+    /**
+     * @var string
+     */
+    private const METADATA_CACHE_DIR = '/tmp/metadata/cache';
+
     public function setup(): void
     {
         $this->container = new Container();
         $this->builder = new SerializerBuilder($this->container);
+    }
+
+    protected function tearDown(): void
+    {
+        $fs = new Filesystem();
+
+        if (\is_dir(self::METADATA_CACHE_DIR)) {
+            $fs->remove(self::METADATA_CACHE_DIR);
+        }
     }
 
     /** @test */
@@ -138,8 +153,10 @@ class SerializerBuilderTest extends TestCase
     /** @test */
     public function it_can_set_the_metadata_cache_dir()
     {
-        $this->builder->setMetadataCacheDir('/tmp');
+        $this->builder->setMetadataCacheDir('/tmp/metadata/cache');
         $this->assertInstanceOf(FileCache::class, $this->container[CacheInterface::class]);
+        $this->assertDirectoryExists('/tmp/metadata/cache');
+        $this->assertDirectoryIsWritable('/tmp/metadata/cache');
     }
 
     /** @test */

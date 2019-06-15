@@ -27,6 +27,7 @@
         "doctrine/instantiator": "^1.1",
         "symfony/event-dispatcher": "^4.3",
         "symfony/property-info": "^4.3",
+        "symfony/filesystem": "^4.3",
         "phpdocumentor/reflection-docblock": "^4.2",
         "nette/php-generator": "^3.2",
         "pimple/pimple": "^3.2"
