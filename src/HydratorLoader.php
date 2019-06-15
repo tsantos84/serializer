@@ -110,6 +110,14 @@ class HydratorLoader implements HydratorLoaderInterface
         $filename = $this->configuration->getFilename($classMetadata);
 
         switch ($this->configuration->getGenerationStrategy()) {
+            default:
+            case self::COMPILE_IF_NOT_EXISTS:
+                if (!\file_exists($filename)) {
+                    $this->compiler->compile($classMetadata);
+                }
+                requireHydrator($filename);
+                break;
+
             case self::COMPILE_NEVER:
                 requireHydrator($filename);
                 break;
@@ -119,12 +127,6 @@ class HydratorLoader implements HydratorLoaderInterface
                 requireHydrator($filename);
                 break;
 
-            case self::COMPILE_IF_NOT_EXISTS:
-                if (!\file_exists($filename)) {
-                    $this->compiler->compile($classMetadata);
-                }
-                requireHydrator($filename);
-                break;
         }
     }
 }
