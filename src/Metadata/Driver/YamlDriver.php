@@ -17,6 +17,7 @@ use Metadata\ClassMetadata as JmsClassMetadata;
 use Metadata\Driver\AbstractFileDriver;
 use Symfony\Component\Yaml\Yaml;
 use TSantos\Serializer\Exception\MappingException;
+use TSantos\Serializer\Exception\MissingDependencyException;
 use TSantos\Serializer\Metadata\ClassMetadata;
 use TSantos\Serializer\Metadata\PropertyMetadata;
 use TSantos\Serializer\Metadata\VirtualPropertyMetadata;
@@ -31,7 +32,7 @@ class YamlDriver extends AbstractFileDriver
     protected function loadMetadataFromFile(\ReflectionClass $class, string $file): ?JmsClassMetadata
     {
         if (!\class_exists('Symfony\Component\Yaml\Yaml')) {
-            throw new \RuntimeException(
+            throw new MissingDependencyException(
                 'Yaml parser was not found. Did you added `symfony/yaml` to your project dependency?'
             );
         }

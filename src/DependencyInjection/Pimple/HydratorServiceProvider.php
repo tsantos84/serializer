@@ -19,6 +19,7 @@ use Nette\PhpGenerator\PsrPrinter;
 use Pimple\Container;
 use Pimple\ServiceProviderInterface;
 use Psr\Container\ContainerInterface;
+use Symfony\Component\Filesystem\Filesystem;
 use TSantos\Serializer\CodeDecorator\AbstractHydratorDecorator;
 use TSantos\Serializer\CodeDecorator\ClassMetadataDecorator;
 use TSantos\Serializer\CodeDecorator\ConstructorMethodDecorator;
@@ -28,6 +29,7 @@ use TSantos\Serializer\CodeDecorator\HydrationDecorator;
 use TSantos\Serializer\CodeDecorator\NewInstanceMethodDecorator;
 use TSantos\Serializer\CodeDecorator\Template;
 use TSantos\Serializer\Configuration;
+use TSantos\Serializer\Exception\FilesystemException;
 use TSantos\Serializer\HydratorCodeGenerator;
 use TSantos\Serializer\HydratorCodeWriter;
 use TSantos\Serializer\HydratorCompiler;
@@ -91,10 +93,10 @@ class HydratorServiceProvider implements ServiceProviderInterface
         };
 
         $container[HydratorCodeWriter::class] = function ($container) {
-            $container['directory_creator']($container['hydrator_dir']);
+            $container[Filesystem::class]->mkdir($container['hydrator_dir']);
 
             if (!\is_writable($container['hydrator_dir'])) {
-                throw new \InvalidArgumentException(\sprintf('The hydrator directory "%s" is not writable.', $container['hydrator_dir']));
+                throw new FilesystemException(\sprintf('The hydrator directory "%s" is not writable.', $container['hydrator_dir']));
             }
 
             return new HydratorCodeWriter($container[Configuration::class]);

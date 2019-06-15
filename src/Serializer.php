@@ -14,6 +14,8 @@ declare(strict_types=1);
 namespace TSantos\Serializer;
 
 use TSantos\Serializer\Encoder\EncoderInterface;
+use TSantos\Serializer\Exception\DenormalizerNotFoundException;
+use TSantos\Serializer\Exception\NormalizerNotFoundException;
 
 /**
  * Class Serializer.
@@ -82,7 +84,7 @@ class Serializer implements SerializerInterface
             return $normalizer->normalize($data, $context);
         }
 
-        throw new \RuntimeException(
+        throw new NormalizerNotFoundException(
             \sprintf(
                 'There is no normalizer able to normalize the data of type %s',
                 \is_object($data) ? \get_class($data) : \gettype($data)
@@ -117,6 +119,6 @@ class Serializer implements SerializerInterface
             return $normalizer->denormalize($data, $type, $context);
         }
 
-        throw new \RuntimeException('There is no denormalizer able to denormalize data of type '.$type);
+        throw new DenormalizerNotFoundException('There is no denormalizer able to denormalize data of type '.$type);
     }
 }

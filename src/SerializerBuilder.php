@@ -20,9 +20,12 @@ use Metadata\Cache\CacheInterface;
 use Metadata\Cache\FileCache;
 use Metadata\Driver\DriverInterface;
 use Pimple\Container;
+use Symfony\Component\Filesystem\Filesystem;
 use TSantos\Serializer\Encoder\EncoderInterface;
 use TSantos\Serializer\EventDispatcher\EventDispatcherInterface;
 use TSantos\Serializer\EventDispatcher\EventSubscriberInterface;
+use TSantos\Serializer\Exception\FilesystemException;
+use TSantos\Serializer\Exception\MissingDependencyException;
 use TSantos\Serializer\Metadata\ConfiguratorInterface;
 use TSantos\Serializer\Metadata\Driver\AnnotationDriver;
 use TSantos\Serializer\Normalizer\CollectionNormalizer;
@@ -96,7 +99,7 @@ class SerializerBuilder
     public function addMetadataDir(string $namespace, string $dir): self
     {
         if (!\is_dir($dir)) {
-            throw new \InvalidArgumentException('The metadata directory "'.$dir.'" does not exist');
+            throw new FilesystemException('The metadata directory "'.$dir.'" does not exist');
         }
 
         $this->container->extend('metadata_dirs', function (array $dirs) use ($namespace, $dir) {
@@ -163,10 +166,7 @@ class SerializerBuilder
 
     public function setMetadataCacheDir(string $dir): self
     {
-        if (!\is_dir($dir)) {
-            throw new \InvalidArgumentException('The metadata cache directory "'.$dir.'" does not exist');
-        }
-
+        $this->container[Filesystem::class]->mkdir($dir);
         $this->setMetadataCache(new FileCache($dir));
 
         return $this;
@@ -191,7 +191,7 @@ class SerializerBuilder
     public function enableAnnotations(AnnotationReader $reader = null)
     {
         if (!\class_exists(AnnotationReader::class)) {
-            throw new \RuntimeException('The annotation reader was not loaded. '.
+            throw new MissingDependencyException('The annotation reader was not loaded. '.
                 'You must include the package doctrine/annotations as your composer dependency.');
         }
 

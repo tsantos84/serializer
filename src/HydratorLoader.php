@@ -14,6 +14,7 @@ declare(strict_types=1);
 namespace TSantos\Serializer;
 
 use Metadata\MetadataFactoryInterface;
+use TSantos\Serializer\Exception\MappingException;
 use TSantos\Serializer\Metadata\ClassMetadata;
 
 /**
@@ -87,7 +88,7 @@ class HydratorLoader implements HydratorLoaderInterface
         $classMetadata = $this->metadataFactory->getMetadataForClass($class);
 
         if (null === $classMetadata) {
-            throw new \RuntimeException(
+            throw new MappingException(
                 'No mapping file was found for class '.$class.
                 '. Did you configure the correct paths for serializer?'
             );
@@ -109,19 +110,20 @@ class HydratorLoader implements HydratorLoaderInterface
         $filename = $this->configuration->getFilename($classMetadata);
 
         switch ($this->configuration->getGenerationStrategy()) {
+            default:
+            case self::COMPILE_IF_NOT_EXISTS:
+                if (!\file_exists($filename)) {
+                    $this->compiler->compile($classMetadata);
+                }
+                requireHydrator($filename);
+                break;
+
             case self::COMPILE_NEVER:
                 requireHydrator($filename);
                 break;
 
             case self::COMPILE_ALWAYS:
                 $this->compiler->compile($classMetadata);
-                requireHydrator($filename);
-                break;
-
-            case self::COMPILE_IF_NOT_EXISTS:
-                if (!\file_exists($filename)) {
-                    $this->compiler->compile($classMetadata);
-                }
                 requireHydrator($filename);
                 break;
         }
