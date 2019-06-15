@@ -14,6 +14,7 @@ declare(strict_types=1);
 namespace TSantos\Serializer;
 
 use Metadata\MetadataFactoryInterface;
+use TSantos\Serializer\Exception\MappingException;
 use TSantos\Serializer\Metadata\ClassMetadata;
 
 /**
@@ -87,7 +88,7 @@ class HydratorLoader implements HydratorLoaderInterface
         $classMetadata = $this->metadataFactory->getMetadataForClass($class);
 
         if (null === $classMetadata) {
-            throw new \RuntimeException(
+            throw new MappingException(
                 'No mapping file was found for class '.$class.
                 '. Did you configure the correct paths for serializer?'
             );

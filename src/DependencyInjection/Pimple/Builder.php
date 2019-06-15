@@ -16,6 +16,7 @@ use Psr\Container\ContainerInterface;
 use TSantos\Serializer\DependencyInjection\Pimple\HydratorServiceProvider;
 use TSantos\Serializer\DependencyInjection\Pimple\MetadataServiceProvider;
 use TSantos\Serializer\DependencyInjection\Pimple\SerializerServiceProvider;
+use TSantos\Serializer\Exception\FilesystemException;
 
 return function (Container $container) {
     $container[ContainerInterface::class] = function ($container) {
@@ -28,7 +29,7 @@ return function (Container $container) {
         }
 
         if (false === @\mkdir($dir, 0777, true) && false === \is_dir($dir)) {
-            throw new \RuntimeException(\sprintf('Could not create directory "%s".', $dir));
+            throw new FilesystemException(\sprintf('Could not create directory "%s".', $dir));
         }
     });
 
