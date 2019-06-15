@@ -65,26 +65,22 @@ STRING;
         $checker = TypeHelper::getChecker($type, $value);
         $exceptionClass = '\\'.UnexpectedTypeException::class;
 
-        $template = <<<STRING
+        return <<<STRING
         if (!($checker)) {
                 throw {$exceptionClass}::keyType('{$type}', \gettype(\$key));
             }
 
 STRING;
-
-        return $template;
     }
 
     public function renderValueWriter(PropertyMetadata $property, string $mutator): string
     {
-        $code = \strtr(self::$propertyWriteTemplate, [
+        return \strtr(self::$propertyWriteTemplate, [
             '{propertyName}' => $property->name,
             '{exposeAs}' => $property->exposeAs,
             '{value}' => $this->createValueMutator($property),
             '{mutator}' => $mutator,
         ]);
-
-        return $code;
     }
 
     /**
