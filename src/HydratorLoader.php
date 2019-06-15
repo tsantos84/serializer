@@ -126,7 +126,6 @@ class HydratorLoader implements HydratorLoaderInterface
                 $this->compiler->compile($classMetadata);
                 requireHydrator($filename);
                 break;
-
         }
     }
 }

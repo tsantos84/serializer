@@ -22,7 +22,7 @@ declare(strict_types=1);
 namespace TSantos\Serializer\Exception;
 
 /**
- * Class DenormalizerNotFoundException
+ * Class DenormalizerNotFoundException.
  *
  * @author Tales Santos <tales.augusto.santos@gmail.com>
  */
