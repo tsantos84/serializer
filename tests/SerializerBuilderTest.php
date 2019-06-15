@@ -28,6 +28,7 @@ use TSantos\Serializer\EncoderRegistryInterface;
 use TSantos\Serializer\EventDispatcher\EventDispatcherInterface;
 use TSantos\Serializer\EventDispatcher\EventSubscriberInterface;
 use TSantos\Serializer\Events;
+use TSantos\Serializer\Exception\FilesystemException;
 use TSantos\Serializer\HydratorLoader;
 use TSantos\Serializer\Metadata\Configurator\DateTimeConfigurator;
 use TSantos\Serializer\Metadata\Driver\AnnotationDriver;
@@ -153,10 +154,17 @@ class SerializerBuilderTest extends TestCase
     /** @test */
     public function it_can_set_the_metadata_cache_dir()
     {
-        $this->builder->setMetadataCacheDir('/tmp/metadata/cache');
+        $this->builder->setMetadataCacheDir(self::METADATA_CACHE_DIR);
         $this->assertInstanceOf(FileCache::class, $this->container[CacheInterface::class]);
-        $this->assertDirectoryExists('/tmp/metadata/cache');
-        $this->assertDirectoryIsWritable('/tmp/metadata/cache');
+        $this->assertDirectoryExists(self::METADATA_CACHE_DIR);
+        $this->assertDirectoryIsWritable(self::METADATA_CACHE_DIR);
+    }
+
+    /** @test */
+    public function it_should_throw_exception_if_the_metadata_directory_does_not_exist()
+    {
+        $this->expectException(FilesystemException::class);
+        $this->builder->addMetadataDir('Some\\Namespace', '/some/nonexistent/directory');
     }
 
     /** @test */
