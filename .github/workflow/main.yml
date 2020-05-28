@@ -1,0 +1,61 @@
+name: TSantos Serializer
+
+on:
+  push:
+  pull_request:
+    branches: [ master ]
+
+jobs:
+  unit-test:
+    name: Unit Test [${{ matrix.php }}]
+    runs-on: ${{ matrix.operating-system }}
+    strategy:
+      matrix:
+        operating-system: [ ubuntu-latest ]
+        php: [ '7.2', '7.3', '7.4', '8.0' ]
+    steps:
+      - uses: actions/checkout@v2
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ matrix.php }}
+      - name: Install Dependencies
+        run: composer install -q --no-ansi --no-scripts --prefer-dist
+      - name: Run tests
+        run: composer test
+        continue-on-error: ${{ matrix.php == '8.0' }}
+
+  performance-test:
+    name: Performance Test [${{ matrix.php }}]
+    runs-on: ${{ matrix.operating-system }}
+    strategy:
+      matrix:
+        operating-system: [ ubuntu-latest ]
+        php: [ '7.2', '7.3', '7.4', '8.0' ]
+    steps:
+      - uses: actions/checkout@v2
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ matrix.php }}
+          with: apcu
+      - name: Setup benchmark
+        run: |
+          export BENCHMARK_DIR=/tmp/benchmark
+          git clone https://github.com/tsantos84/serializer-benchmark.git ${BENCHMARK_DIR} && cd ${BENCHMARK_DIR}
+          composer require tsantos/serializer:4.0-dev --no-update
+          composer install -a --prefer-source --no-progress
+      - name: Run serialization
+        run: php vendor/bin/phpbench run --warmup=1 --report=tsantos --group=serialize --iterations=10
+        continue-on-error: true
+      - name: Run dserialization
+        run: php vendor/bin/phpbench run --warmup=1 --report=tsantos --group=deserialize --iterations=10
+        continue-on-error: true
+
+  code-style:
+    name: Code style check
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Install Dependencies
+        run: composer install -q --no-ansi --no-interaction --no-scripts --prefer-dist
+      - name: Check style
+        run: composer lint:check

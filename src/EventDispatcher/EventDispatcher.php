@@ -40,11 +40,11 @@ class EventDispatcher implements EventDispatcherInterface
     public function dispatch(string $eventName, Event $event, string $type = null): Event
     {
         if (null !== $type && $this->dispatcher->hasListeners($typeEventName = $eventName.'.'.$type)) {
-            $this->dispatcher->dispatch($typeEventName, $event);
+            $this->dispatcher->dispatch($event, $eventName);
         }
 
         if ($this->dispatcher->hasListeners($eventName)) {
-            $this->dispatcher->dispatch($eventName, $event);
+            $this->dispatcher->dispatch($event, $eventName);
         }
 
         return $event;
