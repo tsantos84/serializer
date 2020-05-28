@@ -1,7 +1,8 @@
 name: TSantos Serializer
 
 on:
-  push: *
+  push:
+    branches: [ githubci ]
   pull_request:
     branches: [ master ]
 
