@@ -37,10 +37,11 @@ jobs:
       - uses: shivammathur/setup-php@v2
         with:
           php-version: ${{ matrix.php }}
-          with: apcu
+          extensions: apcu
       - name: Setup benchmark
+        env:
+          BENCHMARK_DIR: /tmp/benchmark
         run: |
-          export BENCHMARK_DIR=/tmp/benchmark
           git clone https://github.com/tsantos84/serializer-benchmark.git ${BENCHMARK_DIR} && cd ${BENCHMARK_DIR}
           composer require tsantos/serializer:4.0-dev --no-update
           composer install -a --prefer-source --no-progress
